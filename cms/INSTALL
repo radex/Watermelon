@@ -1,0 +1,151 @@
+Instalacja w obecnej wersji (okrojonej) jest dość prosta - nie ma instalatora,
+ale konfiguracja ogranicza się do edycji kilku pól w config.php ... Mam
+nadzieję, że każdy se z tym poradzi :P
+
+1. Zmieniamy nazwę config_template.php na config.php
+
+2. Edytujemy pola:
+
+$_w_baseURL
+
+Tutaj wsadź link do folderu w którym znajduje się CMS.
+
+Np. http://mojakurdestrona.pl/wcms/
+
+-------
+
+$_w_siteURL
+
+To samo co w powyższym polu + index.php/, chyba, że grzebałeś w .htaccess :P
+
+Np. http://mojakurdestrona.pl/wcms/index.php/
+
+-------
+
+$_w_dbHost
+
+Host bazy danych. Na 99% będzie to localhost
+
+Np. localhost
+
+-------
+
+$_w_dbUser
+
+User bazy danych. Na serwerze lokalnym będzie to prawdopodobnie root
+
+Np. root
+
+-------
+
+$_w_dbPass
+
+Hasło do usera bazy danych.
+
+Np. Jacek542527424
+
+-------
+
+$_w_dbName
+
+Baza danych do której importujemy zrzut bazy danych
+
+Np. watermelondatabase
+
+-------
+
+$_w_dbPrefix
+
+Prefiks do tabel. W tej wersji cms-a należy ZOSTAWIĆ PUSTE POLE
+
+Np. wcms_
+
+-------
+
+$_w_siteName
+
+Nazwa strony
+
+Np. Jacek Website
+
+-------
+
+$_w_siteSlogan
+
+Slogan (tekst dodatkowy w headerze) strony. ofc może być puste.
+
+Np. Jacek Wymiatacz!
+
+-------
+
+$_w_theme
+
+Theme strony. W tej wersji CMS-a istnieją dwa - simple i wcmslay. Polecamy
+ten drugi.
+
+Np. wcmslay
+
+-------
+
+$_w_defaultCnt
+
+Domyślny kontroler. W tej wersji CMS-a istnieje kilka, ale radzimy wpisać test
+
+Np. test
+
+-------
+
+$_w_hashAlgo
+
+Algorytm haszujący. Jeśli zaczyna się od x, skrypt korzysta z biblioteki hash,
+jeśli zaczyna się od innego znaku - będzie korzystał z dowolnej funkcji php.
+
+Np. _sha1
+
+-------
+
+$_w_autoload
+
+Nie ma potrzeby edytować
+
+-------
+
+$_w_metaSrc
+
+Tego też nie ma potrzeby edytować, ale tu są pozycje meta (np. keywordy),
+dołączane do theme'a (w postaci tablicy)
+
+np. array(
+      '<meta name="Description" content="Opis stronki Jacka Cebuli">',
+      '<meta name="Keywords" content="jacek, cebula, pierdoły">'
+   );
+   
+-------
+
+$_w_superusers[''] = ''; 
+
+Jako klucz dać nazwę admina a w drugim jego hasło zahaszowane sposobem podanym w
+polu hashalgo.
+
+W podanym przykładzie loginem będzie jacek, a hasłem qwerty (zakładając że pole
+hashalgo jest ustawione na _sha1)
+
+Np. $_w_superusers['jacek'] = 'b1b3773a05c0ed0176787a4f1574ff0075f7521e'; 
+
+-------
+
+3. Importuj zrzut bazy danych do bazy podanej w polu $_w_dbName. Zrzut znajduje
+się w pliku sqldump.sql
+
+UWAGA!
+
+Watermelon CMS we wcześniejszych wersjach nie zawierał zrzutu bazy danych. Jeśli
+więc masz w pliku index.php taką linijkę:
+
+define('NOMENU', '');
+
+Zamień ją na:
+
+//define('NOMENU', '');
+
+czyli mówiąc krótko: zakomentuj tą linijkę :)

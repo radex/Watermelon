@@ -20,15 +20,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-$_w_startTime = microtime();
-session_start();
-ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
-
-//define('NOMENU', '');
-
-include 'config.php';
-
-include WTRMLN_CMSPATH . 'system.php';
+class Model_User extends Model
+{
+   public function Model_User()
+   {
+      parent::Model();
+   }
+   
+   public function HelloWorld()
+   {
+      echo 'hi people.';
+   }
+   
+   public function LoginUserData($login)
+   {
+      $login = mysql_real_escape_string($login);
+      
+      return $this->db->query("SELECT `password`, `hashalgo`, `salt` FROM `__users` ".
+                              "WHERE `nick` = '%1'", $login);
+   }
+}
 
 ?>

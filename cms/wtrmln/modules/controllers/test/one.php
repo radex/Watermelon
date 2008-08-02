@@ -20,15 +20,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-$_w_startTime = microtime();
-session_start();
-ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
-
-//define('NOMENU', '');
-
-include 'config.php';
-
-include WTRMLN_CMSPATH . 'system.php';
-
+class Test_One extends Controller
+{
+   function Test_One()
+   {
+      parent::Controller();
+   }
+   
+   function Index()
+   {
+      SetH1('TESTTYYY 1');
+      
+      echo 'elo on controller test_one (test/one.php)';
+   }
+}
 ?>

@@ -20,15 +20,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-$_w_startTime = microtime();
-session_start();
-ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
-
-//define('NOMENU', '');
-
-include 'config.php';
-
-include WTRMLN_CMSPATH . 'system.php';
+class Controller
+{
+   public function Controller()
+   {
+      $this->url  = URL::Instance();
+      $this->db   = DB::Instance();
+      $this->load = new Loader();
+   }
+   
+   /*
+    * public void addMeta(string $data);
+    * 
+    * dodaje element do sekcji <head>
+    * 
+    * string $data - element do wstawienia, np. '<style type="text/css">*{display:none}</style>'
+    */
+   
+   public function addMeta($data)
+   {
+      $metaSrc = Watermelon::$metaSrc;
+      
+      $metaSrc[] = $data;
+      
+      Watermelon::$metaSrc = $metaSrc;
+   }
+}
 
 ?>

@@ -19,16 +19,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
-
-$_w_startTime = microtime();
-session_start();
-ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
-
-//define('NOMENU', '');
-
-include 'config.php';
-
-include WTRMLN_CMSPATH . 'system.php';
-
 ?>
+
+<div class="box_e">
+   <strong>Podczas logowania napotkano problemy:</strong>
+   
+   <ul>
+      <foreach $errors as $error>
+         <li><$error></li>
+      </foreach>
+   </ul>
+   
+   <if 5 == 4>
+      To się NIE wyświetli :P
+   </if>
+</div>

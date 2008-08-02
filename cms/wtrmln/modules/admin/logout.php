@@ -20,15 +20,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-$_w_startTime = microtime();
-session_start();
-ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
-
-//define('NOMENU', '');
-
-include 'config.php';
-
-include WTRMLN_CMSPATH . 'system.php';
-
+   class Logout extends AdminModule
+   {
+      function Logout()
+      {
+         parent::AdminModule();
+      }
+      
+      function index()
+      {
+         $_SESSION['WTRMLN_ADMIN_LOGGED_IN'] = '*****';
+         $_SESSION['WTRMLN_ADMIN_LOGIN'] = '*********';
+         $_SESSION['WTRMLN_ADMIN_PASS'] = '**********';
+   
+         header('Location: ' . WTRMLN_ADMIN . 'login.php');
+         exit;
+      }
+   }
 ?>

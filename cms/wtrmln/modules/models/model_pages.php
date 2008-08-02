@@ -20,15 +20,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-$_w_startTime = microtime();
-session_start();
-ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
-
-//define('NOMENU', '');
-
-include 'config.php';
-
-include WTRMLN_CMSPATH . 'system.php';
-
+class Model_Pages extends Model
+{
+   public function Model_Pages()
+   {
+      parent::Model();
+   }
+   
+   /*
+    * public DBresult GetData(string $pagename)
+    * 
+    * zwraca dane page'a
+    */
+   
+   public function GetData($pagename)
+   {
+      $pagename = mysql_real_escape_string($pagename);
+      
+      return $this->db->query("SELECT `content`, `title` FROM `__pages` WHERE `name` = '$pagename'");
+   }
+}
 ?>

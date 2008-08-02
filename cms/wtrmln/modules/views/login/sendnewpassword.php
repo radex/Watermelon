@@ -19,16 +19,23 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
-
-$_w_startTime = microtime();
-session_start();
-ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
-
-//define('NOMENU', '');
-
-include 'config.php';
-
-include WTRMLN_CMSPATH . 'system.php';
-
 ?>
+<form action="$/login/sendnewpasswordsubmit" method="POST">
+   <fieldset class="sendpassform">
+      <legend>Odzyskaj hasło</legend>
+      
+      <label for="login">Wpisz swój login:</label>
+      <input type="text" name="login" id="login">
+      
+      <br><br>
+      
+      <label for="email">ALBO wpisz swój e-mail:</label>
+      <input type="email" name="email" id="email">
+      
+      <br><br>
+      
+      <label for="submit">&nbsp;</label>
+      <input type="submit" id="submit" value="Loguj!">
+      
+   </fieldset>
+</form>
