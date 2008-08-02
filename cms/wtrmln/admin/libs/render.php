@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -29,26 +29,26 @@ class Render extends PATables
       echo '<h1>' . $text . '</h1>';
    }
    /**********************************************************/
-   /*                         Boksy 
+   /*                         Boksy
    /**********************************************************/
    function errorBox($text)
    {
-      echo '<div class="box_e"><strong>Błąd:</strong>' . $text . '</div>';   
+      echo '<div class="box_e"><strong>Błąd:</strong>' . $text . '</div>';
    }
    function warningBox($text)
    {
-      echo '<div class="box_w"><strong>Ostrzeżenie:</strong>' . $text . '</div>';   
+      echo '<div class="box_w"><strong>Ostrzeżenie:</strong>' . $text . '</div>';
    }
    function infoBox($text)
    {
-      echo '<div class="box_i"><strong>Informacja:</strong>' . $text . '</div>';   
+      echo '<div class="box_i"><strong>Informacja:</strong>' . $text . '</div>';
    }
    function confirmBox($text)
    {
-      echo '<div class="box_c">' . $text . '</div>';   
+      echo '<div class="box_c">' . $text . '</div>';
    }
    function tipBox($text)
    {
-      echo '<div class="box_t"><strong>Wskazówka:</strong>' . $text . '</div>';   
+      echo '<div class="box_t"><strong>Wskazówka:</strong>' . $text . '</div>';
    }
 }

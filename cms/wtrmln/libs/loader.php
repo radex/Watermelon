@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -23,10 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  * Lib Loader
  * wersja 1.3.5
- * 
+ *
  * Ładowanie różnego rodzaju modułów
  * 
- */ 
+ */
 
 include WTRMLN_LIBS . 'viewtags.php';
 
@@ -43,7 +43,7 @@ class Loader
     *          Gdy pliku nie ma na serwerze:
     *            Jeśli true - wywalenie błędu krytycznego
     *            Jeśli false - zwrócenie FALSE
-    * 
+    *
     * $vars = array($varname => string $var[, $varname => string $var[, ... ]])
     *   $varname - nazwa zmiennej do zamiany
     *   $var     - treść zmiennej o nazwie $varname
@@ -111,7 +111,7 @@ class Loader
     * public Model model(string $modelName[, bool $panicifne = true])
     * 
     * Zwraca obiekt modelu
-    * 
+    *
     * string $model - nazwa modelu do wczytania
     * bool   $panicifne [panic if not exists] -
     *          Gdy pliku nie ma na serwerze:
@@ -124,9 +124,9 @@ class Loader
       $model = strtolower($model);
       
       $model = 'model_' . $model;
-      
+
       $path = WTRMLN_MODELS . $model . '.php';
-      
+
       if(!file_exists($path))
       {
          if($panicifne)

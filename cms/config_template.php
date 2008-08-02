@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -40,7 +40,7 @@ $_w_appDir     = 'modules/';
 $_w_dbHost     = '';
 $_w_dbUser     = '';
 $_w_dbPass     = '';
-$_w_dbName     = ''; 
+$_w_dbName     = '';
 $_w_dbPrefix   = '';
 
 // inne
@@ -57,12 +57,12 @@ $_w_autoload[] = array('user', '');
 
 // head
 
-$_w_metaSrc = 
+$_w_metaSrc =
 	array(
-		
+
 	);
-	
-$_w_superusers[''] = ''; 
+
+$_w_superusers[''] = '';
 
 ########################################
 #      Systemowe -  NIE EDYTOWAĆ!      #

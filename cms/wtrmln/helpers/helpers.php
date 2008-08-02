@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 function setH1($value)
 {
    define('WTRMLN_H1',$value);
-	
+
 	return '<h1>' . $value . '</h1>';
 }
 
@@ -49,7 +49,7 @@ function generatePlFormOf($int, $odm1, $odm2, $odm3)
    if($int > 1 && $int < 5) return $odm2;
    if($int > 4 && $int < 22) return $odm3;
    $int = substr($int, -1, 1);
-   
+
    if($int == 0 || $int == 1) return $odm3;
    if($int > 1 && $int < 5) return $odm2;
    if($int > 4 && $int < 10) return $odm3;
@@ -70,23 +70,23 @@ function site_url($url)
 
 function ClientIP()
 {
-   $ip = 0; 
-   
+   $ip = 0;
+
    if(!empty($_SERVER['HTTP_CLIENT_IP']))
    {
       $ip = $_SERVER['HTTP_CLIENT_IP'];
-   } 
-   
+   }
+
    if(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-   { 
-      $ipList = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']); 
-      
+   {
+      $ipList = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']);
+
       if($ip)
-      { 
-         array_unshift($ipList, $ip); 
-         $ip = 0; 
-      } 
-      
+      {
+         array_unshift($ipList, $ip);
+         $ip = 0;
+      }
+
       foreach($ipList as $v)
       {
          if(!ereg('^(192\.168|172\.16|10|224|240|127|0)\.', $v))
@@ -94,8 +94,8 @@ function ClientIP()
             return $v;
          }
       }
-   } 
-   return $ip ? $ip : $_SERVER['REMOTE_ADDR']; 
+   }
+   return $ip ? $ip : $_SERVER['REMOTE_ADDR'];
 }
 
 /* zwraca hash określony w configu
@@ -117,17 +117,17 @@ function strHash($string, $algo = NULL)
       $algo = $algo[$algo_id];
       die;
    }
-   
-   
-   
+
+
+
    $algoType = $algo[0];
-   
+
    $algo = substr($algo, 1);
-   
+
    // jeśli pierwszy znak to "x", używamy do haszowania funkcji hash. Jeśli
    // inny - używamy standardowej funkcji (obecnie są chyba tylko trzy,
    // może w PHP6 będzie więcej)
-   
+
    if($algoType == 'x')
    {
       return hash($algo, $string);
@@ -135,7 +135,7 @@ function strHash($string, $algo = NULL)
    else
    {
       //return $algo($string);
-      
+
       //return eval($algo . '(' . $string . ')');
    }
 }

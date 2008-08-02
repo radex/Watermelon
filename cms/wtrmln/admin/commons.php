@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -104,7 +104,7 @@ function AreLoggedIn()
 {
    global $_w_superusers;
    if($_SESSION['WTRMLN_ADMIN_LOGGED_IN'] != 'true')
-   { 
+   {
       return FALSE;
    }
    if(!isset($_w_superusers[$_SESSION['WTRMLN_ADMIN_LOGIN']]))
@@ -115,27 +115,27 @@ function AreLoggedIn()
    {
       return FALSE;
    }
-   
+
    $_db = DB::Instance();
-   
+
    $checkFail = $_db->query("SELECT `fails` FROM `admin_loginfail` WHERE `ip` = '" . ClientIP() . "'");
    $failData = $checkFail->to_obj();
-   
+
    if($failsRows > 0)
    {
       return FALSE;
    }
-   
+
    if(!isset($_SESSION['WTRMLN_ADMIN_STARTTIME']))
    {
       return FALSE;
    }
-   
+
    if($_SESSION['WTRMLN_ADMIN_STARTTIME'] < time() - 600)
    {
       return FALSE;
    }
-   
+
    return TRUE;
 }
 
@@ -156,16 +156,16 @@ class AdminModule
    }
 }
 
-function getMenu() // jakieś stare coś. 
+function getMenu() // jakieś stare coś.
 {
    $menu = file_get_contents('config/topmenu.php');
    $menu = str_replace(array("\r\n", "\r"), "\n", $menu);
    $menu = explode("\n", $menu);
-   
+
    $menu = array_reverse($menu);
    array_pop($menu);
    $menu = array_reverse($menu);
-   
+
    return $menu;
 }
 

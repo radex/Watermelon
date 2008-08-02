@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -28,21 +28,21 @@ class Controller
       $this->db   = DB::Instance();
       $this->load = new Loader();
    }
-   
+
    /*
     * public void addMeta(string $data);
-    * 
+    *
     * dodaje element do sekcji <head>
-    * 
+    *
     * string $data - element do wstawienia, np. '<style type="text/css">*{display:none}</style>'
     */
-   
+
    public function addMeta($data)
    {
       $metaSrc = Watermelon::$metaSrc;
-      
+
       $metaSrc[] = $data;
-      
+
       Watermelon::$metaSrc = $metaSrc;
    }
 }

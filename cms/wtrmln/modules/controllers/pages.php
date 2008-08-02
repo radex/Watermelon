@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -26,49 +26,49 @@ class Pages extends Controller
    {
       parent::Controller();
    }
-   
+
    function Index()
    {
       // wyciągamy człony ścieżki (nazwa page'a)
-      
+
       $page = URL::$segments;
-      
+
       // łączymy w łańcuch
-      
+
       $page = implode('/', $page);
-      
+
       // sprawdzamy czy istnieje
-      
+
       $Pages = $this->load->model('Pages');
-      
+
       $data = $Pages->getData($page);
-      
+
       if($data->num_rows() > 0)
       {
          $data = $data->to_obj();
          setH1($data->title);
-         
+
          $content = $data->content;
-         
+
          // w razie gdyby nie można było używać <? i <?=
-         
+
          if(@ini_get('short_open_tag') === FALSE)
          {
             $content = str_replace('<?=', '<?php echo ', $content);
             $content = str_replace('<?',  '<?php', $content);
          }
-         
+
          // wykonujemy :)
-         
+
          eval('?>' . $content);
-         
+
       }
       else
       {
          $this->e404();
       }
    }
-   
+
    function e404()
    {
       setH1('Błąd 404');

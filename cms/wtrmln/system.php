@@ -6,7 +6,7 @@
 Copyright 2008 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
+modify it under the terms of the GNU General Public License
 version 2 as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -58,28 +58,28 @@ class Watermelon
 {
    /*
     * public static array $metaSrc
-    * 
+    *
     * dane meta (tagi z sekcji <head>)
-    * 
+    *
     * $metaSrc = array(string $head_element[, $head_element[, ... ]])
     *   $head_element - pojedynczy element do umieszczenia w sekcji <head>
     */
    public static $metaSrc = array();
-   
+
    /*
     * private URL $url
-    * 
+    *
     * instancja klasy URL
     */
    private $url;
-   
+
    /*
     * public void Watermelon(string $dbHost,   string $dbUser,  string $dbPass, string $dbName,
     *                        string $dbPrefix, array $autoload, array $metaSrc)
-    * 
+    *
     * konstuktor. Odpala najważniejsze biblioteki, odpala odpowiedni kontroler
     * i generuje stronę.
-    * 
+    *
     * string $dbHost   - host bazy danych
     * string $dbUser   - użytkownik bazy danych
     * string $dbPass   - hasło do bazy danych
@@ -87,50 +87,50 @@ class Watermelon
     * string $dbPrefix - prefiks do tabel
     * array  $autoload - pluginy i kod związany z nimi do automatycznego załadowania
     * array  $metaSrc  - dane do wstawienia w sekcji <head>
-    * 
+    *
     * $autoload = array(array(string $plugin_name, string $eval)[, array(string $plugin_name, string $eval)[, ... ]]
     *   $plugin_name - nazwa plugina
     *   $eval        - związany z tym pluginem kod do wykonania
-    * 
+    *
     * $metaSrc = array(string $head_element[, $head_element[, ... ]])
     *   $head_element - pojedynczy element do umieszczenia w sekcji <head>
     */
-   
+
    public function Watermelon($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix, $autoload, array $metaSrc)
    {
       $this->url = new URL();
       $db = new DB();
       $db->connect($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
-      
+
       $this->LoadPlugins($autoload);
-      
+
       self::$metaSrc = $metaSrc;
-      
+
       $content = $this->loadController();
-      
+
       $this->generatePage($content);
    }
-   
+
    /*
     * private void loadController()
-    * 
+    *
     * ładuje odpowiedni kontroler (wykonuje pracę Front Controllera)
     */
 
    private function loadController()
    {
       // zamieniamy _ na /, tak aby można było robić kontrolery w podfolderach
-      
+
       $_w_controllerPath = str_replace('_', '/', $this->url->class);
-      
+
       $_w_controllerPath = WTRMLN_CONTROLLERS . $_w_controllerPath . '.php';
-      
+
       // sprawdzanie, czy istnieje plik controllera
-      
+
       if(file_exists($_w_controllerPath))
       {
          include $_w_controllerPath;
-         
+
          array_shift(URL::$segments);
          array_shift(URL::$segments);
       }
@@ -138,15 +138,15 @@ class Watermelon
       {
          //jeśli nie można znaleźć kontrolera, niech Pages przejmie stery
          include WTRMLN_CONTROLLERS . 'pages.php';
-         
+
          $_controller = new pages();
-         
+
          $this->url->method = 'index';
          $this->url->class  = 'pages';
       }
-      
+
       // sprawdzanie, czy istnieje klasa controllera
-      
+
       if(class_exists($this->url->class))
       {
          $_controller = new $this->url->class();
@@ -155,91 +155,91 @@ class Watermelon
       {
          panic('Nie moge znalesc klasy podanego controllera (' . $this->url->class . ')');
       }
-      
+
       // sprawdzanie czy istnieje dana funkcja składowa controllera.
-      
+
       if(!method_exists($_controller, $this->url->method))
       {
          panic('Nie moge znalesc podanej funkcji składowej controllera (' . $this->url->method . ')');
       }
-      
+
       // przystepujemy do roboty
-      
+
       $_controller->{$this->url->method}();
-      
+
       $content = ob_get_contents(); //wyciagamy dane z bufora wyjścia
       @ob_end_clean();
-      
+
       return $content;
    }
-   
+
    /*
     * private void LoadPlugins(array $plugins)
-    * 
+    *
     * Ładuje pluginy i wykonuje kod związany z tymi pluginami
-    * 
+    *
     * $plugins = array(array(string $plugin_name, string $eval)[, array(string $plugin_name, string $eval)[, ... ]]
     *   $plugin_name - nazwa plugina
     *   $eval        - związany z tym pluginem kod do wykonania
     */
-   
+
    private function LoadPlugins(array $plugins)
    {
       foreach($plugins as $plugin)
       {
          list($plugin_name, $eval) = $plugin;
-         
+
          if(file_exists(WTRMLN_PLUGINS . $plugin_name . '.php'))
          {
             include(WTRMLN_PLUGINS . $plugin_name . '.php');
-            
+
             eval($eval);
          }
       }
    }
-   
+
    /*
     * private void generatePage(string $content)
-    * 
+    *
     * ostatecznie generuje stronę (dodaje znaczniki do head, oczyszcza treść itd.)
-    * 
+    *
     * string $content - treść wygenerowana przez kontroler
     */
-   
+
    private function generatePage($content)
    {
       // umożliwiamy w prosty sposób tworzenie ścieżek do podstron
-      
+
       $content = str_replace('href="$/', 'href="' . WTRMLN_SITEURL, $content);
       $content = str_replace('action="$/', 'action="' . WTRMLN_SITEURL, $content);
-      
+
       // preparujemy zawartość <title> :)
-      
+
       $siteTitle = (defined('WTRMLN_H1') ? WTRMLN_H1 . ' &raquo; ' : '') . WTRMLN_SITENAME;
-      
+
       // wyciągamy metaSrc
-      
+
       $metaSrc = Watermelon::$metaSrc;
-      
+
       // żeby array_unshift się nie czepiał,
       // gdyby wcześniej nie było żadnych elementów
-      
+
       if(!$metaSrc)
       {
          $metaSrc = array();
       }
-      
+
       // wsadzamy na początek tablicy <title>
-      
+
       array_unshift($metaSrc, '<title>' . $siteTitle . '</title>');
-      
+
       // zmieniamy nazwy, żeby skin.php wiedział odzochodzi
-      
+
       $_w_metaSrc = $metaSrc;
       $_w_content = $content;
-      
+
       // odpalamy skina
-      
+
       include WTRMLN_THEMEPATH . 'skin.php';
    }
 }

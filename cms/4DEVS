@@ -5,26 +5,26 @@
          #  #     #   #        #      #      # #    # #   ##  #  #    #
     #    #  #     #   #        #      # #    # #    # #    #  #  #    #
      ####   #     #   ######   #     ### ####  #    # #    # ### #    #
- 
+
                 STYL PISANIA KODU WATERMELON CMS'A
                                                      PRAWIE GOTOWE ...
                       LEKTURA OBOWIĄZKOWA!
 ____________________________________________________________________________
-   
+
    To jest OBOWIĄZUJĄCY dla programistów Watermelon CMS'a styl programowa-
    nia. Jeśli zauważysz, że ktoś zrobił inaczej, popraw. Jeśli robi to
    notorycznie - poinformuj go o tym.
-   
+
    1. Wygląd kodu
-   
+
       a) Taby
-         
+
          Nie ma tabów. Zamiast tabów trzy spacje!
-         
+
       b) Klamerki
-         
+
          Typowy styl - przed i po klamerce enter.
-         
+
          if(blablabla)
          {
             test();
@@ -33,116 +33,116 @@ ____________________________________________________________________________
          {
             test();
          }
-         
+
       c) Operatory
 
          Przed i po operatorze spacja.
-         
+
             $abcde = $x + ( 6 + 2 ) . 'abc';
-         
+
          Co do nawiasów - dotyczy tylko wyrażeń, czyli:
-         
+
             if(abc);
-         
+
          oraz
-         
+
             jakas_funkcja(); // nie robimy po nazwie funkcji spacji -
                              // według nas jest to psucie czytelności.
-         
+
          ale
-         
+
             $test = ( $a * $h ) / 2;
-            
+
          Pisanie spacji nie dotyczy operatorów zasięgu ( "::" oraz "->" )
-         
+
          Po przecinku zawsze spacja!
-         
+
             funkcja(6, 8, 2);
-         
+
       d) Stringi
-         
+
          Normalnie używamy do stringów apostrofów. Cudzysłowy używamy dla
          zapytań SQL, oraz tam gdzie to konieczne (np. "\n")
-         
+
       e) Stałe itp.
-      
+
          Prawdę, fałsz i null zapisujemy tak:
-         
+
             TRUE
             FALSE
             NULL
-         
+
          Stałe piszemy także dużymi literami. Stałe samego CMS'a zaczynają
          się od WTRMLN_
-         
+
          Stałe własnych modułów MUSIMY poprzedzić prefiksem, aby mieć
          pewność, że nie będzie kolidowało z czymś innym. Przykład stałej
          własnego modułu:
-         
+
             INSZYNEWS_JAKIESDANE
-            
+
          Pamiętamy, żeby używać stałych we własnych modułach tylko jeśli
          to NAPRAWDĘ konieczne.
 
    2. Styl programowania
-      
+
       a) Pobieranie danych z DB
-         
+
          Dane z bazy danych pobieramy do obiektu! Pobieranie danych poprzez
          funkcję result jest ZABRONIONE, a do tablicy odradzane.
-         
+
          Przykład pobrania danych, które jest OK:
-            
+
             $data = $this->db->query("SELECT * FROM `test`");
-            
+
             while($item = $data->to_obj())
             {
                echo $data->text;
             }
-            
+
       b) Działania na tablicach
-      
+
          Jeśli chcesz przejść po wszystkich elementach tablicy użyj foreach.
          for jest odradzane w tym przypadku.
-         
+
          DOBRZE:
-            
+
             foreach($array as $item)
             {
                echo $item;
             }
-         
+
          ŹLE:
-            
+
             for($i = 0 ; $i < count($array) ; $i++)
             {
                echo $array[$i];
             }
-            
+
          Myślę, że różnica czytelności obu przykładów pokazuje, dlaczego
          należy użyć foreach ;)
-         
+
       c) Globale
-      
+
          Pod ŻADNYM POZOREM NIE UŻYWAJ globali. Globale są do niczego.
-         
+
          Możliwe, że wydaje się Tobie, że potrzebujesz ich, ale są sposoby
          na obejście tego.
-         
+
          Jeśli potrzebujesz jakichś danych w kilku funkcjach w klasie, dodaj
          prywatną zmienną do klasy.
-         
+
          Jeśli potrzebujesz potrzebujesz jakichś danych przy kilku odpale-
          niach danej funkcji, użyj zmiennej statycznej.
-         
+
          Jeśli potrzebujesz danych jakiejś klasy w zupełnie różnych miejsca-
          ch kodu, użyj Singletona.
-            
+
             Przyjęliśmy, że tak to ma wyglądać:
-            
-               /* 
+
+               /*
                 * object Instance()
-                * 
+                *
                 * Singleton...
                 *
                 */
@@ -152,34 +152,34 @@ ____________________________________________________________________________
                   self::$instance = new self;
                   return self::$instance;
             	}
-           
+
             oraz jeszcze zmienna:
-            
+
                private static $instance = NULL; // Singleton...
 
    3. Pozostałe
-      
+
       Wszystkie pliki zapisujemy z kodowaniem UTF-8 i uniksowymi enterami,
       tzn. \n
-      
+
       Jeśli widzisz w projekcie jakiś stary i zaniedbany plik, możesz się
       upewnić co do poprawności tabów i enterów poprzez funkcję "Znajdź i
-      zamień". 
-      
+      zamień".
+
       Taby:
-         
+
          Znajdź: "\t"
          Zamień: "   " <- tutaj trzy spacje
-         
+
       Entery
-      
+
          Znajdź: "\r"
          Zamień: "" <- nic
-         
+
       Projekt oryginalnie był pisany na windowsie na różnych edytorach
       jeszcze przed wprowadzeniem konkretnych zasad. Właśnie to spowodo-
       wało globalny "syf" w projekcie. W przypadku Eclipse PDT (w tym
       programie obecnie piszę wcms'a) możesz użyć File->Convert Line
       Delimeters To->Unix.
-         
-         
+
+
