@@ -1,3 +1,14 @@
+ --------------------------------------------------------
+#
+# Struktura tabeli dla 'config'
+#
+
+CREATE TABLE config (
+   field varchar(255) NOT NULL,
+   value text NOT NULL,
+   KEY field (field)
+);
+
 # --------------------------------------------------------
 #
 # Struktura tabeli dla 'groups'
@@ -8,7 +19,8 @@ CREATE TABLE groups (
    name varchar(30) NOT NULL,
    users text NOT NULL,
    style tinyint(1) unsigned NOT NULL,
-   PRIMARY KEY (id)
+   PRIMARY KEY (id),
+   KEY name (name)
 );
 
 #
@@ -22,11 +34,12 @@ CREATE TABLE groups (
 #
 
 CREATE TABLE menu (
-   menu_id smallint(5) unsigned NOT NULL auto_increment,
-   menu_capt varchar(100) NOT NULL,
-   menu_content text NOT NULL,
-   menu_if text NOT NULL,
-   PRIMARY KEY (menu_id)
+   id smallint(5) unsigned NOT NULL auto_increment,
+   capt varchar(100) NOT NULL,
+   content text NOT NULL,
+   condition text NOT NULL,
+   PRIMARY KEY (id),
+   KEY menu_capt (capt)
 );
 
 #
@@ -46,7 +59,8 @@ CREATE TABLE pages (
    name varchar(255) NOT NULL,
    content text NOT NULL,
    title varchar(255) NOT NULL,
-   PRIMARY KEY (id)
+   PRIMARY KEY (id),
+   KEY title (title)
 );
 
 #
@@ -98,10 +112,10 @@ CREATE TABLE users (
    salt varchar(16) NOT NULL,
    ingroups varchar(255) NOT NULL,
    privileges tinyint(2) unsigned DEFAULT '0' NOT NULL,
-   PRIMARY KEY (id)
+   PRIMARY KEY (id),
+   KEY nick (nick)
 );
 
 #
 # Zawartosc tabeli 'users'
 #
-

@@ -31,6 +31,71 @@ function setH1($value)
 	return '<h1>' . $value . '</h1>';
 }
 
+/* Zamiana tablicy na obiekt
+********************************/
+
+function arrayToObject(array $array)
+{
+   foreach($array as $key => $var)
+   {
+      if(is_array($var))
+      {
+         $object->$key = arrayToObject($var);
+      }
+      else
+      {
+         $object->$key = $var;
+      }
+   }
+   
+   return $object;
+}
+
+/* Zamiana obiektu na tablicę
+********************************/
+
+function objectToArray($object)
+{
+   foreach($object as $key => $var)
+   {
+      if(is_object($var))
+      {
+         $array[$key] = objectToArray($var);
+      }
+      else
+      {
+         $array[$key] = $var;
+      }
+   }
+   
+   return $array;
+}
+
+/* Zamiana tablicy lub obiektu na HTML-owskie/XML-owskie argumenty
+********************************/
+
+function arrayToHTMLArguments($array)
+{
+   $arguments = '';
+   
+   foreach($array as $key => $var)
+   {
+      $arguments .= ' ' . $key . '="' . $var . '"';
+   }
+   
+   $arguments = substr($arguments, 1);
+   
+   return $arguments;
+}
+
+/* Alias funkcji arrayToHTMLArguments
+********************************/
+
+function objectToHTMLArguments($object)
+{
+   return arrayToHTMLArguments($object);
+}
+
 /* zwraca element tablicy $_POST
 ********************************/
 
@@ -103,22 +168,17 @@ function ClientIP()
 
 function strHash($string, $algo = NULL)
 {
-   if($algo == NULL)
+   if($algo === NULL)
    {
-      $algo = unserialize(WTRMLN_HASHALGO);
+      $algo = Config::$hashAlgo;
       $algo = $algo[0];
    }
    elseif(is_int($algo))
    {
       $algo_id = $algo;
-      $algo = unserialize(WTRMLN_HASHALGO);
-      echo 'TEST';
-      var_dump(WTRMLN_HASHALGO);
+      $algo = Config::$hashAlgo;
       $algo = $algo[$algo_id];
-      die;
    }
-
-
 
    $algoType = $algo[0];
 
@@ -134,9 +194,7 @@ function strHash($string, $algo = NULL)
    }
    else
    {
-      //return $algo($string);
-
-      //return eval($algo . '(' . $string . ')');
+      return $algo($string);
    }
 }
 

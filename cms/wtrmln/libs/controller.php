@@ -24,8 +24,8 @@ class Controller
 {
    public function Controller()
    {
-      $this->url  = URL::Instance();
-      $this->db   = DB::Instance();
+      $this->url  = new URL();
+      $this->db   = new DB();
       $this->load = new Loader();
    }
 

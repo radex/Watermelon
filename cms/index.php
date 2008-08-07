@@ -23,7 +23,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 $_w_startTime = microtime();
 session_start();
 ob_start();
-error_reporting(E_ALL ^ E_NOTICE);
+
+/*
+ * dla zwykłych userów
+ */
+
+//error_reporting(E_ALL ^ E_NOTICE);
+
+/*
+ * dla developerów
+ */
+
+//error_reporting(E_ALL);
+
+/*
+ * dla developerów [pedantic mode]
+ */
+
+error_reporting(E_ALL | E_STRICT);
+
+/*
+ * dla różnych testów itp
+ */
 
 //define('NOMENU', '');
 

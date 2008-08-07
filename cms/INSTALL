@@ -99,8 +99,9 @@ $_w_hashAlgo
 
 Algorytm haszujący. Jeśli zaczyna się od x, skrypt korzysta z biblioteki hash,
 jeśli zaczyna się od innego znaku - będzie korzystał z dowolnej funkcji php.
+Musi myć w tablicy
 
-Np. _sha1
+Np. array('_sha1');
 
 -------
 
@@ -149,3 +150,16 @@ Zamień ją na:
 //define('NOMENU', '');
 
 czyli mówiąc krótko: zakomentuj tą linijkę :)
+
+Żeby nie pokazywały się na stronie różne "dziwne" błędy należy w tym samym pliku
+(index.php) zakomentować linijki
+
+error_reporting(E_ALL | E_STRICT);
+
+oraz
+
+error_reporting(E_ALL);
+
+(jedna z nich będzie już zakomentowana), a odkomentować należy linijkę
+
+error_reporting(E_ALL ^ E_NOTICE);

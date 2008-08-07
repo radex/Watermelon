@@ -58,6 +58,8 @@ class User extends Plugin
    public function Login($user, $password, $autologin)
    {
       // Walidacja wprowadzonych danych
+      
+      var_dump($autologin);
 
       if(empty($user))
       {
@@ -90,10 +92,10 @@ class User extends Plugin
          echo $this->load->view('login_loginerrors', array('errors' => $errors));
          return false;
       }
+      
+      // sprawdzamy poprawność hasła
 
       $userdata = $userdata->to_obj();
-
-      var_dump(intval($userdata->hashalgo));
 
       if($userdata->password != strHash($password . $userdata->salt, intval($userdata->hashalgo)))
       {

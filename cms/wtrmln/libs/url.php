@@ -22,16 +22,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib URL
- * wersja 1.4.4
+ * wersja 1.7.0
  *
- * Parsowanie URLi etc.
+ * Parsowanie URL-i etc.
  *
  */
 
 class URL
 {
    /*
-    * public static array $segments
+    * public static string[] $segments
     *
     * segmenty URL-a (np. foo/bar == array('foo', 'bar'))
     *
@@ -41,180 +41,302 @@ class URL
    public static $segments = array();
 
    /*
-    * public string $class
+    * public static string $class
     *
     * nazwa kontrolera do wykonania
     */
 
-   public $class = '';
+   static public $class = '';
 
    /*
-    * public string $method
+    * public static string $method
     *
     * nazwa funkcji składowej (metody) kontrolera do wykonania
     */
 
-   public $method = '';
+   public static $method = '';
 
    /*
     * private static URL $instance
     *
     * Zawiera instancję tej klasy
+    * 
+    * DEPRECATED - Niedługo to coś zostanie wywalone z kodu. Póki co tylko
+    * zakomentowane. (Akcja wywalanie singletona)
     */
-
+   
+   /*
    private static $instance = NULL;
+   */
+   
+   /*
+    * private static bool $inited
+    * 
+    * true, jeśli biblioteka została już zainicjalizowana
+    * false, jeśli nie
+    */
+   
+   private static $inited = false;
 
    /*
-    * public void URL([string $default = WTRMLN_DEFAULTCNT])
-    *
-    * string $default - jeśli nie ma nazwy controllera, jakiego wybrać?
-    *                   jeśli nie podano argumentu, ustawiane jest na
-    *                   WTRMLN_DEFAULTCNT
-    *
-    * Inicjuje bibliotekę uzupełniając pole 'segments'
-    *
-    * WAŻNE: Tą funkcję trzeba przepisać. Syf w niej jest i mało czytelna
-    * (wcześniej też nie działała poprawnie, teraz jest ok)
+    * public void URL(string $default)
+    * 
+    * Konstruktor. Inicjalizuje bibliotekę uzupełniając pole 'segments'
+    * Zwraca false jeśli już była wcześniej zainicjalizowana
+    * Wywala błąd krytyczny, jeśli nie podano argumentu $default
+    * i nie była jeszcze zainicjalizowana.
+    * 
+    * string $default - nazwa domyślnego kontrolera
     *
     */
-   public function URL($default = WTRMLN_DEFAULTCNT)
+   
+   public function URL($default = null)
    {
-      // pobieram dane
+      // jeśli klasa została już zainicjalizowana, nie kontynuujemy działania
+      // tej funkcji składowej
+      
+      if(self::$inited === true)
+      {
+         return false;
+      }
+      
+      // żeby klasa mogła funkcjonować poprawnie, nie można pozwolić na
+      // nie podanie domyślnego kontrolera. Tutaj musi być to zrobione "ręcznie"
+      // dlatego, że funkcja jest (jako konstruktor) wykonywana wielokrotnie w
+      // kodzie, już po inicjalizacji biblioteki.
+      
+      if($default === null)
+      {
+         panic('Lib URL: 0');
+      }
+      
+      // pobieramy dane o URL-u
+      
       $URL  = (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
       $URL2 = array();
 
-      // parsuję człony
+      // parsujemy segmenty URL-a (ze względów bezpieczeństwa pozwalam
+      // tylko na znaki 0-9A-Za-z+-._)
 
-      foreach(explode('/',$URL) as $segment)
+      foreach(explode('/', $URL) as $segment)
       {
-         $segment2 = NULL;
-         foreach(str_split($segment) as $ch)
+         $segment2 = '';
+         foreach(str_split($segment) as $char)
          {
-            $ch = ord($ch); // char -> int
+            $char = ord($char); // char -> int
 
-            //pozwalam tylko na takie znaki:
-
-            if($ch >= 48 && $ch <= 57)   // 0-9
-               $segment2 .= chr($ch);
-            if($ch >= 65 && $ch <= 90)   // A-Z
-               $segment2 .= chr($ch);
-            if($ch >= 97 && $ch <= 122)  // a-z
-               $segment2 .= chr($ch);
-            if($ch == 43)                // +
-               $segment2 .= chr($ch);
-            if($ch == 45)                // -
-               $segment2 .= chr($ch);
-            if($ch == 46)                // .
-               $segment2 .= chr($ch);
-            if($ch == 95)                // _
-               $segment2 .= chr($ch);
+            // pozwalam tylko na znaki takie jak:
+            
+            // cyfry
+            
+            if($char >= 48 && $char <= 57)
+            {
+               $segment2 .= chr($char);
+            }
+            
+            // duże litery
+            
+            if($char >= 65 && $char <= 90)
+            {
+               $segment2 .= chr($char);
+            }
+            
+            // małe litery
+            
+            if($char >= 97 && $char <= 122)
+            {
+               $segment2 .= chr($char);
+            }
+            
+            // plus (+)
+            
+            if($char == 43)
+            {
+               $segment2 .= chr($char);
+            }
+            
+            // minus (-)
+            
+            if($char == 45)
+            {
+               $segment2 .= chr($char);
+            }
+            
+            // kropka (.)
+            
+            if($char == 46)
+            {
+               $segment2 .= chr($char);
+            }
+            
+            // podkreślenie (_)
+            
+            if($char == 95)
+            {
+               $segment2 .= chr($char);
+            }
          }
-         // uważam, czy ktoś nie zrobił wielokrotnych slashów
+         
+         // jeśli ktoś zrobił wielokrotne slashe, wywalamy pusty segment
          if(!empty($segment2))
+         {
             $URL2[] = $segment2;
+         }
       }
 
 
-      // jeśli brak nazwy kontrolera
-      // wczytaj domyślny.
+      // czyszczenie nazwy kontrolera
+      // (jeśli brak nazwy kontrolera, ustaw na domyślną)
 
 
       if(isset($URL2[0]))
       {
-         //$t[0] = clean_segments($URL2[0]);
-
-         //czyszczenie
-
-         $seg = strtolower($URL2[0]); // małe literki
-         $seg = str_split($seg);
-         $seg_n = NULL;
-         foreach($seg as $ch)
+         // czyszczenie segmentu z potencjalnie niebezpiecznego syfu
+         // (nawet nie chodzi o bezpieczeństwo, ale wiadomo, że
+         // kontroler o nazwie Foo.bar nie ma prawa istnieć
+         // ze względu na ograniczenia nazewnictwa w PHP)
+         
+         $seg   = strtolower($URL2[0]);
+         $seg   = str_split($seg);
+         $seg_n = '';
+         
+         // parsujemy nazwę kontrolera (ze względów bezpieczeństwa pozwalam
+         // tylko na znaki 0-9A-Za-z_)
+         
+         foreach($seg as $char)
          {
-            $ch = ord($ch);
-
-            if($ch >= 97 && $ch <= 122)  // a-z, A-Z
-               $seg_n .= chr($ch);
-            if($ch >= 48 && $ch <= 57)   // 0-9
-               $seg_n .= chr($ch);
-            if($ch == 95)                // _
-               $seg_n .= chr($ch);
+            $char = ord($char); //char -> int
+            
+            // pozwalam tylko na znaki takie jak:
+            
+            // litery
+            
+            if($char >= 97 && $char <= 122)
+            {
+               $seg_n .= chr($char);
+            }
+            
+            // cyfry
+            
+            if($char >= 48 && $char <= 57)
+            {
+               $seg_n .= chr($char);
+            }
+            
+            // podkreślenie (_)
+            
+            if($char == 95)
+            {
+               $seg_n .= chr($char);
+            }
          }
          $t[0] = $seg_n;
       }
       else
       {
+         // jeśli nie podano nazwy kontrolera, ustaw na domyślną
+         
          $t[0] = $default;
       }
 
-      // jeśli brak nazwy metody
-      // wczytaj index
+      // czyszczenie nazwy funkcji składowej/metody kontrolera
+      // (jeśli brak, ustaw na index)
 
       if(isset($URL2[1]))
       {
-         //$t[1] = clean_segments($URL2[1]);
-
-         //czyszczenie
-
-         $seg_n = NULL;
-         $seg = strtolower($URL2[1]);
-         $seg = str_split($seg);
-         foreach($seg as $ch)
+         $seg   = strtolower($URL2[1]);
+         $seg   = str_split($seg);
+         $seg_n = '';
+         
+         // parsujemy nazwę kontrolera (ze względów bezpieczeństwa pozwalam
+         // tylko na znaki 0-9A-Za-z_)
+         
+         foreach($seg as $char)
          {
-            $ch = ord($ch);
-            if($ch >= 97 && $ch <= 122)  // a-z, A-Z
-               $seg_n .= chr($ch);
-            if($ch >= 48 && $ch <= 57)   // 0-9
-               $seg_n .= chr($ch);
-            if($ch == 95)                // _
-               $seg_n .= chr($ch);
+            $char = ord($char); //char -> int
+            
+            // pozwalam tylko na znaki takie jak:
+            
+            // litery
+            
+            if($char >= 97 && $char <= 122)
+            {
+               $seg_n .= chr($char);
+            }
+            
+            // cyfry
+            
+            if($char >= 48 && $char <= 57)
+            {
+               $seg_n .= chr($char);
+            }
+            
+            // podkreślenie (_)
+            
+            if($char == 95)
+            {
+               $seg_n .= chr($char);
+            }
          }
+         
          $t[1] = $seg_n;
       }
       else
       {
+         // jeśli nie podano nazwy funkcji składowej/metody kontrolera
+         // ustaw na index (domyślna funkcja składowa)
+         
          $t[1] = 'index';
       }
 
-      // jeśli wpisano więcej niż dwa człony
-      // usuń dwa pierwsze, a jeśli nie
-      // oczyść tablicę
+      // usuń dwa pierwsze segmenty (kontroler i jego funkcja składowa)
+      // jeśli są tylko dwa segmenty lub mniej, oczyść tablicę
+      // (wychodzi na to samo, ale PHP nie wywala błędu)
 
       if(count($URL2) > 2)
       {
-         $URL2 = array_splice($URL2, -(count($URL2)-2));
+         $URL2 = array_splice($URL2, -(count($URL2) - 2));
       }
       else
       {
          $URL2 = array();
       }
 
-      // złączenie tablic
+      // złączenie tablic - tej z oczyszczonymi lub domyślnymi nazwami kontrolera
+      // i funkcji składowej/metody kontrolera z tą tablicą, która ma pozostałe
+      // segmenty (lub nie ma, jeśli nie podano)
 
-      $URL2 = array_merge($t,$URL2);
+      $URL2 = array_merge($t, $URL2);
+      
+      // nadanie odpowiednich wartości
 
       self::$segments = $URL2;
-
-
-      $this->class = self::$segments[0];
-      $this->method = self::$segments[1];
+      self::$class    = self::$segments[0];
+      self::$method   = self::$segments[1];
+      self::$inited   = true;
    }
 
    /*
-    * public mixed segment(int $ID)
+    * public string segment(int $ID)
     *
-    * Zwraca treść danego [$ID] segmentu
+    * Zwraca treść danego [$ID] segmentu.
+    * Segmenty są liczone od jeden
+    * (a nie od zera, jak to jest w PHP-owskich tablicach)
+    * 
+    * Zwraca false w przypadku niepowodzenia
+    * (tj. jeśli żądany segment nie istnieje)
     *
     */
 
    public function segment($ID)
    {
-      if(isset(self::$segments[$ID-1]))
+      if(isset(self::$segments[$ID - 1]))
       {
-         return self::$segments[$ID-1];
+         return self::$segments[$ID - 1];
       }
       else
       {
-         return FALSE;
+         return false;
       }
    }
 
@@ -234,14 +356,19 @@ class URL
     * public static object Instance()
     *
     * Singleton...
+    * 
+    * DEPRECATED - Niedługo funkcja zostanie wywalona z kodu. Póki co tylko
+    * zakomentowana. (Akcja wywalanie singletona)
     *
     */
+   
+   /*
    public static function Instance()
    {
       if(!self::$instance instanceof self)
-      self::$instance = new self;
+      self::$instance = new self(Config::$defaultController);
       return self::$instance;
    }
-
+   */
 }
 ?>

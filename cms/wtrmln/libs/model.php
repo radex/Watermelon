@@ -24,8 +24,8 @@ class Model
 {
    function Model()
    {
-      $this->url = URL::Instance();
-      $this->db  = DB::Instance();
+      $this->url = new URL();
+      $this->db  = new DB();
    }
 }
 

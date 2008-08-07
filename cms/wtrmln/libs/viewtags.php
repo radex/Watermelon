@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib ViewTags
- * wersja 1.1.4
+ * wersja 1.1.8
  *
  * Przetwarzanie pseudo-tagów używanych w widokach.
  */
@@ -30,14 +30,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class ViewTags
 {
    /*
-    * public string process(string $data)
+    * public static string process(string $data)
     *
     * Funkcja dostaje na wejściu dotychczasową treść widoku i zwraca ją po
     * przetworzeniu (obsługa pseudo-tagów)
     *
     * string $data - dotychczasowa treść widoku
     */
-   public function process($data)
+   public static function process($data)
    {
       $data = str_replace('<?=', '<?php echo ', $data);
 
@@ -55,7 +55,7 @@ class ViewTags
    }
 
    /*
-    * private string tag_variable(string[2] $data)
+    * private static string tag_variable(string[2] $data)
     *
     * obsługuje "wyświetlanie zmiennych" tzn. zamienia przykładowe <$nazwa_zmiennej>
     * na <?php echo $nazwa_zmiennej; ?>
@@ -64,13 +64,13 @@ class ViewTags
     * preg_replace_callback.
     */
 
-   private function tag_variable($data)
+   private static function tag_variable($data)
    {
       return '<?php echo $' . $data[1] . '; ?>';
    }
 
    /*
-    * private string tag_foreach(string[2] $data)
+    * private static string tag_foreach(string[2] $data)
     *
     * obsługuje foreach tzn. zamienia przykładowe <foreach $foo as $bar>
     * na <?php foreach($foo as $bar){ ?>
@@ -79,13 +79,13 @@ class ViewTags
     * funkcji preg_replace_callback.
     */
 
-   private function tag_foreach($data)
+   private static function tag_foreach($data)
    {
       return '<?php foreach(' . $data[1] . '){ ?>';
    }
 
    /*
-    * private string tag_if(string[2] $data)
+    * private static string tag_if(string[2] $data)
     *
     * obsługuje warunki tzn. zamienia przykładowe <if 4 == 5 - 1>
     * na <?php if(4 == 5 - 1){ ?>
@@ -94,7 +94,7 @@ class ViewTags
     * preg_replace_callback.
     */
 
-   private function tag_if($data)
+   private static function tag_if($data)
    {
       return '<?php if(' . $data[1] . '){ ?>';
    }

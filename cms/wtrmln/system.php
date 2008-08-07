@@ -57,7 +57,7 @@ function panic($text = 'noname error')
 class Watermelon
 {
    /*
-    * public static array $metaSrc
+    * public static string[] $metaSrc
     *
     * dane meta (tagi z sekcji <head>)
     *
@@ -67,26 +67,19 @@ class Watermelon
    public static $metaSrc = array();
 
    /*
-    * private URL $url
+    * public void Watermelon(string $dbHost,   string $dbUser,   string   $dbPass, string $dbName,
+    *                        string $dbPrefix, array  $autoload, string[] $metaSrc)
     *
-    * instancja klasy URL
-    */
-   private $url;
-
-   /*
-    * public void Watermelon(string $dbHost,   string $dbUser,  string $dbPass, string $dbName,
-    *                        string $dbPrefix, array $autoload, array $metaSrc)
-    *
-    * konstuktor. Odpala najważniejsze biblioteki, odpala odpowiedni kontroler
+    * Konstuktor. Odpala najważniejsze biblioteki, odpowiedni kontroler
     * i generuje stronę.
     *
-    * string $dbHost   - host bazy danych
-    * string $dbUser   - użytkownik bazy danych
-    * string $dbPass   - hasło do bazy danych
-    * string $dbName   - nazwa bazy danych
-    * string $dbPrefix - prefiks do tabel
-    * array  $autoload - pluginy i kod związany z nimi do automatycznego załadowania
-    * array  $metaSrc  - dane do wstawienia w sekcji <head>
+    * string   $dbHost   - host bazy danych
+    * string   $dbUser   - użytkownik bazy danych
+    * string   $dbPass   - hasło do bazy danych
+    * string   $dbName   - nazwa bazy danych
+    * string   $dbPrefix - prefiks do tabel
+    * array    $autoload - pluginy i kod związany z nimi do automatycznego załadowania
+    * string[] $metaSrc  - dane do wstawienia w sekcji <head>
     *
     * $autoload = array(array(string $plugin_name, string $eval)[, array(string $plugin_name, string $eval)[, ... ]]
     *   $plugin_name - nazwa plugina
@@ -96,18 +89,18 @@ class Watermelon
     *   $head_element - pojedynczy element do umieszczenia w sekcji <head>
     */
 
-   public function Watermelon($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix, $autoload, array $metaSrc)
+   public function Watermelon($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix, array $autoload, array $metaSrc)
    {
-      $this->url = new URL();
-      $db = new DB();
+      $url = new URL(Config::$defaultController);
+      $db  = new DB();
       $db->connect($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
-
+      
       $this->LoadPlugins($autoload);
-
+      
       self::$metaSrc = $metaSrc;
-
+      
       $content = $this->loadController();
-
+      
       $this->generatePage($content);
    }
 
@@ -120,17 +113,21 @@ class Watermelon
    private function loadController()
    {
       // zamieniamy _ na /, tak aby można było robić kontrolery w podfolderach
+      // (przydatne, kiedy mamy moduł składający się z kilku kontrolerów, np.
+      // duży skrypt forum)
 
-      $_w_controllerPath = str_replace('_', '/', $this->url->class);
+      $controllerPath = str_replace('_', '/', URL::$class);
 
-      $_w_controllerPath = WTRMLN_CONTROLLERS . $_w_controllerPath . '.php';
+      $controllerPath = WTRMLN_CONTROLLERS . $controllerPath . '.php';
 
       // sprawdzanie, czy istnieje plik controllera
 
-      if(file_exists($_w_controllerPath))
+      if(file_exists($controllerPath))
       {
-         include $_w_controllerPath;
-
+         include $controllerPath;
+         
+         // wywalamy dwa pierwsze segmenty URL-a (kontroler i jego funkcja składowa/metoda)
+         
          array_shift(URL::$segments);
          array_shift(URL::$segments);
       }
@@ -139,33 +136,33 @@ class Watermelon
          //jeśli nie można znaleźć kontrolera, niech Pages przejmie stery
          include WTRMLN_CONTROLLERS . 'pages.php';
 
-         $_controller = new pages();
+         $controller = new pages();
 
-         $this->url->method = 'index';
-         $this->url->class  = 'pages';
+         URL::$method = 'index';
+         URL::$class  = 'pages';
       }
-
+      
       // sprawdzanie, czy istnieje klasa controllera
 
-      if(class_exists($this->url->class))
+      if(class_exists(URL::$class))
       {
-         $_controller = new $this->url->class();
+         $controller = new URL::$class();
       }
       else
       {
-         panic('Nie moge znalesc klasy podanego controllera (' . $this->url->class . ')');
+         panic('Nie moge znalesc klasy podanego controllera (' . URL::$class . ')');
       }
-
+      
       // sprawdzanie czy istnieje dana funkcja składowa controllera.
-
-      if(!method_exists($_controller, $this->url->method))
+      
+      if(!method_exists($controller, URL::$method))
       {
-         panic('Nie moge znalesc podanej funkcji składowej controllera (' . $this->url->method . ')');
+         panic('Nie moge znalesc podanej funkcji składowej controllera (' . URL::$method . ')');
       }
 
       // przystepujemy do roboty
 
-      $_controller->{$this->url->method}();
+      $controller->{URL::$method}();
 
       $content = ob_get_contents(); //wyciagamy dane z bufora wyjścia
       @ob_end_clean();
@@ -219,7 +216,7 @@ class Watermelon
 
       // wyciągamy metaSrc
 
-      $metaSrc = Watermelon::$metaSrc;
+      $metaSrc = self::$metaSrc;
 
       // żeby array_unshift się nie czepiał,
       // gdyby wcześniej nie było żadnych elementów
@@ -245,5 +242,13 @@ class Watermelon
 }
 
 new Watermelon($_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix, $_w_autoload, $_w_metaSrc);
+
+// dla bezpieczeństwa usuwamy dane konfiguracji bazy danych
+
+unset($_w_dbHost);
+unset($_w_dbUser);
+unset($_w_dbPass);
+unset($_w_dbName);
+unset($_w_dbPrefix);
 
 ?>

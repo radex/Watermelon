@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib DB
- * wersja 1.7.3
+ * wersja 1.9.5
  *
  * Komunikacja z bazą danych
  *
@@ -60,9 +60,12 @@ class DB
     * private static DB $instance
     *
     * Zawiera instancję tej klasy
+    * 
+    * DEPRECATED - Niedługo to coś zostanie wywalone z kodu. Póki co tylko
+    * zakomentowane. (Akcja wywalanie singletona)
     */
 
-   private static $instance = NULL;
+   //private static $instance = NULL;
 
    /*
     * private static string $prefix
@@ -106,7 +109,7 @@ class DB
     *
     */
 
-   public function query($query)
+   public static function query($query)
    {
       // jeśli jakaś nazwa tabeli w "panie kopniętym" zaczyna się od
       // podwójnego podkreślnika, zamienia na prefix
@@ -146,7 +149,7 @@ class DB
     *
     */
 
-   public function errorList()
+   public static function errorList()
    {
       return self::$errorList;
    }
@@ -158,7 +161,7 @@ class DB
     *
     */
 
-   public function lastError()
+   public static function lastError()
    {
       return end(self::$errorList);
    }
@@ -170,7 +173,7 @@ class DB
     *
     */
 
-   public function queries()
+   public static function queries()
    {
       return self::$queriesCounter;
    }
@@ -179,15 +182,18 @@ class DB
     * public static DB Instance()
     *
     * Singleton... (zwraca instancję tej klasy)
-    *
+    * 
+    * DEPRECATED - Niedługo to coś zostanie wywalone z kodu. Póki co tylko
+    * zakomentowane. (Akcja wywalanie singletona)
     */
+   /*
    public static function Instance()
    {
       if(!self::$instance instanceof self)
       self::$instance = new self;
       return self::$instance;
    }
-
+   */
 }
 
 ############

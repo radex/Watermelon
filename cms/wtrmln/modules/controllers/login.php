@@ -50,9 +50,9 @@ class Login extends Controller
    {
       $login     = $_POST['login'];
       $pass      = $_POST['password'];
-      $autologin = $_POST['autologin'];
-
-      $this->User->Login($login, $pass, ($autologin == 'on' ? TRUE : FALSE));
+      $autologin = isset($_POST['autologin']);
+      
+      $this->User->Login($login, $pass, $autologin);
 
       //TODO
    }

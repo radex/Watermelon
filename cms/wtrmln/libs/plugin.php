@@ -24,7 +24,7 @@ class Plugin
 {
    function Plugin()
    {
-      $this->db   = DB::Instance();
+      $this->db   = new DB();
       $this->load = new Loader();
    }
 }

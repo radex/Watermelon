@@ -23,7 +23,10 @@
 	</div>
 	<div id="footer">
       &copy; Copyright 2008 by twoje Imię i Nazwisko<br>
-      powered by <a href="http://watermeloncms.sourceforge.net">Watermelon CMS</a>
+      powered by <a href="http://watermeloncms.sourceforge.net">Watermelon CMS</a><br>
+      <br>
+      Zapytań do bazy danych: <?php echo DB::queries(); ?><br>
+      Wygenerowano w: <?php global $_w_startTime; echo microtime() - $_w_startTime; ?> s
 	</div>
 </body>
 </html>
