@@ -27,6 +27,7 @@ class Controller
       $this->url  = new URL();
       $this->db   = new DB();
       $this->load = new Loader();
+      $this->user = new User();
    }
 
    /*

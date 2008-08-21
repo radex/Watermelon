@@ -171,7 +171,7 @@ function strHash($string, $algo = NULL)
    if($algo === NULL)
    {
       $algo = Config::$hashAlgo;
-      $algo = $algo[0];
+      $algo = $algo[Config::$defaultHashAlgo];
    }
    elseif(is_int($algo))
    {

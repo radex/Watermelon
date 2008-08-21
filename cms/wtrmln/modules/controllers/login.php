@@ -22,10 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Login extends Controller
 {
-   private $User;
-   public function Login()
+   function Login()
    {
-      $this->User = new User();
       parent::Controller();
    }
 
@@ -52,7 +50,7 @@ class Login extends Controller
       $pass      = $_POST['password'];
       $autologin = isset($_POST['autologin']);
       
-      $this->User->Login($login, $pass, $autologin);
+      $this->user->Login($login, $pass, $autologin);
 
       //TODO
    }
@@ -68,6 +66,15 @@ class Login extends Controller
       $this->addMeta('<style type="text/css">.sendpassform label{float:left;width:150px;display:block}}</style>');
 
       echo $this->load->view('login_sendnewpassword');
+   }
+   
+   /*
+    * wylogowanie
+    */
+   
+   function Logout()
+   {
+      $this->user->logout();
    }
 
    /*

@@ -22,9 +22,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib PluginsHandle
- * wersja 1.3.0
+ * wersja 1.4.0
  *
  * Łączność z pluginami / między pluginami
+ * 
+ * (ta klasa jest do wyrzucenia, teraz używamy PluginsConfigDatabase
  *
  */
 
@@ -43,7 +45,7 @@ class PluginsHandle
     * Dane PluginsHandle (dostęp od nich przez funkcje getData, putData i deleteDate)
     */
 
-   private $data = array();
+   private static $data = array();
 
    /*
     * public mixed getData(string $module[, string $key]);
@@ -55,15 +57,15 @@ class PluginsHandle
 
    public function getData($module, $key = NULL)
    {
-      $instance = self::Instance();
+      //$instance = self::Instance();
 
       if($key == NULL)
       {
-         return $instance->data[$module];
+         return self::$data[$module];
       }
       else
       {
-         return $instance->data[$module][$key];
+         return self::$data[$module][$key];
       }
    }
 
@@ -84,17 +86,17 @@ class PluginsHandle
 
    public function putData($module, $key, $text = NULL)
    {
-      $instance = self::Instance();
+      //$instance = self::Instance();
 
       if($text == NULL)
       {
          $text = $key; // żeby nie pomieszać
 
-         $instance->putDataNormal($module, $text);
+         $this->putDataNormal($module, $text);
       }
       else
       {
-         $instance->putDataAssoc($module, $key, $text);
+         $this->putDataAssoc($module, $key, $text);
       }
    }
 
@@ -107,9 +109,9 @@ class PluginsHandle
 
    public function deleteData($module, $key)
    {
-      $instance = self::Instance();
+      //$instance = self::Instance();
 
-      unset($instance->data[$module][$key]);
+      unset(self::$data[$module][$key]);
    }
 
    /*
@@ -121,9 +123,9 @@ class PluginsHandle
 
    public function insertData($module, $key, $text)
    {
-      $instance = self::Instance();
+      //$instance = self::Instance();
 
-      $instance->data[$module][$key] .= $text;
+      self::$data[$module][$key] .= $text;
    }
 
    /*
@@ -156,9 +158,9 @@ class PluginsHandle
 
    private function putDataNormal($module, $text)
    {
-      $instance = self::Instance();
+      //$instance = self::Instance();
 
-      $instance->data[$module][] = $text;
+      self::$data[$module][] = $text;
    }
 
    /*
@@ -173,9 +175,9 @@ class PluginsHandle
 
    private function putDataAssoc($module, $key, $text)
    {
-      $instance = self::Instance();
+      //$instance = self::Instance();
 
-      $instance->data[$module][$key] = $text;
+      self::$data[$module][$key] = $text;
    }
 }
 

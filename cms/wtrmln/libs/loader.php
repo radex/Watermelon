@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib Loader
- * wersja 1.3.5
+ * wersja 1.3.6
  *
  * Ładowanie różnego rodzaju modułów
  * 
@@ -124,6 +124,13 @@ class Loader
       $model = strtolower($model);
       
       $model = 'model_' . $model;
+      
+      if(class_exists($model))
+      {
+         $model_object = new $model();
+         
+         return $model_object;
+      }
 
       $path = WTRMLN_MODELS . $model . '.php';
 
@@ -135,7 +142,7 @@ class Loader
          }
          else
          {
-            return FALSE;
+            return false;
          }
       }
       

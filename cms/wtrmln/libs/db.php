@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib DB
- * wersja 1.9.5
+ * wersja 1.9.6
  *
  * Komunikacja z bazą danych
  *
@@ -138,7 +138,15 @@ class DB
       else
       {
          self::$errorList[] = mysql_error();
-         return FALSE;
+         if(defined('DEBUG'))
+         {
+            throw new Exception('Nieudane wykonanie zapytania. Błąd: ' . self::lastError());
+         }
+         else
+         {
+            panic('Błąd SQL');
+         }
+         return false;
       }
    }
 

@@ -26,15 +26,18 @@ header("Content-Type: text/html; charset=UTF-8");
 #             Biblioteki               #
 ########################################
 
-include(WTRMLN_LIBS . 'url.php');
-include(WTRMLN_LIBS . 'db.php');
-include(WTRMLN_LIBS . 'loader.php');
-include(WTRMLN_LIBS . 'plugins_handle.php');
-include(WTRMLN_LIBS . 'controller.php');
-include(WTRMLN_LIBS . 'model.php');
-include(WTRMLN_LIBS . 'plugin.php');
+include WTRMLN_LIBS . 'url.php';
+include WTRMLN_LIBS . 'db.php';
+include WTRMLN_LIBS . 'loader.php';
+//include WTRMLN_LIBS . 'plugins_handle.php';
+include WTRMLN_LIBS . 'pluginscdb.php';
+include WTRMLN_LIBS . 'controller.php';
+include WTRMLN_LIBS . 'model.php';
+include WTRMLN_LIBS . 'plugin.php';
 
-include(WTRMLN_HELPERS . 'helpers.php');
+include WTRMLN_HELPERS . 'helpers.php';
+
+//Instance(
 
 ////////////////////////////////////////
 
@@ -65,6 +68,17 @@ class Watermelon
     *   $head_element - pojedynczy element do umieszczenia w sekcji <head>
     */
    public static $metaSrc = array();
+   
+   /*
+    * public static object $pcdb
+    * 
+    * dane klasy PluginsConfigDatabase
+    * 
+    * [jak będzie ktoś miał czas i chęci to trzeba to przenieść do klasy Plugins
+    * ConfigDatabase. To nie powinno być tutaj]
+    */
+   
+   public static $pcdb = null;
 
    /*
     * public void Watermelon(string $dbHost,   string $dbUser,   string   $dbPass, string $dbName,

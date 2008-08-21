@@ -28,6 +28,8 @@ class User extends Plugin
     * Instancja klasy Model_User
     */
    private $User;
+   
+   private static $LoggedIn = null;
 
    /*
     * public void User()
@@ -58,8 +60,6 @@ class User extends Plugin
    public function Login($user, $password, $autologin)
    {
       // Walidacja wprowadzonych danych
-      
-      var_dump($autologin);
 
       if(empty($user))
       {
@@ -106,10 +106,31 @@ class User extends Plugin
          echo $this->load->view('login_loginerrors', array('errors' => $errors));
          return false;
       }
+      
+      // generujemy nowy salt i hash i
+      // zmieniamy hashalgo (jeśli nieaktualne)
+      
+      $salt = strHash(uniqid(mt_rand(), true));
+      
+      $salt = substr($salt, 0, 16);
+      
+      $hash = strHash($password . $salt);
+      
+      $this->User->updatePassword($user, $hash, $salt, Config::$defaultHashAlgo);
+      
+      // logujemy :]
+      
+      $_SESSION['WTRMLN_USER'] = $user;
+      $_SESSION['WTRMLN_PASS'] = $hash;
+      $_SESSION['WTRMLN_LASTSEEN'] = time();
 
-      echo 'bez błędów :P';
-
-      //TODO
+      // jeszcze informacyjka
+      
+      setH1('Logowanie udane');
+      
+      echo $this->load->view('login_success');
+      
+      return true;
    }
 
    public function Register($user, $password, $password2, $email, $email2, $data)
@@ -124,6 +145,55 @@ class User extends Plugin
 
    public function Logout()
    {
+      session_destroy();
+      
+      self::$LoggedIn = false;
+      
+      //TODO
+   }
+   
+   public function IsLoggedIn()
+   {
+      // sprawdzamy, czy już wcześniej funkcja była odpalana
+      
+      if(self::$LoggedIn !== null)
+      {
+         return self::$LoggedIn;
+      }
+      
+      // sprawdzamy, czy user istnieje
+      
+      $userdata = $this->User->LoginUserData($_SESSION['WTRMLN_USER']);
+      
+      if($userdata->num_rows() == 0)
+      {
+         self::$LoggedIn = false;
+         return false;
+      }
+      
+      // sprawdzamy poprawność hasła
+      
+      $userdata = $userdata->to_obj();
+
+      if($_SESSION['WTRMLN_PASS'] != $userdata->password)
+      {
+         self::$LoggedIn = false;
+         return false;
+      }
+      
+      // sprawdzamy kiedy ostatnio był koleś (limit długości sesji)
+      
+      if($_SESSION['WTRMLN_LASTSEEN'] < time() - 1800)
+      {
+         $this->Logout();
+      }
+      
+      $_SESSION['WTRMLN_LASTSEEN'] = time();
+      
+      self::$LoggedIn = true;
+      
+      return true;
+      
       //TODO
    }
 

@@ -25,6 +25,7 @@ class Config
    public static $siteName;
    public static $siteSlogan;
    public static $hashAlgo;
+   public static $defaultHashAlgo;
    public static $defaultController;
    public static $theme;
 }

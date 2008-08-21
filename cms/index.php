@@ -48,6 +48,12 @@ error_reporting(E_ALL | E_STRICT);
 
 //define('NOMENU', '');
 
+/*
+ * dla developerów
+ */
+
+define('DEBUG', '');
+
 include 'config.php';
 
 include WTRMLN_CMSPATH . 'system.php';

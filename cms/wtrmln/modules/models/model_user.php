@@ -27,17 +27,19 @@ class Model_User extends Model
       parent::Model();
    }
 
-   public function HelloWorld()
-   {
-      echo 'hi people.';
-   }
-
    public function LoginUserData($login)
    {
       $login = mysql_real_escape_string($login);
 
       return $this->db->query("SELECT `password`, `hashalgo`, `salt` FROM `__users` ".
                               "WHERE `nick` = '%1'", $login);
+   }
+   
+   public function UpdatePassword($nick, $hash, $salt, $hashAlgo)
+   {
+      return $this->db->query("UPDATE  `__users` SET " .
+                              "`password` = '%1', `hashalgo` = '%2', `salt` = '%3' " .
+                              "WHERE `nick` = '%4'", $hash, $hashAlgo, $salt, $nick);
    }
 }
 

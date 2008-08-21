@@ -7,7 +7,7 @@ $meta = '';
 
 foreach($_w_metaSrc as $metaItem)
 {
-	$meta .= "\t" . $metaItem . "\n";
+	$meta .= "   " . $metaItem . "\n";
 }
 
 /* menu
