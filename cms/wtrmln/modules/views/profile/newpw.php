@@ -19,36 +19,36 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
-
-class Controller
-{
-   static public $_user;
-   
-   public function Controller()
-   {
-      $this->url   = new URL();
-      $this->db    = new DB();
-      $this->load  = new Loader();
-      $this->user  = new User();
-      self::$_user = $this->user;
-   }
-
-   /*
-    * static public void addMeta(string $data);
-    *
-    * dodaje element do sekcji <head>
-    *
-    * string $data - element do wstawienia, np. '<style type="text/css">*{display:none}</style>'
-    */
-
-   static public function addMeta($data)
-   {
-      $metaSrc = Watermelon::$metaSrc;
-
-      $metaSrc[] = $data;
-
-      Watermelon::$metaSrc = $metaSrc;
-   }
-}
-
 ?>
+
+<?php
+   Controller::addMeta(
+   '<style type="text/css">.newpw_box label{float:left;width:100px;display:block}'.
+   '.newpw_box #addressee, .newpw_box #subject{width:60%}'.
+   '.newpw_box #text{width: 100%; height:250px;}</style>');
+?>
+
+<form action="$/pw/send" method="POST">
+   <fieldset class="newpw_box">
+      <legend>Nowa prywatna wiadomość</legend>
+      
+      <label for="addressee">Adresat:</label>
+      <input type="text" name="addressee" id="addressee">
+      
+      <br>
+      
+      <label for="subject">Temat:</label>
+      <input type="text" name="subject" id="subject">
+      
+      <br>
+      
+      <label for="text">Treść:</label><br>
+      
+      <textarea name="text" id="text"></textarea>
+      
+      <br>
+      
+      <input type="submit" id="submit" value="Wyślij!">
+
+   </fieldset>
+</form>

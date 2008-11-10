@@ -20,35 +20,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-class Controller
+class Profile extends Controller
 {
-   static public $_user;
-   
-   public function Controller()
+   function Profile()
    {
-      $this->url   = new URL();
-      $this->db    = new DB();
-      $this->load  = new Loader();
-      $this->user  = new User();
-      self::$_user = $this->user;
+      parent::Controller();
    }
 
-   /*
-    * static public void addMeta(string $data);
-    *
-    * dodaje element do sekcji <head>
-    *
-    * string $data - element do wstawienia, np. '<style type="text/css">*{display:none}</style>'
-    */
-
-   static public function addMeta($data)
+   function Index()
    {
-      $metaSrc = Watermelon::$metaSrc;
-
-      $metaSrc[] = $data;
-
-      Watermelon::$metaSrc = $metaSrc;
+      SetH1('Panel użytkownika');
+   }
+   
+   function PW()
+   {
+      header('Location: ' . site_url('pw'));
    }
 }
-
 ?>

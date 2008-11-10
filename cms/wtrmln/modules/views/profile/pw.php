@@ -19,36 +19,16 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
-
-class Controller
-{
-   static public $_user;
-   
-   public function Controller()
-   {
-      $this->url   = new URL();
-      $this->db    = new DB();
-      $this->load  = new Loader();
-      $this->user  = new User();
-      self::$_user = $this->user;
-   }
-
-   /*
-    * static public void addMeta(string $data);
-    *
-    * dodaje element do sekcji <head>
-    *
-    * string $data - element do wstawienia, np. '<style type="text/css">*{display:none}</style>'
-    */
-
-   static public function addMeta($data)
-   {
-      $metaSrc = Watermelon::$metaSrc;
-
-      $metaSrc[] = $data;
-
-      Watermelon::$metaSrc = $metaSrc;
-   }
-}
-
 ?>
+
+<strong>Nadawca: </strong><$nick>
+<br>
+<strong>Wysłano: </strong><?=date('d.m.Y H:i') ?>
+
+<blockquote>
+   <p><$text></p>
+</blockquote>
+
+<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+<br>
+Odpowiedz
