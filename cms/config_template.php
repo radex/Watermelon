@@ -49,6 +49,7 @@ $_w_siteSlogan = '';
 $_w_theme      = '';
 $_w_defaultCnt = '';
 $_w_hashAlgo   = array('_sha1');
+$_w_dHashAlgo  = 0;
 
 // autoload
 
@@ -98,6 +99,7 @@ include WTRMLN_LIBS . 'config.php';
 Config::$theme               = $_w_theme;
 Config::$defaultController   = $_w_defaultCnt;
 Config::$hashAlgo            = $_w_hashAlgo;
+Config::$defaultHashAlgo     = $_w_dHashAlgo;
 Config::$siteName            = $_w_siteName;
 Config::$siteSlogan          = $_w_siteSlogan;
 

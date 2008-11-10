@@ -75,7 +75,15 @@ if(get_magic_quotes_gpc())
    $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
 }
 
-include 'config.php';
+if(file_exists('config.php'))
+{
+   include 'config.php';
+}
+else
+{
+   die('Plik konfiguracyjny nie został utworzony.');
+}
+
 
 include WTRMLN_CMSPATH . 'system.php';
 
