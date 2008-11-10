@@ -2,7 +2,7 @@
          "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<?php echo $meta ?>
+<?php echo getMeta(); ?>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <link rel="stylesheet" type="text/css" href="<?php echo WTRMLN_THEMEURL ?>style.css" media="screen">
 </head>

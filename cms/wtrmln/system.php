@@ -149,11 +149,21 @@ class Watermelon
       {
          //jeśli nie można znaleźć kontrolera, niech Pages przejmie stery
          include WTRMLN_CONTROLLERS . 'pages.php';
-
+         
          $controller = new pages();
-
+         
          URL::$method = 'index';
          URL::$class  = 'pages';
+         
+         // tutaj pewien trik (wiem, że brzydko to rozwiązałem, ale ważne, że 
+         // działa :p). Po prostu jeśli URL::$onesegment jest prawdziwe, skraca
+         // ilość segmentów URL-a do jednego. Ma to uchronić przed traktowaniem 
+         // adresu np. /test/ jako /test/index ...
+         
+         if(URL::$onesegment === TRUE)
+         {
+            URL::$segments = URL::$segments[0];
+         }
       }
       
       // sprawdzanie, czy istnieje klasa controllera
@@ -227,10 +237,14 @@ class Watermelon
       // preparujemy zawartość <title> :)
 
       $siteTitle = (defined('WTRMLN_H1') ? WTRMLN_H1 . ' &raquo; ' : '') . WTRMLN_SITENAME;
+      
+      array_unshift(Watermelon::$metaSrc, '<title>' . $siteTitle . '</title>');
 
-      // wyciągamy metaSrc
+      /*// wyciągamy metaSrc
 
       $metaSrc = self::$metaSrc;
+      
+      var_dump($metaSrc);
 
       // żeby array_unshift się nie czepiał,
       // gdyby wcześniej nie było żadnych elementów
@@ -246,7 +260,7 @@ class Watermelon
 
       // zmieniamy nazwy, żeby skin.php wiedział odzochodzi
 
-      $_w_metaSrc = $metaSrc;
+      $_w_metaSrc = $metaSrc;*/
       $_w_content = $content;
 
       // odpalamy skina

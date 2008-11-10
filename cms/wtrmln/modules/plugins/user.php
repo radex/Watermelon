@@ -121,6 +121,7 @@ class User extends Plugin
       // logujemy :]
       
       $_SESSION['WTRMLN_USER'] = $user;
+      $_SESSION['WTRMLN_UID']  = $userdata->id;
       $_SESSION['WTRMLN_PASS'] = $hash;
       $_SESSION['WTRMLN_LASTSEEN'] = time();
 

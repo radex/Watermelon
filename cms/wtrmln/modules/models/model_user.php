@@ -31,7 +31,7 @@ class Model_User extends Model
    {
       $login = mysql_real_escape_string($login);
 
-      return $this->db->query("SELECT `password`, `hashalgo`, `salt` FROM `__users` ".
+      return $this->db->query("SELECT `password`, `hashalgo`, `salt`, `id` FROM `__users` ".
                               "WHERE `nick` = '%1'", $login);
    }
    
@@ -40,6 +40,13 @@ class Model_User extends Model
       return $this->db->query("UPDATE  `__users` SET " .
                               "`password` = '%1', `hashalgo` = '%2', `salt` = '%3' " .
                               "WHERE `nick` = '%4'", $hash, $hashAlgo, $salt, $nick);
+   }
+   
+   public function UserExists($nick)
+   {
+      $user = $this->db->query("SELECT `id` FROM `__users` WHERE `nick` = '%1'", $nick);
+      $user = $user->num_rows();
+      return ($user == 0 ? FALSE : TRUE);
    }
 }
 

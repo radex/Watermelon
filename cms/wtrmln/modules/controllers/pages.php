@@ -34,9 +34,11 @@ class Pages extends Controller
       $page = URL::$segments;
 
       // łączymy w łańcuch
-
-      $page = implode('/', $page);
-
+      if(count($page) > 1)
+      {
+         $page = implode('/', $page);
+      }
+      
       // sprawdzamy czy istnieje
 
       $Pages = $this->load->model('Pages');
@@ -50,17 +52,13 @@ class Pages extends Controller
 
          $content = $data->content;
 
-         // w razie gdyby nie można było używać <? i <?=
+         // przetwarzamy pseudotagi
 
-         if(@ini_get('short_open_tag') === FALSE)
-         {
-            $content = str_replace('<?=', '<?php echo ', $content);
-            $content = str_replace('<?',  '<?php', $content);
-         }
-
+         $content = ViewTags::Process($content);
+         
          // wykonujemy :)
 
-         eval('?>' . $content);
+         eval('?>' . $content . '<?php ');
 
       }
       else

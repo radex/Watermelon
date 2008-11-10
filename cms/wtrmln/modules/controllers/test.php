@@ -70,6 +70,58 @@ class Test extends Controller
       echo '<blockquote><p>Trzeba naprawdę wiele wiedzieć, żeby wiedzieć jak mało się wie.</p></blockquote>';
       
       echo '<p><cite>Nikt Ktoś</cite> kiedyśtam mądrze powiedział <q>nic nie powiedziałem</q>.</p>';
+      
+      echo '<hr>';
+      
+      /////////////////
+      
+      if($this->user->isLoggedIn())
+      {
+         echo '<h2>Panel użytkownika</h2>';
+         ?>
+<a href="$/profile/pw">Prywatne wiadomości</a>
+
+<a href="$/login/logout">Wyloguj</a>
+         <?php
+      }
+      else
+      {
+         $this->addMeta('<style type="text/css">.loginform_mini{border:0}.loginform_mini legend{display:none} .loginform_mini label{float:left;width:50px;display:block}.loginform_mini #submit{width:50px}.loginform_mini #password,.loginform_mini #login{width:140px}</style>');
+         
+         echo '<h2>Logowanie</h2>';
+         ?>
+<form action="$/login/submit" method="POST">
+   <fieldset class="loginform_mini">
+      <legend>Logowanie</legend>
+      
+      <label for="login">Login:</label>
+      <input type="text" name="login" id="login">
+      
+      <br>
+      
+      <label for="password">Hasło:</label>
+      <input type="password" name="password" id="password">
+      
+      <br>
+      
+      <input type="submit" id="submit" value="Loguj!">
+      
+      <input type="checkbox" name="autologin" id="autologin">
+      Zapamiętaj mnie
+
+      <br>
+
+      <a href="$/login/sendnewpassword" title="Wysyłanie nowego hasła">Zapomniałem hasła!</a>
+
+      <br>
+
+      <a href="$/register" title="Rejestracja">Nie mam jeszcze konta!</a>
+
+   </fieldset>
+</form>
+      <?php
+      }
+      
    }
 }
 ?>

@@ -25,22 +25,28 @@ session_start();
 ob_start();
 
 /*
- * dla zwykłych userów
+ * dla 100% bezpieczeństwa, np. dla ostatecznego systemu na serwer
+ */
+
+//error_reporting(0);
+
+/*
+ * dla zwykłych userów, developerów
  */
 
 //error_reporting(E_ALL ^ E_NOTICE);
 
 /*
- * dla developerów
- */
-
-//error_reporting(E_ALL);
-
-/*
  * dla developerów [pedantic mode]
  */
 
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL);
+
+/*
+ * dla developerów [superpedantic mode]
+ */
+
+//error_reporting(E_ALL | E_STRICT);
 
 /*
  * dla różnych testów itp
@@ -53,6 +59,21 @@ error_reporting(E_ALL | E_STRICT);
  */
 
 define('DEBUG', '');
+
+// wyłączemy syf o nazwie "magic quotes"
+
+if(get_magic_quotes_gpc())
+{
+   function stripslashes_deep($value)
+   {
+      $value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+      return $value;
+   }
+   $_POST = array_map('stripslashes_deep', $_POST);
+   $_GET = array_map('stripslashes_deep', $_GET);
+   $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
+   $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
+}
 
 include 'config.php';
 

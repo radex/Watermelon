@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib URL
- * wersja 1.7.0
+ * wersja 1.7.2
  *
  * Parsowanie URL-i etc.
  *
@@ -39,23 +39,23 @@ class URL
     *   $segment - pojedynczy segment
     */
    public static $segments = array();
-
+   
    /*
     * public static string $class
     *
     * nazwa kontrolera do wykonania
     */
-
+   
    static public $class = '';
-
+   
    /*
     * public static string $method
     *
     * nazwa funkcji składowej (metody) kontrolera do wykonania
     */
-
+   
    public static $method = '';
-
+   
    /*
     * private static URL $instance
     *
@@ -77,6 +77,8 @@ class URL
     */
    
    private static $inited = false;
+   
+   public static $onesegment = false;
 
    /*
     * public void URL(string $default)
@@ -114,17 +116,17 @@ class URL
       
       $URL  = (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
       $URL2 = array();
-
+      
       // parsujemy segmenty URL-a (ze względów bezpieczeństwa pozwalam
       // tylko na znaki 0-9A-Za-z+-._)
-
+      
       foreach(explode('/', $URL) as $segment)
       {
          $segment2 = '';
          foreach(str_split($segment) as $char)
          {
             $char = ord($char); // char -> int
-
+            
             // pozwalam tylko na znaki takie jak:
             
             // cyfry
@@ -183,12 +185,12 @@ class URL
             $URL2[] = $segment2;
          }
       }
-
-
+      
+      
       // czyszczenie nazwy kontrolera
       // (jeśli brak nazwy kontrolera, ustaw na domyślną)
-
-
+      
+      
       if(isset($URL2[0]))
       {
          // czyszczenie segmentu z potencjalnie niebezpiecznego syfu
@@ -229,7 +231,15 @@ class URL
             {
                $seg_n .= chr($char);
             }
+            
+            // myślnik (-)
+            
+            if($char == 45)
+            {
+               $seg_n .= chr($char);
+            }
          }
+         
          $t[0] = $seg_n;
       }
       else
@@ -238,10 +248,10 @@ class URL
          
          $t[0] = $default;
       }
-
+      
       // czyszczenie nazwy funkcji składowej/metody kontrolera
       // (jeśli brak, ustaw na index)
-
+      
       if(isset($URL2[1]))
       {
          $seg   = strtolower($URL2[1]);
@@ -279,6 +289,13 @@ class URL
             }
          }
          
+         // niestety nie da się stworzyć metody o nazwie new :/
+         
+         if($seg_n == 'new')
+         {
+            $seg_n = '_new';
+         }
+         
          $t[1] = $seg_n;
       }
       else
@@ -287,12 +304,14 @@ class URL
          // ustaw na index (domyślna funkcja składowa)
          
          $t[1] = 'index';
+         
+         self::$onesegment = true;
       }
-
+      
       // usuń dwa pierwsze segmenty (kontroler i jego funkcja składowa)
       // jeśli są tylko dwa segmenty lub mniej, oczyść tablicę
       // (wychodzi na to samo, ale PHP nie wywala błędu)
-
+      
       if(count($URL2) > 2)
       {
          $URL2 = array_splice($URL2, -(count($URL2) - 2));
@@ -301,15 +320,15 @@ class URL
       {
          $URL2 = array();
       }
-
+      
       // złączenie tablic - tej z oczyszczonymi lub domyślnymi nazwami kontrolera
       // i funkcji składowej/metody kontrolera z tą tablicą, która ma pozostałe
       // segmenty (lub nie ma, jeśli nie podano)
-
+      
       $URL2 = array_merge($t, $URL2);
       
       // nadanie odpowiednich wartości
-
+      
       self::$segments = $URL2;
       self::$class    = self::$segments[0];
       self::$method   = self::$segments[1];
