@@ -31,7 +31,7 @@ body,h1,h2,h3,h4,h5,h6
 
 body
 {
-   background-color: #116280;
+   background-color: #335270;
    font-size: 12px;
    font-family: Verdana, Sans, Arial, sans-serif;
 }
@@ -316,7 +316,7 @@ caption
 
 #header ul
 {
-   margin-top: 39px;
+   margin-top: 40px;
 }
 
 #header ul li
