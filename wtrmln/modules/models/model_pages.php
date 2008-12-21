@@ -30,14 +30,14 @@ class Model_Pages extends Model
    /*
     * public DBresult GetData(string $pagename)
     *
-    * zwraca dane page'a
+    * zwraca dane page'a o nazwie $pagename
     */
 
    public function GetData($pagename)
    {
       $pagename = mysql_real_escape_string($pagename);
 
-      return $this->db->query("SELECT `content`, `title` FROM `__pages` WHERE `name` = '$pagename'");
+      return $this->db->query("SELECT `content`, `title` FROM `__pages` WHERE `name` = '%1'", $pagename);
    }
 }
 ?>

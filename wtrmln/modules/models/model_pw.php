@@ -50,7 +50,7 @@ class Model_PW extends Model
    {
       $pw_id = intval($pw_id);
       
-      return $this->db->query("SELECT `__private_messages`.* , `__users`.`nick` FROM `__private_messages` JOIN `__users` ON `__private_messages`.`from` = `__users`.`id` WHERE `__private_messages`.`id` = '%1'", $pw_id);
+      return $this->db->query("SELECT `__private_messages`.*, `__users`.`nick` FROM `__private_messages` JOIN `__users` ON `__private_messages`.`from` = `__users`.`id` WHERE `__private_messages`.`id` = '%1'", $pw_id);
    }
    
    /*

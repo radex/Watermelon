@@ -28,12 +28,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
          <label for="login">Wpisz swój login:</label>
          <input type="text" name="login" id="login">
 
-         <br><br>
+         <br>
 
          <label for="password">Wpisz swoje hasło:</label>
          <input type="password" name="password" id="password">
 
-         <br><br>
+         <br>
 
          <label for="submit">&nbsp;</label>
          <input type="submit" id="submit" value="Loguj!">
@@ -46,7 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       <input type="checkbox" name="autologin" id="autologin">
       <label for="autologin">Zaloguj mnie automatycznie przy każdej wizycie</label>
 
-      <br><br>
+      <br>
 
       <a href="$/login/sendnewpassword" title="Wysyłanie nowego hasła">Zapomniałem hasła!</a>
 

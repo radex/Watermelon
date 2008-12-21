@@ -19,19 +19,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
-
-class Test_One extends Controller
-{
-   function Test_One()
-   {
-      parent::Controller();
-   }
-
-   function Index()
-   {
-      SetH1('TESTTYYY 1');
-
-      echo 'elo on controller test_one (test/one.php)';
-   }
-}
 ?>
+<div class="box_c">
+   <strong>Wylogowano</strong>
+   Przejdź na <a href="$/">stronę główną</a>
+</div>

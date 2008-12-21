@@ -22,19 +22,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib URL
- * wersja 1.7.2
- *
+ * wersja 1.8.0
+ * 
  * Parsowanie URL-i etc.
- *
+ * 
  */
 
 class URL
 {
    /*
     * public static string[] $segments
-    *
+    * 
     * segmenty URL-a (np. foo/bar == array('foo', 'bar'))
-    *
+    * 
     * $segments = array($segment[, $segment[, ... ]])
     *   $segment - pojedynczy segment
     */
@@ -42,7 +42,7 @@ class URL
    
    /*
     * public static string $class
-    *
+    * 
     * nazwa kontrolera do wykonania
     */
    
@@ -50,33 +50,27 @@ class URL
    
    /*
     * public static string $method
-    *
+    * 
     * nazwa funkcji składowej (metody) kontrolera do wykonania
     */
    
    public static $method = '';
    
    /*
-    * private static URL $instance
-    *
-    * Zawiera instancję tej klasy
-    * 
-    * DEPRECATED - Niedługo to coś zostanie wywalone z kodu. Póki co tylko
-    * zakomentowane. (Akcja wywalanie singletona)
-    */
-   
-   /*
-   private static $instance = NULL;
-   */
-   
-   /*
     * private static bool $inited
     * 
-    * true, jeśli biblioteka została już zainicjalizowana
+    * true,  jeśli biblioteka została już zainicjalizowana
     * false, jeśli nie
     */
    
    private static $inited = false;
+   
+   /*
+    * public static bool $onesegment = false
+    * 
+    * true,  jeśli w URL-u jest tylko jeden segment
+    * false, jeśli w URL-u jest więcej niż jeden segment
+    */
    
    public static $onesegment = false;
 
@@ -89,7 +83,7 @@ class URL
     * i nie była jeszcze zainicjalizowana.
     * 
     * string $default - nazwa domyślnego kontrolera
-    *
+    * 
     */
    
    public function URL($default = null)
@@ -337,14 +331,14 @@ class URL
 
    /*
     * public string segment(int $ID)
-    *
+    * 
     * Zwraca treść danego [$ID] segmentu.
     * Segmenty są liczone od jeden
     * (a nie od zera, jak to jest w PHP-owskich tablicach)
     * 
     * Zwraca false w przypadku niepowodzenia
     * (tj. jeśli żądany segment nie istnieje)
-    *
+    * 
     */
 
    public function segment($ID)
@@ -361,33 +355,14 @@ class URL
 
    /*
     * public int segments()
-    *
+    * 
     * Zwraca ilość segmentów
-    *
+    * 
     */
 
    public function segments()
    {
       return count(self::$segments);
    }
-
-   /*
-    * public static object Instance()
-    *
-    * Singleton...
-    * 
-    * DEPRECATED - Niedługo funkcja zostanie wywalona z kodu. Póki co tylko
-    * zakomentowana. (Akcja wywalanie singletona)
-    *
-    */
-   
-   /*
-   public static function Instance()
-   {
-      if(!self::$instance instanceof self)
-      self::$instance = new self(Config::$defaultController);
-      return self::$instance;
-   }
-   */
 }
 ?>

@@ -22,8 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib Loader
- * wersja 1.3.6
- *
+ * wersja 1.4.0
+ * 
  * Ładowanie różnego rodzaju modułów
  * 
  */
@@ -36,14 +36,14 @@ class Loader
     * public string view(string $view[, array $vars[, bool $panicifne = true]])
     * 
     * Pobiera i zwraca zawartość viewa
-    *
+    * 
     * string $view - nazwa szablonu
     * array  $vars - przesyłane dane
     * bool   $panicifne [panic if not exists] -
     *          Gdy pliku nie ma na serwerze:
     *            Jeśli true - wywalenie błędu krytycznego
     *            Jeśli false - zwrócenie FALSE
-    *
+    * 
     * $vars = array($varname => string $var[, $varname => string $var[, ... ]])
     *   $varname - nazwa zmiennej do zamiany
     *   $var     - treść zmiennej o nazwie $varname
@@ -111,7 +111,7 @@ class Loader
     * public Model model(string $modelName[, bool $panicifne = true])
     * 
     * Zwraca obiekt modelu
-    *
+    * 
     * string $model - nazwa modelu do wczytania
     * bool   $panicifne [panic if not exists] -
     *          Gdy pliku nie ma na serwerze:
@@ -121,9 +121,13 @@ class Loader
    
    public function model($model, $panicifne = true)
    {
+      // preparujemy nazwę
+      
       $model = strtolower($model);
       
       $model = 'model_' . $model;
+      
+      // sprawdzamy, czy już był załadowany
       
       if(class_exists($model))
       {
@@ -131,6 +135,8 @@ class Loader
          
          return $model_object;
       }
+      
+      // sprawdzamy, czy istnieje
 
       $path = WTRMLN_MODELS . $model . '.php';
 
@@ -145,6 +151,8 @@ class Loader
             return false;
          }
       }
+      
+      // ładujemy
       
       include $path;
       

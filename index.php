@@ -24,43 +24,23 @@ $_w_startTime = microtime();
 session_start();
 ob_start();
 
-/*
- * dla 100% bezpieczeństwa, np. dla ostatecznego systemu na serwer
- */
+header("Content-Type: text/html; charset=UTF-8");
+
+##
+## ustawienia raportowania błędów itp.
+##
 
 //error_reporting(0);
-
-/*
- * dla zwykłych userów, developerów
- */
-
-//error_reporting(E_ALL ^ E_NOTICE);
-
-/*
- * dla developerów [pedantic mode]
- */
-
-error_reporting(E_ALL);
-
-/*
- * dla developerów [superpedantic mode]
- */
-
+error_reporting(E_ALL ^ E_NOTICE);
+//error_reporting(E_ALL);
 //error_reporting(E_ALL | E_STRICT);
 
-/*
- * dla różnych testów itp
- */
-
 //define('NOMENU', '');
-
-/*
- * dla developerów
- */
-
 define('DEBUG', '');
 
-// wyłączemy syf o nazwie "magic quotes"
+##
+## magic quotes
+##
 
 if(get_magic_quotes_gpc())
 {
@@ -75,15 +55,29 @@ if(get_magic_quotes_gpc())
    $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
 }
 
+##
+## wczytujemy plik z konfiguracją
+##
+
 if(file_exists('config.php'))
 {
    include 'config.php';
+   
+   if(!defined('WTRMLN_BASEURL'))
+   {
+      header('Location: wtrmln/install/index.php');
+      exit;
+   }
 }
 else
 {
-   die('Plik konfiguracyjny nie został utworzony.');
+   header('Location: wtrmln/install/index.php');
+   exit;
 }
 
+##
+## odpalamy główny plik CMS-a
+##
 
 include WTRMLN_CMSPATH . 'system.php';
 

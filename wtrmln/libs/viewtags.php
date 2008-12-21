@@ -22,21 +22,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib ViewTags
- * wersja 1.2.7
- *
- * Przetwarzanie pseudo-tagów używanych w widokach.
+ * wersja 1.2.8
+ * 
+ * Przetwarzanie pseudo-tagów używanych m. in. w widokach.
  */
 
 class ViewTags
 {
    /*
     * public static string process(string $data)
-    *
+    * 
     * Funkcja dostaje na wejściu dotychczasową treść widoku i zwraca ją po
     * przetworzeniu (obsługa pseudo-tagów)
-    *
+    * 
     * string $data - dotychczasowa treść widoku
     */
+   
    public static function process($data)
    {
       // w razie, gdyby nie można było używać <? i <?=
@@ -90,7 +91,7 @@ class ViewTags
 
    /*
     * private static string tag_variable(string[2] $data)
-    *
+    * 
     * obsługuje "wyświetlanie zmiennych" tzn. zamienia przykładowe <$nazwa_zmiennej>
     * na <?php echo $nazwa_zmiennej; ?>
     * Nazwa zmiennej jest brana z drugiego elementu $data. Pierwszy jest
@@ -105,7 +106,7 @@ class ViewTags
 
    /*
     * private static string tag_foreach(string[2] $data)
-    *
+    * 
     * obsługuje foreach tzn. zamienia przykładowe <foreach $foo as $bar>
     * na <?php foreach($foo as $bar){ ?>
     * Zawartość foreach (np. "$foo as $bar") jest brana z drugiego elementu $data.
@@ -120,7 +121,7 @@ class ViewTags
 
    /*
     * private static string tag_if(string[2] $data)
-    *
+    * 
     * obsługuje warunki tzn. zamienia przykładowe <if 4 == 5 - 1>
     * na <?php if(4 == 5 - 1){ ?>
     * Treść warunku jest brana z drugiego elementu $data. Pierwszy jest
@@ -135,7 +136,7 @@ class ViewTags
    
    /*
     * private static string tag_while(string[2] $data)
-    *
+    * 
     * obsługuje warunki tzn. zamienia przykładowe <while 4 == 5 - 1>
     * na <?php while(4 == 5 - 1){ ?>
     * Treść warunku jest brana z drugiego elementu $data. Pierwszy jest
@@ -150,7 +151,7 @@ class ViewTags
    
    /*
     * private static string tag_load_page(string[2] $data)
-    *
+    * 
     * obsługuje ładowanie stron tzn. zamienia przykładowe <load page testowa/stronka>
     * na treść strony testowa/stronka
     * Nazwa strony jest brana z drugiego elementu $data. Pierwszy jest

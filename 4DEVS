@@ -72,12 +72,10 @@ ____________________________________________________________________________
          Stałe piszemy także dużymi literami. Stałe samego CMS-a zaczynają
          się od WTRMLN_
 
-         Stałe własnego kodu musimy poprzedzić prefiksem, aby mieć pewność,
-         że nie będzie kolidowało z czymś innym.
-
-            FOO_SOMETHING
-
-         Pamiętamy, żeby używać stałych jeśli to NAPRAWDĘ konieczne.
+         Stałe są używane tylko przez sam CMS. Moduły nie korzystają ze
+         stałych, ponieważ jest to mało wygodne i mało elastyczne. Jeśli
+         jednak z jakiegoś powodu MUSISZ (np. dla testów) użyć stałej, to
+         dodaj do niej prefiks, żeby nie kolidowała z niczym innym.
 
    2. Styl programowania
 
@@ -85,7 +83,7 @@ ____________________________________________________________________________
 
          Dane z bazy danych pobieramy do obiektu. Nie pobieramy nic przez
          funkcję mysql_result. Ewentualnie można użyć tablicy zamiast
-         obiektu, ale raczej preferujemy obiekty (czytelniej wygląda kod)
+         obiektu, ale raczej preferujemy obiekty (kod wygląda czytelniej)
 
          Przykład pobrania danych, które jest OK:
 
@@ -118,17 +116,43 @@ ____________________________________________________________________________
             }
 
          Myślę, że różnica czytelności obu przykładów pokazuje, dlaczego
-         lepiej użyć foreach ;)
+         prawie zawsze lepiej użyć foreach ;)
 
       c) Globale
 
-         Zdecydowanie nie używamy globali. Są dobre sposoby, aby "przeżyć"
-         bez nich. Są to: pola (właściwości) klasy (zwykle prywatne, ale
-         mogą też być publiczne), singleton (odradzamy), referencje itd...
+         Nie używamy słowa kluczowego global. To jest stare rozwiązanie.
+         Wydaje się proste w użyciu i wygodne, ale w rzeczywistości powoduje
+         śmietnik w kodzie. Po za tym AFAIK od PHP6 nie będzie już globali.
+         Zamiast globali można użyć właściwości klas, słowa kluczowego
+         static, rejestru (wzorzec projektowy registry) itp. Można by było
+         też użyć singletona, ale w Watermelonie NIE UŻYWAMY singletona.
+         
+      d) Pętle for
+         
+         W pętlach for liczbę iteracji piszemy przed pierwszym średnikiem, a
+         po nim jedynie robimy porównanie dwóch zmiennych.
+         
+         DOBRZE:
+
+            for($i = 0, $j = count($array) ; $i < $j ; $i++)
+            {
+               echo $array[$i];
+            }
+            
+         ŹLE:
+
+            for($i = 0 ; $i < count($array) ; $i++)
+            {
+               echo $array[$i];
+            }
+            
+         Ot, taki dobry nawyk. Po co po każdej iteracji ma wykonywać jakąś
+         funkcję (w tym przypadku count()), skoro zwracana wartość jest
+         stała...
 
    3. Pozostałe
 
       Wszystkie pliki zapisujemy z kodowaniem UTF-8 i uniksowymi enterami,
-      tzn. \n, nie \r\n jak na windowsie.
+      tzn. \n, nie \r\n jak w Windowsie.
 
       

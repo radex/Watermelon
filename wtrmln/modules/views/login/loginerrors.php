@@ -29,8 +29,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
          <li><$error></li>
       </foreach>
    </ul>
-
-   <if 5 == 4>
-      To się NIE wyświetli :P
-   </if>
 </div>

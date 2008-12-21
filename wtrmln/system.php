@@ -20,8 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-header("Content-Type: text/html; charset=UTF-8");
-
 ########################################
 #             Biblioteki               #
 ########################################
@@ -29,7 +27,6 @@ header("Content-Type: text/html; charset=UTF-8");
 include WTRMLN_LIBS . 'url.php';
 include WTRMLN_LIBS . 'db.php';
 include WTRMLN_LIBS . 'loader.php';
-//include WTRMLN_LIBS . 'plugins_handle.php';
 include WTRMLN_LIBS . 'pluginscdb.php';
 include WTRMLN_LIBS . 'controller.php';
 include WTRMLN_LIBS . 'model.php';
@@ -37,25 +34,32 @@ include WTRMLN_LIBS . 'plugin.php';
 
 include WTRMLN_HELPERS . 'helpers.php';
 
-//Instance(
-
-////////////////////////////////////////
-
-/* panika cms'a.
-/* zamiast die i exit w przypadku poważnego błędu.
-************************/
+/*
+ * function panic(string $text = 'noname error')
+ * 
+ * Zatrzymanie wykonywania CMS-a. Coś jak exit, czy die,
+ * ale zawsze jest jedynym widocznym tekstem w przeglądarce,
+ * co jest użyteczne w przypadku Output Bufferingu. Opis
+ * błędu jest widoczny tylko, gdy stała DEBUG jest zdefiniowana.
+ * 
+ * string $text - opis błędu.
+ */
 
 function panic($text = 'noname error')
 {
-   die('<div style="position: absolute;
+   exit('<div style="position: absolute;
         z-index: 999;
         top: 0;
         left: 0;
         background: #fff;
         width: 100%;
         height: 100%;">
-        <big>Błąd krytyczny uniemożliwiający kontynuowanie.</big><br>Debug: ' . $text . '</div>');
+        <big>Błąd krytyczny uniemożliwiający kontynuowanie.</big>' . (defined('DEBUG') ? '<br>' . $text : '') . '</div>');
 }
+
+########################################
+#           class Watermelon           #
+########################################
 
 class Watermelon
 {
@@ -239,28 +243,7 @@ class Watermelon
       $siteTitle = (defined('WTRMLN_H1') ? WTRMLN_H1 . ' &raquo; ' : '') . WTRMLN_SITENAME;
       
       array_unshift(Watermelon::$metaSrc, '<title>' . $siteTitle . '</title>');
-
-      /*// wyciągamy metaSrc
-
-      $metaSrc = self::$metaSrc;
       
-      var_dump($metaSrc);
-
-      // żeby array_unshift się nie czepiał,
-      // gdyby wcześniej nie było żadnych elementów
-
-      if(!$metaSrc)
-      {
-         $metaSrc = array();
-      }
-
-      // wsadzamy na początek tablicy <title>
-
-      array_unshift($metaSrc, '<title>' . $siteTitle . '</title>');
-
-      // zmieniamy nazwy, żeby skin.php wiedział odzochodzi
-
-      $_w_metaSrc = $metaSrc;*/
       $_w_content = $content;
 
       // odpalamy skina

@@ -29,7 +29,7 @@ class Pages extends Controller
 
    function Index()
    {
-      // wyciągamy człony ścieżki (nazwa page'a)
+      // wyciągamy segmenty URL-a (nazwa page'a)
 
       $page = URL::$segments;
 
@@ -48,6 +48,9 @@ class Pages extends Controller
       if($data->num_rows() > 0)
       {
          $data = $data->to_obj();
+         
+         // ustawiamy tytuł
+         
          setH1($data->title);
 
          $content = $data->content;
@@ -63,14 +66,15 @@ class Pages extends Controller
       }
       else
       {
-         $this->e404();
+         $this->e404($page);
       }
    }
 
-   function e404()
+   function e404($pageName = '')
    {
-      setH1('Błąd 404');
-      echo 'Błąd czterysta cztery - przykro mnie bardzo :P';
+      setH1('Błąd 404 : Nie odnaleziono');
+      
+      echo '<div class="box_e">Na <em>' . Config::$siteName . '</em> nie ma strony "' . $pageName . '".</div>';
    }
 }
 ?>

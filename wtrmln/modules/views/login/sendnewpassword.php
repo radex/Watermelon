@@ -27,12 +27,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       <label for="login">Wpisz swój login:</label>
       <input type="text" name="login" id="login">
 
-      <br><br>
+      <br>
 
       <label for="email">ALBO wpisz swój e-mail:</label>
       <input type="email" name="email" id="email">
 
-      <br><br>
+      <br>
 
       <label for="submit">&nbsp;</label>
       <input type="submit" id="submit" value="Loguj!">

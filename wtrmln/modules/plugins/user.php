@@ -24,16 +24,22 @@ class User extends Plugin
 {
    /*
     * private Model_User $User
-    *
+    * 
     * Instancja klasy Model_User
     */
    private $User;
+   
+   /*
+    * private static bool $LoggedIn
+    * 
+    * stan użytkownika (zalogowany/niezalogowany)
+    */
    
    private static $LoggedIn = null;
 
    /*
     * public void User()
-    *
+    * 
     * Konstruktor. Uzupełnia pole $User.
     */
 
@@ -46,15 +52,15 @@ class User extends Plugin
 
    /*
     * public bool Login(string $user, string $password, bool $autologin)
-    *
+    * 
     * Loguje użytkownika. Zwraca true, jeśli logowanie wypadło pomyślnie, w
     * przeciwnym wypadku zwraca false.
-    *
+    * 
     * string $user      - Nazwa użytkownika
     * string $password  - Hasło użytkownika (w czystej postaci)
     * bool   $autologin - Zalogować usera automatycznie przy każdej wizycie?
     *                       TRUE - Tak, loguj mnie automatycznie
-    *                       FALSE - Nie loguj mnie automatycznie!
+    *                       FALSE - Nie loguj mnie automatycznie
     */
 
    public function Login($user, $password, $autologin)

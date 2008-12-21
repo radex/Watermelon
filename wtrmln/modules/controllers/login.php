@@ -35,7 +35,7 @@ class Login extends Controller
    {
       setH1('Logowanie');
 
-      $this->addMeta('<style type="text/css">.loginform label{float:left;width:140px;display:block}</style>');
+      $this->addMeta('<style type="text/css">.loginform{text-align:left}.loginform label{float:left;width:130px;display:block}</style>');
 
       echo $this->load->view('login_form');
    }
@@ -63,7 +63,7 @@ class Login extends Controller
    {
       setH1('Formularz wysyłania nowego hasła');
 
-      $this->addMeta('<style type="text/css">.sendpassform label{float:left;width:150px;display:block}}</style>');
+      $this->addMeta('<style type="text/css">.sendpassform label{float:left;width:160px;display:block}</style>');
 
       echo $this->load->view('login_sendnewpassword');
    }
@@ -75,6 +75,8 @@ class Login extends Controller
    function Logout()
    {
       $this->user->logout();
+      
+      echo $this->load->view('login_loggedout');
    }
 
    /*

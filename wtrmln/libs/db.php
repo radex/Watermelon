@@ -22,26 +22,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib DB
- * wersja 1.9.6
- *
+ * wersja 2.0.0
+ * 
  * Komunikacja z bazą danych
- *
+ * 
  */
 
 class DB
 {
    /*
     * public static int $queriesCounter
-    *
+    * 
     * licznik zapytań (liczba wykonanych zapytań)
     */
    public static $queriesCounter = 0;
 
    /*
     * public static array $errorList
-    *
+    * 
     * lista (log) błędów. Przydatne w debbugowaniu
-    *
+    * 
     * $errorList = array(string $error[, string $error[, ...]])
     *   $error = treść błędu
     */
@@ -50,26 +50,15 @@ class DB
 
    /*
     * private static mysql_link $link
-    *
+    * 
     * resource bazy danych (zwracany przez mysql_connect)
     */
 
    private static $link;
 
    /*
-    * private static DB $instance
-    *
-    * Zawiera instancję tej klasy
-    * 
-    * DEPRECATED - Niedługo to coś zostanie wywalone z kodu. Póki co tylko
-    * zakomentowane. (Akcja wywalanie singletona)
-    */
-
-   //private static $instance = NULL;
-
-   /*
     * private static string $prefix
-    *
+    * 
     * prefiks nazw tabel (np. tabela 'users' wraz z prefiksem 'wcms_' to 'wcms_users')
     */
 
@@ -77,9 +66,9 @@ class DB
 
    /*
     * public void connect(string $host, string $user, string $pass, string $name, string $prefix)
-    *
+    * 
     * Łączy z bazą danych
-    *
+    * 
     */
    public function connect($host, $user, $pass, $name, $prefix)
    {
@@ -101,12 +90,24 @@ class DB
    }
 
    /*
-    * public DBresult query(string $query)
-    *
+    * public DBresult query(string $query[, string $arg1[, string $arg2[, ...]]])
+    * 
     * Zapytanie do bazy danych
-    *
+    * 
+    * Nazwy tabel podajemy poprzedzając podwójnym podkreślnikeim
+    * 
+    * Wszystkie dane wejściowe (znaczy te, które podajemy w apostrofach) oznaczamy
+    * jako %(cyfra), a w $arg(cyfra) podajemy zawartość tej danej
+    * 
     * Zwraca FALSE w przypadku porażki
-    *
+    * 
+    * Przykład:
+    * 
+    * DB::query("SELECT `id`, `password` FROM `__users` WHERE `nick` = '%1' AND `salt` = '%2'", 'radex', '86fcf28678ebe8a0');
+    * 
+    * zostanie zinterpretowane (gdy DB::$prefix == 'wcms_') jako:
+    * 
+    * "SELECT `id`, `password` FROM `wcms_users` WHERE `nick` = 'radex' AND `salt` = '86fcf28678ebe8a0'"
     */
 
    public static function query($query)
@@ -116,7 +117,7 @@ class DB
 
       $query = str_replace('`__', '`' . self::$prefix, $query);
 
-      // poniżej eksperymentalny kod. Może zostanie, może nie :P
+      // podmieniamy argumenty
 
       $numargs = func_num_args();
       $arg_list = func_get_args();
@@ -151,10 +152,10 @@ class DB
    }
 
    /*
-    * public string[] errorList()
-    *
+    * public static string[] errorList()
+    * 
     * Zwraca zawartość listy błędów
-    *
+    * 
     */
 
    public static function errorList()
@@ -163,10 +164,10 @@ class DB
    }
 
    /*
-    * public string lastError()
-    *
+    * public static string lastError()
+    * 
     * Zwraca ostatni napotkany błąd
-    *
+    * 
     */
 
    public static function lastError()
@@ -175,33 +176,16 @@ class DB
    }
 
    /*
-    * public int queries()
-    *
+    * public static int queries()
+    * 
     * Zwraca liczbę wykonanych zapytań
-    *
+    * 
     */
 
    public static function queries()
    {
       return self::$queriesCounter;
    }
-
-   /*
-    * public static DB Instance()
-    *
-    * Singleton... (zwraca instancję tej klasy)
-    * 
-    * DEPRECATED - Niedługo to coś zostanie wywalone z kodu. Póki co tylko
-    * zakomentowane. (Akcja wywalanie singletona)
-    */
-   /*
-   public static function Instance()
-   {
-      if(!self::$instance instanceof self)
-      self::$instance = new self;
-      return self::$instance;
-   }
-   */
 }
 
 ############
@@ -210,13 +194,18 @@ class DB
 
 class DBresult
 {
-   public $res;  // resource zwrócony przez DB::query
+   /*
+    * public mysql_result $res
+    * 
+    * resource zwrócony przez DB::query()
+    */
+   public $res;
 
    /*
-    * public void DBresult(resource $res)
-    *
+    * public void DBresult(mysql_result $res)
+    * 
     * Ustawia $this->res
-    *
+    * 
     */
    public function DBresult($res)
    {
@@ -225,9 +214,9 @@ class DBresult
 
    /*
     * public int num_rows()
-    *
+    * 
     * Zwraca ilość znalezionych wyników
-    *
+    * 
     */
 
    public function num_rows()
@@ -237,9 +226,9 @@ class DBresult
 
    /*
     * public object to_obj()
-    *
+    * 
     * Zwraca dane w postaci obiektu
-    *
+    * 
     */
 
    public function to_obj()
@@ -249,9 +238,9 @@ class DBresult
 
    /*
     * public array to_array()
-    *
+    * 
     * Zwraca dane w postaci tablicy
-    *
+    * 
     */
 
    public function to_array()

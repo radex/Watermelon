@@ -21,8 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 
 
-/* nagłówek
-*******************************/
+/*
+ * void setH1(string $value)
+ * 
+ * ustawia nagłówek (nazwę) danej podstrony.
+ * 
+ * string $value - nazwa podstrony
+ */
 
 function setH1($value)
 {
@@ -31,8 +36,13 @@ function setH1($value)
 	return '<h1>' . $value . '</h1>';
 }
 
-/* Zamiana tablicy na obiekt
-********************************/
+/*
+ * object arrayToObject(array $array)
+ * 
+ * Zamienia tablicę na obiekt
+ * 
+ * array $array - tablica do zamiany na obiekt
+ */
 
 function arrayToObject(array $array)
 {
@@ -51,8 +61,13 @@ function arrayToObject(array $array)
    return $object;
 }
 
-/* Zamiana obiektu na tablicę
-********************************/
+/*
+ * array objectToArray(object $object)
+ * 
+ * Zamienia obiekt na tablicę
+ * 
+ * object $object - obiekt do zamiany na tablicę
+ */
 
 function objectToArray($object)
 {
@@ -71,8 +86,19 @@ function objectToArray($object)
    return $array;
 }
 
-/* Zamiana tablicy lub obiektu na HTML-owskie/XML-owskie argumenty
-********************************/
+/*
+ * string arrayToHTMLArguments(array $array)
+ * string objectToHTMLArguments(object $object)
+ * 
+ * Zamiana tablicy lub obiektu na listę argumentów
+ * HTML/XML, np.
+ * 
+ * array('foo1' => 'bar1', 'foo2' => 'bar2')
+ * 
+ * zostanie zamienione na:
+ * 
+ * 'foo1="bar1" foo2="bar2"'
+ */
 
 function arrayToHTMLArguments($array)
 {
@@ -88,24 +114,43 @@ function arrayToHTMLArguments($array)
    return $arguments;
 }
 
-/* Alias funkcji arrayToHTMLArguments
-********************************/
-
 function objectToHTMLArguments($object)
 {
    return arrayToHTMLArguments($object);
 }
 
+/*********************************************/
+
 /* zwraca element tablicy $_POST
 ********************************/
-
+/*
 function _POST($key)
 {
    return $_POST[$key];
 }
+*/
 
-/* tworzy polską odmianę rzeczownika dla liczebnika
-*******************************/
+/**********************************************/
+
+/*
+ * string generatePlFormOf(int $int, string $odm1, string $odm2, $string $odm3)
+ * 
+ * Tworzy odpowiednią polską odmianę rzeczownika dla danego liczebnika.
+ * np. 1 pies
+ *     2 psy
+ *     5 psów
+ * 
+ * int $int - liczebnik, do którego ma zostać dopasowana odpowiednia forma rzeczownika
+ * string $odm1 - odmiana, taka jaka jest do liczby 1, np. 'pies', 'dom', 'rower'
+ * string $odm2 - odmiana, taka jaka jest do liczby 2, np. 'psy', 'domy', 'rowery'
+ * string $odm3 - odmiana, taka jaka jest do liczby 5, np. 'psów', 'domów', 'rowerów'
+ * 
+ * przykład:
+ * 
+ * generatePlFormOf(  1, 'rower', 'rowery', 'rowerów') -> 'rower'
+ * generatePlFormOf( 52, 'arbuz', 'arbuzy', 'arbuzów') -> 'arbuzy'
+ * generatePlFormOf(178, 'numer', 'numery', 'numerów') -> 'numerów'
+ */
 
 function generatePlFormOf($int, $odm1, $odm2, $odm3)
 {
@@ -120,18 +165,27 @@ function generatePlFormOf($int, $odm1, $odm2, $odm3)
    if($int > 4 && $int < 10) return $odm3;
 }
 
-/* tworzy link do podstrony
-**************************************/
+/*
+ * string site_url(string $url)
+ * 
+ * Tworzy URL do danej podstrony
+ * 
+ * string $url - podstrona, np.: 'blog/foo/bar/', albo '' - pusty
+ *               string, zwróci URL do strony głównej
+ */
 
 function site_url($url)
 {
    return WTRMLN_SITEURL . $url;
 }
 
-/* określenie IP kolesia
 /*
-/* funkcja pochodzi oryginalnie z: http://php.org.pl/artykuly/3/22
-**************************************/
+ * string ClientIP()
+ * 
+ * zwraca IP odwiedzającego.
+ * 
+ * funkcja pochodzi oryginalnie z: http://php.org.pl/artykuly/3/22
+ */
 
 function ClientIP()
 {
@@ -163,8 +217,26 @@ function ClientIP()
    return $ip ? $ip : $_SERVER['REMOTE_ADDR'];
 }
 
-/* zwraca hash określony w configu
-***********************************/
+/*
+ * string strHash(string $string[, string/int $algo])
+ * 
+ * tworzy hash z $string
+ * 
+ *  jeśli $algo nie zostało podane:
+ *  
+ *     tworzy hash według domyślnego algorytmu haszującego
+ *  
+ *  jeśli $algo jest stringiem
+ *  
+ *     tworzy hash według nazwy $algo
+ *  
+ *  jeśli $algo jest intem
+ *  
+ *     tworzy hash na podstawie numeru algrorytmu haszującego
+ * 
+ * string     $string - tekst do zahaszowania
+ * string/int $algo   - nazwa lub numer algorytmu haszującego
+ */
 
 function strHash($string, $algo = NULL)
 {

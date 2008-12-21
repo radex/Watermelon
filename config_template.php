@@ -36,7 +36,7 @@ $_w_superusers=array();#################
  * np.: 'http://mojastrona.pl/'
  */
 
-$_w_baseURL    = '';
+$_w_baseURL    = 'http:// . /';
 
 /*
  * siteURL
@@ -49,7 +49,7 @@ $_w_baseURL    = '';
  * np.: 'http://mojastrona.pl/index.php/'
  */
 
-$_w_siteURL    = '';
+$_w_siteURL    = 'http:// . /index.php/';
 
 /*
  * cmsDir
@@ -106,10 +106,10 @@ $_w_dbName     = '';
  * Prefiks nazw tabel w bazie danych.
  * Jeśli importowałeś(aś) zrzut bazy
  * danych i nie zmieniałeś(aś) nazw
- * tabel, zostaw pole puste.
+ * tabel, nie zmieniaj pola.
  */
 
-$_w_dbPrefix   = '';
+$_w_dbPrefix   = 'wcms_';
 
 /*
  * siteName
@@ -223,6 +223,7 @@ $_w_superusers[''] = '';
 
 $_w_basePath = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/';
 
+define('WTRMLN_BASEURL'      , $_w_baseURL                                    );
 define('WTRMLN_SITEURL'      , $_w_siteURL                                    );
 define('WTRMLN_CMSDIR'       , $_w_cmsDir                                     );
 define('WTRMLN_THEME'        , $_w_theme                                      );

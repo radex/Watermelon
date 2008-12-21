@@ -30,8 +30,6 @@ class Test extends Controller
    function Index()
    {
    	SetH1('Strona Główna');
-      
-   	echo '<a href="$/admin">Panel Admina</a><br><br>';
    	
    	if($this->user->isLoggedIn())
    	{
@@ -45,19 +43,21 @@ class Test extends Controller
    	        'możesz się <a href="$/register">zarejestrować</a>.</div>';
    	}
    	
-   	echo '<p>Witaj! Oto jest okrojona i testowa wersja Watermelon CMS-a :) Więcej bajerów wkrótce ;)</p>';
+   	echo '<div class="dr"><img src="http://upload.wikimedia.org/wikipedia/commons/d/d6/Watermelon.svg" style="width:200px;height:200px;"><br>Arbuz z <a href="http://commons.wikimedia.org/">Wikimedia Commons</a></div>';
+   	
+   	echo '<p>Witaj w Watermelon CMS!</p>';
+   	
+   	echo '<p><a href="http://en.wikipedia.org/wiki/Watermelon">Trochę o watermelonach</a></p>';
       
-   	echo '<p>Do zobaczenia w tej wersji masz:</p>';
+   	echo '<p>Rzeczy do zobaczenia:</p>';
       
-   	echo '<ul><li><a href="$/testowa/stronka">Testową <em>stronę własną</em></a></li>';
+   	echo '<ul><li><a href="$/testowa/stronka">Testowa <em>strona własna</em></a></li>';
       
-   	echo '<li><a href="$/login/">Stronę logowania</a></li>';
-      
-   	echo '<li><a href="$/admin/">Cienki panel admina</a></li>';
+   	echo '<li><a href="$/login/">Strona logowania</a></li>';
       
       echo '<li><a href="$/login/sendnewpassword">Formularz wysłania nowego hasła</a></li></ul>';
       
-      echo '<p>Watermelon CMS 1.0 pre-alpha3 [Codename: Ogór]</p>';
+      echo '<p>Watermelon CMS 1.0 pre-alpha4</p>';
       
       echo '<h2>Zamiast Lorem Ipsum</h2>';
       
@@ -65,63 +65,9 @@ class Test extends Controller
       
       echo '<h3>W innej wersji...</h3>';
       
-      echo '<p>Drogi Marszałku, Wysoka Izbo. <code>PKB rośnie. Różnorakie</code> i rozwijanie struktur pomaga w wypracowaniu obecnej sytuacji. Praktyka dnia codziennego dowodzi, że rozszerzenie bazy o nowe rekordy pociąga za sobą proces wdrożenia i realizacji dalszych poczynań. Już nie zaś teorię, okazuje się iż usprawnienie systemu finansowego umożliwia w większym stopniu tworzenie postaw uczestników wobec zadań stanowionych przez organizację. Takowe informacje są tajne, nie trzeba udowadniać, ponieważ usprawnienie systemu rozszerza nam efekt postaw uczestników wobec zadań stanowionych przez organizację. Różnorakie i koledzy, zmiana przestarzałego systemu powszechnego uczestnictwa.</p>';
+      echo '<p>Drogi Marszałku, Wysoka Izbo. <code>PKB rośnie. Różnorakie</code> i rozwijanie struktur pomaga w wypracowaniu obecnej sytuacji. Praktyka dnia codziennego dowodzi, że rozszerzenie bazy o nowe rekordy pociąga za sobą proces wdrożenia i realizacji dalszych poczynań. <q>Już nie zaś teorię, okazuje</q> się iż usprawnienie systemu finansowego umożliwia w większym stopniu tworzenie postaw uczestników wobec zadań stanowionych przez organizację. Takowe informacje są tajne, nie trzeba udowadniać, ponieważ usprawnienie systemu rozszerza nam efekt postaw uczestników wobec zadań stanowionych przez organizację. Różnorakie i koledzy, zmiana przestarzałego systemu powszechnego uczestnictwa.</p>';
       
       echo '<blockquote><p>Trzeba naprawdę wiele wiedzieć, żeby wiedzieć jak mało się wie.</p></blockquote>';
-      
-      echo '<p><cite>Nikt Ktoś</cite> kiedyśtam mądrze powiedział <q>nic nie powiedziałem</q>.</p>';
-      
-      echo '<hr>';
-      
-      /////////////////
-      
-      if($this->user->isLoggedIn())
-      {
-         echo '<h2>Panel użytkownika</h2>';
-         ?>
-<a href="$/profile/pw">Prywatne wiadomości</a>
-
-<a href="$/login/logout">Wyloguj</a>
-         <?php
-      }
-      else
-      {
-         $this->addMeta('<style type="text/css">.loginform_mini{border:0}.loginform_mini legend{display:none} .loginform_mini label{float:left;width:50px;display:block}.loginform_mini #submit{width:50px}.loginform_mini #password,.loginform_mini #login{width:140px}</style>');
-         
-         echo '<h2>Logowanie</h2>';
-         ?>
-<form action="$/login/submit" method="POST">
-   <fieldset class="loginform_mini">
-      <legend>Logowanie</legend>
-      
-      <label for="login">Login:</label>
-      <input type="text" name="login" id="login">
-      
-      <br>
-      
-      <label for="password">Hasło:</label>
-      <input type="password" name="password" id="password">
-      
-      <br>
-      
-      <input type="submit" id="submit" value="Loguj!">
-      
-      <input type="checkbox" name="autologin" id="autologin">
-      Zapamiętaj mnie
-
-      <br>
-
-      <a href="$/login/sendnewpassword" title="Wysyłanie nowego hasła">Zapomniałem hasła!</a>
-
-      <br>
-
-      <a href="$/register" title="Rejestracja">Nie mam jeszcze konta!</a>
-
-   </fieldset>
-</form>
-      <?php
-      }
-      
    }
 }
 ?>

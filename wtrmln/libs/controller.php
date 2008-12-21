@@ -35,9 +35,9 @@ class Controller
 
    /*
     * static public void addMeta(string $data);
-    *
+    * 
     * dodaje element do sekcji <head>
-    *
+    * 
     * string $data - element do wstawienia, np. '<style type="text/css">*{display:none}</style>'
     */
 

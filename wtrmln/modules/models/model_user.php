@@ -26,7 +26,16 @@ class Model_User extends Model
    {
       parent::Model();
    }
-
+   
+   /*
+    * public DBresult LoginUserData(string $login)
+    * 
+    * zwraca dane użytkownika niezbędne do zalogowania (hasło, algorytm
+    * haszujący, sól, id)
+    * 
+    * string $login - nick usera, którego dane mają być zwrócone
+    */
+   
    public function LoginUserData($login)
    {
       $login = mysql_real_escape_string($login);
@@ -35,12 +44,32 @@ class Model_User extends Model
                               "WHERE `nick` = '%1'", $login);
    }
    
+   /*
+    * public DBresult UpdatePassword(string $nick, string $hash, string $salt, int $hashAlgo)
+    * 
+    * aktualizuje hasło użytkownika
+    * 
+    * string $nick     - nick użytkownika, którego hasło ma zostać zaktualizowane
+    * string $hash     - hash hasła
+    * string $salt     - sól
+    * int    $hashAlgo - numer algorytmu haszującego
+    */
+   
    public function UpdatePassword($nick, $hash, $salt, $hashAlgo)
    {
       return $this->db->query("UPDATE  `__users` SET " .
                               "`password` = '%1', `hashalgo` = '%2', `salt` = '%3' " .
                               "WHERE `nick` = '%4'", $hash, $hashAlgo, $salt, $nick);
    }
+   
+   /*
+    * public bool UserExists(string $nick)
+    * 
+    * sprawdza, czy dany użytkownik istnieje
+    * zwraca true, jeśli istnieje, false jeśli nie
+    * 
+    * string $nick - nick użytkownika, którego istnienie ma zostać sprawdzone
+    */
    
    public function UserExists($nick)
    {

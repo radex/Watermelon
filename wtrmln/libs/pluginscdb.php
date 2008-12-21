@@ -23,9 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  * Lib PluginsConfigDatabase
  * wersja 1.0.0
- *
+ * 
  * Różne informacje związane z pluginami...
- *
+ * 
  */
 
 class PluginsConfigDatabase
