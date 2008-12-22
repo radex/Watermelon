@@ -21,14 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<strong>Nadawca: </strong><$nick>
-<br>
-<strong>Wysłano: </strong><?=date('d.m.Y H:i') ?>
+<div class="tr">
+   <big>
+      <a href="$/pw/new">Nowa prywatna wiadomość</a>
+   </big>
+</div>
 
-<blockquote>
-   <p><$text></p>
-</blockquote>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
-<br>
-Odpowiedz
+<div class="box_i">
+   Nie masz prywatnych wiadomości
+</div>

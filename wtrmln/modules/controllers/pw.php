@@ -46,9 +46,18 @@ class PW extends Controller
       
       $pwlist = $this->PW->GetPWList($_SESSION['WTRMLN_UID']);
       
-      // wyświetlamy listę
+      // sprawdzamy, czy mamy jakieś pw
       
-      echo $this->load->view('profile_pwlist', array('pwlist' => $pwlist));
+      if($pwlist->num_rows() == 0)
+      {
+         echo $this->load->view('pw_nopws');
+      }
+      else
+      {
+         // wyświetlamy listę
+         
+         echo $this->load->view('pw_pwlist', array('pwlist' => $pwlist));
+      }
    }
    
    /*
@@ -72,7 +81,7 @@ class PW extends Controller
       
       if($pw_data->num_rows() == 0)
       {
-         echo $this->load->view('profile_nosuchpw');
+         echo $this->load->view('pw_nosuchpw');
          return;
       }
       
@@ -82,7 +91,7 @@ class PW extends Controller
       
       if($pw_data->to != $_SESSION['WTRMLN_UID'])
       {
-         echo $this->load->view('profile_cannotviewpw');
+         echo $this->load->view('pw_cannotviewpw');
          return;
       }
       
@@ -92,7 +101,7 @@ class PW extends Controller
       
       $pw_data->text = nl2br($pw_data->text);
       
-      echo $this->load->view('profile_pw', objectToArray($pw_data));
+      echo $this->load->view('pw_pw', objectToArray($pw_data));
    }
    
    /*
@@ -103,7 +112,48 @@ class PW extends Controller
    {
       SetH1('Nowa prywatna wiadomość');
       
-      echo $this->load->view('profile_newpw');
+      echo $this->load->view('pw_newpw');
+   }
+   
+   /*
+    * odpowiedź na prywatną wiadomość
+    */
+   
+   public function Response()
+   {
+      $this->PW = $this->load->model('PW');
+      
+      // id wiadomości na którą odpowiadamy
+      
+      $pw_id = $this->url->segment(1);
+      
+      // ładujemy dane na temat prywatnej wiadomości
+      
+      $pw_data = $this->PW->GetPWData($pw_id);
+      
+      // sprawdzamy, czy w ogóle taka istnieje
+      
+      if($pw_data->num_rows() == 0)
+      {
+         echo $this->load->view('pw_nosuchpw');
+         return;
+      }
+      
+      // sprawdzamy, czy możemy przeczytać tą wiadmość (czy jesteśmy jej odbiorcą)
+      
+      $pw_data = $pw_data->to_obj();
+      
+      if($pw_data->to != $_SESSION['WTRMLN_UID'])
+      {
+         echo $this->load->view('pw_cannotviewpw');
+         return;
+      }
+      
+      // jeśli wszystko jest ok...
+      
+      SetH1('Nowa prywatna wiadomość');
+      
+      echo $this->load->view('pw_response', objectToArray($pw_data));
    }
    
    /*
@@ -139,7 +189,7 @@ class PW extends Controller
       $this->PW->SendPW($_SESSION['WTRMLN_UID'], $addresseeUID->to_obj()->id,
                         $_POST['subject'], $_POST['text'], time());
       
-      echo $this->load->view("profile_pwsent");
+      echo $this->load->view('pw_pwsent');
    }
    
    /*
@@ -156,7 +206,7 @@ class PW extends Controller
       
       if($this->PW->GetPWAddressee($pw_id) != $_SESSION['WTRMLN_UID'])
       {
-         echo $this->load->view('profile_cannotdeletepw');
+         echo $this->load->view('pw_cannotdeletepw');
          return;
       }
       
@@ -166,7 +216,7 @@ class PW extends Controller
       
       $this->PW->Delete($pw_id);
       
-      echo $this->load->view("profile_pwdeleted");
+      echo $this->load->view("pw_pwdeleted");
    }
 }
 ?>

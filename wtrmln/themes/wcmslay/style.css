@@ -1,4 +1,4 @@
-/* Watermelon CMS Layout v1.0 by Radex
+/* Watermelon CMS Layout by Radex
 /*   email : radex_p [at] tlen [dot] pl
 /* website : radex.i15.eu
 /*
@@ -81,20 +81,6 @@ blockquote
    margin-bottom: 0;
 }
 
-/*
-
-blockquote p
-{
-   margin-top: 0;
-}
-
-blockquote + cite
-{
-   padding-left: 350px;
-}
-
-*/
-
 q
 {
    quotes: "«" "»";
@@ -115,6 +101,16 @@ legend
 li
 {
 	list-style-type: square;
+}
+
+#content li, #sidebar li
+{
+   margin-left: 20px;
+}
+
+#content ul, #sidebar ul
+{
+   padding: 0;
 }
 
 td, th, caption
@@ -139,6 +135,20 @@ caption
 
 /* Pozycjonowanie, ramki
 ********************************************************************/
+
+.ramkar, .ramkal, .ramkac
+{
+   padding: 10px;
+   background-color: #f4f2e7;
+   border: 2px solid #fff;
+   outline: 1px solid #c4c2b7;
+}
+
+.ramkar, .ramkal, .ramkac,
+.dr,     .dl,     .dc
+{
+   text-align: center;
+}
 
 .ramkar, .dr
 {
@@ -266,9 +276,10 @@ caption
 
 #sidebar
 {
-   width: 230px;
+   width: 225px;
    float: right;
    padding: 5px;
+   padding-left: 10px;
    padding-right: 20px;
    overflow: hidden;
 }
@@ -277,9 +288,10 @@ caption
 {
    float: left;
    overflow: hidden;
-   width: 690px;
+   width: 675px;
    padding: 10px;
-   padding-left: 25px;
+   padding-left: 30px;
+   line-height: 1.7em;
 }
 
 #bottom-bg
@@ -325,7 +337,6 @@ caption
    padding: 5px;
    color: #fff;
    background: #000;
-   font-weight: bold;
    float: left;
    opacity: .5;
    margin-right: 5px;
@@ -336,6 +347,7 @@ caption
 {
    opacity: 1;
    background: #fff;
+   font-weight: bold;
 }
 
 #header ul li a
@@ -383,4 +395,52 @@ caption
 {
    color: #fff;
    background: #859e1c;
+}
+
+/***/
+
+.post
+{
+   background-color: #f4f7ed;
+   padding: 5px;
+   padding-left: 10px;
+   margin-top: 20px;
+}
+
+.posterdata
+{
+   float: right;
+   width: 150px;
+   border-left: 1px solid #e1e4db;
+   padding-left: 5px;
+}
+
+.posterdata cite
+{
+   font-weight: bold;
+   font-style: normal;
+}
+
+.postcontent
+{
+   padding-right: 160px;
+}
+
+.posttools
+{
+   font-size: .9em;
+   text-align: right;
+   padding-right: 160px;
+   color: #888;
+}
+
+.posttools a
+{
+   color: #888;
+}
+
+.posttools a:hover
+{
+   background: 0;
+   color: #888;
 }

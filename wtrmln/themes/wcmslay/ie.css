@@ -1,0 +1,15 @@
+blockquote
+{
+   background: 0;
+}
+
+#header
+{
+   background-repeat: no-repeat;
+}
+
+#header ul
+{
+   display: list-item;
+   margin-left: 30px;
+}

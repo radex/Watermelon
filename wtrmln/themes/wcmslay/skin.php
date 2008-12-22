@@ -1,5 +1,7 @@
 <?php if(!defined('WTRMLN_IS')) die;
 
+//TODO: zrobić porządek
+
 /* meta (poładniamy source)
 **************************/
 
@@ -22,26 +24,32 @@ function getMeta()
 
 if(!defined('NOMENU'))
 {
-	$menus = DB::query("SELECT * FROM `menu`");
+	$menus = DB::query("SELECT * FROM `__menu`");
    
 	$menulist = array();
 	
 	while($menu_item = $menus->to_obj())
 	{
-		$menulist[$menu_item->position] = '<div class="h1">' . $menu_item->capt . '</div>' . $menu_item->content;
-		
-		//menuboksy warunkowe
-		
-		if(!empty($menu_item->condition))
+	   if(!empty($menu_item->condition))
 		{
-		   $menulist[$menu_item->position] = 
-		      '<? if(' . $menu_item->condition . '){ ?>' . $menulist[$menu_item->position] . '<? } ?>';
+		   $condition = $menu_item->condition;
+		   $toEval = '
+		   if(' . $condition . ')
+		   {
+		   $menulist[$menu_item->position] = \'<div class="h1">\' . $menu_item->capt . \'</div>\' . $menu_item->content;
+		   }
+		   ';
+		   
+		   eval($toEval);
+		}
+		else
+		{
+		   $menulist[$menu_item->position] = '<div class="h1">' . $menu_item->capt . '</div>' . $menu_item->content;
 		}
 	}
 	
 	$menu = '';
 	
-	//foreach($menulist as $key => $val)
 	for($i = 0, $j = count($menulist); $i < $j; $i++)
 	{
 	   if(!isset($menulist[$i]))
@@ -50,7 +58,7 @@ if(!defined('NOMENU'))
 	      continue;
 	   }
 	   $menu .= $menulist[$i];
-	   unset($menulist[$i]); //tak dla performance'u :p
+	   unset($menulist[$i]);
 	}
    
    //przetwarzanie
@@ -59,11 +67,11 @@ if(!defined('NOMENU'))
    
    ob_start();
    $menu = ViewTags::Process($menu);
-   //var_dump($menu);
    $menu = eval('?>' . $menu . '<?php ');
    $menu = ob_get_contents();
    @ob_end_clean();
 }
+
 
 /* takie tam...
 *********************************/

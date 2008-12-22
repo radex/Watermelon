@@ -270,4 +270,71 @@ function strHash($string, $algo = NULL)
    }
 }
 
+/*
+ * string plDate(int $timestamp)
+ * 
+ * tworzy prostą do zrozumienia datę z timestampu
+ * 
+ * jeśli $timestamp był mniej niż minutę temu zwraca 'przed chwilą'
+ * jeśli $timestamp był mniej niż godzinę temu zwraca 'x minut(ę/y) temu'
+ * jeśli $timestamp to data z dzisiaj zwraca 'dzisiaj, hh:mm'
+ * jeśli $timestamp to data z wczoraj zwraca 'wczoraj, hh:mm'
+ * jeśli $timestamp to data z przedwczoraj zwraca 'przedwczoraj, hh:mm'
+ * jeśli $timestamp był wcześniej niż przedwczoraj zwraca 'dd.mm.yyyy hh:mm'
+ *                                                 [PHP date() -> d.m.Y H:i]
+ * 
+ * int $timestamp - Unix timestamp do przekształcenia w datę
+ */
+
+function plDate($timestamp)
+{
+   // mniej niż minuta temu
+   
+   if($timestamp + 60 > time())
+   {
+      return 'przed chwilą';
+   }
+   
+   // mniej niż godzina temu
+   
+   if($timestamp + 3600 > time())
+   {
+      $minutesAgo = (int) ((time() - $timestamp)/60);
+      return $minutesAgo . ' ' . generatePlFormOf($minutesAgo, 'minutę', 'minuty', 'minut') . ' temu';
+   }
+   
+   // dane z timestampu
+   
+   list($day, $month, $year, $hour, $minute) = explode('.', date('d.m.Y.H.i', $timestamp));
+   
+   // dane z teraz
+   
+   list($dayN, $monthN, $yearN) = explode('.', date('d.m.Y', time()));
+   
+   // dziś, ale więcej niż godzinę temu
+   
+   if($day == $dayN and $month == $monthN and $year == $yearN)
+   {
+      return 'dziś, ' . $hour . ':' . $minute;
+   }
+   
+   // wczoraj
+   
+   if($day == $dayN - 1 and $month == $monthN and $year == $yearN)
+   {
+      return 'wczoraj, ' . $hour . ':' . $minute;
+   }
+   
+   // przedwczoraj
+   
+   if($day == $dayN - 2 and $month == $monthN and $year == $yearN)
+   {
+      return 'przedwczoraj, ' . $hour . ':' . $minute;
+   }
+   
+   // dawniej niż przedwczoraj
+   
+   return $day . '.' . $month . '.' . $year . ' ' . $hour . ':' . $minute;
+}
+
 ?>

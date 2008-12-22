@@ -21,43 +21,50 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<big>
-   <a href="$/pw/new">Nowa prywatna wiadomość</a>
-</big>
+<div class="tr">
+   <big>
+      <a href="$/pw/new">Nowa prywatna wiadomość</a>
+   </big>
+</div>
 
 <table width="100%">
    <caption>Prywatne wiadomości</caption>
-   <tbody>
+   <tr>
+      <th width="20%">
+         Nadawca
+      </th>
+      <th>
+         Temat
+      </th>
+      <th width="20%">
+         Wysłany
+      </th>
+      <th width="50px">
+         Opcje
+      </th>
+   </tr>
+   <? while($pw_item = $pwlist->to_obj()){ ?>
       <tr>
-         <th width="20%">
-            Nadawca
-         </th>
-         <th>
-            Temat
-         </th>
-         <th width="20%">
-            Wysłany
-         </th>
-         <th width="50px">
-         </th>
+         <td class="tc">
+            <?=$pw_item->nick ?>
+         </td>
+         <td>
+            <a href="$/pw/view/<?=$pw_item->id ?>">
+               <?=$pw_item->subject ?>
+            </a>
+         </td>
+         <td class="tc">
+            <?=plDate($pw_item->sent) ?>
+         </td>
+         <td class="tc">
+            <a href="$/pw/delete/<?=$pw_item->id ?>">[Usuń]</a>
+         </td>
       </tr>
-      <? while($pw_item = $pwlist->to_obj()){ ?>
-         <tr>
-            <td>
-               <?=$pw_item->nick ?>
-            </td>
-            <td>
-               <a href="$/pw/view/<?=$pw_item->id ?>">
-                  <?=$pw_item->subject ?>
-               </a>
-            </td>
-            <td>
-               <?=date('d.m.Y H:i', $pw_item->sent) ?>
-            </td>
-            <td>
-               <a href="$/pw/delete/<?=$pw_item->id ?>">[Usuń]</a>
-            </td>
-         </tr>
-      <? } ?>
-   </tbody>
+   <? } ?>
 </table>
+
+<div class="tr">
+   <big>
+      <a href="$/pw/new">Nowa prywatna wiadomość</a>
+   </big>
+</div>

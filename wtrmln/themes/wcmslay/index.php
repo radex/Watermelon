@@ -5,9 +5,11 @@
 <?php echo getMeta(); ?>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <link rel="stylesheet" type="text/css" href="<?php echo WTRMLN_THEMEURL ?>style.css" media="screen">
+   <!--[if lt IE 7]>
+   <link rel="stylesheet" href="<?php echo WTRMLN_THEMEURL ?>ie.css">
+   <![endif]-->
 </head>
 <body>
-   <?php /* $user = new User(); var_dump($user->IsLoggedIn()); var_dump($user->IsLoggedIn()); */ ?>
    <div id="container">
       <div id="header">
          <div id="ha"><?php echo $siteheader ?></div>
@@ -22,7 +24,7 @@
          <?php echo $menu; ?>
       </div>
       <div id="content">
-         <h1><?php echo (defined('WTRMLN_H1') ? WTRMLN_H1 : '&nbsp;'); ?></h1>
+         <?php echo (defined('WTRMLN_H1') ? '<h1>' . WTRMLN_H1 . '</h1>' : ''); ?>
          <?php echo $_w_content; ?>
       </div>
       <div id="bottom-bg"></div>
@@ -32,7 +34,8 @@
       powered by <a href="http://watermeloncms.sourceforge.net">Watermelon CMS</a><br>
       <br>
       Zapytań do bazy danych: <?php echo DB::queries(); ?><br>
-      Wygenerowano w: <?php global $_w_startTime; echo microtime() - $_w_startTime; ?> s
+      Wygenerowano w: <?php global $_w_startTime; echo microtime() - $_w_startTime; ?> s<br>
+      Zużyto pamięci: <?php echo memory_get_peak_usage() ?>    <?php echo memory_get_usage() ?><br>
    </div>
 </body>
 </html>
