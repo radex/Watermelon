@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
+include 'gui.php';
+include 'text.php';
 
 /*
  * void setH1(string $value)
@@ -133,39 +135,6 @@ function _POST($key)
 /**********************************************/
 
 /*
- * string generatePlFormOf(int $int, string $odm1, string $odm2, $string $odm3)
- * 
- * Tworzy odpowiednią polską odmianę rzeczownika dla danego liczebnika.
- * np. 1 pies
- *     2 psy
- *     5 psów
- * 
- * int $int - liczebnik, do którego ma zostać dopasowana odpowiednia forma rzeczownika
- * string $odm1 - odmiana, taka jaka jest do liczby 1, np. 'pies', 'dom', 'rower'
- * string $odm2 - odmiana, taka jaka jest do liczby 2, np. 'psy', 'domy', 'rowery'
- * string $odm3 - odmiana, taka jaka jest do liczby 5, np. 'psów', 'domów', 'rowerów'
- * 
- * przykład:
- * 
- * generatePlFormOf(  1, 'rower', 'rowery', 'rowerów') -> 'rower'
- * generatePlFormOf( 52, 'arbuz', 'arbuzy', 'arbuzów') -> 'arbuzy'
- * generatePlFormOf(178, 'numer', 'numery', 'numerów') -> 'numerów'
- */
-
-function generatePlFormOf($int, $odm1, $odm2, $odm3)
-{
-   if($int == 0) return $odm3;
-   if($int == 1) return $odm1;
-   if($int > 1 && $int < 5) return $odm2;
-   if($int > 4 && $int < 22) return $odm3;
-   $int = substr($int, -1, 1);
-
-   if($int == 0 || $int == 1) return $odm3;
-   if($int > 1 && $int < 5) return $odm2;
-   if($int > 4 && $int < 10) return $odm3;
-}
-
-/*
  * string site_url(string $url)
  * 
  * Tworzy URL do danej podstrony
@@ -269,72 +238,4 @@ function strHash($string, $algo = NULL)
       return $algo($string);
    }
 }
-
-/*
- * string plDate(int $timestamp)
- * 
- * tworzy prostą do zrozumienia datę z timestampu
- * 
- * jeśli $timestamp był mniej niż minutę temu zwraca 'przed chwilą'
- * jeśli $timestamp był mniej niż godzinę temu zwraca 'x minut(ę/y) temu'
- * jeśli $timestamp to data z dzisiaj zwraca 'dzisiaj, hh:mm'
- * jeśli $timestamp to data z wczoraj zwraca 'wczoraj, hh:mm'
- * jeśli $timestamp to data z przedwczoraj zwraca 'przedwczoraj, hh:mm'
- * jeśli $timestamp był wcześniej niż przedwczoraj zwraca 'dd.mm.yyyy hh:mm'
- *                                                 [PHP date() -> d.m.Y H:i]
- * 
- * int $timestamp - Unix timestamp do przekształcenia w datę
- */
-
-function plDate($timestamp)
-{
-   // mniej niż minuta temu
-   
-   if($timestamp + 60 > time())
-   {
-      return 'przed chwilą';
-   }
-   
-   // mniej niż godzina temu
-   
-   if($timestamp + 3600 > time())
-   {
-      $minutesAgo = (int) ((time() - $timestamp)/60);
-      return $minutesAgo . ' ' . generatePlFormOf($minutesAgo, 'minutę', 'minuty', 'minut') . ' temu';
-   }
-   
-   // dane z timestampu
-   
-   list($day, $month, $year, $hour, $minute) = explode('.', date('d.m.Y.H.i', $timestamp));
-   
-   // dane z teraz
-   
-   list($dayN, $monthN, $yearN) = explode('.', date('d.m.Y', time()));
-   
-   // dziś, ale więcej niż godzinę temu
-   
-   if($day == $dayN and $month == $monthN and $year == $yearN)
-   {
-      return 'dziś, ' . $hour . ':' . $minute;
-   }
-   
-   // wczoraj
-   
-   if($day == $dayN - 1 and $month == $monthN and $year == $yearN)
-   {
-      return 'wczoraj, ' . $hour . ':' . $minute;
-   }
-   
-   // przedwczoraj
-   
-   if($day == $dayN - 2 and $month == $monthN and $year == $yearN)
-   {
-      return 'przedwczoraj, ' . $hour . ':' . $minute;
-   }
-   
-   // dawniej niż przedwczoraj
-   
-   return $day . '.' . $month . '.' . $year . ' ' . $hour . ':' . $minute;
-}
-
 ?>
