@@ -73,9 +73,15 @@ class Model_User extends Model
    
    public function UserExists($nick)
    {
+      $nick = mysql_real_escape_string($nick);
       $user = $this->db->query("SELECT `id` FROM `__users` WHERE `nick` = '%1'", $nick);
       $user = $user->num_rows();
       return ($user == 0 ? FALSE : TRUE);
+   }
+   
+   public function UserData($nick)
+   {
+      return $this->db->query("SELECT * FROM `__users` WHERE `nick` = '%1'", $nick);
    }
 }
 

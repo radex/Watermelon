@@ -33,11 +33,18 @@ class Login extends Controller
 
    function Index()
    {
-      setH1('Logowanie');
-
-      $this->addMeta('<style type="text/css">.loginform{text-align:left}.loginform label{float:left;width:130px;display:block}</style>');
-
-      echo $this->load->view('login_form');
+      if(!$this->user->isLoggedIn())
+      {
+         setH1('Logowanie');
+         
+         $this->addMeta('<style type="text/css">.loginform{text-align:left}.loginform label{float:left;width:130px;display:block}</style>');
+         
+         echo $this->load->view('login_form');
+      }
+      else
+      {
+         echo $this->load->view('login_youareloggedin');
+      }
    }
 
    /*
@@ -46,13 +53,17 @@ class Login extends Controller
 
    function Submit()
    {
+      if($this->user->isLoggedIn())
+      {
+         echo $this->load->view('login_youareloggedin');
+         return;
+      }
+      
       $login     = $_POST['login'];
       $pass      = $_POST['password'];
       $autologin = isset($_POST['autologin']);
       
       $this->user->Login($login, $pass, $autologin);
-
-      //TODO
    }
 
    /*

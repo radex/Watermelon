@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<div class="box_e">
-   Nie można wyświetlić tej prywatnej wiadomości.
+<div class="box_t">
+   <strong>Jesteś już zalogowany</strong>
+   Jeśli jednak chcesz się zalogować ponownie, <a href="$/login/logout/">wyloguj się</a>
 </div>

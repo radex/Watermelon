@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('WTRMLN_IS')) exit;
 /********************************************************************
 
   Watermelon CMS
@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       <legend>Nowa prywatna wiadomość</legend>
       
       <label for="addressee">Adresat:</label>
-      <input type="text" name="addressee" id="addressee">
+      <input type="text" name="addressee" id="addressee"<? echo (!empty($adressee)) ? ' value="' . $adressee . '"' : '' ?>>
       
       <br>
       

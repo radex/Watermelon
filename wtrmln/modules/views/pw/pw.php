@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('WTRMLN_IS')) exit;
 /********************************************************************
 
   Watermelon CMS
@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 <div class="dr">
    <big>
-      <a href="$/pw/response/<$id>">Odpowiedz</a>
+      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
    </big>
 </div>
 
@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 <div class="dr">
    <big>
-      <a href="$/pw/response/<$id>">Odpowiedz</a>
+      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
    </big>
 </div>
 

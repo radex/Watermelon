@@ -102,6 +102,10 @@ class PW extends Controller
       $pw_data->text = nl2br($pw_data->text);
       
       echo $this->load->view('pw_pw', objectToArray($pw_data));
+      
+      // ustawiamy flagę "przeczytano"
+      
+      $this->PW->SetReaded($pw_id);
    }
    
    /*
@@ -112,7 +116,9 @@ class PW extends Controller
    {
       SetH1('Nowa prywatna wiadomość');
       
-      echo $this->load->view('pw_newpw');
+      $adressee = $this->url->segment(1);
+      
+      echo $this->load->view('pw_newpw', array('adressee' => $adressee));
    }
    
    /*
@@ -193,16 +199,18 @@ class PW extends Controller
    }
    
    /*
-    * Usuwanie prywatnej wiadomości
+    * (samo potwierdzenie) Usuwanie prywatnej wiadomości
     */
    
    public function Delete()
    {
       $pw_id = $this->url->segment(1);
       
-      // sprawdzamy, czy możemy przeczytać tą wiadmość (czy jesteśmy jej odbiorcą)
-      
       $this->PW = $this->load->model('PW');
+      
+      // sprawdzamy, czy możemy przeczytać tą wiadmość (czy jesteśmy jej odbiorcą)
+      // przy okazji sprawdza, czy PW istnieje (jeśli nie istnieje to warunek i tak
+      // nie zostanie spełniony)
       
       if($this->PW->GetPWAddressee($pw_id) != $_SESSION['WTRMLN_UID'])
       {
@@ -210,13 +218,76 @@ class PW extends Controller
          return;
       }
       
-      // TODO: Wymagamy potwierdzenia decyzji
+      // tworzymy klucz tymczasowy
       
-      // skoro jesteśmy to usuwamy
+      $this->TempKeys = $this->load->model('TempKeys');
+      
+      $tempKey = strHash(uniqid(mt_rand(), true));
+      $tempKey = substr($tempKey, 0, 8);
+      
+      $tempKeyValue = strHash(uniqid(mt_rand(), true));
+      $tempKeyValue = substr($tempKeyValue, 0, 8);
+      
+      $this->TempKeys->MakeKey($tempKey, $tempKeyValue, $pw_id);
+      
+      // formularz "czy na pewno usunąć"
+      
+      echo $this->load->view('pw_deletequestion', array('tempkey' => $tempKey, 'tempkeyvalue' => $tempKeyValue, 'pwid' => $pw_id));
+   }
+   
+   /*
+    * usuwanie prywatnej wiadomości
+    */
+   
+   public function Delete_ok()
+   {
+      $tempKey = $this->url->segment(1);
+      $tempKeyValue = $this->url->segment(2);
+      $pw_id = $this->url->segment(3);
+      
+      $this->TempKeys = $this->load->model('TempKeys');
+      
+      // pobieramy dane tempkey'a
+      
+      $tempKeyData = $this->TempKeys->GetKey($tempKey);
+      
+      // sprawdzamy, czy takowy istnieje
+      
+      if($tempKeyData->num_rows() == 0)
+      {
+         echo $this->load->view('pw_cannotdeletepw');
+         return;
+      }
+      
+      // sprawdzamy czy klucz się zgadza z wartością
+      
+      $tempKeyData = $tempKeyData->to_obj();
+      
+      if($tempKeyValue != $tempKeyData->value)
+      {
+         echo $this->load->view('pw_cannotdeletepw');
+         return;
+      }
+      
+      // sprawdzamy czy klucz pasuje do usuwanej wiadomości
+      
+      if($pw_id != $tempKeyData->comment)
+      {
+         echo $this->load->view('pw_cannotdeletepw');
+         return;
+      }
+      
+      // skoro wszystko się zgadza no to usuwamy :p
+      
+      $this->TempKeys->DeleteKey($tempKey);
+      
+      $this->PW = $this->load->model('PW');
       
       $this->PW->Delete($pw_id);
       
       echo $this->load->view("pw_pwdeleted");
    }
+   
+   
 }
 ?>

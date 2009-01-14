@@ -121,5 +121,11 @@ class Model_PW extends Model
       $id = intval($id);
       $this->db->query("DELETE FROM `__private_messages` WHERE `id` = '%1'", $id);
    }
+   
+   public function SetReaded($id)
+   {
+      $id = intval($id);
+      $this->db->query("UPDATE `__private_messages` SET `readed` = 1 WHERE `id` = '%1'", $id);
+   }
 }
 ?>

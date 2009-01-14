@@ -31,10 +31,5 @@ class Profile extends Controller
    {
       SetH1('Panel użytkownika');
    }
-   
-   function PW()
-   {
-      header('Location: ' . site_url('pw'));
-   }
 }
 ?>

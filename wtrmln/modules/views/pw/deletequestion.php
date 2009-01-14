@@ -21,6 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<div class="box_e">
-   Nie można wyświetlić tej prywatnej wiadomości.
+<div class="box_q">
+   <form action="$/pw/delete_ok/<$tempkey>/<$tempkeyvalue>/<$pwid>" method="post">
+      <fieldset>
+         <legend>Czy na pewno usunąć tą wiadomość?</legend>
+         
+         <input type="submit" value="tak" class="ans_yes">
+         <input type="button" value="nie" class="ans_no" onclick="javascript:history.back();">
+      </fieldset>
+   </form>
 </div>

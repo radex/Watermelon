@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('WTRMLN_IS')) exit;
 /********************************************************************
 
   Watermelon CMS
@@ -49,6 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
             <?=$pw_item->nick ?>
          </td>
          <td>
+            <?php echo $pw_item->readed == 0 ? '<strong>[Nowy]</strong>' : ''; ?>
             <a href="$/pw/view/<?=$pw_item->id ?>">
                <?=$pw_item->subject ?>
             </a>
