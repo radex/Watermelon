@@ -1,9 +1,9 @@
-<?php if(!defined('WTRMLN_IS')) die;
+<?php if(!defined('WTRMLN_IS')) exit;
 /********************************************************************
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib DB
- * wersja 2.0.0
+ * wersja 2.2.0
  * 
  * Komunikacja z bazą danych
  * 
@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class DB
 {
    /*
-    * public static int $queriesCounter
+    * public static uint $queriesCounter
     * 
     * licznik zapytań (liczba wykonanych zapytań)
     */
@@ -63,12 +63,19 @@ class DB
     */
 
    private static $prefix;
+   
+   /*
+    * private static string[] $queriesList
+    * 
+    * lista wykonanych zapytań
+    */
+   
+   public static $queriesList = array();
 
    /*
     * public void connect(string $host, string $user, string $pass, string $name, string $prefix)
     * 
-    * Łączy z bazą danych
-    * 
+    * Łączy z bazą danych $name na serwerze $host jako user $user o haśle $pass z prefisami tabel $prefix
     */
    public function connect($host, $user, $pass, $name, $prefix)
    {
@@ -78,19 +85,19 @@ class DB
 
       if(!self::$link)
       {
-         panic('Lib DB: 0');
+         panic('Lib DB: error 0<br>nie można połączyć z bazą danych');
       }
 
       $dbselect = @mysql_select_db($name);
 
       if(!$dbselect)
       {
-         panic('Lib DB: 1');
+         panic('Lib DB: error 1<br>nie można wybrać bazy danych');
       }
    }
 
    /*
-    * public DBresult query(string $query[, string $arg1[, string $arg2[, ...]]])
+    * public static DBresult query(string $query[, string $arg1[, string $arg2[, ...]]])
     * 
     * Zapytanie do bazy danych
     * 
@@ -121,6 +128,7 @@ class DB
 
       $numargs = func_num_args();
       $arg_list = func_get_args();
+      
       for($i = 1; $i < $numargs; $i++)
       {
          $query = str_replace('%' . $i, $arg_list[$i], $query);
@@ -129,6 +137,15 @@ class DB
       // inkrementujemy licznik zapytań
 
       self::$queriesCounter++;
+      
+      // zapisujemy zapytanie, jeśli tryb debug
+      
+      if(defined('DEBUG'))
+      {
+         self::$queriesList[] = $query;
+      }
+      
+      // wykonujemy zapytanie
 
       $queryResult = mysql_query($query);
 
@@ -139,14 +156,12 @@ class DB
       else
       {
          self::$errorList[] = mysql_error();
+         
          if(defined('DEBUG'))
          {
             throw new Exception('Nieudane wykonanie zapytania. Błąd: ' . self::lastError());
          }
-         else
-         {
-            panic('Błąd SQL');
-         }
+         
          return false;
       }
    }
@@ -154,8 +169,7 @@ class DB
    /*
     * public static string[] errorList()
     * 
-    * Zwraca zawartość listy błędów
-    * 
+    * Zwraca listę błędów
     */
 
    public static function errorList()
@@ -167,7 +181,6 @@ class DB
     * public static string lastError()
     * 
     * Zwraca ostatni napotkany błąd
-    * 
     */
 
    public static function lastError()
@@ -176,15 +189,45 @@ class DB
    }
 
    /*
-    * public static int queries()
+    * public static uint queries()
     * 
     * Zwraca liczbę wykonanych zapytań
-    * 
     */
 
    public static function queries()
    {
       return self::$queriesCounter;
+   }
+   
+   /*
+    * public static int insert_id()
+    * 
+    * zwraca ID ostatnio dodanego elementu
+    */
+   
+   public static function insert_id()
+   {
+      return mysql_insert_id();
+   }
+   
+   /*
+    * public static string[] queriesList()
+    * 
+    * zwraca listę zapytań gdy włączony
+    * tryb DEBUG, w przeciwnym wypadku
+    * zwraca false
+    */
+   
+   public static function queriesList()
+   {
+      if(defined('DEBUG'))
+      {
+         return self::$queriesList;
+      }
+      else
+      {
+         return false;
+      }
    }
 }
 
@@ -205,7 +248,6 @@ class DBresult
     * public void DBresult(mysql_result $res)
     * 
     * Ustawia $this->res
-    * 
     */
    public function DBresult($res)
    {
@@ -216,7 +258,6 @@ class DBresult
     * public int num_rows()
     * 
     * Zwraca ilość znalezionych wyników
-    * 
     */
 
    public function num_rows()
@@ -228,7 +269,6 @@ class DBresult
     * public object to_obj()
     * 
     * Zwraca dane w postaci obiektu
-    * 
     */
 
    public function to_obj()
@@ -240,12 +280,22 @@ class DBresult
     * public array to_array()
     * 
     * Zwraca dane w postaci tablicy
-    * 
     */
 
    public function to_array()
    {
       return mysql_fetch_array($this->res);
+   }
+   
+   /*
+    * public bool exists()
+    * 
+    * Zwraca true, gdy element istnieje, false w przeciwnym wypadku
+    */
+   
+   public function exists()
+   {
+      return (mysql_num_rows($this->res) == 0) ? false : true;
    }
 }
 
