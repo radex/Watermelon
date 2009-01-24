@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -36,6 +36,16 @@ class User extends Plugin
     */
    
    private static $LoggedIn = null;
+   
+   /*
+    * private static object[] $users
+    * 
+    * tablica z danymi userów w postaci obiektu.
+    * 
+    * $users = array(UID => object(...), UID => object())
+    */
+   
+   private static $users;
 
    /*
     * public void User()
@@ -144,20 +154,28 @@ class User extends Plugin
    {
       //TODO
    }
-
-   public function GetUserData($dataname)
-   {
-      //TODO
-   }
-
+   
+   /*
+    * public void Logout()
+    * 
+    * wylogowuje użytkownika (niszczy sesję, nie pokazuje żadnych treści)
+    */
+   
    public function Logout()
    {
       session_destroy();
       
       self::$LoggedIn = false;
-      
-      //TODO
    }
+   
+   /*
+    * public bool IsLoggedIn()
+    * 
+    * Sprawdza, czy użytkownik jest zalogowany.
+    * 
+    * zwraca true, jeśli jeśli użytkownik jest zalogowany,
+    * w przeciwnym wypadku zwraca false.
+    */
    
    public function IsLoggedIn()
    {
@@ -168,19 +186,35 @@ class User extends Plugin
          return self::$LoggedIn;
       }
       
+      // sprawdzamy, czy sesja istnieje
+      
+      if(!isset($_SESSION['WTRMLN_USER']))
+      {
+         self::$LoggedIn = false;
+         return false;
+      }
+      
       // sprawdzamy, czy user istnieje
       
       $userdata = $this->User->LoginUserData($_SESSION['WTRMLN_USER']);
       
-      if($userdata->num_rows() == 0)
+      if(!$userdata->exists())
+      {
+         self::$LoggedIn = false;
+         return false;
+      }
+      
+      // sprawdzamy, czy UID pasuje do nicka
+      
+      $userdata = $userdata->to_obj();
+      
+      if($userdata->id != $_SESSION['WTRMLN_UID'])
       {
          self::$LoggedIn = false;
          return false;
       }
       
       // sprawdzamy poprawność hasła
-      
-      $userdata = $userdata->to_obj();
 
       if($_SESSION['WTRMLN_PASS'] != $userdata->password)
       {
@@ -188,23 +222,115 @@ class User extends Plugin
          return false;
       }
       
-      // sprawdzamy kiedy ostatnio był koleś (limit długości sesji)
+      // sprawdzamy kiedy ostatnio był użytkownik
+      // jeśli przekroczony limit długości sesji (1800 sekund)
+      // automatycznie wylogowuje
       
       if($_SESSION['WTRMLN_LASTSEEN'] < time() - 1800)
       {
          $this->Logout();
+         return false;
       }
+      
+      // aktualizujemy dane
       
       $_SESSION['WTRMLN_LASTSEEN'] = time();
       
       self::$LoggedIn = true;
       
-      return true;
+      $this->User->UpdateLastSeen($_SESSION['WTRMLN_UID']);
       
-      //TODO
+      return true;
    }
-
-   // TODO
+   
+   /*
+    * public bool IsAdmin()
+    * 
+    * sprawdza, czy zalogowany użytkownik jest adminem.
+    * jednocześnie sprawdza, czy w ogóle jest zalogowany.
+    * 
+    * zwraca true, jeśil zalogowany użytkownik jest adminem,
+    * a gdy użytkownik nie jest adminem, lub w ogóle nie jest
+    * zalogowany zwraca false.
+    */
+   
+   public function IsAdmin()
+   {
+      // sprawdzamy, czy w ogóle jest zalogowany
+      
+      if(!$this->IsLoggedIn())
+      {
+         return false;
+      }
+      
+      // sprawdzamy, czy jest w tablicy superusers
+      
+      $superusers = Config::getSuperusers();
+      
+      if(array_search($_SESSION['WTRMLN_USER'], $superusers) === false)
+      {
+         return false;
+      }
+      
+      // sprawdzamy, czy ma odpowiednie uprawnienia w bazie danych
+      
+      $priviliges = $this->getData($_SESSION['WTRMLN_UID']);
+      
+      if($priviliges->a_paaccess !== '1')
+      {
+         return false;
+      }
+      
+      return true;
+   }
+   
+   /*
+    * public static string getNick(uint $uid)
+    * 
+    * zwraca nick danego użytkownika na podstawie UID
+    * 
+    * uint $uid - ID użytkownika, którego nick ma zostać zwrócony
+    */
+   
+   public static function getNick($uid)
+   {
+      $uid = intval($uid);
+      
+      if(isset(self::$users[$uid]))
+      {
+         return self::$users[$uid]->nick;
+      }
+      
+      $data = Loader::model('user')->UserData($uid)->to_obj();
+      
+      self::$users[$uid] = $data;
+      
+      return $data->nick;
+   }
+   
+   /*
+    * public static string getData(uint $uid)
+    * 
+    * zwraca dane danego użytkownika na podstawie UID
+    * 
+    * uint $uid - ID użytkownika, którego dane mają zostać zwrócone
+    */
+   
+   public static function getData($uid)
+   {
+      $uid = intval($uid);
+      
+      if(isset(self::$users[$uid]))
+      {
+         return self::$users[$uid];
+      }
+      
+      $data = Loader::model('user')->UserData($uid)->to_obj();
+      
+      self::$users[$uid] = $data;
+      
+      return $data;
+   }
 }
 
 ?>

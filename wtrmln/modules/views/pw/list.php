@@ -43,25 +43,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
          Opcje
       </th>
    </tr>
-   <? while($pw_item = $pwlist->to_obj()){ ?>
+   <list object $pwlist>
       <tr>
          <td class="tc">
-            <?=$pw_item->nick ?>
+            <$nick>
          </td>
          <td>
-            <?php echo $pw_item->readed == 0 ? '<strong>[Nowy]</strong>' : ''; ?>
-            <a href="$/pw/view/<?=$pw_item->id ?>">
-               <?=$pw_item->subject ?>
+            <?php echo $readed == 0 ? '<strong>[Nowy]</strong>' : ''; ?>
+            <a href="$/pw/view/<$id>">
+               <$subject>
             </a>
          </td>
          <td class="tc">
-            <?=plDate($pw_item->sent) ?>
+            <date $sent>
          </td>
          <td class="tc">
-            <a href="$/pw/delete/<?=$pw_item->id ?>">[Usuń]</a>
+            <a href="$/pw/delete/<$id>">[Usuń]</a>
          </td>
       </tr>
-   <? } ?>
+   </list>
 </table>
 
 <div class="tr">

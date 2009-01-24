@@ -158,6 +158,11 @@ h1
    text-shadow: 0px 2px 2px #aaa;
 }
 
+big
+{
+   font-size: 1.2em;
+}
+
 /* klasy CSS Watermelona
 ********************************************************************/
 
@@ -317,34 +322,6 @@ h1
    padding: 0;
    margin-bottom: -10px;
 }
-/*
-.box_q .ans_yes
-{
-   border: 1px solid #89A;
-   background: #f2f6fa url('images/bg.png') no-repeat 10px center;
-   font-weight: bold;
-   padding: 5px;
-   padding-left: 25px;
-   width: 75px;
-   font-size: 1.1em;
-   margin: 5px;
-   margin-left: 150px;
-   margin-top: 20px;
-}
-
-.box_q .ans_no
-{
-   border: 1px solid #89A;
-   background: #f2f6fa url('images/bn.png') no-repeat 10px center;
-   font-weight: bold;
-   padding: 5px;
-   padding-left: 25px;
-   width: 75px;
-   font-size: 1.1em;
-   margin: 5px;
-   margin-left: 150px;
-}
-*/
 
 .box_q p
 {
@@ -612,4 +589,14 @@ h1
 #sidebar:hover a:hover
 {
    border: 0;
+}
+
+/***/
+
+.posttools_n
+{
+   font-size: .9em;
+   color: #888;
+   margin-top: -15px;
+   margin-bottom: 10px;
 }

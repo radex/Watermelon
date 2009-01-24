@@ -1,9 +1,9 @@
-<?php
+<?php if(!defined('WTRMLN_IS')) exit;
 /********************************************************************
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -19,22 +19,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
-
-   class Logout extends AdminModule
-   {
-      function Logout()
-      {
-         parent::AdminModule();
-      }
-
-      function index()
-      {
-         $_SESSION['WTRMLN_ADMIN_LOGGED_IN'] = '*****';
-         $_SESSION['WTRMLN_ADMIN_LOGIN'] = '*********';
-         $_SESSION['WTRMLN_ADMIN_PASS'] = '**********';
-
-         header('Location: ' . WTRMLN_ADMIN . 'login.php');
-         exit;
-      }
-   }
 ?>
+
+<div class="box_e">
+   Nieznany błąd
+</div>

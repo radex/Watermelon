@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Benchmark extends Plugin
 {
    /*
-    * private static string[] $benchmarks
+    * public static string[] $benchmarks
     * 
     * tablica zawierająca czasy (zapisywane tutaj przez Benchmark::start()).
     * czasy te są przedstawione jako string, ponieważ int przy skomplikowanych
@@ -38,7 +38,7 @@ class Benchmark extends Plugin
     * string[] $benchmarks = array(int $microtime[, int $microtime[, ...]])
     */
    
-   private static $benchmarks;
+   public static $benchmarks;
    
    /*
     * public static void start(string $benchmarkName)
@@ -83,7 +83,6 @@ class Benchmark extends Plugin
       // liczymy różnicę
       if(function_exists('bcsub'))
       {
-         var_dump($microtime, self::$benchmarks[$benchmarkName]);
          $difference = bcsub($microtime, self::$benchmarks[$benchmarkName]);
       }
       else

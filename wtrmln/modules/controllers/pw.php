@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ class PW extends Controller
       {
          // wyświetlamy listę
          
-         echo $this->load->view('pw_pwlist', array('pwlist' => $pwlist));
+         echo $this->load->view('pw_list', array('pwlist' => $pwlist));
       }
    }
    
@@ -222,13 +222,7 @@ class PW extends Controller
       
       $this->TempKeys = $this->load->model('TempKeys');
       
-      $tempKey = strHash(uniqid(mt_rand(), true));
-      $tempKey = substr($tempKey, 0, 8);
-      
-      $tempKeyValue = strHash(uniqid(mt_rand(), true));
-      $tempKeyValue = substr($tempKeyValue, 0, 8);
-      
-      $this->TempKeys->MakeKey($tempKey, $tempKeyValue, $pw_id);
+      list($tempKey, $tempKeyValue) = $this->TempKeys->MakeKey($pw_id);
       
       // formularz "czy na pewno usunąć"
       
@@ -247,21 +241,19 @@ class PW extends Controller
       
       $this->TempKeys = $this->load->model('TempKeys');
       
-      // pobieramy dane tempkey'a
+      // pobieramy dane tempkeya
       
       $tempKeyData = $this->TempKeys->GetKey($tempKey);
       
       // sprawdzamy, czy takowy istnieje
       
-      if($tempKeyData->num_rows() == 0)
+      if(!$tempKeyData)
       {
          echo $this->load->view('pw_cannotdeletepw');
          return;
       }
       
       // sprawdzamy czy klucz się zgadza z wartością
-      
-      $tempKeyData = $tempKeyData->to_obj();
       
       if($tempKeyValue != $tempKeyData->value)
       {
@@ -287,7 +279,6 @@ class PW extends Controller
       
       echo $this->load->view("pw_pwdeleted");
    }
-   
    
 }
 ?>

@@ -4,7 +4,7 @@
 <head>
 <?php echo getMeta(); ?>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <link rel="stylesheet" type="text/css" href="<?php echo WTRMLN_THEMEURL ?>style.css" media="screen">
+   <link rel="stylesheet" type="text/css" href="<?php echo WTRMLN_THEMEURL ?>style.css">
    <!--[if lt IE 7]>
    <link rel="stylesheet" href="<?php echo WTRMLN_THEMEURL ?>ie.css">
    <![endif]-->
@@ -33,9 +33,13 @@
       &copy; Copyright 2008 by twoje Imię i Nazwisko<br>
       powered by <a href="http://watermeloncms.sourceforge.net">Watermelon CMS</a><br>
       <br>
+      <?php if(defined('DEBUG_FOOTER')){ ?>
       Zapytań do bazy danych: <?php echo DB::queries(); ?><br>
-      Wygenerowano w: <?php global $_w_startTime; echo microtime() - $_w_startTime; ?> s<br>
-      Zużyto pamięci: <?php echo memory_get_peak_usage() ?>    <?php echo memory_get_usage() ?><br>
+      Cache'owanie widoków <?php echo (defined('CACHE_VIEWS') ? 'włączone' : 'wyłączone') ?><br>
+      Zużyto pamięci: <?php echo memory_get_peak_usage() ?> <?php echo memory_get_usage() ?><br>
+      Wygenerowano w: <?php global $_w_startTime; Benchmark::$benchmarks['watermelon_time'] = $_w_startTime; echo Benchmark::end('watermelon_time', BENCHMARK_SITE); ?> µs<br>
+      <?php if(defined('DEBUG')) echo '---<br><div class="tl"><pre>' . htmlspecialchars(implode("\n", DB::queriesList())) . '</pre></div>'; ?>
+      <?php } ?>
    </div>
 </body>
 </html>

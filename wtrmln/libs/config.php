@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -28,6 +28,20 @@ class Config
    public static $defaultHashAlgo;
    public static $defaultController;
    public static $theme;
+   private static $superusers = null;
+   
+   public static function setSuperusers(array $superusers)
+   {
+      if(self::$superusers === NULL)
+      {
+         self::$superusers = $superusers;
+      }
+   }
+   
+   public static function getSuperusers()
+   {
+      return self::$superusers;
+   }
 }
 
 ?>

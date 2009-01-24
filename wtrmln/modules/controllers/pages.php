@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,25 +26,40 @@ class Pages extends Controller
    {
       parent::Controller();
    }
-
+   
    function Index()
    {
-      // wyciągamy segmenty URL-a (nazwa page'a)
-
+      // wyciągamy segmenty URL-a (nazwa page'a) i mierzymi ich ilość
+      
       $page = URL::$segments;
-
-      // łączymy w łańcuch
-      if(count($page) > 1)
+      
+      $segments = count($page);
+      
+      // jeśli brak segmentów
+      
+      if($segments == 0)
       {
-         $page = implode('/', $page);
+         $this->e404('');
+         return;
       }
       
+      // jeśli $page jest stringiem zamieniamy go na tablicę z jedną wartością
+      
+      if(is_string($page))
+      {
+         $page = array($page);
+      }
+      
+      // łączymy w łańcuch
+      
+      $page = implode('/', $page);
+      
       // sprawdzamy czy istnieje
-
+      
       $Pages = $this->load->model('Pages');
-
+      
       $data = $Pages->getData($page);
-
+      
       if($data->num_rows() > 0)
       {
          $data = $data->to_obj();
@@ -52,25 +67,25 @@ class Pages extends Controller
          // ustawiamy tytuł
          
          setH1($data->title);
-
+         
          $content = $data->content;
-
+         
          // przetwarzamy pseudotagi
-
+         
          $content = ViewTags::Process($content);
          
          // wykonujemy :)
-
+         
          eval('?>' . $content . '<?php ');
-
+         
       }
       else
       {
          $this->e404($page);
       }
    }
-
-   function e404($pageName = '')
+   
+   private function e404($pageName = '')
    {
       setH1('Błąd 404 : Nie odnaleziono');
       

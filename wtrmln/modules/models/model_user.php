@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -57,6 +57,7 @@ class Model_User extends Model
    
    public function UpdatePassword($nick, $hash, $salt, $hashAlgo)
    {
+      $nick = mysql_real_escape_string($nick);
       return $this->db->query("UPDATE  `__users` SET " .
                               "`password` = '%1', `hashalgo` = '%2', `salt` = '%3' " .
                               "WHERE `nick` = '%4'", $hash, $hashAlgo, $salt, $nick);
@@ -79,9 +80,52 @@ class Model_User extends Model
       return ($user == 0 ? FALSE : TRUE);
    }
    
+   /*
+    * public DBresult UserData(string $nick)
+    * public DBresult UserData(uint $uid)
+    * 
+    * zwraca dane użytkownika na podstawie nicka, lub UID
+    * 
+    * string $login - nick usera, którego dane mają być zwrócone
+    * uint   $uid   - id usera, którego dane mają być zwrócone
+    */
+   
    public function UserData($nick)
    {
-      return $this->db->query("SELECT * FROM `__users` WHERE `nick` = '%1'", $nick);
+      if(is_int($nick))
+      {
+         $uid = intval($nick);
+         return $this->db->query("SELECT * FROM `__users` JOIN `__privileges` ON `__users`.`id` = `__privileges`.`uid` WHERE `__users`.`id` = '%1'", $uid);
+      }
+      
+      $nick = mysql_real_escape_string($nick);
+      
+      return $this->db->query("SELECT * FROM `__users` JOIN `__privileges` ON `__users`.`id` = `__privileges`.`uid` WHERE `__users`.`nick` = '%1'", $nick);
+   }
+   
+   /*
+    * public void UpdateLastSeen(uint $uid)
+    * 
+    * uaktualnia pole "ostatnio widziany" dla użytkownika o ID = $uid
+    * 
+    * uint $uid - ID usera, którego pole "ostatnio widziany" ma zostać uaktualnione
+    */
+   
+   public function UpdateLastSeen($uid)
+   {
+      $uid = intval($uid);
+      $this->db->query("UPDATE `__users` SET `lastseen` = '%1' WHERE `id` = '%2'", time(), $uid);
+   }
+   
+   /*
+    * public DBresult GetOnlineUsers()
+    * 
+    * zwraca dane osób, które są online (w sensie: były widziane nie dawniej jak 5 minut temu)
+    */
+   
+   public function GetOnlineUsers()
+   {
+      return $this->db->query("SELECT * FROM `__users` WHERE `lastseen` > '%1'", time() - 300);
    }
 }
 

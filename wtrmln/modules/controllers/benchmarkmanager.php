@@ -76,7 +76,7 @@ class BenchmarkManager extends Controller
                echo '<tr>';
             }
             
-            echo '<td>' . $value . ' ms</td>';
+            echo '<td>' . $value . ' µs</td>';
             
             $i++;
             
@@ -90,7 +90,7 @@ class BenchmarkManager extends Controller
          
          echo '</table>';
          
-         echo '<strong>Średni wynik:</strong> ' . (int) (array_sum($values) / count($values)) . ' ms';
+         echo '<strong>Średni wynik:</strong> ' . (int) (array_sum($values) / count($values)) . ' µs';
       }
    }
    
