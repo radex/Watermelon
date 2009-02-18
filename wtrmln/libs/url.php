@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib URL
- * wersja 1.8.1
+ * wersja 1.8.5
  * 
  * Parsowanie URL-i etc.
  * 
@@ -55,6 +55,14 @@ class URL
     */
    
    public static $method = '';
+   
+   /*
+    * public static string $message
+    * 
+    * nazwa wiadomości do wykonania (gdy pusta: null)
+    */
+   
+   public static $message = null;
    
    /*
     * private static bool $inited
@@ -165,6 +173,13 @@ class URL
                $segment2 .= chr($char);
             }
             
+            // dwukropek (:)
+            
+            if($char == 58)
+            {
+               $segment2 .= chr($char);
+            }
+            
             // podkreślenie (_)
             
             if($char == 95)
@@ -180,6 +195,39 @@ class URL
          }
       }
       
+      // sprawdzamy czy jest ustawiona wiadomość
+      
+      if(isset($URL2[0]))
+      {
+         if(substr($URL2[0], 0, 4) == 'msg:')
+         {
+            $message = substr($URL2[0], 4);
+            array_shift($URL2);
+            
+            $seg   = strtolower($message);
+            $seg   = str_split($seg);
+            $seg_n = '';
+            
+            // filtruję nazwę (zostawiam tylko litery i znaki podkreślenia
+            
+            foreach($seg as $char)
+            {
+               $char = ord($char);
+               
+               if($char >= 97 && $char <= 122)
+               {
+                  $seg_n .= chr($char);
+               }
+               
+               if($char == 95)
+               {
+                  $seg_n .= chr($char);
+               }
+            }
+            
+            self::$message = $seg_n;
+         }
+      }
       
       // czyszczenie nazwy kontrolera
       // (jeśli brak nazwy kontrolera, ustaw na domyślną)
