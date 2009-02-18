@@ -1,9 +1,9 @@
-<?php if(!defined('WTRMLN_IS')) die;
+<?php
 /********************************************************************
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib ViewTags
- * wersja 1.2.8
+ * wersja 2.0.0
  * 
  * Przetwarzanie pseudo-tagów używanych m. in. w widokach.
  */
@@ -46,7 +46,7 @@ class ViewTags
       $data = str_replace('<?=', '<?php echo ', $data);
       
       // umożliwiamy w prosty sposób tworzenie ścieżek do podstron
-
+      
       $data = str_replace('href="$/', 'href="' . WTRMLN_SITEURL, $data);
       $data = str_replace('action="$/', 'action="' . WTRMLN_SITEURL, $data);
       
@@ -79,13 +79,36 @@ class ViewTags
       $data = preg_replace('#<\?php \} \?>[\s]+<\?php else\{ \?>#', '<?php }else{ ?>', $data);
       
       // tag end
-
-      $data = preg_replace('#<end>#', '<?php } ?>', $data);
+      
+      /*$data = preg_replace('#<end>#', '<?php } ?>', $data);*/ //deprecated
+      
+      // tag nick
+      
+      //$data = preg_replace_callback('#<nick \$([a-zA-Z0-9_]+)>#', array('ViewTags', 'tag_nick'), $data);
+      $data = preg_replace('#<nick \$([a-zA-Z0-9_]+)>#', '<?php echo User::getNick($\\1); ?>', $data);
+      
+      // tag date
+      
+      //$data = preg_replace_callback('#<date \$([a-zA-Z0-9_]+)>#', array('ViewTags', 'tag_date'), $data);
+      $data = preg_replace('#<date \$([a-zA-Z0-9_]+)>#', '<?php echo plDate($\\1); ?>', $data);
+      
+      // tag unpack
+      
+      $data = preg_replace('#<unpack \$([a-zA-Z0-9_]+)>#', '<?php foreach($\\1 as $key => $var){$$key = $var;} ?>', $data);
+            
+      // tag list object
+      
+      $data = preg_replace('#<list object \$([a-zA-Z0-9_]+)>#', '<?php while($\\1_item = $\\1->to_obj()){foreach($\\1_item as $key => $var){$$key = $var;} ?>', $data);
+      $data = preg_replace('#</list>#', '<?php } ?>', $data);
       
       // tag load page
       
       $data = preg_replace_callback('#<load page ([^>]+)>#', array('ViewTags', 'tag_load_page'), $data);
-
+      
+      // tag block
+      
+      $data = preg_replace('#<block ([^>]+)>#', '<?php echo Loader::Block(\'\\1\'); ?>', $data);
+      
       return $data;
    }
 
@@ -102,6 +125,36 @@ class ViewTags
    private static function tag_variable($data)
    {
       return '<?php echo $' . $data[1] . '; ?>';
+   }
+   
+   /*
+    * private static string tag_nick(string[2] $data)
+    * 
+    * obsługuje pobieranie nicku tzn. zamienia przykładowe <nick $uid>
+    * na <?php echo User::getNick($uid); ?>
+    * UID jest brany z drugiego elementu $data. Pierwszy jest
+    * niewykorzystywany. Istnieje on ze względu na sposób działania funkcji
+    * preg_replace_callback.
+    */
+
+   private static function tag_nick($data)
+   {
+      return '<?php echo User::getNick($' . $data[1] . '); ?>';
+   }
+   
+   /*
+    * private static string tag_date(string[2] $data)
+    * 
+    * obsługuje wyświetlanie polskich dat tzn. zamienia przykładowe <date $created>
+    * na <?php echo plDate($created); ?>
+    * timestamp jest brany z drugiego elementu $data. Pierwszy jest
+    * niewykorzystywany. Istnieje on ze względu na sposób działania funkcji
+    * preg_replace_callback.
+    */
+
+   private static function tag_date($data)
+   {
+      return '<?php echo plDate($' . $data[1] . '); ?>';
    }
 
    /*

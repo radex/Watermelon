@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php
 /********************************************************************
 
   Watermelon CMS
@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib DB
- * wersja 2.2.0
+ * wersja 2.2.2
  * 
  * Komunikacja z bazą danych
  * 
@@ -157,10 +157,7 @@ class DB
       {
          self::$errorList[] = mysql_error();
          
-         if(defined('DEBUG'))
-         {
-            throw new Exception('Nieudane wykonanie zapytania. Błąd: ' . self::lastError());
-         }
+         panic('Nieudane wykonanie zapytania. Błąd: ' . self::lastError());
          
          return false;
       }

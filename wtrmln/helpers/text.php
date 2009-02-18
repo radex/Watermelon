@@ -77,6 +77,8 @@ function generatePlFormOf($int, $odm1, $odm2, $odm3)
 
 function plDate($timestamp)
 {
+   $timestamp = intval($timestamp);
+   
    // mniej niż minuta temu
    
    if($timestamp + 60 > time())
@@ -88,13 +90,13 @@ function plDate($timestamp)
    
    if($timestamp + 3600 > time())
    {
-      $minutesAgo = (int) ((time() - $timestamp)/60);
+      $minutesAgo = (int) ((time() - $timestamp) / 60);
       return $minutesAgo . ' ' . generatePlFormOf($minutesAgo, 'minutę', 'minuty', 'minut') . ' temu';
    }
    
    // dane z timestampu
    
-   list($day, $month, $year, $hour, $minute) = explode('.', date('d.m.Y.H.i', $timestamp));
+   list($day, $month, $year, $hour, $minute) = explode('.', date('j.m.Y.H.i', $timestamp));
    
    // dane z teraz
    
@@ -123,7 +125,47 @@ function plDate($timestamp)
    
    // dawniej niż przedwczoraj
    
-   return $day . '.' . $month . '.' . $year . ' ' . $hour . ':' . $minute;
+   switch($month)
+   {
+      case 1:
+         $month = 'stycznia';
+         break;
+      case 2:
+         $month = 'lutego';
+         break;
+      case 3:
+         $month = 'marca';
+         break;
+      case 4:
+         $month = 'kwietnia';
+         break;
+      case 5:
+         $month = 'maja';
+         break;
+      case 6:
+         $month = 'czerwca';
+         break;
+      case 7:
+         $month = 'lipca';
+         break;
+      case 8:
+         $month = 'sierpnia';
+         break;
+      case 9:
+         $month = 'września';
+         break;
+      case 10:
+         $month = 'października';
+         break;
+      case 11:
+         $month = 'listopada';
+         break;
+      case 12:
+         $month = 'grudnia';
+         break;
+   }
+   
+   return $day . ' ' . $month . ' ' . $year . ' ' . $hour . ':' . $minute;
 }
 
 ?>

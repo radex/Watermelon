@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -31,6 +31,15 @@ class Controller
       $this->load  = new Loader();
       $this->user  = new User();
       self::$_user = $this->user;
+      
+      if(defined('ADMIN_MODE'))
+      {
+         if(!$this->user->IsAdmin())
+         {
+            header('Location: ' . WTRMLN_MAINURL . 'login');
+            exit;
+         }
+      }
    }
 
    /*

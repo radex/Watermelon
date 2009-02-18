@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) die;
+<?php
 /********************************************************************
 
   Watermelon CMS
@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib URL
- * wersja 1.8.0
+ * wersja 1.8.1
  * 
  * Parsowanie URL-i etc.
  * 
@@ -108,7 +108,7 @@ class URL
       
       // pobieramy dane o URL-u
       
-      $URL  = (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
+      $URL  = (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : @getenv('PATH_INFO'));
       $URL2 = array();
       
       // parsujemy segmenty URL-a (ze względów bezpieczeństwa pozwalam

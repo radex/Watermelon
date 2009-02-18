@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,34 +20,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-/*
- * Lib PluginsConfigDatabase
- * wersja 1.0.1
- * 
- * Różne informacje związane z pluginami...
- * 
- */
+include 'url.php';
 
-class PluginsConfigDatabase
-{
-   function __construct()
-   {
-      if(Watermelon::$pcdb !== null)
-      {
-         foreach(Watermelon::$pcdb as $key => $var)
-         {
-            $this->$key = $var;
-         }  
-      }
-   }
-   
-   function __destruct()
-   {
-      foreach($this as $key => $var)
-      {
-         Watermelon::$pcdb->$key = $var;
-      }
-   }
-}
+include 'db.php';
+
+include 'cache.php';
+include 'loader.php';
+include 'pluginscdb.php';
+
+include 'controller.php';
+include 'model.php';
+include 'plugin.php';
+include 'block.php';
 
 ?>

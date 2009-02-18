@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class BenchmarkManager extends Controller
 {
-   function BenchmarkManager()
+   function __construct()
    {
       parent::Controller();
    }
@@ -37,7 +37,7 @@ class BenchmarkManager extends Controller
       
       // jeśli brak benchmarków
       
-      if($benchmarksResult->num_rows() == 0)
+      if(!$benchmarksResult->exists())
       {
          echo 'brak benchmarków';
          return;
@@ -47,15 +47,13 @@ class BenchmarkManager extends Controller
       
       while($benchmark = $benchmarksResult->to_obj())
       {
-         $benchmarks[$benchmark->name][] = (int) $benchmark->value;
+         $benchmarks[$benchmark->name][] = $benchmark->value;
       }
       
       // robimy listę
       
       foreach($benchmarks as $key => $var)
       {
-         $values = array();
-         
          echo '<br><br><h2>' . $key . ' [<a href="$/benchmarkmanager/delete/' . $key . '/">Usuń</a>]</h2>';
          
          echo '<table>';
@@ -85,18 +83,20 @@ class BenchmarkManager extends Controller
                echo '</tr>';
             }
             
-            $values[] = $value;
+            $valuesCounter++;
+            $values = bcadd($values, $value);
          }
          
          echo '</table>';
          
-         echo '<strong>Średni wynik:</strong> ' . (int) (array_sum($values) / count($values)) . ' µs';
+         echo '<strong>Średni wynik:</strong> ' . bcdiv($values, $valuesCounter) . ' µs';
       }
    }
    
    function delete()
    {
       $this->db->query("DELETE FROM `__benchmark` WHERE `name` = '%1'", $this->url->segment(1));
+      $this->db->query("OPTIMIZE TABLE `__benchmark`");
       
       echo 'done, <a href="$/benchmarkmanager">wróć</a>';
    }
