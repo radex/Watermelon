@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008-2009 Radosław Pietruszewski
+Copyright 2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -27,47 +27,21 @@ class Test extends Controller
       parent::Controller();
    }
    
-   function Index()
+   function index()
    {
-      /* piaskownica */
+      setH1('Strona główna');
       
-      Watermelon::$acceptMessages[] = 'login_success';
+      echo '<div class="dr"><img src="http://upload.wikimedia.org/wikipedia/commons/d/d6/Watermelon.svg" alt="arbuz z wiki" style="width:200px;height:200px;"><br>Arbuz z <a href="http://commons.wikimedia.org/">Wikimedia Commons</a></div>';
       
-      var_dump(URL::$segments, URL::$class, URL::$message, URL::$method);
+      echo '<p>Witaj w Watermelon CMS!</p>';
       
-      echo 'tutaj będzie przykładowy blok<br><br>';
+      echo '<p><a href="http://en.wikipedia.org/wiki/Watermelon">Trochę o watermelonach</a></p>';
       
-      echo $this->load->block('test');
+      echo '<p>Rzeczy do zobaczenia:</p>';
       
-      echo $this->load->block('koniecszkoły');
+      echo '<ul><li><a href="$/testowa/stronka">Testowa <em>strona własna</em></a></li>';
       
-      /* stare testy */
-      
-   	SetH1('Strona Główna');
-   	
-   	if($this->user->isLoggedIn())
-   	{
-   	   echo '<div class="box_t"><strong>Jesteś zalogowany</strong>' .
-              'Możesz się <a href="$/login/logout">wylogować</a>.</div>';
-   	}
-   	else
-   	{
-   	   echo '<div class="box_t"><strong>Nie jesteś zalogowany</strong>' .
-   	        'Możesz się <a href="$/login">zalogować</a>. Jeśli jeszcze nie masz konta ' .
-   	        'możesz się <a href="$/register">zarejestrować</a>.</div>';
-   	}
-   	
-   	//echo '<div class="dr"><img src="http://upload.wikimedia.org/wikipedia/commons/d/d6/Watermelon.svg" alt="arbuz z wiki" style="width:200px;height:200px;"><br>Arbuz z <a href="http://commons.wikimedia.org/">Wikimedia Commons</a></div>';
-   	
-   	echo '<p>Witaj w Watermelon CMS!</p>';
-   	
-   	echo '<p><a href="http://en.wikipedia.org/wiki/Watermelon">Trochę o watermelonach</a></p>';
-      
-   	echo '<p>Rzeczy do zobaczenia:</p>';
-      
-   	echo '<ul><li><a href="$/testowa/stronka">Testowa <em>strona własna</em></a></li>';
-      
-   	echo '<li><a href="$/login/">Strona logowania</a></li>';
+      echo '<li><a href="$/login/">Strona logowania</a></li>';
       
       echo '<li><a href="$/login/sendnewpassword">Formularz wysłania nowego hasła</a></li></ul>';
       
@@ -92,18 +66,5 @@ class Test extends Controller
       echo '<div class="box_i"><strong>Informacja</strong>niebieski</div>';
       
       echo '<div class="box_q"><form action="" method="post"><fieldset><legend>Pytanie zaawansowane</legend><p>bla, bla, bla, bla, bla, bla-bla Bla, bla Bla bla. Bla, bla Bla?</p><input type="button" value="tak" class="ans_yes"><input type="button" value="nie" class="ans_no"></fieldset></form></div>';
-      
-      echo plDate(mktime(5,7,58,12,15,1978));
-   }
-   
-   function phpinfo()
-   {
-      phpinfo();
-   }
-   
-   function clearcache()
-   {
-      Cache::ClearCache();
    }
 }
-?>

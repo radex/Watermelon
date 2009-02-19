@@ -22,11 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Model_PW extends Model
 {
-   public function Model_PW()
-   {
-      parent::Model();
-   }
-   
    /*
     * public DBresult GetPWList(uint $user)
     *
@@ -121,6 +116,12 @@ class Model_PW extends Model
       $id = intval($id);
       $this->db->query("DELETE FROM `__private_messages` WHERE `id` = '%1'", $id);
    }
+   
+   /*
+    * public function SetReaded(uint $id)
+    * 
+    * Ustawia flagę "przeczytano" prywatnej wiadomości o ID = $id
+    */
    
    public function SetReaded($id)
    {

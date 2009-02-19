@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,9 +22,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Model_Pages extends Model
 {
-   public function Model_Pages()
+   /*
+    * public DBresult GetPages()
+    * 
+    * pobiera strony
+    */
+   
+   public function GetPages()
    {
-      parent::Model();
+      return $this->db->query("SELECT * FROM `__pages` ORDER BY `id` DESC");
    }
 
    /*
@@ -38,6 +44,62 @@ class Model_Pages extends Model
       $pagename = mysql_real_escape_string($pagename);
 
       return $this->db->query("SELECT `content`, `title` FROM `__pages` WHERE `name` = '%1'", $pagename);
+   }
+
+   /*
+    * public DBresult GetData(int $pageID)
+    *
+    * zwraca dane page'a o ID $pageID
+    */
+
+   public function GetDataByID($pageID)
+   {
+      $pageID = intval($pageID);
+
+      return $this->db->query("SELECT * FROM `__pages` WHERE `id` = '%1'", $pageID);
+   }
+   
+   /*
+    * public void Post(string $title, string $name, string $text)
+    * 
+    * tworzy stronę o tytule $title, z treścią $text i nazwą $name
+    */
+   
+   public function Post($title, $name, $text)
+   {
+      $title = mysql_real_escape_string($title);
+      $name  = mysql_real_escape_string($name);
+      $text  = mysql_real_escape_string($text);
+      
+      $this->db->query("INSERT INTO `__pages` (`name`, `content`, `title`) VALUES ('%1', '%2', '%3')", $name, $text, $title);
+   }
+   
+   /*
+    * public void Edit(uint $id, string $title, string $name, string $text)
+    * 
+    * ustala stronie o ID = $id tytuł $title, nazwę $name oraz treść $text
+    */
+   
+   public function Edit($id, $title, $name, $text)
+   {
+      $title = mysql_real_escape_string($title);
+      $text  = mysql_real_escape_string($text);
+      $name  = mysql_real_escape_string($name);
+      $id    = intval($id);
+      
+      $this->db->query("UPDATE `__pages` SET `title` = '%1', `content` = '%2', `name` = '%3' WHERE `id` = '%4'", $title, $text, $name, $id);
+   }
+   
+   /*
+    * public void Delete(uint $id)
+    * 
+    * Usuwa stronę o ID = $id
+    */
+   
+   public function Delete($id)
+   {
+      $id = intval($id);
+      $this->db->query("DELETE FROM `__pages` WHERE `id` = '%1'", $id);
    }
 }
 ?>

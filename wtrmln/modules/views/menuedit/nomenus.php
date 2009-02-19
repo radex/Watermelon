@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008-2009 Radosław Pietruszewski
+Copyright 2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -21,30 +21,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<div class="dr">
+<a href="$/">Panel Admina</a> &gt; Menu
+
+<div class="tr">
    <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
+      <a href="$/menuedit/new/">Nowe menu</a>
    </big>
 </div>
 
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
-
-<div class="post">
-   <div class="posterdata">
-      <cite><$nick></cite>
-   </div>
-   <div class="posttools">
-   wysłany <date $sent>
-   </div>
-   <div class="postcontent">
-   <$text>
-   </div>
+<div class="box_i">
+   Brak menu.
 </div>
 
-<div class="dr">
+<div class="tr">
    <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
+      <a href="$/menuedit/new/">Nowe menu</a>
    </big>
 </div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>

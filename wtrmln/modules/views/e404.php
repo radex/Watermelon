@@ -19,32 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
+
+echo GUI::errorBox('Na <em>' . Config::$siteName . '</em> nie ma strony "' . $pageName . '".', '404');
+
 ?>
-
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
-
-<div class="post">
-   <div class="posterdata">
-      <cite><$nick></cite>
-   </div>
-   <div class="posttools">
-   wysłany <date $sent>
-   </div>
-   <div class="postcontent">
-   <$text>
-   </div>
-</div>
-
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>

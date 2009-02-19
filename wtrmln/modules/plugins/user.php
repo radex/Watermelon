@@ -143,9 +143,11 @@ class User extends Plugin
 
       // jeszcze informacyjka
       
-      setH1('Logowanie udane');
+      //setH1('Logowanie udane');
       
-      echo $this->load->view('login_success');
+      //echo $this->load->view('login_success');
+      
+      redirect(site_url('msg:login_success'));
       
       return true;
    }

@@ -22,14 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Pages extends Controller
 {
-   function __construct()
-   {
-      parent::Controller();
-   }
-   
    function Index()
    {
-      // wyciągamy segmenty URL-a (nazwa page'a) i mierzymi ich ilość
+      // wyciągamy segmenty URL-a (nazwa page'a) i mierzymy ich ilość
       
       $page = URL::$segments;
       
@@ -60,7 +55,7 @@ class Pages extends Controller
       
       $data = $Pages->getData($page);
       
-      if($data->num_rows() > 0)
+      if($data->exists())
       {
          $data = $data->to_obj();
          
@@ -89,7 +84,7 @@ class Pages extends Controller
    {
       setH1('Błąd 404 : Nie odnaleziono');
       
-      echo '<div class="box_e">Na <em>' . Config::$siteName . '</em> nie ma strony "' . $pageName . '".</div>';
+      echo $this->load->view('e404', array('pageName' => $pageName));
    }
 }
 ?>

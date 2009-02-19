@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008-2009 Radosław Pietruszewski
+Copyright 2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -19,32 +19,37 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
+
+$i = 0;
+$j = count($menus) - 1;
+
 ?>
 
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
+<a href="$/">Panel Admina</a> &gt; <a href="$/menuedit/">Menu</a> &gt; Panel Admina
 
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+<br><br>
 
-<div class="post">
-   <div class="posterdata">
-      <cite><$nick></cite>
-   </div>
-   <div class="posttools">
-   wysłany <date $sent>
-   </div>
-   <div class="postcontent">
-   <$text>
-   </div>
-</div>
-
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+<table>
+   <tr>
+      <th width="25%">Nazwa</th> <th width="50%">Opis</th> <th width="25%">Opcje</th>
+   </tr>
+   <foreach $menus as $menu>
+      <?php list($menuName, $menuTitle) = $menu; ?>
+      <tr>
+         <td>
+            <$menuName>
+         </td>
+         <td>
+            <$menuTitle>
+         </td>
+         <td>
+            <? if($i != $j){ ?> <a href="$/menuedit/pa_down/<$menuName>">[Na dół]</a> <? } ?>
+            <? if($i != 0){ ?> <a href="$/menuedit/pa_up/<$menuName>">[W górę]</a> <? } ?>
+         </td>
+      </tr>
+      <? $i++; ?>
+   </foreach>
+   <tr>
+      <th>Nazwa</th> <th>Opis</th> <th>Opcje</th>
+   </tr>
+</table>

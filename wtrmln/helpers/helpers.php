@@ -149,6 +149,18 @@ function site_url($url)
 }
 
 /*
+ * void redirect(string $url)
+ * 
+ * Przekierowuje na stronę o URL=$url
+ */
+
+function redirect($url)
+{
+   header('Location: ' . $url);
+   exit;
+}
+
+/*
  * string ClientIP()
  * 
  * zwraca IP odwiedzającego.

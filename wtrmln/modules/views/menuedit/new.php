@@ -21,33 +21,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
+<a href="$/">Panel Admina</a> &gt; <a href="$/menuedit">Menu</a> &gt; Nowe
+
 <?php
    Controller::addMeta(
-   '<style type="text/css">.newpw_box label{float:left;width:100px;display:block}'.
-   '.newpw_box #addressee, .newpw_box #subject{width:60%}'.
-   '.newpw_box #text{width: 100%; height:250px;}</style>');
+   '<style type="text/css">.newmenu_box label{float:left;width:100px;display:block}'.
+   '.newmenu_box #name, .newmenu_box #condition{width:60%}'.
+   '.newmenu_box #text{width: 100%; height:250px;}</style>');
 ?>
 
-<form action="$/pw/send" method="POST">
-   <fieldset class="newpw_box">
-      <legend>Nowa prywatna wiadomość</legend>
+<form action="$/menuedit/post/<$tkey>/<$tvalue>" method="POST">
+   <fieldset class="newmenu_box">
+      <legend>Nowe menu</legend>
       
-      <label for="addressee">Adresat:</label>
-      <input type="text" name="addressee" id="addressee" value="<$nick>">
+      <label for="name">Nazwa:</label>
+      <input type="text" name="name" id="name">
       
       <br>
       
-      <label for="subject">Temat:</label>
-      <input type="text" name="subject" id="subject" value="Re:<$subject>">
+      <label for="condition">Warunek:</label>
+      <input type="text" name="condition" id="condition">
       
       <br>
       
       <label for="text">Treść:</label><br>
       
-      <textarea name="text" id="text">[quote="<$nick>"]
-<$text>
-
-[/quote]</textarea>
+      <textarea name="text" id="text"></textarea>
+      
       <br>
       
       <input type="submit" id="submit" value="Wyślij!">

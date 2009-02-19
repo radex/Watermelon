@@ -22,10 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class PW extends Controller
 {
-   public function PW()
+   public function __construct()
    {
       parent::Controller();
-   
+      
       if(!$this->user->IsLoggedIn())
       {
          header('Location: ' . site_url(''));
@@ -48,7 +48,7 @@ class PW extends Controller
       
       // sprawdzamy, czy mamy jakieś pw
       
-      if($pwlist->num_rows() == 0)
+      if(!$pwlist->exists())
       {
          echo $this->load->view('pw_nopws');
       }
@@ -79,9 +79,9 @@ class PW extends Controller
       
       // sprawdzamy, czy w ogóle taka istnieje
       
-      if($pw_data->num_rows() == 0)
+      if(!$pw_data->exists())
       {
-         echo $this->load->view('pw_nosuchpw');
+         echo $this->load->view('pw_nosuch');
          return;
       }
       
@@ -91,7 +91,7 @@ class PW extends Controller
       
       if($pw_data->to != $_SESSION['WTRMLN_UID'])
       {
-         echo $this->load->view('pw_cannotviewpw');
+         echo $this->load->view('pw_cannotview');
          return;
       }
       
@@ -118,7 +118,7 @@ class PW extends Controller
       
       $adressee = $this->url->segment(1);
       
-      echo $this->load->view('pw_newpw', array('adressee' => $adressee));
+      echo $this->load->view('pw_new', array('adressee' => $adressee));
    }
    
    /*
@@ -139,9 +139,9 @@ class PW extends Controller
       
       // sprawdzamy, czy w ogóle taka istnieje
       
-      if($pw_data->num_rows() == 0)
+      if(!$pw_data->exists())
       {
-         echo $this->load->view('pw_nosuchpw');
+         echo $this->load->view('pw_nosuch');
          return;
       }
       
@@ -151,7 +151,7 @@ class PW extends Controller
       
       if($pw_data->to != $_SESSION['WTRMLN_UID'])
       {
-         echo $this->load->view('pw_cannotviewpw');
+         echo $this->load->view('pw_cannotview');
          return;
       }
       
@@ -184,7 +184,7 @@ class PW extends Controller
       
       $addresseeUID = $this->PW->GetAddresseeUID($_POST['addressee']);
       
-      if($addresseeUID->num_rows() == 0)
+      if(!$addresseeUID->exists())
       {
          echo $this->load->view('nosuchuser');
          return;
@@ -195,7 +195,7 @@ class PW extends Controller
       $this->PW->SendPW($_SESSION['WTRMLN_UID'], $addresseeUID->to_obj()->id,
                         $_POST['subject'], $_POST['text'], time());
       
-      echo $this->load->view('pw_pwsent');
+      echo $this->load->view('pw_sent');
    }
    
    /*
@@ -214,7 +214,7 @@ class PW extends Controller
       
       if($this->PW->GetPWAddressee($pw_id) != $_SESSION['WTRMLN_UID'])
       {
-         echo $this->load->view('pw_cannotdeletepw');
+         echo $this->load->view('pw_cannotdelete');
          return;
       }
       
@@ -239,45 +239,19 @@ class PW extends Controller
       $tempKeyValue = $this->url->segment(2);
       $pw_id = $this->url->segment(3);
       
-      $this->TempKeys = $this->load->model('TempKeys');
+      // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
       
-      // pobieramy dane tempkeya
-      
-      $tempKeyData = $this->TempKeys->GetKey($tempKey);
-      
-      // sprawdzamy, czy takowy istnieje
-      
-      if(!$tempKeyData)
+      if(!$this->load->model('TempKeys')->CheckKey($tempKey, $tempKeyValue, $pw_id))
       {
-         echo $this->load->view('pw_cannotdeletepw');
+         echo $this->load->view('pw_cannotdelete');
          return;
       }
       
-      // sprawdzamy czy klucz się zgadza z wartością
+      // skoro tak, to usuwamy
       
-      if($tempKeyValue != $tempKeyData->value)
-      {
-         echo $this->load->view('pw_cannotdeletepw');
-         return;
-      }
+      $this->load->model('PW')->Delete($pw_id);
       
-      // sprawdzamy czy klucz pasuje do usuwanej wiadomości
-      
-      if($pw_id != $tempKeyData->comment)
-      {
-         echo $this->load->view('pw_cannotdeletepw');
-         return;
-      }
-      
-      // skoro wszystko się zgadza no to usuwamy :p
-      
-      $this->TempKeys->DeleteKey($tempKey);
-      
-      $this->PW = $this->load->model('PW');
-      
-      $this->PW->Delete($pw_id);
-      
-      echo $this->load->view("pw_pwdeleted");
+      echo $this->load->view('pw_deleted');
    }
    
 }

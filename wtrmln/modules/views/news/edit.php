@@ -21,30 +21,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
+<a href="$/">Panel Admina</a> &gt; <a href="$/news">Newsy</a> &gt; Edycja
 
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+<?php
+   Controller::addMeta(
+   '<style type="text/css">.editnews_box label{float:left;width:100px;display:block}'.
+   '.editnews_box #title{width:60%}'.
+   '.editnews_box #text{width: 100%; height:250px;}</style>');
+?>
+<unpack $data>
+<form action="$/news/editsubmit/<$tkey>/<$tvalue>/<$id>" method="POST">
+   <fieldset class="editnews_box">
+      <legend>Edycja newsa</legend>
+      
+      <label for="title">Temat:</label>
+      <input type="text" name="title" id="title" value="<$title>">
+      
+      <br>
+      
+      <label for="text">Treść:</label><br>
+      
+      <textarea name="text" id="text"><?=htmlspecialchars($text)?></textarea>
+      
+      <br>
+      
+      <input type="submit" id="submit" value="Wyślij!">
 
-<div class="post">
-   <div class="posterdata">
-      <cite><$nick></cite>
-   </div>
-   <div class="posttools">
-   wysłany <date $sent>
-   </div>
-   <div class="postcontent">
-   <$text>
-   </div>
-</div>
-
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+   </fieldset>
+</form>

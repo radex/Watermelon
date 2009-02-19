@@ -21,33 +21,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
+<a href="$/">Panel Admina</a> &gt; <a href="$/pages">Strony</a> &gt; Edycja
+
 <?php
    Controller::addMeta(
-   '<style type="text/css">.newpw_box label{float:left;width:100px;display:block}'.
-   '.newpw_box #addressee, .newpw_box #subject{width:60%}'.
-   '.newpw_box #text{width: 100%; height:250px;}</style>');
+   '<style type="text/css">.editpage_box label{float:left;width:100px;display:block}'.
+   '.editpage_box #title, .editpage_box #name{width:60%}'.
+   '.editpage_box #text{width: 100%; height:250px;}</style>');
 ?>
-
-<form action="$/pw/send" method="POST">
-   <fieldset class="newpw_box">
-      <legend>Nowa prywatna wiadomość</legend>
+<unpack $data>
+<form action="$/pages/editsubmit/<$tkey>/<$tvalue>/<$id>" method="POST">
+   <fieldset class="editpage_box">
+      <legend>Edycja strony</legend>
       
-      <label for="addressee">Adresat:</label>
-      <input type="text" name="addressee" id="addressee" value="<$nick>">
+      <label for="title">Temat:</label>
+      <input type="text" name="title" id="title" value="<$title>">
       
       <br>
       
-      <label for="subject">Temat:</label>
-      <input type="text" name="subject" id="subject" value="Re:<$subject>">
+      <label for="name">Nazwa:</label>
+      <input type="text" name="name" id="name" value="<$name>">
       
       <br>
       
       <label for="text">Treść:</label><br>
       
-      <textarea name="text" id="text">[quote="<$nick>"]
-<$text>
-
-[/quote]</textarea>
+      <textarea name="text" id="text"><?=htmlspecialchars($content)?></textarea>
+      
       <br>
       
       <input type="submit" id="submit" value="Wyślij!">

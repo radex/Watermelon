@@ -24,6 +24,26 @@ class Controller
 {
    static public $_user;
    
+   public function __construct()
+   {
+      $this->url   = new URL();
+      $this->db    = new DB();
+      $this->load  = new Loader();
+      $this->user  = new User();
+      self::$_user = $this->user;
+      
+      if(defined('ADMIN_MODE'))
+      {
+         if(!$this->user->IsAdmin())
+         {
+            header('Location: ' . WTRMLN_MAINURL . 'login');
+            exit;
+         }
+      }
+   }
+   
+   /* DEPRECATED!!! */
+   
    public function Controller()
    {
       $this->url   = new URL();

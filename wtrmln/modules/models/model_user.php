@@ -22,11 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Model_User extends Model
 {
-   public function Model_User()
-   {
-      parent::Model();
-   }
-   
    /*
     * public DBresult LoginUserData(string $login)
     * 

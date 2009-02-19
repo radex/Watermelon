@@ -22,22 +22,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Model_TempKeys extends Model
 {
-   public function Model_TempKeys()
-   {
-      parent::Model();
-   }
-   
    /*
-    * public string[2] MakeKey(string $comment)
+    * public string[2] MakeKey(string $comment[, uint $time])
     * 
     * tworzy losowy klucz z komentarzem $comment,
-    * zapisuje go w bazie i zwraca użytkownikowi
+    * zapisuje go w bazie i zwraca użytkownikowi.
+    * Taki klucz ma żywotność 5 minut, lub wygasa
+    * $time + 5 minut, gdy $time jest podane
     * 
     * zwraca: array(string $key, string $value)
     * przy czym $key jest to klucz zapisany w bazie
     * danych, a $value to wartość przypisana do tego klucza
     * 
     * string $comment - komentarz do klucza
+    * uint   $time    - timestamp żywotności klucza. gdy
+    *                   podany, klucz wygaśnie 300 sekund
+    *                   później niż $time
     * 
     * przykład użycia:
     * 
@@ -45,7 +45,7 @@ class Model_TempKeys extends Model
     * list($key, $value) = $this->TempKeys->MakeKey('komentarz');
     */
    
-   public function MakeKey($comment)
+   public function MakeKey($comment, $time = null)
    {
       // generujemy losowy, ośmioznakowy klucz oraz wartość tego klucza
       
@@ -53,9 +53,16 @@ class Model_TempKeys extends Model
       $value = substr(strHash(uniqid(mt_rand(), true)), 0, 8);
       $comment = mysql_real_escape_string($comment);
       
+      // ustawiamy czas utworzenia
+      
+      if($time === null)
+      {
+         $time = time();
+      }
+      
       // zapisujemy klucz w bazie
       
-      $this->db->query("INSERT INTO `__temporary_keys` (`key`, `value`, `created`, `comment`) VALUES ('%1', '%2', '%3', '%4')", $key, $value, time(), $comment);
+      $this->db->query("INSERT INTO `__temporary_keys` (`key`, `value`, `created`, `comment`) VALUES ('%1', '%2', '%3', '%4')", $key, $value, $time, $comment);
       
       // usuwamy stare klucze
       
