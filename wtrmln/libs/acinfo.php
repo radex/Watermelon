@@ -20,22 +20,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-include 'url.php';
-
-include 'db.php';
-
-include 'cache.php';
-include 'loader.php';
-include 'pluginscdb.php';
-
-include 'controller.php';
-include 'model.php';
-include 'plugin.php';
-include 'block.php';
-
-if(defined('ADMIN_MODE'))
+interface iACMenu
 {
-   include 'acinfo.php';
+   public function getMenu($class, $method, $segments);
+}
+
+interface iACEvent
+{
+   public function getEvent();
+}
+
+class ACEvent
+{
+   public function __construct()
+   {
+      $this->url   = new URL();
+      $this->db    = new DB();
+      $this->load  = new Loader();
+      $this->user  = new User();
+   }
 }
 
 ?>
