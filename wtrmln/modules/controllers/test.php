@@ -22,13 +22,34 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Test extends Controller
 {
-   function __construct()
-   {
-      parent::Controller();
-   }
-   
    function Index()
    {
+      /* piaskownica 2 */
+      
+      ob_start();
+      ?>
+[b color="red"]test[/b]
+
+[quote=andrew]
+   [quote=radex]
+      blabla
+   [/quote]
+blablba
+[/quote]
+
+[php]
+$test = 'blabla';
+echo $test;
+$test = "test ${test} etste";
+[/php]
+      <?php
+      $content = ob_get_contents();
+      ob_end_clean();
+      
+      echo bbcode($content);
+      
+      return;
+      
       /* piaskownica */
       
       Watermelon::$acceptMessages[] = 'login_success';

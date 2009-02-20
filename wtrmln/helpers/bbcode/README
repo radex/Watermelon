@@ -1,0 +1,70 @@
+handyCode Class;
+Version: 2.1.2
+Author: Michał Środek
+Website: http://srodek.info
+kadu: 4152790
+
+Klasa generuje kod html na podstawie wpisanego kodu w odpowiednim formacie.
+
+(modyfikacje na potrzeby Watermelon CMS by Radex)
+
+LICENSE
+Klasa jest w pełni darmowa, może być dowolnie modyfikowana i rozprowadzana. Jedynym warunkiem jest umieszczenie informacji o autorze klasy.
+Biblioteka jest darmowa dlatego też autor nie ponosi żadnej odpowiedzialności za jakiekolwiek skutki spowodowane złym użytkowaniem(szczególnie wesji pochodnych) oraz nie udzela żadnej gwarancji/pomocy technicznej itp.
+
+CHANGELOG
+
+1 września 2008
+- poprawki zwiazane z pomijaniem 10(i dalszych) kontenera kodu php
+- poprawka zwiazana z kolorowaniem pustego stringu '' w kodzie sql (nospor)
+
+26 stycznia 2007 2.1.1
+- Poprawki w manualu
+- Dodana funkcja usuwająca parametry znacznikow [css] [html] etc, (obiekt klasy Rainbow jest tworzony tylko raz i trzeba w nim sprzątac ;))
+
+25 stycznia 2007 2.1
+- Dodałem odnajdowanie adresow internetowych oraz protekcję adresow e-mail
+- Poprawilem obsluge kolorowania kodow źródłowych, teraz skrypt się nie załamuje w niektórych przypadkach
+- protekcja listy [list] [/list] w momencie gdy nie posiada zadnego elementu [li] [/li]
+
+14 - 24 stycznia 2007 - 2.0
+handyCode
+- poprawilem dzialanie list(wczesniej potrójne zagnieżdżenie łamało skrypt)
+- dodalem możliwość operacji na dzieciach(jak to fajnie brzmi ;))
+- napisalem krótką dokumentacje
+- przyspieszyłem bibliotekę rozwijając funkcję rainbow() a wyrzucajac includowanie klasy pośredniczącej rainbow
+- poprawiłem kod odpowiedzialny za generowanie kodu css z parametrow globalnych
+- rozwiązałem problem parametrow specjalnych
+
+Rainbow:
+- kolory php teraz są pobierane z konfiguracji php (php.ini)
+- przyspieszone kolorowanie kodu css
+- poprawione kolorowanie kodu html(zawieszał się w niektórych specyficznych przypadkach)
+- dodałem informowanie o niepoprawnym kodzie html(wielkie litery/brak cudzyslowow itp.)
+- dodalem kolorowanie javascript, sql
+- usunąłem komplikacje wynikające z użycia cudzysłowa w parametrze html np. onclick="alert(\"ddd\")" zamieniając kazdy \" na odpowiedni zamiennik
+- dodałem protekcję \" w przypadku gdy \ to ostani znak parametru np. <a href="C:\Program Files\"
+- poprawiłem kolorowanie php, teraz się pokoloruje nawet jeśli nie ma zamknięcia ?>, nie zostanie również zwrócony bład przekroczenia pamieci serwera ;)
+- poprawiona obsługa apostrofów w kodzie css i js inline tj. style="", onclick="", onload="" itp.
+- dodalem parametr line="numerlini" dzięki którego moze ustalic numer pierwszej lini listingu
+- poprawilem dzialanie znacznika [css] [/css] teraz nie ma zbednego kodu html, który powstawal z highlight_string()
+
+21 grudnia 2006 - 1.0
+- zmieniłem główne wyrażenie regularne - teraz w przypadku błędnego kodu załamie się tylko kod rodzica, reszta będzie parsowana normalnie
+- dodałem znaczniki [list] [/list] oraz [li] [/li]. Skrypt w inteligentny sposób generuje poprawny kod xhtml usuwając zbędny tekst znajdujący się poza <li> </li>
+
+14 pażdziernika 2006 - 0.6 RC
+
+
+Osoby które choć w małym stopniu przyczyniły się do stworzenia klasy:
+- Sergei Z
+- FiDO
+- nospor
+
+Dzięki za pomoc!
+
+TODO
+W przyszłych wersjach będzie kilka zmian:
+- zmiana arkusza css(aby kontenery na kod źródłowy ladniej wyglądały)
+- sub, sup, strike etc. (ale to kazdy moze sobie sam dopisac)
+- zamiast się załamywać w przypadku [b]dd[i]ddd[/b] powinien po prostu [i] nie brac pod uwage
