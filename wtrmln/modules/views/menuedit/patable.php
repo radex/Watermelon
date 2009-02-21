@@ -29,6 +29,11 @@ $j = count($menus) - 1;
 
 <br><br>
 
+Edycja menu:
+<a href="$/menuedit">Głównego</a> |
+<a href="$/menuedit/top">Górnego</a> |
+Panelu Admina
+
 <table>
    <tr>
       <th width="25%">Nazwa</th> <th width="50%">Opis</th> <th width="25%">Opcje</th>

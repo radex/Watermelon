@@ -22,5 +22,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ?>
 <div class="box_c">
    <strong>Usunięto menu</strong>
-   Możesz teraz <a href="$/menuedit">powrócić do listy</a>.
 </div>

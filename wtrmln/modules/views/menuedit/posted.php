@@ -22,5 +22,5 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ?>
 
 <div class="box_c">
-   Dodano menu, <a href="$/menuedit">powróć do listy</a>.
+   <strong>Dodano menu</strong>
 </div>

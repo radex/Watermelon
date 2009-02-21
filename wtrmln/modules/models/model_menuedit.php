@@ -124,6 +124,96 @@ class Model_MenuEdit extends Model
    }
    
    /*
+    * public DBresult GetTopMenus()
+    * 
+    * pobiera górne menu
+    */
+   
+   public function GetTopMenus()
+   {
+      $menus = Config::getConf('top_menus');
+      
+      return unserialize($menus);
+   }
+   
+   /*
+    * public void UpdateTopMenus(string[] $menus)
+    * 
+    * uaktualnia listę (tablicę) górnego menu.
+    * 
+    * string[] $menus - lista górnego menu do uaktualnienia
+    */
+   
+   public function UpdateTopMenus(array $menus)
+   {
+      Config::setConf('top_menus', serialize($menus));
+   }
+   
+   /*
+    * public void addTopMenu(string $name, string $link, string $condition)
+    * 
+    * dodaje na koniec (ostatnia pozycja) górne menu o nazwie $name
+    * prowadzące do $link, które będzie oznaczone jako aktywne, gdy
+    * $condition jest prawdą
+    */
+   
+   public function addTopMenu($name, $link, $content)
+   {
+      $name = mysql_real_escape_string($name);
+      $link = mysql_real_escape_string($link);
+      $content = mysql_real_escape_string($content);
+      
+      $menus = $this->GetTopMenus();
+      $menus[] = array($name, $link, $content);
+      $this->UpdateTopMenus($menus);
+   }
+   
+   /*
+    * public void TopEdit(string $name, string $link, string $condition, uint $id)
+    * 
+    * edytuje w górnym menu o ID=$id nazwę na $name
+    * prowadzące do $link, które będzie oznaczone jako aktywne, gdy
+    * $condition jest prawdą
+    */
+   
+   public function TopEdit($name, $link, $content, $id)
+   {
+      $name = mysql_real_escape_string($name);
+      $link = mysql_real_escape_string($link);
+      $content = mysql_real_escape_string($content);
+      $id = intval($id);
+      
+      $menus = $this->GetTopMenus();
+      
+      if(!isset($menus[$id])) return;
+      
+      $menus[$id] = array($name, $link, $content);
+      $this->UpdateTopMenus($menus);
+   }
+   
+   /*
+    * public void DeleteTopMenu(uint $id)
+    * 
+    * usuwa górne menu o ID=$id
+    */
+   
+   public function DeleteTopMenu($id)
+   {
+      $id = intval($id);
+      
+      $menus = $this->GetTopMenus();
+      
+      unset($menus[$id]);
+      
+      foreach($menus as $menu)
+      {
+         $menus2[] = $menu;
+      }
+      
+      $this->UpdateTopMenus($menus2);
+   }
+   
+   /*
     * public string[] GetPAMenus()
     * 
     * Pobiera listę (w postaci tablicy) menu w PA.

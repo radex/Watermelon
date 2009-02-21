@@ -28,7 +28,7 @@ class MenuEdit extends Controller
    
    function index()
    {
-      Watermelon::$acceptMessages += array('menuedit_deleted', 'menuedit_posted', 'menuedit_edited');
+      Watermelon::addmsgs('menuedit_deleted', 'menuedit_posted', 'menuedit_edited', 'menuedit_poschanged');
       
       // pobieramy listę menu
       
@@ -201,7 +201,203 @@ class MenuEdit extends Controller
       
       model('menuedit')->SetMenuPosition($menu, $pos);
       
-      echo $this->load->view('menuedit_poschanged');
+      siteredirect('msg:menuedit_poschanged/menuedit');
+   }
+   
+   /*
+    * lista górnych menu
+    */
+   
+   function top()
+   {
+      Watermelon::addmsgs('menuedit_deleted', 'menuedit_posted', 'menuedit_edited', 'menuedit_boosted', 'menuedit_sinked');
+      
+      $menus = model('menuedit')->GetTopMenus();
+      
+      echo $this->load->view('menuedit_toptable', array('menus' => $menus));
+   }
+   
+   /*
+    * obniżanie pozycji menu górnego (de facto przesuwanie w prawo)
+    */
+   
+   function top_down()
+   {
+      $menuID = $this->url->segment(1);
+      
+      $menus = model('menuedit')->GetTopMenus();
+      
+      $menu = $menus[$menuID];
+      $menu_next = $menus[$menuID + 1];
+      
+      $menus[$menuID] = $menu_next;
+      $menus[$menuID + 1] = $menu;
+      
+      model('menuedit')->UpdateTopMenus($menus);
+      siteredirect('msg:menuedit_boosted/menuedit/top');
+   }
+   
+   /*
+    * podwyższanie pozycji menu górnego (de facto przesuwanie w lewo)
+    */
+   
+   function top_up()
+   {
+      $menuID = $this->url->segment(1);
+      
+      $menus = model('menuedit')->GetTopMenus();
+      
+      $menu = $menus[$menuID];
+      $menu_before = $menus[$menuID - 1];
+      
+      $menus[$menuID] = $menu_before;
+      $menus[$menuID - 1] = $menu;
+      
+      model('menuedit')->UpdateTopMenus($menus);
+      siteredirect('msg:menuedit_sinked/menuedit/top');
+   }
+   
+   /*
+    * formularz nowego menu górnego
+    */
+   
+   function topnew()
+   {
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('newtopmenu', time() + 3600);
+      
+      echo $this->load->view('menuedit_topnew', array('tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+   }
+   
+   /*
+    * stworzenie górnego menu
+    */
+   
+   function top_post()
+   {
+      $tempKey      = $this->url->segment(1);
+      $tempKeyValue = $this->url->segment(2);
+      
+      // sprawdzamy, czy zostały uzupełnione wszystkie pola.
+      
+      if(empty($_POST['name']) OR empty($_POST['condition']))
+      {
+         echo $this->load->view('allfieldsneeded');
+         return;
+      }
+      
+      // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
+      
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'newtopmenu'))
+      {
+         echo $this->load->view('error');
+         return;
+      }
+      
+      // wysyłamy
+      
+      model('menuedit')->addTopMenu(htmlspecialchars($_POST['name']), $_POST['link'], $_POST['condition']);
+      
+      siteredirect('msg:menuedit_posted/menuedit/top');
+   }
+   
+   /*
+    * formularz edycji górnego menu
+    */
+   
+   function topedit()
+   {
+      $id = $this->url->segment(1);
+      
+      $data = model('menuedit')->GetTopMenus();
+      
+      // sprawdzamy, czy w ogóle takie istnieje
+      
+      if(!isset($data[$id]))
+      {
+         echo $this->load->view('menuedit_nosuch');
+         return;
+      }
+      
+      // tworzymy klucz tymczasowy
+      
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('topmenuedit:' . $id, time() + 3600);
+      
+      echo $this->load->view('menuedit_topedit', array('id' => (int) $id, 'name' => $data[$id][0], 'link' => $data[$id][1], 'condition' => $data[$id][2], 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+   }
+   
+   /*
+    * submit: edycja menu górnego
+    */
+   
+   function topEditSubmit()
+   {
+      $tempKey      = $this->url->segment(1);
+      $tempKeyValue = $this->url->segment(2);
+      $menuID       = $this->url->segment(3);
+      
+      // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
+      
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'topmenuedit:' . $menuID))
+      {
+         echo $this->load->view('error');
+         return;
+      }
+      
+      // skoro tak, to edytujemy
+      
+      model('menuedit')->TopEdit(htmlspecialchars($_POST['name']), $_POST['link'], $_POST['condition'], $menuID);
+      
+      siteredirect('msg:menuedit_edited/menuedit/top');
+   }
+   
+   /*
+    * (samo potwierdznie) usunięcia menu górnego
+    */
+   
+   function topDelete()
+   {
+      $id = $this->url->segment(1);
+      
+      $data = model('menuedit')->GetTopMenus();
+      
+      // sprawdzamy, czy w ogóle takie istnieje
+      
+      if(!isset($data[$id]))
+      {
+         echo $this->load->view('menuedit_nosuch');
+         return;
+      }
+      
+      // tworzymy klucz tymczasowy
+      
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('topmenudelete:' . $id);
+      
+      echo $this->load->view('menuedit_topdeletequestion', array('id' => (int) $id, 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+   }
+   
+   /*
+    * usuwanie menu górnego
+    */
+   
+   function topDelete_ok()
+   {
+      $tempKey = $this->url->segment(1);
+      $tempKeyValue = $this->url->segment(2);
+      $menuID = $this->url->segment(3);
+      
+      // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
+      
+      if(!model('tempkeys')->CheckKey($tempKey, $tempKeyValue, 'topmenudelete:' . $menuID))
+      {
+         echo $this->load->view('error');
+         return;
+      }
+      
+      // skoro tak, to usuwamy
+      
+      model('menuedit')->DeleteTopMenu($menuID);
+      
+      siteredirect('msg:menuedit_deleted/menuedit/top');
    }
    
    /*
@@ -210,7 +406,7 @@ class MenuEdit extends Controller
    
    function pa()
    {
-      Watermelon::$acceptMessages += array('menuedit_pasinked', 'menuedit_paboosted');
+      Watermelon::addmsgs('menuedit_pasinked', 'menuedit_paboosted');
       
       $viewMenus = $this->getMenus();
       

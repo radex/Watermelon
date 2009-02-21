@@ -30,6 +30,8 @@ class ACMenu_menuedit implements iACMenu
       {
          $links[] = array('menuedit', 'lista');
          $links[] = array('menuedit/new', 'nowe');
+         $links[] = array('menuedit/top', 'górne');
+         $links[] = array('menuedit/topnew', 'nowe górne');
          $links[] = array('menuedit/pa', 'panel admina');
       }
       
