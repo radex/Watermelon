@@ -20,13 +20,49 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
+/*
+ * string bbcode(string $text)
+ * 
+ * parsuje bbcode (zamienia na html)
+ * 
+ * string $text - bbcode do sparsowania
+ */
+
 function bbcode($text)
 {
-   include 'handycode.class.php';
+   include_once 'handycode.class.php';
    
    $obj = new handyCode();
    
    return $obj->parse($text, null, 0, 1);
+}
+
+/*
+ * string bbcode(string $text)
+ * 
+ * parsuje bbcode (zamienia na html)
+ * z włączoną obsługą cache'owania
+ * 
+ * string $text - bbcode do sparsowania
+ */
+
+function bbcode_cached($text)
+{
+   if(!defined('CACHE_BBCODE')) return bbcode($text);
+   
+   $cached = Cache::GetBBCode($text);
+   
+   if($cached) return $cached;
+   
+   include_once 'handycode.class.php';
+   
+   $obj = new handyCode();
+   
+   $parsed = $obj->parse($text, null, 0, 1);
+   
+   Cache::CacheBBCode($text, $parsed);
+   
+   return $parsed;
 }
 
 ?>

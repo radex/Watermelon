@@ -1,9 +1,9 @@
-<?php if(!defined('WTRMLN_IS')) die;
+<?php
 /********************************************************************
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib Loader
- * wersja 1.4.0
+ * wersja 1.6.0
  * 
  * Ładowanie różnego rodzaju modułów
  * 
@@ -33,74 +33,90 @@ include WTRMLN_LIBS . 'viewtags.php';
 class Loader
 {
    /* 
-    * public string view(string $view[, array $vars[, bool $panicifne = true]])
+    * public static string view(string $view[, array $vars])
     * 
     * Pobiera i zwraca zawartość viewa
     * 
     * string $view - nazwa szablonu
     * array  $vars - przesyłane dane
-    * bool   $panicifne [panic if not exists] -
-    *          Gdy pliku nie ma na serwerze:
-    *            Jeśli true - wywalenie błędu krytycznego
-    *            Jeśli false - zwrócenie FALSE
     * 
     * $vars = array($varname => string $var[, $varname => string $var[, ... ]])
     *   $varname - nazwa zmiennej do zamiany
     *   $var     - treść zmiennej o nazwie $varname
     */
    
-   public function view($view, array $vars = array(), $panicifne = true)
+   public static function view($___view, array $___vars = array())
    {
-      $view = str_replace('_', '/', $view);
-      $path_theme = WTRMLN_THEMEPATH . 'views/' . $view . '.php';
-      $path = WTRMLN_VIEWS . $view . '.php';
+      $___view = str_replace('_', '/', $___view);
+      $___path_theme = WTRMLN_THEMEPATH . 'views/' . $___view . '.php';
+      $___path = WTRMLN_VIEWS . $___view . '.php';
       
       // sprawdzamy czy istnieje theme view
       
-      if(file_exists($path_theme))
+      if(file_exists($___path_theme))
       {
-         $path = $path_theme;
+         $___path = $___path_theme;
+         $___dontcache = true;
       }
 
       // sprawdzamy czy view istnieje
          
-      if(!file_exists($path))
+      if(!file_exists($___path))
       {
-         if($panicifne)
-         {
-            panic('Lib Loader: 0');
-         }
-         else
-         {
-            return false;
-         }
+         panic('Lib Loader: error 0<br>nie można załadować widoku "' . $___view . '"');
       }
 
       ob_start();
       
-      // zmienne
+      // robimy przesyłane zmienne globalnymi
       
-      foreach($vars as $varname => $var)
+      foreach($___vars as $___varname => $___var)
       {
-         $$varname = $var;
+         $$___varname = $___var;
       }
       
-      //długa nazwa, w razie gdyby ktoś chciał w viewie takiej użyć
+      // tradycyjne ładowanie widoku używane
+      // gdy cache'owanie jest wyłączone lub
+      // wczytywany jest theme view
       
-      $___Loader_Path = $path;
+      if($___dontcache === true OR !defined('CACHE_VIEWS'))
+      {
+         $___eval = file_get_contents($___path);
+         
+         // przetwarzamy pseudotagi i wykonujemy
+         
+         $___eval = ViewTags::Process($___eval);
+         echo eval('?>' . $___eval . '<?php ');
+         
+         //opróżnienie bufora
+         
+         $buffer = ob_get_contents();
+         @ob_end_clean();
+         return $buffer;
+      }
       
-      //usuwanie niepotrzebnych zmiennych
+      // jeśli cache'owanie jest włączone
+      // sprawdzmy, czy widok jest już zacache'owany
       
-      unset($vars);
-      unset($view);
-      unset($path);
-      unset($path_theme);
+      if(!$___eval = Cache::GetView($___view . '.php'))
+      {
+         $___eval = file_get_contents($___path);
+         $___eval = ViewTags::Process($___eval);
+         
+         // cache'ujemy widok
+         
+         Cache::CacheView($___view . '.php', $___eval);
+      }
+      else
+      {
+         // wczytujemy zacache'owany widok
+         
+         $___eval = Cache::GetView($___view . '.php');
+      }
       
-      $___Loader_toEval = file_get_contents($___Loader_Path);
-      $___Loader_toEval = ViewTags::Process($___Loader_toEval);
-      echo eval('?>' . $___Loader_toEval . '<?php ');
+      echo eval('?>' . $___eval . '<?php ');
       
-      //oprónienie bufora
+      //opróżnienie bufora
       
       $buffer = ob_get_contents();
       @ob_end_clean();
@@ -108,18 +124,14 @@ class Loader
    }
    
    /* 
-    * public Model model(string $modelName[, bool $panicifne = true])
+    * public static Model model(string $modelName)
     * 
     * Zwraca obiekt modelu
     * 
     * string $model - nazwa modelu do wczytania
-    * bool   $panicifne [panic if not exists] -
-    *          Gdy pliku nie ma na serwerze:
-    *            Jeśli true - wywalenie błędu krytycznego
-    *            Jeśli false - zwrócenie false
     */
    
-   public function model($model, $panicifne = true)
+   public static function model($model)
    {
       // preparujemy nazwę
       
@@ -142,14 +154,7 @@ class Loader
 
       if(!file_exists($path))
       {
-         if($panicifne)
-         {
-            panic('Lib Loader: 1');
-         }
-         else
-         {
-            return false;
-         }
+         panic('Lib loader: error 1<br>nie można załadować modelu');
       }
       
       // ładujemy
@@ -160,6 +165,87 @@ class Loader
       
       return $model_object;
    }
+   
+   /* 
+    * public static string block(string $blockName)
+    * 
+    * Zwraca blok
+    * 
+    * string $block - nazwa bloku do wczytania
+    */
+   
+   public static function block($blockName)
+   {
+      // preparujemy nazwę
+      
+      $blockName = strtolower($blockName);
+      $class = 'Block' . $blockName;
+      
+      // sprawdzamy, czy już był załadowany
+      
+      if(class_exists($class))
+      {
+         ob_start();
+         
+         $block_object = new $class();
+         
+         $block_object->block();
+         
+         $buffer = ob_get_contents();
+         @ob_end_clean();
+         return $buffer;
+      }
+      
+      // sprawdzamy, czy istnieje
+
+      $path = WTRMLN_BLOCKS . $blockName . '.php';
+
+      if(!file_exists($path))
+      {
+         panic('Lib loader: error 2<br>nie można załadować bloku');
+      }
+      
+      // ładujemy
+      
+      include $path;
+      
+      ob_start();
+      
+      $block_object = new $class();
+      
+      $block_object->block();
+      
+      $buffer = ob_get_contents();
+      @ob_end_clean();
+      return $buffer;
+   }
+}
+
+/*
+ * Model model(string $model)
+ * 
+ * wczytuje model. Skrócona wersja Loader::model(...)
+ * 
+ * string $model - nazwa modelu do wczytania
+ */
+
+function model($model)
+{
+   return Loader::model($model);
+}
+
+/* 
+ * string view(string $view[, array $vars])
+ * 
+ * Pobiera i zwraca zawartość viewa. Skrócona wersja Loader::view(...)
+ * 
+ * string $view - nazwa szablonu
+ * array  $vars - przesyłane dane
+ */
+
+function view($view, array $vars = array())
+{
+   return Loader::view($view, $vars);
 }
 
 

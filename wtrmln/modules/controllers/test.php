@@ -46,7 +46,14 @@ $test = "test ${test} etste";
       $content = ob_get_contents();
       ob_end_clean();
       
+      Benchmark::start('bbcode_off');
       echo bbcode($content);
+      Benchmark::end('bbcode_off');
+      
+      Benchmark::start('bbcode_cached');
+      echo bbcode_cached($content);
+      Benchmark::end('bbcode_cached');
+      
       
       return;
       

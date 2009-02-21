@@ -162,6 +162,19 @@ function redirect($url)
 }
 
 /*
+ * void siteredirect(string $url)
+ * 
+ * Przekierowuje na podstronę $url
+ * 
+ * równoważność redirect(site_url($url))
+ */
+
+function siteredirect($url)
+{
+   redirect(site_url($url));
+}
+
+/*
  * string ClientIP()
  * 
  * zwraca IP odwiedzającego.
