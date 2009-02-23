@@ -87,7 +87,7 @@ class MenuEdit extends Controller
       
       model('menuedit')->addMenu(htmlspecialchars($_POST['name']), $_POST['condition'], $_POST['text']);
       
-      redirect(site_url('msg:menuedit_posted/menuedit'));
+      siteredirect('msg:menuedit_posted/menuedit');
    }
    
    /*
@@ -137,7 +137,7 @@ class MenuEdit extends Controller
       
       model('menuedit')->Edit(htmlspecialchars($_POST['name']), $_POST['condition'], $_POST['text'], $menuID);
       
-      redirect(site_url('msg:menuedit_edited/menuedit'));
+      siteredirect('msg:menuedit_edited/menuedit');
    }
    
    /*
@@ -187,7 +187,7 @@ class MenuEdit extends Controller
       
       model('menuedit')->DeleteMenu($menuID);
       
-      redirect(site_url('msg:menuedit_deleted/menuedit'));
+      siteredirect('msg:menuedit_deleted/menuedit');
    }
    
    /*
@@ -433,7 +433,7 @@ class MenuEdit extends Controller
       
       model('menuedit')->UpdatePAMenus($menus);
       
-      redirect(site_url('msg:menuedit_pasinked/menuedit/pa'));
+      siteredirect('msg:menuedit_pasinked/menuedit/pa');
    }
    
    /*
@@ -456,7 +456,7 @@ class MenuEdit extends Controller
       
       model('menuedit')->UpdatePAMenus($menus);
       
-      redirect(site_url('msg:menuedit_paboosted/menuedit/pa'));
+      siteredirect('msg:menuedit_paboosted/menuedit/pa');
    }
    
    /*

@@ -24,11 +24,11 @@ class PW extends Controller
 {
    public function __construct()
    {
-      parent::Controller();
+      parent::__construct();
       
       if(!$this->user->IsLoggedIn())
       {
-         header('Location: ' . site_url(''));
+         siteredirect('');
       }
    }
    
@@ -38,13 +38,13 @@ class PW extends Controller
 
    public function Index()
    {
-      SetH1('Prywatne wiadomości');
+      Watermelon::addmsgs('pw_sent', 'pw_deleted');
       
-      $this->PW = $this->load->model('PW');
+      SetH1('Prywatne wiadomości');
       
       // pobieramy listę PW (jako argument nad UID)
       
-      $pwlist = $this->PW->GetPWList($_SESSION['WTRMLN_UID']);
+      $pwlist = model('PW')->GetPWList($_SESSION['WTRMLN_UID']);
       
       // sprawdzamy, czy mamy jakieś pw
       
@@ -71,11 +71,9 @@ class PW extends Controller
       
       $pw_id = $this->url->segment(1);
       
-      $this->PW = $this->load->model('PW');
-      
       // ładujemy dane na temat prywatnej wiadomości
       
-      $pw_data = $this->PW->GetPWData($pw_id);
+      $pw_data = model('PW')->GetPWData($pw_id);
       
       // sprawdzamy, czy w ogóle taka istnieje
       
@@ -99,13 +97,11 @@ class PW extends Controller
       
       SetH1('PW: ' . $pw_data->subject);
       
-      $pw_data->text = nl2br($pw_data->text);
-      
       echo $this->load->view('pw_pw', objectToArray($pw_data));
       
       // ustawiamy flagę "przeczytano"
       
-      $this->PW->SetReaded($pw_id);
+      model('PW')->SetReaded($pw_id);
    }
    
    /*
@@ -127,15 +123,11 @@ class PW extends Controller
    
    public function Response()
    {
-      $this->PW = $this->load->model('PW');
-      
-      // id wiadomości na którą odpowiadamy
-      
       $pw_id = $this->url->segment(1);
       
       // ładujemy dane na temat prywatnej wiadomości
       
-      $pw_data = $this->PW->GetPWData($pw_id);
+      $pw_data = model('PW')->GetPWData($pw_id);
       
       // sprawdzamy, czy w ogóle taka istnieje
       
@@ -170,9 +162,7 @@ class PW extends Controller
    {
       // sprawdzamy, czy zostały uzupełnione wszystkie pola.
       
-      if(empty($_POST['addressee']) ||
-         empty($_POST['subject'])   || 
-         empty($_POST['text']))
+      if(empty($_POST['addressee']) ||empty($_POST['subject']) || empty($_POST['text']))
       {
          echo $this->load->view('allfieldsneeded');
          return;
@@ -180,7 +170,7 @@ class PW extends Controller
       
       // sprawdzamy czy adresat istnieje
       
-      $this->PW = $this->load->model('PW');
+      $this->PW = model('PW');
       
       $addresseeUID = $this->PW->GetAddresseeUID($_POST['addressee']);
       
@@ -195,7 +185,7 @@ class PW extends Controller
       $this->PW->SendPW($_SESSION['WTRMLN_UID'], $addresseeUID->to_obj()->id,
                         $_POST['subject'], $_POST['text'], time());
       
-      echo $this->load->view('pw_sent');
+      siteredirect('msg:pw_sent/pw');
    }
    
    /*
@@ -206,13 +196,11 @@ class PW extends Controller
    {
       $pw_id = $this->url->segment(1);
       
-      $this->PW = $this->load->model('PW');
-      
       // sprawdzamy, czy możemy przeczytać tą wiadmość (czy jesteśmy jej odbiorcą)
       // przy okazji sprawdza, czy PW istnieje (jeśli nie istnieje to warunek i tak
       // nie zostanie spełniony)
       
-      if($this->PW->GetPWAddressee($pw_id) != $_SESSION['WTRMLN_UID'])
+      if(model('PW')->GetPWAddressee($pw_id) != $_SESSION['WTRMLN_UID'])
       {
          echo $this->load->view('pw_cannotdelete');
          return;
@@ -220,9 +208,7 @@ class PW extends Controller
       
       // tworzymy klucz tymczasowy
       
-      $this->TempKeys = $this->load->model('TempKeys');
-      
-      list($tempKey, $tempKeyValue) = $this->TempKeys->MakeKey($pw_id);
+      list($tempKey, $tempKeyValue) = model('TempKeys')->MakeKey($pw_id);
       
       // formularz "czy na pewno usunąć"
       
@@ -241,7 +227,7 @@ class PW extends Controller
       
       // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
       
-      if(!$this->load->model('TempKeys')->CheckKey($tempKey, $tempKeyValue, $pw_id))
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, $pw_id))
       {
          echo $this->load->view('pw_cannotdelete');
          return;
@@ -249,9 +235,9 @@ class PW extends Controller
       
       // skoro tak, to usuwamy
       
-      $this->load->model('PW')->Delete($pw_id);
+      model('PW')->Delete($pw_id);
       
-      echo $this->load->view('pw_deleted');
+      siteredirect('msg:pw_deleted/pw');
    }
    
 }

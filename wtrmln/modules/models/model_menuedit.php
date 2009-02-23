@@ -146,7 +146,7 @@ class Model_MenuEdit extends Model
    
    public function UpdateTopMenus(array $menus)
    {
-      Config::setConf('top_menus', serialize($menus));
+      Config::setConf('top_menus', mysql_real_escape_string(serialize($menus)));
    }
    
    /*
@@ -159,10 +159,6 @@ class Model_MenuEdit extends Model
    
    public function addTopMenu($name, $link, $content)
    {
-      $name = mysql_real_escape_string($name);
-      $link = mysql_real_escape_string($link);
-      $content = mysql_real_escape_string($content);
-      
       $menus = $this->GetTopMenus();
       $menus[] = array($name, $link, $content);
       $this->UpdateTopMenus($menus);
@@ -178,9 +174,6 @@ class Model_MenuEdit extends Model
    
    public function TopEdit($name, $link, $content, $id)
    {
-      $name = mysql_real_escape_string($name);
-      $link = mysql_real_escape_string($link);
-      $content = mysql_real_escape_string($content);
       $id = intval($id);
       
       $menus = $this->GetTopMenus();

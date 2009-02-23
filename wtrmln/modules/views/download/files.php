@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2008-2009 Radosław Pietruszewski
+Copyright 2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -21,30 +21,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
-
-<div class="post">
-   <div class="posterdata">
-      <cite><$nick></cite>
-   </div>
-   <div class="posttools">
-   wysłany <date $sent>
-   </div>
-   <div class="postcontent">
-   <?=bbcode($text)?>
-   </div>
-</div>
-
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+<table width="100%">
+   <tr>
+      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th>
+   </tr>
+   <list object $files>
+      <tr>
+         <td><$id></td>
+         <td><a href="<$url>"><$file></a></td>
+         <td><$description></td>
+         <td><$size></td>
+         <td><date $date></td>
+         <td><$downloads></td>
+      </tr>
+   </list>
+   <tr>
+      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th>
+   </tr>
+</table>

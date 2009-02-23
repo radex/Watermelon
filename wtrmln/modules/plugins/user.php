@@ -147,7 +147,7 @@ class User extends Plugin
       
       //echo $this->load->view('login_success');
       
-      redirect(site_url('msg:login_success'));
+      siteredirect('msg:login_success');
       
       return true;
    }

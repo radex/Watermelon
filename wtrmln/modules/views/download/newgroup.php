@@ -21,30 +21,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
+<a href="$/">Panel Admina</a> &gt; <a href="$/download">Download</a> &gt; Nowa grupa
 
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+<?php
+   Controller::addMeta(
+   '<style type="text/css">.newdownloadgroup_box label{float:left;width:100px;display:block}'.
+   '.newdownloadgroup_box #name{width:60%}'.
+   '.newdownloadgroup_box #description{width: 100%; height:250px;}</style>');
+?>
 
-<div class="post">
-   <div class="posterdata">
-      <cite><$nick></cite>
-   </div>
-   <div class="posttools">
-   wysłany <date $sent>
-   </div>
-   <div class="postcontent">
-   <?=bbcode($text)?>
-   </div>
-</div>
+<form action="$/download/postgroup/<$tkey>/<$tvalue>" method="POST">
+   <fieldset class="newdownloadgroup_box">
+      <legend>Nowa grupa plików</legend>
+      
+      <label for="name">Nazwa:</label>
+      <input type="text" name="name" id="name">
+      
+      <br>
+      
+      <label for="description">Opis:</label><br>
+      
+      <textarea name="description" id="description"></textarea>
+      
+      <br>
+      
+      <input type="submit" id="submit" value="Wyślij!">
 
-<div class="dr">
-   <big>
-      <a href="$/pw/delete/<$id>">Usuń</a> <a href="$/pw/response/<$id>">Odpowiedz</a>
-   </big>
-</div>
-
-<a href="$/pw">Powróć do listy prywatnych wiadomości</a>
+   </fieldset>
+</form>

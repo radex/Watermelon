@@ -87,7 +87,7 @@ class News extends Controller
       
       model('news')->post(htmlspecialchars($_POST['title']), $_POST['text'], $_SESSION['WTRMLN_UID']);
       
-      redirect(site_url('msg:news_posted/news'));
+      siteredirect('msg:news_posted/news');
    }
    
    /*
@@ -137,7 +137,7 @@ class News extends Controller
       
       model('news')->Edit($newsID, htmlspecialchars($_POST['title']), $_POST['text']);
       
-      redirect(site_url('msg:news_edited/news'));
+      siteredirect('msg:news_edited/news');
    }
    
    /*
@@ -187,7 +187,7 @@ class News extends Controller
       
       model('news')->Delete($newsID);
       
-      redirect(site_url('msg:news_deleted/news'));
+      siteredirect('msg:news_deleted/news');
    }
 }
 

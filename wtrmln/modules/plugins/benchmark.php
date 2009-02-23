@@ -75,10 +75,11 @@ class Benchmark extends Plugin
     * bool   $save = true   - zapisać do bazy? (tak, jeśli true)
     */
    
-   public static function end($benchmarkName, $save = true)
+   public static function end($benchmarkName/*, $et*/, $save = true)
    {
       // pobieramy aktualny czas
       $microtime = self::microtime();
+      //$microtime = $et;
       
       // liczymy różnicę
       if(function_exists('bcsub'))

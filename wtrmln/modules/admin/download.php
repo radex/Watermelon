@@ -20,56 +20,56 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-class Pages extends Controller
-{  
+class Download extends Controller
+{
    /*
-    * lista stron
+    * lista grup
     */
    
    function Index()
    {
-      Watermelon::$acceptMessages += array('pages_posted', 'pages_deleted', 'pages_edited');
+      Watermelon::addmsgs('download_groupdeleted', 'download_groupposted', 'download_groupedited');
       
-      // pobieramy listę stron
+      // pobieramy listę grup
       
-      $pagesList = model('pages')->getPages();
+      $groups = model('download')->GetGroups();
       
-      // sprawdzamy, czy są jakieś strony
+      // sprawdzamy, czy są jakieś grupy
       
-      if(!$pagesList->exists())
+      if(!$groups->exists())
       {
-         echo $this->load->view('pages_nopages');
+         echo $this->load->view('download_nogroups');
          return;
       }
       
       // skoro są, to je wyświetlamy
       
-      echo $this->load->view('pages_table', array('pagesList' => $pagesList));
+      echo $this->load->view('download_groupstable', array('groups' => $groups));
    }
    
    /*
-    * formularz nowej strony
+    * formularz nowej grupy
     */
    
-   function _new()
+   function newgroup()
    {
-      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('newpage', time() + 3600);
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('newdownloadgroup', time() + 3600);
       
-      echo $this->load->view('pages_new', array('tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+      echo $this->load->view('download_newgroup', array('tkey' => $tempKey, 'tvalue' => $tempKeyValue));
    }
    
    /*
-    * stworzenie strony
+    * stworzenie grupy
     */
    
-   function Post()
+   function postgroup()
    {
       $tempKey      = $this->url->segment(1);
       $tempKeyValue = $this->url->segment(2);
       
       // sprawdzamy, czy zostały uzupełnione wszystkie pola.
       
-      if(empty($_POST['title']) OR empty($_POST['text']) OR empty($_POST['name']))
+      if(empty($_POST['name']))
       {
          echo $this->load->view('allfieldsneeded');
          return;
@@ -77,7 +77,7 @@ class Pages extends Controller
       
       // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
       
-      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'newpage'))
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'newdownloadgroup'))
       {
          echo $this->load->view('error');
          return;
@@ -85,49 +85,48 @@ class Pages extends Controller
       
       // skoro tak, to wysyłamy
       
-      model('pages')->post(htmlspecialchars($_POST['title']), $_POST['name'], $_POST['text']);
-      
-      siteredirect('msg:pages_posted/pages');
+      model('download')->postgroup(htmlspecialchars($_POST['name']), $_POST['description']);
+      siteredirect('msg:download_groupposted/download');
    }
    
    /*
-    * formularz edycji strony
+    * formularz edycji grupy
     */
    
-   function edit()
-   {      
+   function editgroup()
+   {
       $id = $this->url->segment(1);
       
-      $data = model('pages')->GetDataByID($id);
+      $data = model('download')->GroupData($id);
       
       // sprawdzamy, czy w ogóle taka istnieje
       
       if(!$data->exists())
       {
-         echo $this->load->view('pages_nosuch');
+         echo $this->load->view('download_nosuchgroup');
          return;
       }
       
       // tworzymy klucz tymczasowy
       
-      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('edit:' . $id, time() + 3600);
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('editdownloadgroup:' . $id, time() + 3600);
       
-      echo $this->load->view('pages_edit', array('data' => $data->to_obj(), 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+      echo $this->load->view('download_editgroup', array('data' => $data->to_obj(), 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
    }
    
    /*
-    * submit: edycja strony
+    * submit: edycja grupy
     */
    
-   function editSubmit()
+   function editGroupSubmit()
    {
       $tempKey      = $this->url->segment(1);
       $tempKeyValue = $this->url->segment(2);
-      $pageID       = $this->url->segment(3);
+      $ID           = $this->url->segment(3);
       
       // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
       
-      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'edit:' . $pageID))
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'editdownloadgroup:' . $ID))
       {
          echo $this->load->view('error');
          return;
@@ -135,49 +134,49 @@ class Pages extends Controller
       
       // skoro tak, to edytujemy
       
-      model('pages')->Edit($pageID, htmlspecialchars($_POST['title']), $_POST['name'], $_POST['text']);
+      model('download')->EditGroup($ID, htmlspecialchars($_POST['name']), $_POST['description']);
       
-      siteredirect('msg:pages_edited/pages');
+      siteredirect('msg:download_groupedited/download');
    }
    
    /*
-    * (samo potwierdznie) usunięcia strony
+    * (samo potwierdznie) usunięcia grupy
     */
    
-   function delete()
+   function deletegroup()
    {
       $id = $this->url->segment(1);
       
-      $data = model('pages')->GetDataByID($id);
+      $data = model('download')->GroupData($id);
       
       // sprawdzamy, czy w ogóle taka istnieje
       
       if(!$data->exists())
       {
-         echo $this->load->view('pages_nosuch');
+         echo $this->load->view('download_nosuchgroup');
          return;
       }
       
       // tworzymy klucz tymczasowy
       
-      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('delete:' . $id);
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('deletedownloadgroup:' . $id);
       
-      echo $this->load->view('pages_deletequestion', array('id' => $id, 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+      echo $this->load->view('download_groupdeletequestion', array('id' => $id, 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
    }
    
    /*
-    * usuwanie strony
+    * usuwanie grupy
     */
    
-   function delete_ok()
+   function groupdelete_ok()
    {
       $tempKey = $this->url->segment(1);
       $tempKeyValue = $this->url->segment(2);
-      $pageID = $this->url->segment(3);
+      $ID = $this->url->segment(3);
       
       // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
       
-      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'delete:' . $pageID))
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'deletedownloadgroup:' . $ID))
       {
          echo $this->load->view('error');
          return;
@@ -185,9 +184,9 @@ class Pages extends Controller
       
       // skoro tak, to usuwamy
       
-      model('pages')->Delete($pageID);
+      model('download')->DeleteGroup($ID);
       
-      siteredirect('msg:pages_deleted/pages');
+      siteredirect('msg:download_groupdeleted/download');
    }
 }
 ?>

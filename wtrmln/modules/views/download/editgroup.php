@@ -21,36 +21,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
+<a href="$/">Panel Admina</a> &gt; <a href="$/download">Download</a> &gt; Edycja grupy
+
 <?php
    Controller::addMeta(
-   '<style type="text/css">.newpw_box label{float:left;width:100px;display:block}'.
-   '.newpw_box #addressee, .newpw_box #subject{width:60%}'.
-   '.newpw_box #text{width: 100%; height:250px;}</style>');
+   '<style type="text/css">.editdownloadgroup_box label{float:left;width:100px;display:block}'.
+   '.editdownloadgroup_box #name{width:60%}'.
+   '.editdownloadgroup_box #description{width: 100%; height:250px;}</style>');
 ?>
 
-<form action="$/pw/send" method="POST">
-   <fieldset class="newpw_box">
-      <legend>Nowa prywatna wiadomość</legend>
+<unpack $data>
+<form action="$/download/editgroupsubmit/<$tkey>/<$tvalue>/<$id>" method="POST">
+   <fieldset class="editdownloadgroup_box">
+      <legend>Edycja grupy plików</legend>
       
-      <label for="addressee">Adresat:</label>
-      <input type="text" name="addressee" id="addressee" value="<$nick>">
-      
-      <br>
-      
-      <label for="subject">Temat:</label>
-      <input type="text" name="subject" id="subject" value="Re:<$subject>">
+      <label for="name">Nazwa:</label>
+      <input type="text" name="name" id="name" value="<$name>">
       
       <br>
       
-      <label for="text">Treść:</label><br>
+      <label for="description">Opis:</label><br>
       
-      <textarea name="text" id="text">[quote=<$nick>]
-<$text>
-
-[/quote]</textarea>
+      <textarea name="description" id="description"><?=htmlspecialchars($description)?></textarea>
+      
       <br>
       
       <input type="submit" id="submit" value="Wyślij!">
-
    </fieldset>
 </form>

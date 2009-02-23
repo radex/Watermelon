@@ -22,11 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class BenchmarkManager extends Controller
 {
-   function __construct()
-   {
-      parent::Controller();
-   }
-   
    function index()
    {
       setH1('Benchmark Manager');
@@ -47,7 +42,7 @@ class BenchmarkManager extends Controller
       
       while($benchmark = $benchmarksResult->to_obj())
       {
-         $benchmarks[$benchmark->name][] = $benchmark->value;
+         $benchmarks[$benchmark->name][] = array($benchmark->value, $benchmark->id);
       }
       
       // robimy listę
@@ -62,8 +57,12 @@ class BenchmarkManager extends Controller
          
          $i = 0;
          
-         foreach($var as $value)
+         $values = 0;
+         $valuesCounter = 0;
+         
+         foreach($var as $valuer)
          {
+            $value = $valuer[0];
             if($i == 6)
             {
                $i = 0;
@@ -74,7 +73,16 @@ class BenchmarkManager extends Controller
                echo '<tr>';
             }
             
-            echo '<td>' . $value . ' µs</td>';
+            if($value > bcmul(bcdiv($values, ($valuesCounter > 0 ? $valuesCounter : 1)), '1.2') AND $valuesCounter > 0)
+            {
+               $d = true;
+            }
+            else
+            {
+               $d = false;
+            }
+            
+            echo '<td>' . ($d ? '<font color=red>' : '') . $value . ($d ? '</font>' : '') . ' µs <a href="$/benchmarkmanager/delete_entry/' . $valuer[1] . '">[x]</a></td>';
             
             $i++;
             
@@ -96,6 +104,14 @@ class BenchmarkManager extends Controller
    function delete()
    {
       $this->db->query("DELETE FROM `__benchmark` WHERE `name` = '%1'", $this->url->segment(1));
+      $this->db->query("OPTIMIZE TABLE `__benchmark`");
+      
+      echo 'done, <a href="$/benchmarkmanager">wróć</a>';
+   }
+   
+   function delete_entry()
+   {
+      $this->db->query("DELETE FROM `__benchmark` WHERE `id` = '%1'", $this->url->segment(1));
       $this->db->query("OPTIMIZE TABLE `__benchmark`");
       
       echo 'done, <a href="$/benchmarkmanager">wróć</a>';
