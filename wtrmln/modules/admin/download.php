@@ -188,5 +188,186 @@ class Download extends Controller
       
       siteredirect('msg:download_groupdeleted/download');
    }
+   
+   /*
+    * lista plików w grupie
+    */
+   
+   function Group()
+   {
+      Watermelon::addmsgs('download_filedeleted', 'download_fileposted', 'download_fileedited');
+      
+      $group = $this->url->segment(1);
+      
+      $files = model('download')->GetFiles($group);
+      
+      if(!$files->exists())
+      {
+         echo $this->load->view('download_nofiles', array('gid' => $group));
+         return;
+      }
+      
+      echo $this->load->view('download_filestable', array('files' => $files, 'gid' => $group));
+   }
+   
+   /*
+    * formularz nowego pliku
+    */
+   
+   function newfile()
+   {
+      $id = $this->url->segment(1);
+      
+      $data = model('download')->GroupData($id);
+      
+      // sprawdzamy, czy w ogóle taka istnieje
+      
+      if(!$data->exists())
+      {
+         echo $this->load->view('download_nosuchgroup');
+         return;
+      }
+      
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('newdownloadfile:' . $id, time() + 3600);
+      
+      echo $this->load->view('download_filenew', array('tkey' => $tempKey, 'tvalue' => $tempKeyValue, 'id' => $id));
+   }
+   
+   /*
+    * stworzenie pliku
+    */
+   
+   function postfile()
+   {
+      $tempKey      = $this->url->segment(1);
+      $tempKeyValue = $this->url->segment(2);
+      $id           = $this->url->segment(3);
+      
+      // sprawdzamy, czy zostały uzupełnione wszystkie pola.
+      
+      if(empty($_POST['file']) || empty($_POST['link']) || empty($_POST['description']) || empty($_POST['size']) || empty($_POST['unit']))
+      {
+         echo $this->load->view('allfieldsneeded');
+         return;
+      }
+      
+      // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
+      
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'newdownloadfile:' . $id))
+      {
+         echo $this->load->view('error');
+         return;
+      }
+      
+      // skoro tak, to wysyłamy
+      
+      model('download')->postfile(htmlspecialchars($_POST['file']), $_POST['link'], $_POST['description'], floatval($_POST['size']) . ' ' . $_POST['unit'], $id);
+      siteredirect('msg:download_fileposted/download/group/' . $id);
+   }
+   
+   /*
+    * formularz edycji pliku
+    */
+   
+   function editfile()
+   {
+      $id = $this->url->segment(1);
+      
+      $data = model('download')->FileData($id);
+      
+      // sprawdzamy, czy w ogóle taki istnieje
+      
+      if(!$data->exists())
+      {
+         echo $this->load->view('download_nosuchfile');
+         return;
+      }
+      
+      // tworzymy klucz tymczasowy
+      
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('editdownloadfile:' . $id, time() + 3600);
+      
+      $data = $data->to_obj();
+      $data->size  = explode(' ', $data->size);
+      $data->rsize = $data->size[0];
+      $data->unit  = $data->size[1];
+      
+      echo $this->load->view('download_fileedit', array('data' => $data, 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+   }
+   
+   /*
+    * submit: edycja pliku
+    */
+   
+   function editfile_submit()
+   {
+      $tempKey      = $this->url->segment(1);
+      $tempKeyValue = $this->url->segment(2);
+      $ID           = $this->url->segment(3);
+      
+      // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
+      
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'editdownloadfile:' . $ID))
+      {
+         echo $this->load->view('error');
+         return;
+      }
+      
+      // skoro tak, to edytujemy
+      
+      $gid = model('download')->editfile(htmlspecialchars($_POST['file']), $_POST['link'], $_POST['description'], floatval($_POST['size']) . ' ' . $_POST['unit'], $ID);
+      
+      siteredirect('msg:download_fileedited/download/group/' . $gid);
+   }
+   
+   /*
+    * (samo potwierdznie) usunięcia pliku
+    */
+   
+   function deletefile()
+   {
+      $id = $this->url->segment(1);
+      
+      $data = model('download')->FileData($id);
+      
+      // sprawdzamy, czy w ogóle taki istnieje
+      
+      if(!$data->exists())
+      {
+         echo $this->load->view('download_nosuchfile');
+         return;
+      }
+      
+      // tworzymy klucz tymczasowy
+      
+      list($tempKey, $tempKeyValue) = model('tempkeys')->MakeKey('deletedownloadfile:' . $id);
+      
+      echo $this->load->view('download_filedeletequestion', array('id' => $id, 'tkey' => $tempKey, 'tvalue' => $tempKeyValue));
+   }
+   
+   /*
+    * usuwanie pliku
+    */
+   
+   function filedelete_ok()
+   {
+      $tempKey = $this->url->segment(1);
+      $tempKeyValue = $this->url->segment(2);
+      $ID = $this->url->segment(3);
+      
+      // sprawdzamy, czy z kluczem tymczasowym wszystko w porządku
+      
+      if(!model('TempKeys')->CheckKey($tempKey, $tempKeyValue, 'deletedownloadfile:' . $ID))
+      {
+         echo $this->load->view('error');
+         return;
+      }
+      
+      // skoro tak, to usuwamy
+      
+      $gid = model('download')->DeleteFile($ID);
+      
+      siteredirect('msg:download_filedeleted/download/group/' . $gid);
+   }
 }
 ?>

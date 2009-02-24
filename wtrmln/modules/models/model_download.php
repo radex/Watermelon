@@ -73,6 +73,7 @@ class Model_Download extends Model
       
       $this->db->query("UPDATE `__download_groups` SET `name` = '%1', `description` = '%2' WHERE `id` = '%3'", $name, $description, $id);
    }
+   
    /*
     * public DBresult GroupData(uint $id)
     * 
@@ -97,6 +98,89 @@ class Model_Download extends Model
       $group = intval($group);
       
       return $this->db->query("SELECT * FROM `__download_files` WHERE `parent` = '%1'", $group);
+   }
+   
+   /*
+    * public DBresult FileData(uint $id)
+    * 
+    * pobiera dane pliku o ID=$id
+    */
+   
+   public function FileData($id)
+   {
+      $id = intval($id);
+      
+      return $this->db->query("SELECT * FROM `__download_files` WHERE `id` = '%1'", $id);
+   }
+   
+   /*
+    * public void PostFile(string $file, string $link, string $description, string $size, uint $id)
+    * 
+    * tworzy w grupie o ID=$id plik $file opisany $description o wielkości $size
+    * znajdujący się pod adresem $link
+    */
+   
+   public function PostFile($file, $link, $description, $size, $id)
+   {
+      $file = mysql_real_escape_string($file);
+      $link = mysql_real_escape_string($link);
+      $description = mysql_real_escape_string($description);
+      $size = mysql_real_escape_string($size);
+      $id = intval($id);
+      
+      $this->db->query("INSERT INTO `__download_files` (`parent`, `file`, `description`, `date`, `downloads`, `size`, `url`) VALUES ('%1', '%2', '%3', '%4', '%5', '%6', '%7')", $id, $file, $description, time(), 0, $size, $link);
+      
+      $this->db->query("UPDATE `__download_groups` SET `files` = `files` + 1 WHERE `id` = '%1'", $id);
+   }
+   
+   /*
+    * public uint FileGID(uint $id)
+    * 
+    * zwraca ID grupy pliku o ID=$id
+    */
+   
+   public function FileGID($id)
+   {
+      return $this->db->query("SELECT `parent` FROM `__download_files` WHERE `id` = '%1'", $id)->to_obj()->parent;
+   }
+   
+   /*
+    * public uint EditFile(string $file, string $link, string $description, string $size, uint $id)
+    * 
+    * zmienia w pliku o ID=$id nazwę na $file, link na $link, opis na $description i wielkość na $size.
+    * zwraca ID grupy, w której ten plik się znajduje
+    */
+   
+   public function EditFile($file, $link, $description, $size, $id)
+   {
+      $file = mysql_real_escape_string($file);
+      $link = mysql_real_escape_string($link);
+      $description = mysql_real_escape_string($description);
+      $size = mysql_real_escape_string($size);
+      $id = intval($id);
+      
+      $this->db->query("UPDATE `__download_files` SET `file` = '%1', `description` = '%2', `size` = '%3', `url` = '%4' WHERE `id` = '%5'", $file, $description, $size, $link, $id);
+      
+      return $this->FileGID($id);
+   }
+   
+   /*
+    * public DBresult DeleteFile(uint $id)
+    * 
+    * usuwa plik o ID=$id
+    */
+   
+   public function DeleteFile($id)
+   {
+      $id = intval($id);
+      
+      $gid = $this->FileGID($id);
+      
+      $this->db->query("DELETE FROM `__download_files` WHERE `id` = '%1'", $id);
+      
+      $this->db->query("UPDATE `__download_groups` SET `files` = `files` - 1 WHERE `id` = '%1'", $gid);
+      
+      return $gid;
    }
 }
 ?>

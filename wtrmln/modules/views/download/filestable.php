@@ -21,41 +21,39 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<a href="$/">Panel Admina</a> &gt; Download
+<a href="$/">Panel Admina</a> &gt; <a href="$/download">Download</a> &gt; Pliki
 
 <div class="tr">
    <big>
-      <a href="$/download/newgroup">Nowa grupa</a>
+      <a href="$/download/newfile/<$gid>">Nowy plik</a>
    </big>
 </div>
 
 <table>
    <tr>
-      <th width="80%">Nazwa</th> <th>Plików</th> <th>Opcje</th>
+      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th> <th>Opcje</th>
    </tr>
-   <list object $groups>
+   <list object $files>
       <tr>
+         <td><$id></td>
+         <td><a href="<$url>"><$file></a></td>
+         <td><$description></td>
+         <td><$size></td>
+         <td><date $date></td>
+         <td><$downloads></td>
          <td>
-            <h3><a href="$/download/group/<$id>"><$name></a></h3>
-            <br>
-            <$description>
-         </td>
-         <td class="tc">
-            <$files>
-         </td>
-         <td class="tc">
-            <a href="$/download/editgroup/<$id>">[edytuj]</a><br>
-            <a href="$/download/deletegroup/<$id>">[usuń]</a> 
+            <a href="$/download/editfile/<$id>">[Edytuj]</a>
+            <a href="$/download/deletefile/<$id>">[Usuń]</a>
          </td>
       </tr>
    </list>
    <tr>
-      <th>Nazwa</th> <th>Plików</th> <th>Opcje</th>
+      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th> <th>Opcje</th>
    </tr>
 </table>
 
 <div class="tr">
    <big>
-      <a href="$/download/newgroup">Nowa grupa</a>
+      <a href="$/download/newfile/<$gid>">Nowy plik</a>
    </big>
 </div>
