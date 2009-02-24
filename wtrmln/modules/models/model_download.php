@@ -182,5 +182,18 @@ class Model_Download extends Model
       
       return $gid;
    }
+   
+   /*
+    * public void IncDownloads(uint $id)
+    * 
+    * inkrementuje licznik ściągnięć pliku o ID=$id
+    */
+   
+   public function IncDownloads($id)
+   {
+      $id = intval($id);
+      
+      $this->db->query("UPDATE `__download_files` SET `downloads` = `downloads` + 1 WHERE `id` = '%1'", $id);
+   }
 }
 ?>

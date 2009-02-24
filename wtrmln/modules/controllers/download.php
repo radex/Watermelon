@@ -53,5 +53,26 @@ class Download extends Controller
       
       echo $this->load->view('download_files', array('files' => $files));
    }
+   
+   /*
+    * ściąganie
+    */
+   
+   function get()
+   {
+      $id = $this->url->segment(1);
+      
+      $data = model('download')->FileData($id);
+      
+      if(!$data->exists())
+      {
+         echo $this->load->view('download_nosuchfile');
+         return;
+      }
+      
+      model('download')->IncDownloads($id);
+      
+      redirect($data->to_obj()->url);
+   }
 }
 ?>
