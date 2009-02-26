@@ -20,6 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
+/*
+ * Lib Config
+ * wersja 2.0.0
+ * 
+ * zarządzanie konfiguracją
+ */
+
 class Config
 {
    public static $siteName;

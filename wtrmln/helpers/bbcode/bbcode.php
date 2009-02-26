@@ -38,7 +38,7 @@ function bbcode($text)
 }
 
 /*
- * string bbcode(string $text)
+ * string bbcode_cached(string $text)
  * 
  * parsuje bbcode (zamienia na html)
  * z włączoną obsługą cache'owania

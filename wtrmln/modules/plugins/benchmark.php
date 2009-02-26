@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * class Benchmark
  * 
  * sprawdzanie wydajności (w sensie: szybkości działania)
+ * 
+ * wersja 1.5.0
  */
 
 class Benchmark extends Plugin

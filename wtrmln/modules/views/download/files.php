@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
    <list object $files>
       <tr>
          <td><$id></td>
-         <td><a href="<$url>"><$file></a></td>
+         <td><a href="$/download/get/<$id>"><$file></a></td>
          <td><$description></td>
          <td><$size></td>
          <td><date $date></td>

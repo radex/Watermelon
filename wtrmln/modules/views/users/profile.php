@@ -3,7 +3,7 @@
 
   Watermelon CMS
 
-Copyright 2009 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,13 +20,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 ?>
-<h1>Blog</h1>
-<?php if($mini) $i = 0; ?>
-<list object $newsList>
-<a name="news_<$id>"></a>
-<h2><$title></h2>
-<div class="date">napisany <date $date> przez <nick $author></div>
-<?=nl2br($text)?>
-<?php if($mini) $i++; ?>
-<?php if($i == 2) break; ?>
-</list>
+
+<div class="userprofile">
+   <div class="userprofile_avatar">
+   </div>
+   <div class="userprofile_sendpw">
+      <a href="$/pw/new/<$nick>">Wyślij PW</a>
+   </div>
+   <h2><$nick></h2>
+   <strong>Postów: </strong> <$posts><br>
+   <?
+      if($lastseen < time() - 500)
+      {
+         if($lastseen != 0)
+         {
+            echo '<strong>Ostatnio widziany: </strong>' . plDate($lastseen);
+            
+            echo '<br>';
+         }
+         else
+         {
+            echo '<strong>Ostatnio widziany: </strong> nigdy <br>';
+         }
+      }
+      else
+      {
+         echo '<strong>Ostatnio widziany: </strong> online <br>';
+      }
+   ?>
+</div>

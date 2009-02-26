@@ -24,6 +24,9 @@ include 'gui.php';
 include 'text.php';
 include 'bbcode/bbcode.php';
 
+function makeCard($r){}
+function emoticons_normal($r){return $r;}
+
 /*
  * void setH1(string $value)
  * 
@@ -172,6 +175,11 @@ function redirect($url)
 function siteredirect($url)
 {
    redirect(site_url($url));
+}
+
+function site_redirect($url)
+{
+   siteredirect($url);
 }
 
 /*

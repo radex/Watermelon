@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib Loader
- * wersja 1.6.0
+ * wersja 1.6.5
  * 
  * Ładowanie różnego rodzaju modułów
  * 
@@ -167,14 +167,15 @@ class Loader
    }
    
    /* 
-    * public static string block(string $blockName)
+    * public static string block(string $blockName[, mixed $data])
     * 
     * Zwraca blok
     * 
     * string $block - nazwa bloku do wczytania
+    * mixed  $data  - dane do przekazania blokowi
     */
    
-   public static function block($blockName)
+   public static function block($blockName, $data = null)
    {
       // preparujemy nazwę
       
@@ -189,6 +190,7 @@ class Loader
          
          $block_object = new $class();
          
+         $block_object->addData($data);
          $block_object->block();
          
          $buffer = ob_get_contents();
@@ -213,6 +215,7 @@ class Loader
       
       $block_object = new $class();
       
+      $block_object->addData($data);
       $block_object->block();
       
       $buffer = ob_get_contents();
@@ -232,6 +235,20 @@ class Loader
 function model($model)
 {
    return Loader::model($model);
+}
+
+/* 
+ * public static string block(string $blockName[, mixed $data])
+ * 
+ * Zwraca blok. Skrócona wersja Loader::block(...)
+ * 
+ * string $block - nazwa bloku do wczytania
+ * mixed  $data  - dane do przekazania blokowi
+ */
+
+function block($block, $data = null)
+{
+   return Loader::block($block, $data);
 }
 
 /* 

@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php
 /********************************************************************
 
   Watermelon CMS
@@ -19,14 +19,40 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
+
+class BlockMakeCard extends Block
+{
+   function block()
+   {
+      $uid = $this->data;
+      
+		$userData = Controller::$_user->getData($uid);
+		
+		$card .= '<cite><a href="$/ludzie/user/' . $userData->nick . '/">' . $userData->nick . '</a></cite>';
+		
+      if($userData->lastseen >= time() - 500)
+      {
+         $card .= ' [online]';
+      }
+      
+      $card .= '<br>';
+      
+      $card .= '<strong>Postów: </strong>' . $userData->posts;
+      
+      $card .= '<br>';
+      
+      if($userData->lastseen < time() - 500)
+      {
+         if($userData->lastseen != 0)
+         {
+            $card .= '<strong>Ostatnio widziany: </strong>' . plDate($userData->lastseen);
+            
+            $card .= '<br>';
+         }
+      }
+		
+		echo $card;
+   }
+}
+
 ?>
-<h1>Blog</h1>
-<?php if($mini) $i = 0; ?>
-<list object $newsList>
-<a name="news_<$id>"></a>
-<h2><$title></h2>
-<div class="date">napisany <date $date> przez <nick $author></div>
-<?=nl2br($text)?>
-<?php if($mini) $i++; ?>
-<?php if($i == 2) break; ?>
-</list>

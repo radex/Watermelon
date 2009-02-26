@@ -29,6 +29,11 @@ class Block
       $this->load  = new Loader();
       $this->user  = new User();
    }
+   
+   function addData($data)
+   {
+      $this->data = $data;
+   }
 }
 
 ?>
