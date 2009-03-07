@@ -77,11 +77,11 @@ else
 $_w_basePath = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/';
 
 define('WTRMLN_BASEURL'      , $_w_baseURL                                    );
-define('WTRMLN_SITEURL'      , $_w_siteURL                                    );
-define('WTRMLN_ADMINURL'     , $_w_adminURL                                   );
+define('WTRMLN_MAINURL'      , $_w_siteURL                                    );
+define('WTRMLN_SITEURL'      , $_w_adminURL                                   );
 define('WTRMLN_CMSDIR'       , $_w_cmsDir                                     );
-define('WTRMLN_THEME'        , $_w_theme                                      );
-define('WTRMLN_DEFAULTCNT'   , $_w_defaultCnt                                 );
+define('WTRMLN_THEME'        , $_w_adminTheme                                 );
+define('WTRMLN_DEFAULTCNT'   , $_w_PAdCnt                                     );
 define('WTRMLN_SITENAME'     , $_w_siteName                                   );
 define('WTRMLN_SITESLOGAN'   , $_w_siteSlogan                                 );
 
@@ -89,23 +89,26 @@ define('WTRMLN_CMSURL'       , $_w_baseURL    . WTRMLN_CMSDIR                 );
 define('WTRMLN_CMSPATH'      , $_w_basePath   . WTRMLN_CMSDIR                 );
 define('WTRMLN_APPPATH'      , WTRMLN_CMSPATH . 'modules/'                    );
 
-define('WTRMLN_THEMEURL'     , WTRMLN_CMSURL  . 'themes/' . WTRMLN_THEME . '/');
-define('WTRMLN_THEMEPATH'    , WTRMLN_CMSPATH . 'themes/' . WTRMLN_THEME . '/');
+define('WTRMLN_THEMEURL'     , WTRMLN_CMSURL  . 'themes_admin/' . WTRMLN_THEME . '/');
+define('WTRMLN_THEMEPATH'    , WTRMLN_CMSPATH . 'themes_admin/' . WTRMLN_THEME . '/');
 define('WTRMLN_LIBS'         , WTRMLN_CMSPATH . 'libs/'                       );
 define('WTRMLN_ADMINLIBS'    , WTRMLN_CMSPATH . 'admin/libs/'                 );
 define('WTRMLN_HELPERS'      , WTRMLN_CMSPATH . 'helpers/'                    );
 define('WTRMLN_CACHE'        , WTRMLN_CMSPATH . 'cache/'                      );
 define('WTRMLN_FILES'        , WTRMLN_CMSURL  . 'files/'                      );
-define('WTRMLN_CONTROLLERS'  , WTRMLN_APPPATH . 'controllers/'                );
+define('WTRMLN_ACINFO'       , WTRMLN_APPPATH . 'acinfo/'                     );
+define('WTRMLN_CONTROLLERS'  , WTRMLN_APPPATH . 'admin/'                      );
 define('WTRMLN_VIEWS'        , WTRMLN_APPPATH . 'views/'                      );
 define('WTRMLN_MODELS'       , WTRMLN_APPPATH . 'models/'                     );
 define('WTRMLN_BLOCKS'       , WTRMLN_APPPATH . 'blocks/'                     );
 define('WTRMLN_PLUGINS'      , WTRMLN_APPPATH . 'plugins/'                    );
 
+define('ADMIN_MODE', '');
+
 include WTRMLN_LIBS . 'config.php';
 
-Config::$theme               = $_w_theme;
-Config::$defaultController   = $_w_defaultCnt;
+Config::$theme               = $_w_adminTheme;
+Config::$defaultController   = $_w_PAdCnt;
 Config::$hashAlgo            = $_w_hashAlgo;
 Config::$defaultHashAlgo     = $_w_dHashAlgo;
 Config::$siteName            = $_w_siteName;
@@ -116,6 +119,6 @@ Config::setSuperusers($_w_superusers);
 ## odpalamy główny plik CMS-a
 ## 
 
-include WTRMLN_CMSPATH . 'system.php';
+include WTRMLN_CMSPATH . 'system_admin.php';
 
 ?>

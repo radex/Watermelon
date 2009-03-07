@@ -38,6 +38,7 @@ $_w_superusers = array('radex');
 //define('NOMENU'        , ''   );
   define('DEBUG'         , ''   );
 //define('CACHE_VIEWS'   , ''   );
+  define('CACHE_BBCODE'  , ''   );
   define('BENCHMARK_SITE', false);
   define('DEBUG_FOOTER'  , ''   );
 ?>
