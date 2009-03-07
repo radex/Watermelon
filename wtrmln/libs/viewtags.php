@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
  * Lib ViewTags
- * wersja 2.0.0
+ * wersja 2.0.1
  * 
  * Przetwarzanie pseudo-tagów używanych m. in. w widokach.
  */
@@ -95,7 +95,7 @@ class ViewTags
       // tag unpack
       
       $data = preg_replace('#<unpack \$([a-zA-Z0-9_]+)>#', '<?php foreach($\\1 as $key => $var){$$key = $var;} ?>', $data);
-            
+      
       // tag list object
       
       $data = preg_replace('#<list object \$([a-zA-Z0-9_]+)>#', '<?php while($\\1_item = $\\1->to_obj()){foreach($\\1_item as $key => $var){$$key = $var;} ?>', $data);
@@ -226,6 +226,28 @@ class ViewTags
       @ob_end_clean();
       
       return $page;
+   }
+   
+   /*
+    * private static int rand(int $flag) // testowa
+    * 
+    * losuje liczbę i ją zwraca, gdy $flag == 0
+    * lub zwraca wylosowaną już liczbę gdy $flag != 0  
+    */
+   
+   private static $randed;
+   
+   private static function rand($flag)
+   {
+      if($flag == 0)
+      {
+         self::$randed = mt_rand();
+         return self::$randed;
+      }
+      else
+      {
+         return self::$randed;
+      }
    }
 }
 

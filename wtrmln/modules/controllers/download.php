@@ -42,7 +42,6 @@ class Download extends Controller
    function Group()
    {
       $group = $this->url->segment(1);
-      
       $files = model('download')->GetFiles($group);
       
       if(!$files->exists())
@@ -51,7 +50,9 @@ class Download extends Controller
          return;
       }
       
-      echo $this->load->view('download_files', array('files' => $files));
+      $groupInfo = model('download')->GroupData($group)->to_obj();
+      
+      echo $this->load->view('download_files', array('files' => $files, 'group' => $groupInfo));
    }
    
    /*

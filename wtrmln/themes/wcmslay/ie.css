@@ -13,3 +13,13 @@ blockquote
    display: list-item;
    margin-left: 30px;
 }
+
+ul
+{
+   margin: 0;
+}
+
+#header ul li
+{
+   filter: alpha(opacity = 50);
+}

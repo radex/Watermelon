@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php
 /********************************************************************
 
   Watermelon CMS
@@ -19,27 +19,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
+
+class Register extends Controller
+{
+   function Index()
+   {
+      setH1('Rejestracja');
+      
+      $this->addMeta('<style type="text/css">.registerform{text-align:left}.registerform label{float:left;width:130px;display:block}</style>');
+      
+      echo $this->load->view('register_form');
+   }
+   
+   function Submit()
+   {
+      $login     = $_POST['login'];
+      $pass      = $_POST['password'];
+      $pass2     = $_POST['password2'];
+      
+      $this->user->Register($login, $pass, $pass2);
+   }
+}
 ?>
-
-<a href="$/download">Download</a> &gt; <?=$group->name?> 
-
-<p><?=$group->description?></p>
-
-<table width="100%">
-   <tr>
-      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th>
-   </tr>
-   <list object $files>
-      <tr>
-         <td><$id></td>
-         <td><a href="$/download/get/<$id>"><$file></a></td>
-         <td><$description></td>
-         <td><$size></td>
-         <td><date $date></td>
-         <td><$downloads></td>
-      </tr>
-   </list>
-   <tr>
-      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th>
-   </tr>
-</table>

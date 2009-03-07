@@ -1,9 +1,9 @@
-<?php if(!defined('WTRMLN_IS')) die;
+<?php if(!defined('WTRMLN_IS')) exit;
 /********************************************************************
 
   Watermelon CMS
 
-Copyright 2008 Radosław Pietruszewski
+Copyright 2008-2009 Radosław Pietruszewski
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,19 +20,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
-########################################
-#             Biblioteki               #
-########################################
+/*
+$microtimer = microtime();
+$microtimer = explode(' ', $microtimer);
+$msecr = substr($microtimer[0],2);
+$secr  = $microtimer[1];
+$timer = $secr . $msecr;
+$timer = substr($timer, 0, -2);
+*/
+// ładujemy biblioteki
 
-include WTRMLN_LIBS . 'url.php';
-include WTRMLN_LIBS . 'db.php';
-include WTRMLN_LIBS . 'loader.php';
-include WTRMLN_LIBS . 'pluginscdb.php';
-include WTRMLN_LIBS . 'controller.php';
-include WTRMLN_LIBS . 'model.php';
-include WTRMLN_LIBS . 'plugin.php';
+include WTRMLN_LIBS . 'libs.php';
+
+// ładujemy helpery
 
 include WTRMLN_HELPERS . 'helpers.php';
+
+//$microtime2 = microtime();
 
 /*
  * function panic(string $text = 'noname error')
@@ -83,7 +87,27 @@ class Watermelon
     */
    
    public static $pcdb = null;
-
+   
+   /*
+    * private static string[] $acceptMessages
+    * 
+    * akceptowane wiadomości dla danej podstrony.
+    * Wiadomości dodaje się poprzez Watermelon::addmsgs(), np:
+    * 
+    * Watermelon::addmsgs('login_success', 'login_loggedout');
+    * 
+    * --- NIEAKTUALNE: ---
+    * Aby dodać taką akceptowaną wiadomość, wystarczy
+    * w kontrolerze dodać do tej tablicy element, np:
+    * 
+    * Watermelon::$acceptMessages[] = 'login_success';
+    * 
+    * Można także dodawać tutaj wiadomości, które mają
+    * być zawsze akceptowane
+    */
+   
+   private static $acceptMessages = array('login_success', 'login_loggedout');
+   
    /*
     * public void Watermelon(string $dbHost,   string $dbUser,   string   $dbPass, string $dbName,
     *                        string $dbPrefix, array  $autoload, string[] $metaSrc)
@@ -121,7 +145,24 @@ class Watermelon
       
       $this->generatePage($content);
    }
-
+   
+   /*
+    * public static void addmsgs(string $msg[, string $msg[, ... ]])
+    * 
+    * dodaje do Watermelon::$acceptMessages
+    * wiadomości (każda wiadomość to jeden argument)
+    */
+   
+   public static function addmsgs()
+   {
+      $messages = func_get_args();
+      
+      foreach($messages as $msg)
+      {
+         self::$acceptMessages[] = $msg;
+      }
+   }
+   
    /*
     * private void loadController()
     *
@@ -181,20 +222,39 @@ class Watermelon
          panic('Nie moge znalesc klasy podanego controllera (' . URL::$class . ')');
       }
       
+      // nie można wywołać __* (czyli np. __call, __construct)
+      
+      if(substr(URL::$method, 0, 2) == '__')
+      {
+         URL::$method = 'index';
+      }
+      
       // sprawdzanie czy istnieje dana funkcja składowa controllera.
       
       if(!method_exists($controller, URL::$method))
       {
-         panic('Nie moge znalesc podanej funkcji składowej controllera (' . URL::$method . ')');
+         if(method_exists($controller, '__call'))
+         {
+            $controller->__call(URL::$method, array());
+            
+            $content = ob_get_contents(); //wyciagamy dane z bufora wyjścia
+            @ob_end_clean();
+            
+            return $content;
+         }
+         else
+         {
+            panic('Nie moge znalesc podanej funkcji składowej controllera (' . URL::$method . ')');
+         }
       }
 
       // przystepujemy do roboty
 
       $controller->{URL::$method}();
-
+      
       $content = ob_get_contents(); //wyciagamy dane z bufora wyjścia
       @ob_end_clean();
-
+      
       return $content;
    }
 
@@ -237,6 +297,16 @@ class Watermelon
 
       $content = str_replace('href="$/', 'href="' . WTRMLN_SITEURL, $content);
       $content = str_replace('action="$/', 'action="' . WTRMLN_SITEURL, $content);
+      
+      // preparujemy wiadomość
+      
+      if(is_string(URL::$message))
+      {
+         if(in_array(URL::$message, self::$acceptMessages))
+         {
+            $_w_message = Loader::view(URL::$message);
+         }
+      }
 
       // preparujemy zawartość <title> :)
 
@@ -249,6 +319,30 @@ class Watermelon
       // odpalamy skina
 
       include WTRMLN_THEMEPATH . 'skin.php';
+   }
+   
+   /*
+    * public static string getMeta(string $tab = '   ')
+    * 
+    * zwraca zawartość <head>
+    * używaj tego przy tworzeniu layoutów
+    * domyślnie rozdziela elementy znakiem nowej linii "\n"
+    * i dodaje na początku każdego wcięcie o wielkości trzech
+    * spacji (jeśli ma być inny - podaj jaki w paramentrze $tab)
+    * 
+    * string $tab - wygląd wcięcia
+    */
+   
+   public static function getMeta($tab = '   ')
+   {
+      $metaSrc = Watermelon::$metaSrc;
+      
+      foreach($metaSrc as $metaItem)
+      {
+         $meta .= $tab . $metaItem . "\n";
+      }
+      
+      return $meta;
    }
 }
 

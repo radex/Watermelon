@@ -1,0 +1,553 @@
+/* Watermelon CMS Admin Layout by Radex
+/*   email : radex_p [at] tlen [dot] pl
+/* website : radex.i15.eu
+/*
+/* Copyright 2008-2009 Radosław `radex` Pietruszewski
+/*
+/*
+/* This program is free software; you can redistribute it and/or
+/* modify it under the terms of the GNU General Public License
+/* version 2 as published by the Free Software Foundation.
+/*
+/* This program is distributed in the hope that it will be useful,
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+/* GNU General Public License for more details.
+/*
+/* You should have received a copy of the GNU General Public License
+/* along with this program; if not, write to the Free Software
+/* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+********************************************************************/
+
+@charset "UTF-8";
+
+/* Podstawowe elementy
+********************************************************************/
+body,h1,h2,h3,h4,h5,h6,ul,li
+{
+   margin: 0;
+   padding: 0;
+}
+
+body
+{
+   background-color: #335270;
+   font-size: 13px;
+   font-family: Sans, Verdana, Arial, sans-serif;
+}
+
+/**/
+
+table
+{
+   width: 100%;
+   border-collapse: collapse;
+}
+
+td, th
+{
+   border: 1px solid #ddd;
+   padding: 3px;
+}
+
+th
+{
+   background: #ccc;
+   border: 1px solid #999;
+}
+
+td
+{
+   vertical-align: top;
+}
+
+/**/
+
+#content li
+{
+   margin-left: 20px;
+   list-style-type: square;
+}
+
+#content h1
+{
+   color: #333;
+   border-bottom: 1px solid #ccc;
+   margin-bottom: 20px;
+   text-shadow: 0px 2px 2px #aaa;
+}
+
+/**/
+
+#content a
+{
+   color: #537290;
+   text-decoration: none;
+   border-bottom: 1px solid #ddd;
+}
+
+#content a:hover, #content a:visited:hover
+{
+   border-bottom: 1px solid #aaa;
+}
+
+#content a:visited
+{
+   color: #133250;
+   border-bottom: 1px solid #eee;
+}
+
+code
+{
+   font-family: monospace;
+   background: #F8F6D5;
+   padding: 0 2px;
+   border: 1px solid #C8C6A5;
+}
+
+blockquote
+{
+   min-height: 30px;
+   margin-left: 25px;
+   padding-left: 45px;
+   padding-top: 5px;
+   background: transparent url('quot.png') no-repeat;
+   color: #888;
+   margin-bottom: 0;
+}
+
+q
+{
+   quotes: "«" "»";
+   color: #888;
+}
+
+caption
+{
+   margin: 2px;
+   margin-bottom: 0;
+   background: #EEE;
+   font-size: 1.2em;
+   font-weight: bold;
+}
+
+fieldset
+{
+   border: 1px solid #bbb;
+}
+
+legend
+{
+   font-weight: normal;
+   color: #666;
+}
+
+/* klasy CSS Watermelona
+********************************************************************/
+
+.block
+{
+   display: block !important;
+}
+
+.inline
+{
+   display: inline !important;
+}
+
+/* Pozycjonowanie, ramki
+********************************************************************/
+
+.ramkar, .ramkal, .ramkac
+{
+   padding: 10px;
+   background-color: #f4f2e7;
+   border: 2px solid #fff;
+   outline: 1px solid #c4c2b7;
+}
+
+.ramkar, .ramkal, .ramkac,
+.dr,     .dl,     .dc
+{
+   text-align: center;
+}
+
+.ramkar, .dr
+{
+   float:right;
+}
+
+.ramkal, .dl
+{
+   float:left;
+}
+
+.ramkac, .dc
+{
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.tr
+{
+   text-align: right;
+}
+
+.tl
+{
+   text-align: left;
+}
+
+.tc
+{
+   text-align: center;
+}
+
+/* Boksy z różnymi informacjami (błędy, podpowiedzi itp.)
+********************************************************************/
+
+.box_e
+{
+   border: 1px solid #B65;
+   background: #FA9 url('images/be.png') no-repeat 10px center;
+}
+.box_w
+{
+   border: 1px solid #B85;
+   background: #FE9 url('images/bw.png') no-repeat 10px center;
+}
+.box_i
+{
+   border: 1px solid #57B;
+   background: #ABF url('images/bi.png') no-repeat 10px center;
+}
+.box_c
+{
+   border: 1px solid #8B5;
+   background: #CFA url('images/bg.png') no-repeat 10px center;
+}
+.box_t
+{
+   border: 1px solid #AAA;
+   background: #EEE url('images/bt.png') no-repeat 10px center;
+}
+.box_q
+{
+   border: 1px solid #89A;
+   background: #DEF url('images/bq.png') no-repeat 10px center;
+}
+
+.box_e strong
+{
+   color: #943;
+}
+
+.box_w strong
+{
+   color: #963;
+}
+
+.box_i strong
+{
+   color: #359;
+}
+
+.box_c strong
+{
+   color: #693;
+}
+
+.box_t strong
+{
+   color: #888;
+}
+
+.box_q strong, .box_q legend
+{
+   color: #789;
+}
+
+.box_q legend
+{
+   font-weight: bold;
+}
+
+.box_e,
+.box_w,
+.box_i,
+.box_c,
+.box_t,
+.box_q
+{
+   padding: 10px;
+   margin: 10px;
+   padding-left: 36px;
+}
+
+.box_e strong,
+.box_w strong,
+.box_i strong,
+.box_c strong,
+.box_t strong,
+.box_q strong
+{
+   display: block;
+}
+
+.box_q fieldset
+{
+   border: 0;
+   padding: 0;
+   margin-bottom: -10px;
+}
+
+.box_q p
+{
+   margin: 0;
+}
+
+.box_q .ans_yes
+{
+   border: 1px solid #89A;
+   background: #f2f6fa url('images/bg.png') no-repeat 10px center;
+   font-weight: bold;
+   padding: 3px;
+   padding-left: 25px;
+   width: 75px;
+   font-size: 1.1em;
+   margin: 5px;
+   float: right;
+}
+
+.box_q .ans_no
+{
+   border: 1px solid #89A;
+   background: #f2f6fa url('images/bn.png') no-repeat 10px center;
+   font-weight: bold;
+   padding: 3px;
+   padding-left: 25px;
+   width: 75px;
+   font-size: 1.1em;
+   margin: 5px;
+   float: right;
+}
+
+/* Struktura
+********************************************************************/
+
+#container
+{
+   background: #fff;
+   padding: 10px;
+   border-bottom: 1px solid #ccc;
+   overflow: hidden;
+}
+
+#header
+{
+   padding: 10px;
+   border-bottom: 1px solid #ccc;
+   overflow: hidden;
+   padding-bottom: 0;
+}
+
+#header h1
+{
+   background-image: url('wcmslogo1.png');
+   width: 404px;
+   height: 46px;
+}
+
+#header h1 span
+{
+   display: none;
+}
+
+#header h2
+{
+   font-size: 1em;
+   font-weight: normal;
+   padding-left: 200px;
+   color: #999;
+}
+
+#header h2 a
+{
+   font-size: .7em;
+   text-decoration: none;
+   color: #333;
+   border-bottom: 1px solid #ddd;
+}
+
+#header h2 a:hover
+{
+   border-bottom: 0;
+}
+
+#footer
+{
+   padding: 10px;
+   height: 200px;
+   color: #8fb6db;
+}
+
+.intbox
+{
+   padding: 2px;
+   background: #eab933;
+   color: #fff;
+   display: inline-block;
+   min-width: 15px;
+   text-align: center;
+}
+
+#header ul
+{
+   margin-top: -20px;
+   float: right;
+}
+
+#header li
+{
+   background: #fff;
+   border: 1px solid #eee;
+   border-bottom: 0;
+   padding: 3px;
+   float: left;
+   list-style-type: none;
+   height: 20px;
+   margin-left: 10px;
+}
+
+#header li:hover
+{
+   background: #eee;
+}
+
+#header li:hover a
+{
+   color: #000;
+}
+
+#header a
+{
+   color: #666;
+   text-decoration: none;
+}
+
+
+
+
+#sidebar
+{
+   float: left;
+   width: 150px;
+   border-right: 1px solid #eee;
+   padding-left: 5px;
+   padding-right: 15px;
+   margin-top: 10px;
+}
+
+#sidebar > a
+{
+   display: block;
+   color: #666;
+   padding: 5px;
+   background: #f2f2f2;
+   outline: 1px solid #e4e4e4;
+   border-top: 1px solid #fff;
+   margin-bottom: 1px;
+   text-align: center;
+   text-decoration: none;
+   margin-top: 1px;
+}
+
+#sidebar > a:hover
+{
+   color: #000;
+}
+
+#sidebar ul
+{
+   outline: 1px solid #e4e4e4;
+   background: #fbfbfb;
+   padding: 5px;
+}
+
+#sidebar li
+{
+   list-style-type: none;
+}
+
+#sidebar li a
+{
+   color: #666;
+   text-decoration: none;
+   display: block;
+   border: 1px solid transparent;
+}
+
+#sidebar li a:hover
+{
+   color: #000;
+   border: 1px solid #f2f0f0;
+}
+
+#sidebar li a::before
+{
+   content: '· ';
+}
+
+#sidebar hr
+{
+   border: none;
+   height: 1px;
+   background: #ccc;
+}
+
+#sidebar .menuedit
+{
+   text-align: right;
+}
+
+#sidebar .menuedit a
+{
+   font-size: .8em;
+   color: #aaa;
+   text-decoration: none;
+}
+
+#sidebar .menuedit a:hover
+{
+   color: #666;
+}
+
+
+
+#content
+{
+   padding: 10px;
+   padding-left: 180px;
+}
+
+/***/
+
+#ie_info
+{
+   position: absolute;
+   background: #fff;
+   filter: alpha(opacity = 50);
+   height: 2000px;
+}
+
+#ie_info div
+{
+   margin: 0 auto;
+   background: #eee;
+   width: 400px;
+   height: 100px;
+   padding: 20px;
+   border: 1px solid #ccc;
+   margin-top: 200px;
+}

@@ -20,10 +20,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ********************************************************************/
 
+define('PAGEINDEX', '');
+
 class Test extends Controller
 {
    function Index()
    {
+      /* piaskownica 3 */
+      
+      
+      
       /* piaskownica 2 */
       
       ob_start();
@@ -46,13 +52,13 @@ $test = "test ${test} etste";
       $content = ob_get_contents();
       ob_end_clean();
       
-      Benchmark::start('bbcode_off');
+      //Benchmark::start('bbcode_off');
       echo bbcode($content);
-      Benchmark::end('bbcode_off');
+      //Benchmark::end('bbcode_off');
       
-      Benchmark::start('bbcode_cached');
+      //Benchmark::start('bbcode_cached');
       echo bbcode_cached($content);
-      Benchmark::end('bbcode_cached');
+      //Benchmark::end('bbcode_cached');
       
       
       return;

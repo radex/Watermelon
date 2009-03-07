@@ -118,7 +118,7 @@ class Model_PW extends Model
    }
    
    /*
-    * public function SetReaded(uint $id)
+    * public void SetReaded(uint $id)
     * 
     * Ustawia flagę "przeczytano" prywatnej wiadomości o ID = $id
     */
@@ -127,6 +127,19 @@ class Model_PW extends Model
    {
       $id = intval($id);
       $this->db->query("UPDATE `__private_messages` SET `readed` = 1 WHERE `id` = '%1'", $id);
+   }
+   
+   /*
+    * public int HowManyNewPWs(uint $uid)
+    * 
+    * liczy ile użytkownik o ID = $uid ma
+    * nieprzeczytanych prywatnych wiadomości
+    */
+   
+   public function HowManyNewPWs($uid)
+   {
+      $uid = intval($uid);
+      return $this->db->query("SELECT `id` FROM `__private_messages` WHERE `to` = '%1' AND `readed` = 0", $uid)->num_rows();
    }
 }
 ?>

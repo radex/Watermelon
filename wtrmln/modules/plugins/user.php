@@ -152,8 +152,73 @@ class User extends Plugin
       return true;
    }
 
-   public function Register($user, $password, $password2, $email, $email2, $data)
+   public function Register($user, $password, $password2/*, $email, $email2, $data*/)
    {
+      // Walidacja wprowadzonych danych
+      
+      if(empty($user))
+      {
+         $errors[] = 'Pole <em>login</em> musi być wypełnione.';
+      }
+      
+      if(empty($password))
+      {
+         $errors[] = 'Pole <em>hasło</em> musi być wypełnione.';
+      }
+      
+      if(empty($password2))
+      {
+         $errors[] = 'Pole <em>powtórz hasło</em> musi być wypełnione.';
+      }
+      
+      if(isset($errors))
+      {
+         setH1('Błąd rejestracji');
+         
+         echo $this->load->view('register_errors', array('errors' => $errors));
+         return false;
+      }
+      
+      // sprawdzamy, czy hasła pasują do siebie
+      
+      if($password !== $password2)
+      {
+         setH1('Błąd rejestracji');
+         
+         $errors[] = 'Hasła nie pasują do siebie';
+         
+         echo $this->load->view('register_errors', array('errors' => $errors));
+         return false;
+      }
+      
+      // sprawdzamy, czy user istnieje
+      
+      $userdata = $this->User->LoginUserData($user);
+      
+      if($userdata->exists())
+      {
+         setH1('Błąd rejestracji');
+         
+         $errors[] = 'Użytkownik <em>' . $user . '</em> już istnieje.';
+         
+         echo $this->load->view('register_errors', array('errors' => $errors));
+         return false;
+      }
+      
+      // generujemy salt i hash
+      
+      $salt = strHash(uniqid(mt_rand(), true));
+      
+      $salt = substr($salt, 0, 16);
+      
+      $hash = strHash($password . $salt);
+      
+      $id = $this->User->register($user, $hash, $salt);
+      
+      model('pw')->SendPW(1, $id, 'Witaj na stronie!', "Dzięki za rejestrację.\nMożesz już usunąć tą wiadomość.\nPozdrowienia, ekipa strony.", time());
+      
+      $this->Login($user, $password, 0);
+      
       //TODO
    }
    
@@ -332,6 +397,34 @@ class User extends Plugin
       self::$users[$uid] = $data;
       
       return $data;
+   }
+   
+   /*
+    * public static bool CanI(string $what)
+    * 
+    * sprawdza, czy aktualnie zalogowany użytkownik ma
+    * uprawnianie $what. Zwraca true, jeśli tak, w
+    * przeciwnym wypadku lub gdy nie jest zalogowany
+    * zwraca false;
+    */
+   
+   public static function CanI($what)
+   {
+      if(!Controller::$_user->IsLoggedIn())
+      {
+         return false;
+      }
+      
+      $data = self::getData($_SESSION['WTRMLN_UID']);
+      
+      if($data->$what == '1')
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
    }
 }
 

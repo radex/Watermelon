@@ -40,6 +40,24 @@ class Model_User extends Model
    }
    
    /*
+    * public void Register(string $user, string $pass, string $salt)
+    * 
+    * rejestruje użytkownika
+    */
+   
+   public function Register($user, $pass, $salt)
+   {
+      $user = mysql_real_escape_string($user);
+      $pass = mysql_real_escape_string($pass);
+      $salt = mysql_real_escape_string($salt);
+      
+      $this->db->query("INSERT INTO `__users` (`nick`, `password`, `salt`) VALUES ('%1', '%2', '%3')", $user, $pass, $salt);
+      $id = $this->db->insert_id();
+      $this->db->query("INSERT INTO `__privileges` (`uid`) VALUES ('%1')", $id);
+      return $id;
+   }
+   
+   /*
     * public DBresult UpdatePassword(string $nick, string $hash, string $salt, int $hashAlgo)
     * 
     * aktualizuje hasło użytkownika

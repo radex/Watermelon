@@ -1,27 +1,22 @@
 <?php if(!defined('WTRMLN_IS')) die;
-
 //TODO: zrobić porządek
+/*
+global $timer, $microtime2;
+$_st = $timer;
+$_et = $microtime2;
+var_dump($_st, $_et);
 
-/* meta (poładniamy source)
-**************************/
+$microtime = explode(' ', $_et);
+$msec = substr($microtime[0],2);
+$sec  = $microtime[1];
+$time = $sec . $msec;
+$_et = substr($time, 0, -2);
 
-function getMeta()
-{
-   $meta = '';
-   
-   $_w_metaSrc = Watermelon::$metaSrc;
-   
-   foreach($_w_metaSrc as $metaItem)
-   {
-      $meta .= '   ' . $metaItem . "\n";
-   }
-   
-   return $meta;
-}
-
+Benchmark::$benchmarks['libload8'] = $_st;
+Benchmark::end('libload8', $_et);
+*/
 /* menu
 ***************************/
-
 if(!defined('NOMENU'))
 {
 	$menus = DB::query("SELECT * FROM `__menu`");
@@ -72,7 +67,23 @@ if(!defined('NOMENU'))
    @ob_end_clean();
 }
 
+/* topmenu
+*********************************/
+/*
+<li class="actual_page"><a href="#aad">Główna</a></li>
+            <li><a href="#bd">Inna</a></li>
+            <li><a href="#cd">Jeszcze inna</a></li>*/
 
+$topmenus = Config::getConf('top_menus');
+$topmenus = unserialize($topmenus);
+
+foreach($topmenus as $var)
+{
+   $condition = 'if(' . $var[2] . '){$s=true;}else{$s=false;}';
+   eval($condition);
+   
+   $menusStr .= '<li' . ($s ? ' class="actual_page"' : '') . '><a href="' . site_url($var[1]) . '">' . $var[0] . '</a></li>';
+}
 /* takie tam...
 *********************************/
 

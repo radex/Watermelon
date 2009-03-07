@@ -20,93 +20,16 @@
 ********************************************************************/
 
 @charset "UTF-8";
+@import url("watermelon.css");
+@import url("basic.css");
+@import url("bbcode.css");
 
 /* Podstawowe elementy
 ********************************************************************/
-body,h1,h2,h3,h4,h5,h6
-{
-   margin: 0;
-   padding: 0;
-}
 
 body
 {
    background-color: #335270;
-   font-size: 12px;
-   font-family: Verdana, Sans, Arial, sans-serif;
-}
-
-a
-{
-   color: #859e1c;
-   text-decoration: none;
-   border-bottom: 1px solid #ccc;
-}
-
-a:hover
-{
-   color: #fff;
-   background: #859e1c;
-   border: 0;
-}
-
-a:visited
-{
-   color: #a55e1c;
-}
-
-a:visited:hover
-{
-   color: #fff;
-   background: #a55e1c;
-   border: 0;
-}
-
-code
-{
-   font-family: monospace;
-   background: #F8F6D5;
-   padding: 0 2px;
-   border: 1px solid #C8C6A5;
-}
-
-blockquote
-{
-   min-height: 30px;
-   margin-left: 25px;
-   padding-left: 45px;
-   padding-top: 5px;
-   background: transparent url('quot.png') no-repeat;
-   color: #888;
-   margin-bottom: 0;
-}
-
-q
-{
-   quotes: "«" "»";
-   color: #888;
-}
-
-input, textarea
-{
-   border: 1px solid #008;
-}
-
-#content input,
-#content textarea
-{
-   
-}
-
-legend
-{
-   font-weight: bold;
-   color: #570;
-}
-
-li
-{
-	list-style-type: square;
 }
 
 #content li, #sidebar li
@@ -117,31 +40,6 @@ li
 #content ul, #sidebar ul
 {
    padding: 0;
-}
-
-td, th, caption
-{
-   border: 1px solid #ddd;
-   padding: 3px;
-}
-
-th
-{
-   background: #F8F8F8;
-}
-
-caption
-{
-   margin: 2px;
-   margin-bottom: 0;
-   background: #EEE;
-   font-size: 1.2em;
-   font-weight: bold;
-}
-
-fieldset
-{
-   border: 1px solid #bbb;
 }
 
 legend
@@ -156,202 +54,6 @@ h1
    border-bottom: 1px solid #ccc;
    margin-bottom: 20px;
    text-shadow: 0px 2px 2px #aaa;
-}
-
-big
-{
-   font-size: 1.2em;
-}
-
-/* klasy CSS Watermelona
-********************************************************************/
-
-.block
-{
-   display: block !important;
-}
-
-.inline
-{
-   display: inline !important;
-}
-
-/* Pozycjonowanie, ramki
-********************************************************************/
-
-.ramkar, .ramkal, .ramkac
-{
-   padding: 10px;
-   background-color: #f4f2e7;
-   border: 2px solid #fff;
-   outline: 1px solid #c4c2b7;
-}
-
-.ramkar, .ramkal, .ramkac,
-.dr,     .dl,     .dc
-{
-   text-align: center;
-}
-
-.ramkar, .dr
-{
-   float:right;
-}
-
-.ramkal, .dl
-{
-   float:left;
-}
-
-.ramkac, .dc
-{
-   display: block;
-   margin-left: auto;
-   margin-right: auto;
-}
-
-.tr
-{
-   text-align: right;
-}
-
-.tl
-{
-   text-align: left;
-}
-
-.tc
-{
-   text-align: center;
-}
-
-/* Boksy z różnymi informacjami (błędy, podpowiedzi itp.)
-********************************************************************/
-
-.box_e
-{
-   border: 1px solid #B65;
-   background: #FA9 url('images/be.png') no-repeat 10px center;
-}
-.box_w
-{
-   border: 1px solid #B85;
-   background: #FE9 url('images/bw.png') no-repeat 10px center;
-}
-.box_i
-{
-   border: 1px solid #57B;
-   background: #ABF url('images/bi.png') no-repeat 10px center;
-}
-.box_c
-{
-   border: 1px solid #8B5;
-   background: #CFA url('images/bg.png') no-repeat 10px center;
-}
-.box_t
-{
-   border: 1px solid #AAA;
-   background: #EEE url('images/bt.png') no-repeat 10px center;
-}
-.box_q
-{
-   border: 1px solid #89A;
-   background: #DEF url('images/bq.png') no-repeat 10px center;
-}
-
-.box_e strong
-{
-   color: #943;
-}
-
-.box_w strong
-{
-   color: #963;
-}
-
-.box_i strong
-{
-   color: #359;
-}
-
-.box_c strong
-{
-   color: #693;
-}
-
-.box_t strong
-{
-   color: #888;
-}
-
-.box_q strong, .box_q legend
-{
-   color: #789;
-}
-
-.box_q legend
-{
-   font-weight: bold;
-}
-
-.box_e,
-.box_w,
-.box_i,
-.box_c,
-.box_t,
-.box_q
-{
-   padding: 10px;
-   margin: 10px;
-   padding-left: 36px;
-}
-
-.box_e strong,
-.box_w strong,
-.box_i strong,
-.box_c strong,
-.box_t strong,
-.box_q strong
-{
-   display: block;
-}
-
-.box_q fieldset
-{
-   border: 0;
-   padding: 0;
-   margin-bottom: -10px;
-}
-
-.box_q p
-{
-   margin: 0;
-}
-
-.box_q .ans_yes
-{
-   border: 1px solid #89A;
-   background: #f2f6fa url('images/bg.png') no-repeat 10px center;
-   font-weight: bold;
-   padding: 3px;
-   padding-left: 25px;
-   width: 75px;
-   font-size: 1.1em;
-   margin: 5px;
-   float: right;
-}
-
-.box_q .ans_no
-{
-   border: 1px solid #89A;
-   background: #f2f6fa url('images/bn.png') no-repeat 10px center;
-   font-weight: bold;
-   padding: 3px;
-   padding-left: 25px;
-   width: 75px;
-   font-size: 1.1em;
-   margin: 5px;
-   float: right;
 }
 
 /* Struktura
@@ -434,7 +136,6 @@ big
 {
    display: block;
    padding: 5px;
-   color: #fff;
    background: #000;
    float: left;
    opacity: .5;
@@ -453,17 +154,24 @@ big
 {
    border: 0;
    background: #000;
+   color: #859e1c !important;
+}
+
+#header ul li a:hover
+{
+   color: #fff !important;
 }
 
 #header ul li.actual_page a
 {
    background: #fff;
+   color: #859e1c;
 }
 
 #header ul li.actual_page a:hover,
 #header ul li.actual_page a:visited:hover
 {
-   color: #a5be2c;
+   color: #a5be2c !important;
 }
 
 /***/
@@ -498,84 +206,6 @@ big
 
 /***/
 
-.post
-{
-   background-color: #f4f7ed;
-   padding: 5px;
-   padding-left: 10px;
-   margin-top: 20px;
-}
-
-.posterdata
-{
-   float: right;
-   width: 150px;
-   border-left: 1px solid #e1e4db;
-   padding-left: 5px;
-}
-
-.posterdata cite
-{
-   font-weight: bold;
-   font-style: normal;
-}
-
-.postcontent
-{
-   padding-right: 160px;
-}
-
-.posttools
-{
-   font-size: .9em;
-   text-align: right;
-   padding-right: 160px;
-   color: #888;
-}
-
-.posttools a
-{
-   color: #888;
-}
-
-.posttools a:hover
-{
-   background: 0;
-   color: #888;
-}
-
-/***/
-
-.userprofile
-{
-   background-color: #f4f7ed;
-   padding: 10px;
-   margin-top: 20px;
-   height: 100px;
-}
-
-.userprofile_avatar
-{
-   float: left;
-   padding-right: 10px;
-   width: 100px;
-   height: 100px;
-}
-
-.userprofile_sendpw
-{
-   float: right;
-   font-size: 1.2em;
-}
-
-.userprofile_range
-{
-   font-style: normal;
-   font-size: 0.9em;
-}
-
-/***/
-
 #sidebar a
 {
    border: 0;
@@ -589,14 +219,4 @@ big
 #sidebar:hover a:hover
 {
    border: 0;
-}
-
-/***/
-
-.posttools_n
-{
-   font-size: .9em;
-   color: #888;
-   margin-top: -15px;
-   margin-bottom: 10px;
 }

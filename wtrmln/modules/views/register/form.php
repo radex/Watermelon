@@ -21,25 +21,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ********************************************************************/
 ?>
 
-<a href="$/download">Download</a> &gt; <?=$group->name?> 
+<form action="$/register/submit" method="POST">
+   <fieldset class="registerform">
+      <legend>Rejestracja</legend>
 
-<p><?=$group->description?></p>
+      <label for="login">Wpisz swój login:</label>
+      <input type="text" name="login" id="login">
 
-<table width="100%">
-   <tr>
-      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th>
-   </tr>
-   <list object $files>
-      <tr>
-         <td><$id></td>
-         <td><a href="$/download/get/<$id>"><$file></a></td>
-         <td><$description></td>
-         <td><$size></td>
-         <td><date $date></td>
-         <td><$downloads></td>
-      </tr>
-   </list>
-   <tr>
-      <th>ID</th> <th>Plik</th> <th>Opis</th> <th>Wielkość</th> <th>Dodany</th> <th>Ściągnięć</th>
-   </tr>
-</table>
+      <br>
+
+      <label for="password">Wpisz swoje hasło:</label>
+      <input type="password" name="password" id="password">
+      
+      <br>
+
+      <label for="password">Powtórz hasło:</label>
+      <input type="password" name="password2" id="password2">
+
+      <br>
+
+      <label for="submit">&nbsp;</label>
+      <input type="submit" id="submit" value="Rejstruj!">
+
+   </fieldset>
+</form>

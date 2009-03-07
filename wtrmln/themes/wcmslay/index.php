@@ -2,7 +2,7 @@
          "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<?php echo getMeta(); ?>
+<?php echo Watermelon::getMeta(); ?>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <link rel="stylesheet" type="text/css" href="<?php echo WTRMLN_THEMEURL ?>style.css">
    <!--[if lt IE 7]>
@@ -15,9 +15,7 @@
          <div id="ha"><?php echo $siteheader ?></div>
          <div id="hs"><?php echo $siteslogan ?></div>
          <ul>
-            <li class="actual_page"><a href="#aad">Główna</a></li>
-            <li><a href="#bd">Inna</a></li>
-            <li><a href="#cd">Jeszcze inna</a></li>
+            <?php echo $menusStr; ?>
          </ul>
       </div>
       <div id="sidebar">
@@ -25,6 +23,7 @@
       </div>
       <div id="content">
          <?php echo (defined('WTRMLN_H1') ? '<h1>' . WTRMLN_H1 . '</h1>' : ''); ?>
+         <?php echo $_w_message; ?>
          <?php echo $_w_content; ?>
       </div>
       <div id="bottom-bg"></div>
