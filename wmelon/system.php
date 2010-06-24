@@ -1,4 +1,11 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php 
+
+var_dump('100');
+
+exit;
+
+
+if(!defined('WTRMLN_IS')) exit;
  //  
  //  Watermelon CMS
  //  

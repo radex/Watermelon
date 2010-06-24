@@ -1,5 +1,6 @@
 <?php
  //  
+ //  index.php
  //  Watermelon CMS
  //  
  //  Copyright 2008-2009 Radosław Pietruszewski.
@@ -18,22 +19,24 @@
  //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  //  
 
-$_w_startTime = microtime();
-$_w_startTime = explode(' ', $_w_startTime);
-$_w_startTime_msec = substr($_w_startTime[0],2);
-$_w_startTime_sec  = $_w_startTime[1];
-$_w_startTime = $_w_startTime_sec . $_w_startTime_msec;
-$_w_startTime = substr($_w_startTime, 0, -2);
+                                                // TODO: move this into main CMS file, and here only make redirection.
+
+
+// saving time when starting executing a script for a benchmark
+
+$_w_startTime = explode(' ', microtime());
+$_w_startTime = substr($_w_startTime[1] . substr($_w_startTime[0],2), 0, -2);
+
+// sessions etc
+
+ob_start();
 
 session_start();
-ob_start();
 session_regenerate_id();
 
-header("Content-Type: text/html; charset=UTF-8");
+header('Content-Type: text/html; charset=UTF-8');
 
-## 
-## magic quotes - odwracamy skutki działań magic quotes
-## 
+// "magic" quotes fixes
 
 if(get_magic_quotes_gpc())
 {
@@ -48,59 +51,47 @@ if(get_magic_quotes_gpc())
    $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
 }
 
-## 
-## wczytujemy plik z konfiguracją
-## 
+// loading configuration
 
-if(file_exists('config.php'))
+@include 'config.php';
+
+if(!isset($_w_baseURL))
 {
-   include 'config.php';
-   
-   if(!isset($_w_baseURL))
-   {
-      header('Location: wtrmln/install/index.php');
-      exit;
-   }
-}
-else
-{
-   header('Location: wtrmln/install/index.php');
+   header('Location: wmelon/install/index.php');                 //TODO: make some variable, so that "wmelon" can be changed to something else
    exit;
 }
 
-## 
-## definiowanie podstawowych stałych
-## 
+// defining constants
 
 $_w_basePath = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/';
 
-define('WTRMLN_BASEURL'      , $_w_baseURL                                    );
-define('WTRMLN_SITEURL'      , $_w_siteURL                                    );
-define('WTRMLN_ADMINURL'     , $_w_adminURL                                   );
-define('WTRMLN_CMSDIR'       , $_w_cmsDir                                     );
-define('WTRMLN_THEME'        , $_w_theme                                      );
-define('WTRMLN_DEFAULTCNT'   , $_w_defaultCnt                                 );
-define('WTRMLN_SITENAME'     , $_w_siteName                                   );
-define('WTRMLN_SITESLOGAN'   , $_w_siteSlogan                                 );
+define('WM_BASEURL'      , $_w_baseURL                                    );
+define('WM_SITEURL'      , $_w_siteURL                                    );
+define('WM_ADMINURL'     , $_w_adminURL                                   );
+define('WM_CMSDIR'       , $_w_cmsDir                                     );
+define('WM_THEME'        , $_w_theme                                      );
+define('WM_DEFAULTCNT'   , $_w_defaultCnt                                 );           // TODO: check if some of the constants can be deleted
+define('WM_SITENAME'     , $_w_siteName                                   );
+define('WM_SITESLOGAN'   , $_w_siteSlogan                                 );
 
-define('WTRMLN_CMSURL'       , $_w_baseURL    . WTRMLN_CMSDIR                 );
-define('WTRMLN_CMSPATH'      , $_w_basePath   . WTRMLN_CMSDIR                 );
-define('WTRMLN_APPPATH'      , WTRMLN_CMSPATH . 'modules/'                    );
+define('WM_CMSURL'       , $_w_baseURL    . WM_CMSDIR                 );
+define('WM_CMSPATH'      , $_w_basePath   . WM_CMSDIR                 );
+define('WM_APPPATH'      , WM_CMSPATH . 'modules/'                    );
 
-define('WTRMLN_THEMEURL'     , WTRMLN_CMSURL  . 'themes/' . WTRMLN_THEME . '/');
-define('WTRMLN_THEMEPATH'    , WTRMLN_CMSPATH . 'themes/' . WTRMLN_THEME . '/');
-define('WTRMLN_LIBS'         , WTRMLN_CMSPATH . 'libs/'                       );
-define('WTRMLN_ADMINLIBS'    , WTRMLN_CMSPATH . 'admin/libs/'                 );
-define('WTRMLN_HELPERS'      , WTRMLN_CMSPATH . 'helpers/'                    );
-define('WTRMLN_CACHE'        , WTRMLN_CMSPATH . 'cache/'                      );
-define('WTRMLN_FILES'        , WTRMLN_CMSURL  . 'files/'                      );
-define('WTRMLN_CONTROLLERS'  , WTRMLN_APPPATH . 'controllers/'                );
-define('WTRMLN_VIEWS'        , WTRMLN_APPPATH . 'views/'                      );
-define('WTRMLN_MODELS'       , WTRMLN_APPPATH . 'models/'                     );
-define('WTRMLN_BLOCKS'       , WTRMLN_APPPATH . 'blocks/'                     );
-define('WTRMLN_PLUGINS'      , WTRMLN_APPPATH . 'plugins/'                    );
+define('WM_THEMEURL'     , WM_CMSURL  . 'themes/' . WM_THEME . '/');
+define('WM_THEMEPATH'    , WM_CMSPATH . 'themes/' . WM_THEME . '/');
+define('WM_LIBS'         , WM_CMSPATH . 'libs/'                       );
+define('WM_ADMINLIBS'    , WM_CMSPATH . 'admin/libs/'                 );
+define('WM_HELPERS'      , WM_CMSPATH . 'helpers/'                    );
+define('WM_CACHE'        , WM_CMSPATH . 'cache/'                      );
+define('WM_FILES'        , WM_CMSURL  . 'files/'                      );
+define('WM_CONTROLLERS'  , WM_APPPATH . 'controllers/'                );
+define('WM_VIEWS'        , WM_APPPATH . 'views/'                      );
+define('WM_MODELS'       , WM_APPPATH . 'models/'                     );
+define('WM_BLOCKS'       , WM_APPPATH . 'blocks/'                     );
+define('WM_PLUGINS'      , WM_APPPATH . 'plugins/'                    );
 
-include WTRMLN_LIBS . 'config.php';
+include WM_LIBS . 'config.php';
 
 Config::$theme               = $_w_theme;
 Config::$defaultController   = $_w_defaultCnt;
@@ -110,10 +101,8 @@ Config::$siteName            = $_w_siteName;
 Config::$siteSlogan          = $_w_siteSlogan;
 Config::setSuperusers($_w_superusers);
 
-## 
-## odpalamy główny plik CMS-a
-## 
+// running main CMS file
 
-include WTRMLN_CMSPATH . 'system.php';
+include WM_CMSPATH . 'system.php';
 
 ?>
