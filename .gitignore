@@ -1,6 +1,3 @@
 .DS_Store
-
 *.tmproj
-
-/config.php
-!config.php
+.gitignore

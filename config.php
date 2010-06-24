@@ -1,44 +1,52 @@
 <?php
-########################################
-define('WTRMLN_IS','true');#############
-$_w_autoload=array();###################
-########################################
-#              Konfiguracja            #
-########################################
-$_w_baseURL    = 'http://localhost/watermeloncms/';
-$_w_siteURL    = 'http://localhost/watermeloncms/';
-$_w_adminURL   = 'http://localhost/watermeloncms/admin.php/';
-$_w_cmsDir     = 'wtrmln/';
-$_w_dbHost     = 'localhost';
-$_w_dbUser     = 'root';
-$_w_dbPass     = '';
-$_w_dbName     = 'watermelon';
-$_w_dbPrefix   = 'wcms_';
-$_w_siteName   = 'Watermelon CMS';
-$_w_siteSlogan = '... bo arbuzy dobre są ...';
-$_w_theme      = 'wcmslay';
-$_w_adminTheme = 'wcmslay';
-$_w_defaultCnt = 'test';
-$_w_PAdCnt     = 'test';
-$_w_hashAlgo   = array('xsha256');
-$_w_dHashAlgo  = 0;
-$_w_autoload   = array(array('user', ''), array('benchmark', ''));
-$_w_metaSrc    = array('');
+
+// TODO: Write config documentation
+
+/*   URL-s   */
+
+$_w_baseURL     = 'http://localhost/w/';
+$_w_siteURL     = 'http://localhost/w/';
+
+/*   Database   */
+
+$_w_dbHost      = 'localhost';
+$_w_dbUser      = 'watermeloner';
+$_w_dbPass      = 'wtrmln123';
+$_w_dbName      = 'watermelon';
+$_w_dbPrefix    = '';
+
+/****************\
+     ADVANCED
+\****************/
+
+/*   Folders   */
+
+$_w_cmsDir      = 'wmelon';
+$_w_publicDir   = 'wm-public';
+$_w_uploadedDir = 'wm-uploaded';
+
+/*   Error reporting and debugging   */
+
+//error_reporting(0);                     // real world applications
+  error_reporting(E_ALL ^ E_NOTICE);      // programming
+//error_reporting(E_ALL);                 // testing, debugging
+
+  define('DEBUG'         , '');
+  define('BENCHMARK_SITE', '');
+  define('DEBUG_FOOTER'  , '');
+
+/*   Users   */
+
+$_w_hashAlgo   = 'sha256';
 $_w_superusers = array('radex');
 
-########################################
-#              Zaawansowane            #
-########################################
+/*   Caching   */
 
-//error_reporting(0);
-  error_reporting(E_ALL ^ E_NOTICE);
-//error_reporting(E_ALL);
-//error_reporting(E_ALL | E_STRICT);
-
-//define('NOMENU'        , ''   );
-  define('DEBUG'         , ''   );
 //define('CACHE_VIEWS'   , ''   );
   define('CACHE_BBCODE'  , ''   );
-  define('BENCHMARK_SITE', false);
-  define('DEBUG_FOOTER'  , ''   );
+
+/*   Other   */
+
+$_w_autoload   = array(array('user', ''), array('benchmark', ''));
+
 ?>

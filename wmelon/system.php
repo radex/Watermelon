@@ -1,11 +1,4 @@
-<?php 
-
-var_dump('100');
-
-exit;
-
-
-if(!defined('WTRMLN_IS')) exit;
+<?php if(!defined('WM_IS')) exit;
  //  
  //  Watermelon CMS
  //  
@@ -25,14 +18,57 @@ if(!defined('WTRMLN_IS')) exit;
  //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  //  
 
+session_start();
+session_regenerate_id();
+
+ob_start();
+
+header('Content-Type: text/html; charset=UTF-8');
+
+// "magic" quotes fixes
+
+if(get_magic_quotes_gpc())
+{
+   function stripslashes_deep($value)
+   {
+      $value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+      return $value;
+   }
+   $_POST    = array_map('stripslashes_deep', $_POST);
+   $_GET     = array_map('stripslashes_deep', $_GET);
+   $_COOKIE  = array_map('stripslashes_deep', $_COOKIE);
+   $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
+}
 /*
-$microtimer = microtime();
-$microtimer = explode(' ', $microtimer);
-$msecr = substr($microtimer[0],2);
-$secr  = $microtimer[1];
-$timer = $secr . $msecr;
-$timer = substr($timer, 0, -2);
+define('WM_BASEURL'      , $_w_baseURL                                    );
+define('WM_SITEURL'      , $_w_siteURL                                    );
+define('WM_ADMINURL'     , $_w_adminURL                                   );
+define('WM_CMSDIR'       , $_w_cmsDir                                     );
+
+define('WM_CMSURL'       , $_w_baseURL    . WM_CMSDIR                 );
+define('WM_CMSPATH'      , $_w_basePath   . WM_CMSDIR                 );
+define('WM_APPPATH'      , WM_CMSPATH . 'modules/'                    );
+
+define('WM_LIBS'         , WM_CMSPATH . 'libs/'                       );
+define('WM_HELPERS'      , WM_CMSPATH . 'helpers/'                    );
+
+include WM_LIBS . 'config.php';
+
+Config::$theme               = $_w_theme;
+Config::$defaultController   = $_w_defaultCnt;
+Config::$hashAlgo            = $_w_hashAlgo;
+Config::setSuperusers($_w_superusers);
 */
+/***/
+
+var_dump('100');
+
+exit;
+
+/***/
+
+
+
 // ładujemy biblioteki
 
 include WTRMLN_LIBS . 'libs.php';
