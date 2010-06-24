@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php if(!defined('WM_IS')) exit;
  //  
  //  Watermelon CMS
  //  

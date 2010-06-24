@@ -4,7 +4,7 @@
 <head>
 <?php echo Watermelon::getMeta(); ?>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <link rel="stylesheet" type="text/css" href="<?php echo WTRMLN_THEMEURL ?>style.css">
+   <link rel="stylesheet" type="text/css" href="<?php echo WM_THEMEURL ?>style.css">
    <script type="text/javascript">
       function msg_hide(height)
       {
@@ -36,7 +36,7 @@
    <div id="container">
       <div id="header">
          <h1><span>Watermelon CMS</span></h1>
-         <h2>Panel admina (<a href="<?php echo WTRMLN_MAINURL ?>">odwiedź stronę</a>)</h2>
+         <h2>Panel admina (<a href="<?php echo WM_MAINURL ?>">odwiedź stronę</a>)</h2>
          <ul>
             <?php
             
@@ -45,7 +45,7 @@
             echo getEvents();
             
             ?>
-            <li><a href="<?php echo WTRMLN_MAINURL ?>login/logout">Wyloguj</a></li>
+            <li><a href="<?php echo WM_MAINURL ?>login/logout">Wyloguj</a></li>
          </ul>
       </div>
       <div id="sidebar">
@@ -65,7 +65,7 @@
          
       </div>
       <div id="content">
-<?php echo (defined('WTRMLN_H1') ? '<h1>' . WTRMLN_H1 . '</h1>' : ''); ?>
+<?php echo (defined('WM_H1') ? '<h1>' . WM_H1 . '</h1>' : ''); ?>
 <div id="topmsg"><?php echo $_w_message; ?></div>
 <?php echo $_w_content; ?>
       </div>

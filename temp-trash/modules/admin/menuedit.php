@@ -469,9 +469,9 @@ class MenuEdit extends Controller
       
       // robimy listę plików acinfo/menu_*.php
       
-      foreach(glob(WTRMLN_ACINFO . 'menu_*.php') as $filename)
+      foreach(glob(WM_ACINFO . 'menu_*.php') as $filename)
       {
-         $acname = preg_replace("#" . WTRMLN_ACINFO . "menu_([^.]+)\.php#", "\\1", $filename);
+         $acname = preg_replace("#" . WM_ACINFO . "menu_([^.]+)\.php#", "\\1", $filename);
          
          if(!in_array($acname, $menus_list))
          {
@@ -484,14 +484,14 @@ class MenuEdit extends Controller
       
       foreach($menus_list as $menu)
       {
-         if(!file_exists(WTRMLN_ACINFO . 'menu_' . $menu . '.php'))
+         if(!file_exists(WM_ACINFO . 'menu_' . $menu . '.php'))
          {
             $haveToUpdate = true;
          }
          else
          {
             $menus_list2[] = $menu;
-            include_once WTRMLN_ACINFO . 'menu_' . $menu . '.php';
+            include_once WM_ACINFO . 'menu_' . $menu . '.php';
             $classname = 'ACMenu_' . $menu;
             $class = new $classname;
             $menu_objects[] = array($menu, $class);

@@ -35,7 +35,7 @@ function emoticons_normal($r){return $r;}
 
 function setH1($value)
 {
-   define('WTRMLN_H1',$value);
+   define('WM_H1',$value);
 
 	return '<h1>' . $value . '</h1>';
 }
@@ -147,7 +147,7 @@ function _POST($key)
 
 function site_url($url)
 {
-   return WTRMLN_SITEURL . $url;
+   return WM_SITEURL . $url;
 }
 
 /*

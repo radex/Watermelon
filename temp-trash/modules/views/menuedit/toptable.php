@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php if(!defined('WM_IS')) exit;
  //  
  //  Watermelon CMS
  //  
@@ -52,7 +52,7 @@ Górnego |
             <?=$menu[0]?>
          </td>
          <td class="tc">
-            <a href="<?=WTRMLN_MAINURL . $menu[1]?>">/<?=$menu[1]?></a>
+            <a href="<?=WM_MAINURL . $menu[1]?>">/<?=$menu[1]?></a>
          </td>
          <td class="tc">
             <?=$menu[2]?>

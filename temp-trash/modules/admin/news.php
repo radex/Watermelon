@@ -83,7 +83,7 @@ class News extends Controller
       
       // skoro tak, to wysyłamy
       
-      model('news')->post(htmlspecialchars($_POST['title']), $_POST['text'], $_SESSION['WTRMLN_UID']);
+      model('news')->post(htmlspecialchars($_POST['title']), $_POST['text'], $_SESSION['WM_UID']);
       
       siteredirect('msg:news_posted/news');
    }

@@ -34,7 +34,7 @@ class Controller
       {
          if(!$this->user->IsAdmin())
          {
-            header('Location: ' . WTRMLN_MAINURL . 'login');
+            header('Location: ' . WM_MAINURL . 'login');
             exit;
          }
       }
@@ -54,7 +54,7 @@ class Controller
       {
          if(!$this->user->IsAdmin())
          {
-            header('Location: ' . WTRMLN_MAINURL . 'login');
+            header('Location: ' . WM_MAINURL . 'login');
             exit;
          }
       }

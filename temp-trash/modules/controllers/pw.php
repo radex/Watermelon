@@ -42,7 +42,7 @@ class PW extends Controller
       
       // pobieramy listę PW (jako argument nad UID)
       
-      $pwlist = model('PW')->GetPWList($_SESSION['WTRMLN_UID']);
+      $pwlist = model('PW')->GetPWList($_SESSION['WM_UID']);
       
       // sprawdzamy, czy mamy jakieś pw
       
@@ -85,7 +85,7 @@ class PW extends Controller
       
       $pw_data = $pw_data->to_obj();
       
-      if($pw_data->to != $_SESSION['WTRMLN_UID'])
+      if($pw_data->to != $_SESSION['WM_UID'])
       {
          echo $this->load->view('pw_cannotview');
          return;
@@ -139,7 +139,7 @@ class PW extends Controller
       
       $pw_data = $pw_data->to_obj();
       
-      if($pw_data->to != $_SESSION['WTRMLN_UID'])
+      if($pw_data->to != $_SESSION['WM_UID'])
       {
          echo $this->load->view('pw_cannotview');
          return;
@@ -180,7 +180,7 @@ class PW extends Controller
       
       // skoro wszystko ok, to wysyłamy
       
-      $this->PW->SendPW($_SESSION['WTRMLN_UID'], $addresseeUID->to_obj()->id,
+      $this->PW->SendPW($_SESSION['WM_UID'], $addresseeUID->to_obj()->id,
                         $_POST['subject'], $_POST['text'], time());
       
       siteredirect('msg:pw_sent/pw');
@@ -198,7 +198,7 @@ class PW extends Controller
       // przy okazji sprawdza, czy PW istnieje (jeśli nie istnieje to warunek i tak
       // nie zostanie spełniony)
       
-      if(model('PW')->GetPWAddressee($pw_id) != $_SESSION['WTRMLN_UID'])
+      if(model('PW')->GetPWAddressee($pw_id) != $_SESSION['WM_UID'])
       {
          echo $this->load->view('pw_cannotdelete');
          return;

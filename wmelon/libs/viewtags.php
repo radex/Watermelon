@@ -45,8 +45,8 @@ class ViewTags
       
       // umożliwiamy w prosty sposób tworzenie ścieżek do podstron
       
-      $data = str_replace('href="$/', 'href="' . WTRMLN_SITEURL, $data);
-      $data = str_replace('action="$/', 'action="' . WTRMLN_SITEURL, $data);
+      $data = str_replace('href="$/', 'href="' . WM_SITEURL, $data);
+      $data = str_replace('action="$/', 'action="' . WM_SITEURL, $data);
       
       // tag variable
       

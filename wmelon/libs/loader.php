@@ -26,7 +26,7 @@
  * 
  */
 
-include WTRMLN_LIBS . 'viewtags.php';
+include WM_LIBS . 'viewtags.php';
 
 class Loader
 {
@@ -46,8 +46,8 @@ class Loader
    public static function view($___view, array $___vars = array())
    {
       $___view = str_replace('_', '/', $___view);
-      $___path_theme = WTRMLN_THEMEPATH . 'views/' . $___view . '.php';
-      $___path = WTRMLN_VIEWS . $___view . '.php';
+      $___path_theme = WM_THEMEPATH . 'views/' . $___view . '.php';
+      $___path = WM_VIEWS . $___view . '.php';
       
       // sprawdzamy czy istnieje theme view
       
@@ -148,7 +148,7 @@ class Loader
       
       // sprawdzamy, czy istnieje
 
-      $path = WTRMLN_MODELS . $model . '.php';
+      $path = WM_MODELS . $model . '.php';
 
       if(!file_exists($path))
       {
@@ -198,7 +198,7 @@ class Loader
       
       // sprawdzamy, czy istnieje
 
-      $path = WTRMLN_BLOCKS . $blockName . '.php';
+      $path = WM_BLOCKS . $blockName . '.php';
 
       if(!file_exists($path))
       {

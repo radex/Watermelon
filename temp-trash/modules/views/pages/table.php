@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php if(!defined('WM_IS')) exit;
  //  
  //  Watermelon CMS
  //  
@@ -42,7 +42,7 @@
 <list object $pagesList>
 <tr>
    <td>
-      <h3><a href="<?=WTRMLN_MAINURL?><$name>"><$title></a></h3>
+      <h3><a href="<?=WM_MAINURL?><$name>"><$title></a></h3>
       <br>
       <?
       $text = htmlspecialchars($content);

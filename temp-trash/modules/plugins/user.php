@@ -134,10 +134,10 @@ class User extends Plugin
       
       // logujemy :]
       
-      $_SESSION['WTRMLN_USER'] = $user;
-      $_SESSION['WTRMLN_UID']  = $userdata->id;
-      $_SESSION['WTRMLN_PASS'] = $hash;
-      $_SESSION['WTRMLN_LASTSEEN'] = time();
+      $_SESSION['WM_USER'] = $user;
+      $_SESSION['WM_UID']  = $userdata->id;
+      $_SESSION['WM_PASS'] = $hash;
+      $_SESSION['WM_LASTSEEN'] = time();
 
       // jeszcze informacyjka
       
@@ -253,7 +253,7 @@ class User extends Plugin
       
       // sprawdzamy, czy sesja istnieje
       
-      if(!isset($_SESSION['WTRMLN_USER']))
+      if(!isset($_SESSION['WM_USER']))
       {
          self::$LoggedIn = false;
          return false;
@@ -261,7 +261,7 @@ class User extends Plugin
       
       // sprawdzamy, czy user istnieje
       
-      $userdata = $this->User->LoginUserData($_SESSION['WTRMLN_USER']);
+      $userdata = $this->User->LoginUserData($_SESSION['WM_USER']);
       
       if(!$userdata->exists())
       {
@@ -273,7 +273,7 @@ class User extends Plugin
       
       $userdata = $userdata->to_obj();
       
-      if($userdata->id != $_SESSION['WTRMLN_UID'])
+      if($userdata->id != $_SESSION['WM_UID'])
       {
          self::$LoggedIn = false;
          return false;
@@ -281,7 +281,7 @@ class User extends Plugin
       
       // sprawdzamy poprawność hasła
 
-      if($_SESSION['WTRMLN_PASS'] != $userdata->password)
+      if($_SESSION['WM_PASS'] != $userdata->password)
       {
          self::$LoggedIn = false;
          return false;
@@ -291,7 +291,7 @@ class User extends Plugin
       // jeśli przekroczony limit długości sesji (1800 sekund)
       // automatycznie wylogowuje
       
-      if($_SESSION['WTRMLN_LASTSEEN'] < time() - 1800)
+      if($_SESSION['WM_LASTSEEN'] < time() - 1800)
       {
          $this->Logout();
          return false;
@@ -299,11 +299,11 @@ class User extends Plugin
       
       // aktualizujemy dane
       
-      $_SESSION['WTRMLN_LASTSEEN'] = time();
+      $_SESSION['WM_LASTSEEN'] = time();
       
       self::$LoggedIn = true;
       
-      $this->User->UpdateLastSeen($_SESSION['WTRMLN_UID']);
+      $this->User->UpdateLastSeen($_SESSION['WM_UID']);
       
       return true;
    }
@@ -332,14 +332,14 @@ class User extends Plugin
       
       $superusers = Config::getSuperusers();
       
-      if(array_search($_SESSION['WTRMLN_USER'], $superusers) === false)
+      if(array_search($_SESSION['WM_USER'], $superusers) === false)
       {
          return false;
       }
       
       // sprawdzamy, czy ma odpowiednie uprawnienia w bazie danych
       
-      $priviliges = $this->getData($_SESSION['WTRMLN_UID']);
+      $priviliges = $this->getData($_SESSION['WM_UID']);
       
       if($priviliges->a_paaccess !== '1')
       {
@@ -413,7 +413,7 @@ class User extends Plugin
          return false;
       }
       
-      $data = self::getData($_SESSION['WTRMLN_UID']);
+      $data = self::getData($_SESSION['WM_UID']);
       
       if($data->$what == '1')
       {

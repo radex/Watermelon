@@ -42,7 +42,7 @@ class Cache
    {
       if(strpos($name, '/') === false)
       {
-         $fp = fopen(WTRMLN_CACHE . 'views/'  . $name, 'w');
+         $fp = fopen(WM_CACHE . 'views/'  . $name, 'w');
          fwrite($fp, $content);
          fclose($fp);
       }
@@ -52,12 +52,12 @@ class Cache
          $dir = $name[0];
          $name = $name[1];
          
-         if(!file_exists(WTRMLN_CACHE . 'views/' . $dir))
+         if(!file_exists(WM_CACHE . 'views/' . $dir))
          {
-            mkdir(WTRMLN_CACHE . 'views/' . $dir);
+            mkdir(WM_CACHE . 'views/' . $dir);
          }
          
-         $fp = fopen(WTRMLN_CACHE . 'views/' . $dir . '/' . $name, 'w');
+         $fp = fopen(WM_CACHE . 'views/' . $dir . '/' . $name, 'w');
          fwrite($fp, $content);
          fclose($fp);
       }
@@ -79,7 +79,7 @@ class Cache
       $dir = $name[0];
       $name = $name[1];
       
-      $path = WTRMLN_CACHE . 'views/' . $dir . '/' . $name;
+      $path = WM_CACHE . 'views/' . $dir . '/' . $name;
       
       if(!file_exists($path))
       {
@@ -102,7 +102,7 @@ class Cache
    {
       $bbcodehash = strHash($bbcode);
       
-      $fp = fopen(WTRMLN_CACHE . 'bbcode/' . $bbcodehash . '.php', 'w');
+      $fp = fopen(WM_CACHE . 'bbcode/' . $bbcodehash . '.php', 'w');
       fwrite($fp, '<?php exit; ?>' . $parsed);
       fclose($fp);
    }
@@ -118,7 +118,7 @@ class Cache
    {
       $bbcodehash = strHash($bbcode);
       
-      $path = WTRMLN_CACHE . 'bbcode/' . $bbcodehash . '.php';
+      $path = WM_CACHE . 'bbcode/' . $bbcodehash . '.php';
       
       if(!file_exists($path))
       {
@@ -136,7 +136,7 @@ class Cache
    
    public static function ClearCache()
    {
-      foreach(new DirectoryIterator(WTRMLN_CACHE . 'views/') as $_res)
+      foreach(new DirectoryIterator(WM_CACHE . 'views/') as $_res)
       {
          if($_res->isDot())
          {
@@ -156,7 +156,7 @@ class Cache
          unset($_res);
       }
       
-      foreach(new DirectoryIterator(WTRMLN_CACHE . 'bbcode/') as $_res)
+      foreach(new DirectoryIterator(WM_CACHE . 'bbcode/') as $_res)
       {
          if($_res->isDot())
          {

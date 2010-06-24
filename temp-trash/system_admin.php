@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php if(!defined('WM_IS')) exit;
  //  
  //  Watermelon CMS
  //  
@@ -20,11 +20,11 @@
 
 // ładujemy biblioteki
 
-include WTRMLN_LIBS . 'libs.php';
+include WM_LIBS . 'libs.php';
 
 // ładujemy helpery
 
-include WTRMLN_HELPERS . 'helpers.php';
+include WM_HELPERS . 'helpers.php';
 
 /*
  * function panic(string $text = 'noname error')
@@ -198,7 +198,7 @@ class Watermelon
 
       $controllerPath = str_replace('_', '/', URL::$class);
 
-      $controllerPath = WTRMLN_CONTROLLERS . $controllerPath . '.php';
+      $controllerPath = WM_CONTROLLERS . $controllerPath . '.php';
 
       // sprawdzanie, czy istnieje plik controllera
 
@@ -214,7 +214,7 @@ class Watermelon
       else
       {
          //jeśli nie można znaleźć kontrolera, odpalamy e404
-         include WTRMLN_CONTROLLERS . 'e404.php';
+         include WM_CONTROLLERS . 'e404.php';
          
          $controller = new e404();
          
@@ -285,9 +285,9 @@ class Watermelon
       {
          list($plugin_name, $eval) = $plugin;
 
-         if(file_exists(WTRMLN_PLUGINS . $plugin_name . '.php'))
+         if(file_exists(WM_PLUGINS . $plugin_name . '.php'))
          {
-            include(WTRMLN_PLUGINS . $plugin_name . '.php');
+            include(WM_PLUGINS . $plugin_name . '.php');
 
             eval($eval);
          }
@@ -306,8 +306,8 @@ class Watermelon
    {
       // umożliwiamy w prosty sposób tworzenie ścieżek do podstron
 
-      $content = str_replace('href="$/', 'href="' . WTRMLN_SITEURL, $content);
-      $content = str_replace('action="$/', 'action="' . WTRMLN_SITEURL, $content);
+      $content = str_replace('href="$/', 'href="' . WM_SITEURL, $content);
+      $content = str_replace('action="$/', 'action="' . WM_SITEURL, $content);
       
       // preparujemy wiadomość
       
@@ -321,7 +321,7 @@ class Watermelon
 
       // preparujemy zawartość <title> :)
 
-      $siteTitle = (defined('WTRMLN_H1') ? WTRMLN_H1 . ' &raquo; ' : '') . WTRMLN_SITENAME;
+      $siteTitle = (defined('WM_H1') ? WM_H1 . ' &raquo; ' : '') . WM_SITENAME;
       
       array_unshift(Watermelon::$metaSrc, '<title>' . $siteTitle . '</title>');
       
@@ -329,7 +329,7 @@ class Watermelon
 
       // odpalamy skina
 
-      include WTRMLN_THEMEPATH . 'skin.php';
+      include WM_THEMEPATH . 'skin.php';
    }
    
    public static function getMeta($tab = '   ')

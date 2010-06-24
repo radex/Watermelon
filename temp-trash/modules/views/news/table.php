@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php if(!defined('WM_IS')) exit;
  //  
  //  Watermelon CMS
  //  
@@ -45,7 +45,7 @@
 <list object $newsList>
 <tr>
    <td>
-      <h3><a href="<?=WTRMLN_MAINURL?>news#news_<$id>"><$title></a></h3>
+      <h3><a href="<?=WM_MAINURL?>news#news_<$id>"><$title></a></h3>
       <br>
       <?
       $text = strip_tags($text);

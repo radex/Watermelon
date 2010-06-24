@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) exit;
+<?php if(!defined('WM_IS')) exit;
 
 function getMenu()
 {
@@ -11,9 +11,9 @@ function getMenu()
    
    // robimy listę AC_menus
    
-   foreach(glob(WTRMLN_ACINFO . 'menu_*.php') as $filename)
+   foreach(glob(WM_ACINFO . 'menu_*.php') as $filename)
    {
-      $acname = preg_replace("#" . WTRMLN_ACINFO . "menu_([^.]+)\.php#", "\\1", $filename);
+      $acname = preg_replace("#" . WM_ACINFO . "menu_([^.]+)\.php#", "\\1", $filename);
       
       if(!in_array($acname, $menus_list))
       {
@@ -27,7 +27,7 @@ function getMenu()
    
    foreach($menus_list as $menu)
    {
-      if(!file_exists(WTRMLN_ACINFO . 'menu_' . $menu . '.php'))
+      if(!file_exists(WM_ACINFO . 'menu_' . $menu . '.php'))
       {
          $haveToUpdate = true;
          $deletedMenu  = true;
@@ -35,7 +35,7 @@ function getMenu()
       else
       {
          $menus_list2[] = $menu;
-         include_once WTRMLN_ACINFO . 'menu_' . $menu . '.php';
+         include_once WM_ACINFO . 'menu_' . $menu . '.php';
          $classname = 'ACMenu_' . $menu;
          $class = new $classname;
          $menu_objects[] = array($menu, $class);
@@ -104,9 +104,9 @@ function getEvents()
    
    // robimy listę ACEventów
    
-   foreach(glob(WTRMLN_ACINFO . 'event_*.php') as $filename)
+   foreach(glob(WM_ACINFO . 'event_*.php') as $filename)
    {
-      $acname = preg_replace("#" . WTRMLN_ACINFO . "event_([^.]+)\.php#", "\\1", $filename);
+      $acname = preg_replace("#" . WM_ACINFO . "event_([^.]+)\.php#", "\\1", $filename);
       
       $event_list[] = $acname;
       
@@ -147,7 +147,7 @@ function getEvents()
       
       foreach($event_list as $event)
       {
-         include WTRMLN_ACINFO . 'event_' . $event . '.php';
+         include WM_ACINFO . 'event_' . $event . '.php';
          $classname = 'ACEvent_' . $event;
          $event_objects[] = new $classname;
       }
@@ -177,4 +177,4 @@ function getEvents()
    }
 }
 
-include WTRMLN_THEMEPATH . 'index.php';
+include WM_THEMEPATH . 'index.php';
