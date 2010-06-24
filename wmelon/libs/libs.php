@@ -1,8 +1,9 @@
 <?php
  //  
+ //  libs.php
  //  Watermelon CMS
  //  
- //  Copyright 2009 Radosław Pietruszewski.
+ //  Copyright 2009-2010 Radosław Pietruszewski.
  //  
  //  This program is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -19,11 +20,11 @@
  //  
 
 include 'url.php';
-
 include 'db.php';
 
 include 'cache.php';
 include 'loader.php';
+include 'config.php';
 include 'pluginscdb.php';
 
 include 'controller.php';

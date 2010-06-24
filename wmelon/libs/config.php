@@ -1,8 +1,9 @@
 <?php
  //  
+ //  config.php
  //  Watermelon CMS
  //  
- //  Copyright 2008-2009 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  This program is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -20,9 +21,9 @@
 
 /*
  * Lib Config
- * wersja 2.0.0
+ * wersja 2.0.1
  * 
- * zarządzanie konfiguracją
+ * configuration management
  */
 
 class Config
@@ -40,7 +41,7 @@ class Config
    /*
     * public static void setSuperusers(string[] $superusers)
     * 
-    * ustawia listę administratorów na $superusers
+    * ustawia listę administratorów na $superusers                         // TODO: jak to przetłumaczyć... ?
     */
    
    public static function setSuperusers(array $superusers)
@@ -54,7 +55,7 @@ class Config
    /*
     * public static string[] getSuperusers()
     * 
-    * zwraca listę administratorów
+    * returns list of superusers
     */
    
    public static function getSuperusers()
@@ -65,7 +66,7 @@ class Config
    /*
     * public static mixed getConf(string $fieldname)
     * 
-    * pobiera z bazy danych wartość konfiguracji $fieldname i zwraca ją
+    * fetches value of $fieldname configuration and returns it
     */
    
    public static function getConf($fieldname)
@@ -88,7 +89,7 @@ class Config
    /*
     * public static void setConf(string $fieldname, string $fieldvalue)
     * 
-    * ustawia w bazie danych wartość pola $fieldname na $fieldvalue
+    * ustawia w bazie danych wartość pola $fieldname na $fieldvalue              // TODO: jak to przetłumaczyć... ?
     */
    
    public static function setConf($fieldname, $fieldvalue)

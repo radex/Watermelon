@@ -1,6 +1,10 @@
 <?php
+ //  
+ //  config.php
+ //  Watermelon CMS
+ // 
 
-// TODO: Write config documentation
+                                                      // TODO: Write config documentation
 
 /*   URL-s   */
 
@@ -21,7 +25,6 @@ $_w_dbPrefix    = '';
 
 /*   Folders   */
 
-$_w_cmsDir      = 'wmelon';
 $_w_publicDir   = 'wm-public';
 $_w_uploadedDir = 'wm-uploaded';
 
