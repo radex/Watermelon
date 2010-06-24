@@ -4,9 +4,9 @@
 <head>
 <?php echo Watermelon::getMeta(); ?>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <link rel="stylesheet" type="text/css" href="<?php echo WTRMLN_THEMEURL ?>style.css">
+   <link rel="stylesheet" type="text/css" href="<?php echo WM_THEMEURL ?>style.css">
    <!--[if lt IE 7]>
-   <link rel="stylesheet" href="<?php echo WTRMLN_THEMEURL ?>ie.css">
+   <link rel="stylesheet" href="<?php echo WM_THEMEURL ?>ie.css">
    <![endif]-->
 </head>
 <body>
@@ -22,7 +22,7 @@
          <?php echo $menu; ?>
       </div>
       <div id="content">
-         <?php echo (defined('WTRMLN_H1') ? '<h1>' . WTRMLN_H1 . '</h1>' : ''); ?>
+         <?php echo (defined('WM_H1') ? '<h1>' . WM_H1 . '</h1>' : ''); ?>
          <?php echo $_w_message; ?>
          <?php echo $_w_content; ?>
       </div>

@@ -1,4 +1,4 @@
-<?php if(!defined('WTRMLN_IS')) die;
+<?php if(!defined('WM_IS')) die;
 //TODO: zrobić porządek
 /*
 global $timer, $microtime2;
@@ -87,7 +87,7 @@ foreach($topmenus as $var)
 /* takie tam...
 *********************************/
 
-$siteheader = WTRMLN_SITENAME;
-$siteslogan = WTRMLN_SITESLOGAN;
+$siteheader = WM_SITENAME;
+$siteslogan = WM_SITESLOGAN;
 
-include WTRMLN_THEMEPATH . 'index.php';
+include WM_THEMEPATH . 'index.php';
