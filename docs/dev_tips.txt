@@ -1,0 +1,152 @@
+     #### ##### #   # #        ##### ### ####    ##   #    # ###   ##
+    #    #  #   #   # #        #    # # #    #  #  #  ##   #  #   #  #
+    #       #   #   # #        #    # # #      #    # # #  #  #  #    #
+     ####   #    ###  #        #####  #  ####  ###### #  # #  #  ######
+         #  #     #   #        #      #      # #    # #   ##  #  #    #
+    #    #  #     #   #        #      # #    # #    # #    #  #  #    #
+     ####   #     #   ######   #     ### ####  #    # #    # ### #    #
+
+                STYL PISANIA KODU WATERMELON Watermelona
+                                                     PRAWIE GOTOWE ...
+                      LEKTURA OBOWIĄZKOWA!
+____________________________________________________________________________
+
+   To jest obowiązyjący dla kodu Watermelon Watermelona styl programowania.
+   Jednolity styl poprawia wygląd kodu i ułatwia jego późniejszą refaktoryzację.
+
+   1. Wygląd kodu
+      
+      a) Taby
+         
+         Trzy spacje zamiast tabów.
+         
+      b) Klamerki
+         
+         Przed i po klamerce stawiamy enter.
+         
+         if(true)
+         {
+            foo();
+         }
+         else
+         {
+            bar();
+         }
+         
+      c) Operatory
+         
+         Przed i po operatorze, oraz pomiędzy operatorem a wyrażeniem w nawiasie spacja.
+            
+            $foo = $x + (6 + 2) . 'bar';
+            
+         Za nawiasem otwierającym oraz przed zamykającym nie stawiamy spacji.
+         
+         Pisanie spacji nie dotyczy operatorów zasięgu ("::" oraz "->")
+            
+            Foo::Bar();
+            $foo->bar();
+            
+         Spację stawiamy również po przecinku i średniku
+            
+            foo(6, 6, 6);
+            for($i = 0; $i < 10; $i++)
+            foo(); bar();
+            
+      d) Apostrofy i cudzysłowy
+         
+         Do ciągów znaków zawsze używamy apostrofów. Wyjątek stanowią zapytania SQL oraz wszystkie sytuacje, gdzie jest to konieczne.
+            
+            'foo' . 'bar'
+            'foo: "bar"'
+            "SELECT * FROM `__test` WHERE 'foo' = 'bar'"
+            "foo: 'bar'"
+            "foo \n bar"
+            
+      e) Stałe
+         
+         Stałe piszemy wielkimi literami.
+         
+         Stałe Watermelona zaczynają się od WM_.
+         
+         Korzystanie ze stałych w modułach jest mocno odradzane, jednakże jeżeli z jakiegoś powodu zamierzasz to zrobić, użyj prefiksu (np. DOWNLOADS_), aby uniknąć ewentualnych konfliktów.
+         
+      f) Nazwy plików, zmiennych, funkcji i klas
+         
+         Nazwy zmiennych i plików zaczynaj z małej litery, a każde kolejne słowo - z dużej.
+            
+            $foo
+            $fooBar
+            $someVeryLongName
+            
+         Te same zasady pisowni dotyczą nazw funkcji globalnych, składowych oraz klas, poza jednym szczegółem - pierwszą literę piszemy dużą.
+         
+         Czasami, gdy potrzebnych jest kilka nazw zmiennych, każda z długim początkiem, ale z różnymi zakończeniami, lub z różnym i długim początkiem, ale tym samym zakończeniem, możesz oddzielić obie części podkreślnikiem.
+            
+            $somethingLong_data
+            $somethingLong_count
+            $somethingLong_parameters
+            
+            $longFoo_data
+            $longBar_data
+            
+         W obu przypadkach warto rozważyć użycie tablicy zamiast kilku zmiennych, jeśli jest to wygodniejsze.
+            
+            $somethingLong['data']
+            $somethingLong['count']
+            $somethingLong['parameters']
+            
+            $data['longFoo']
+            $data['longBar']
+            
+   2. Styl programowania
+      
+      a) Pobieranie danych z DB
+         
+         Dane z bazy danych pobieraj do obiektu za pomocą biblioteki Watermelona.
+            
+            $data = $this->db->query("SELECT * FROM `__test`");
+
+            while($item = $data->to_obj())
+            {
+               echo $data->text . '<br>';
+            }
+            
+         Dozwolone jest pobranie danych do tablicy (to_aray()), jednakże odradzane, ze względu na mniejszą czytelność.
+         
+      b) Działania na tablicach
+         
+         Do działań na całej tablicy użyj pętli foreach zamiast pętli for.
+            
+            foreach($array as $item)
+            {
+               echo $item;
+            }
+            
+      c) Globale, Singletony etc.
+         
+         Nigdy nie używaj w kodzie Watermelona tzw. globali oraz zworca projektowego Singleton.
+         
+      d) Pętle for
+         
+         W pętlach for pisz liczbę iteracji przed pierwszym średnikiem, a po nim jedynie zrób porównanie dwóch zmiennych.
+         
+         DOBRZE:
+            
+            for($i = 0, $j = count($array); $i < $j; $i++)
+            {
+               echo $array[$i];
+            }
+            
+         ŹLE:
+            
+            for($i = 0; $i < count($array); $i++)
+            {
+               echo $array[$i];
+            }
+         
+         Rozwiązanie to jest co prawda mniej czytelne, ale lepsze wydajnościowo.
+         
+   3. Pozostałe
+      
+      Wszystkie pliki zapisujemy z kodowaniem UTF-8 i uniksowymi enterami (\n)
+      
