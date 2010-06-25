@@ -28,6 +28,8 @@
 
 class PluginsConfigDatabase
 {
+   public static $pcdb = null; // make it working
+   
    function __construct()
    {
       if(Watermelon::$pcdb !== null)

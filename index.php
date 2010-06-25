@@ -8,7 +8,7 @@
 
 define('WM_IS','');
 
-$_w_cmsDir = 'wmelon'; // main CMS folder
+$_w_cmsDir = 'wmelon'; // main CMS directory
 
 // saving time when starting executing a script for a benchmark
 
