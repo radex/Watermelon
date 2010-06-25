@@ -43,15 +43,15 @@ if(get_magic_quotes_gpc())
 
 // constants
 
-define(    'WM_SITEURL', $_w_siteURL                          );
-define(     'WM_PUBURL', $_w_baseURL  . $_w_publicDir   . '/' );
-define('WM_UPLOADEDURL', $_w_baseURL  . $_w_uploadedDir . '/' );
+define(    'WM_SITEURL', $_w_siteURL                         );
+define(     'WM_PUBURL', $_w_baseURL  . $_w_publicDir   . '/');
+define('WM_UPLOADEDURL', $_w_baseURL  . $_w_uploadedDir . '/');
 
-define(    'WM_CMSPATH', $_w_basePath . $_w_cmsDir      . '/' );
-define(    'WM_PUBPATH', $_w_basePath . $_w_publicDir   . '/' );
+define(    'WM_CMSPATH', $_w_basePath . $_w_cmsDir      . '/');
+define(    'WM_PUBPATH', $_w_basePath . $_w_publicDir   . '/');
 
-define(       'WM_LIBS', WM_CMSPATH . 'libs/'                 );
-define(    'WM_HELPERS', WM_CMSPATH . 'helpers/'              );
+define(       'WM_LIBS', WM_CMSPATH . 'libs/'                );
+define(    'WM_HELPERS', WM_CMSPATH . 'helpers/'             );
 
 // loading libraries and helpers
 
@@ -63,7 +63,47 @@ include WM_HELPERS . 'helpers.php';
 Config::$hashAlgo = $_w_hashAlgo;
 Config::setSuperusers($_w_superusers);
 
+// error reporting
+
+switch(WM_DEBUGLEVEL)
+{
+   '0':
+   default:
+      error_reporting(0);
+      break;
+   '1':
+      error_reporting(E_ALL ^ E_NOTICE);
+      define('WM_DEBUG', '');
+      break;
+   '2':
+      error_reporting(E_ALL);
+      define('WM_DEBUG', '');
+      break;
+}
+
+function ErrorHandler($level, $message, $file, $line, $context)                    // TODO: make it more flexible - as a part of theme
+{
+   echo '<div style="position: absolute; z-index: 1005; top: 0; left: 0; width: 100%; height: 100%;
+                     background: #eee; padding: 20px; font-size: 16px; font-family: Palatino, Verdana, sans-serif;">';
+   
+   echo '<div style="display: inline-block; font-size: 2em;border-bottom:2px solid #ccc;margin-bottom:10px">
+        Wystąpił błąd uniemożliwiający kontynuowanie.</div><br>';                 // TODO: I want that to be multilingual.
+        
+   if(defined('WM_DEBUG'))
+   {
+      echo $message . '<br><br>';
+      echo '<strong>Plik:</strong>' . $file . '<br>';
+      echo '<strong>Linia:</strong>' . $line . '<br>';
+   }
+         
+   echo '</div>';
+   exit;
+}
+
+set_error_handler('ErrorHandler', E_ERROR | E_COMPILE_ERROR | E_USER_ERROR);
+
 /***/
+
 
 var_dump('100');
 
@@ -71,28 +111,6 @@ exit;
 
 /***/
 
-/*
- * function panic(string $text = 'noname error')
- * 
- * Zatrzymanie wykonywania CMS-a. Coś jak exit, czy die,
- * ale zawsze jest jedynym widocznym tekstem w przeglądarce,
- * co jest użyteczne w przypadku Output Bufferingu. Opis
- * błędu jest widoczny tylko, gdy stała DEBUG jest zdefiniowana.
- * 
- * string $text - opis błędu.
- */
-
-function panic($text = 'noname error')
-{
-   exit('<div style="position: absolute;
-        z-index: 999;
-        top: 0;
-        left: 0;
-        background: #fff;
-        width: 100%;
-        height: 100%;">
-        <big>Błąd krytyczny uniemożliwiający kontynuowanie.</big>' . (defined('DEBUG') ? '<br>' . $text : '') . '</div>');
-}
 
 ########################################
 #           class Watermelon           #

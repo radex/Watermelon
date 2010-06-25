@@ -30,13 +30,11 @@ $_w_uploadedDir = 'wm-uploaded';
 
 /*   Error reporting and debugging   */
 
-//error_reporting(0);                     // real world applications
-  error_reporting(E_ALL ^ E_NOTICE);      // programming
-//error_reporting(E_ALL);                 // testing, debugging
+define('WM_DEBUGLEVEL', '1') // 0 - no debug notices, no error reporting; real world applications
+                             // 1 - debug notices, E_ALL ^ E_NOTICE error reporting; programming
+                             // 2 - debug notices, E_ALL error reporting; testing & debugging
 
-  define('DEBUG'         , '');
-  define('BENCHMARK_SITE', '');
-  define('DEBUG_FOOTER'  , '');
+//define('WM_BENCHMARK', '');
 
 /*   Users   */
 
@@ -46,7 +44,7 @@ $_w_superusers = array('radex');
 /*   Caching   */
 
 //define('CACHE_VIEWS'   , ''   );
-  define('CACHE_BBCODE'  , ''   );
+//define('CACHE_BBCODE'  , ''   );
 
 /*   Other   */
 
