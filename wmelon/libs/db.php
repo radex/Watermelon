@@ -1,8 +1,9 @@
 <?php
  //  
+ //  db.php
  //  Watermelon CMS
  //  
- //  Copyright 2008-2009 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  This program is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -19,111 +20,74 @@
  //  
 
 /*
- * Lib DB
- * wersja 2.2.2
+ * DB library
  * 
- * Komunikacja z bazą danych
+ * communication with database
  * 
  */
 
 class DB
 {
-   /*
-    * public static uint $queriesCounter
-    * 
-    * licznik zapytań (liczba wykonanych zapytań)
-    */
-   public static $queriesCounter = 0;
-
-   /*
-    * public static array $errorList
-    * 
-    * lista (log) błędów. Przydatne w debbugowaniu
-    * 
-    * $errorList = array(string $error[, string $error[, ...]])
-    *   $error = treść błędu
-    */
-
-   public static $errorList = array();
-
-   /*
-    * private static mysql_link $link
-    * 
-    * resource bazy danych (zwracany przez mysql_connect)
-    */
-
-   private static $link;
-
-   /*
-    * private static string $prefix
-    * 
-    * prefiks nazw tabel (np. tabela 'users' wraz z prefiksem 'wcms_' to 'wcms_users')
-    */
-
-   private static $prefix;
+   public static $queriesCounter = 0;       // number of executed queries
+   public static $errorList      = array(); // array of encountered erorrs (strings). Works only in debug mode
+   public static $queriesList    = array(); // array of executed queries (strings)
    
-   /*
-    * private static string[] $queriesList
-    * 
-    * lista wykonanych zapytań
-    */
+   private static $link;   // resource of database (returned by mysql_connect)
+   private static $prefix; // prefix of tables' names
    
-   public static $queriesList = array();
-
    /*
     * public void connect(string $host, string $user, string $pass, string $name, string $prefix)
     * 
-    * Łączy z bazą danych $name na serwerze $host jako user $user o haśle $pass z prefisami tabel $prefix
+    * Connects with $name database on $host server as user $user having $pass password with $prefix tables' prefix
     */
    public function connect($host, $user, $pass, $name, $prefix)
    {
       self::$link = @mysql_connect($host, $user, $pass);
-
+      
       self::$prefix = $prefix;
-
+      
       if(!self::$link)
       {
-         panic('Lib DB: error 0<br>nie można połączyć z bazą danych');
+         trigger_error('DB: error 0 - nie można połączyć z bazą danych', E_USER_ERROR); // TODO: multilingual
       }
-
-      $dbselect = @mysql_select_db($name);
-
-      if(!$dbselect)
+      
+      if(!@mysql_select_db($name))
       {
-         panic('Lib DB: error 1<br>nie można wybrać bazy danych');
+         trigger_error('DB: error 1 - nie można wybrać bazy danych', E_USER_ERROR); // TODO: multilingual
       }
    }
-
+   
    /*
     * public static DBresult query(string $query[, string $arg1[, string $arg2[, ...]]])
     * 
-    * Zapytanie do bazy danych
+    * Executes database query
     * 
-    * Nazwy tabel podajemy poprzedzając podwójnym podkreślnikeim
-    * 
-    * Wszystkie dane wejściowe (znaczy te, które podajemy w apostrofach) oznaczamy
-    * jako %(cyfra), a w $arg(cyfra) podajemy zawartość tej danej
-    * 
-    * Zwraca FALSE w przypadku porażki
-    * 
-    * Przykład:
+    * //Returns false on error
+    *
+    * QUERIES SYNTAX: 
+    *
+    * Type tables' names using double underscore prefix
+    *
+    * Mark all input data (those we type in apostrophes) as %(number), and pass its value in $arg(number)              //FIXTRANSLATE
+    * All values passed in separate arguments are filtered by mysql_real_escape_string                                 //TODO: make it true
+    *
+    * For example:
     * 
     * DB::query("SELECT `id`, `password` FROM `__users` WHERE `nick` = '%1' AND `salt` = '%2'", 'radex', '86fcf28678ebe8a0');
     * 
-    * zostanie zinterpretowane (gdy DB::$prefix == 'wcms_') jako:
+    * will be interpreted (if DB::$prefix == 'wcms_') as:
     * 
     * "SELECT `id`, `password` FROM `wcms_users` WHERE `nick` = 'radex' AND `salt` = '86fcf28678ebe8a0'"
     */
-
+   
    public static function query($query)
    {
-      // jeśli jakaś nazwa tabeli w "panie kopniętym" zaczyna się od
-      // podwójnego podkreślnika, zamienia na prefix
-
+      // replacing double underscore prefix in tables' names with tables' prefix
+      
       $query = str_replace('`__', '`' . self::$prefix, $query);
-
-      // podmieniamy argumenty
-
+      
+      // replacing input data palceholders (%number) with their values (passed in arguments)
+      
       $numargs = func_num_args();
       $arg_list = func_get_args();
       
@@ -131,73 +95,51 @@ class DB
       {
          $query = str_replace('%' . $i, $arg_list[$i], $query);
       }
-
-      // inkrementujemy licznik zapytań
-
+      
+      // incrementing queries counter
+      
       self::$queriesCounter++;
       
-      // zapisujemy zapytanie, jeśli tryb debug
+      // saving a query if debug mode is on
       
-      if(defined('DEBUG'))
+      if(defined('WM_DEBUG'))
       {
          self::$queriesList[] = $query;
       }
       
-      // wykonujemy zapytanie
-
+      // executing query
+      
       $queryResult = mysql_query($query);
-
+      
       if($queryResult)
       {
          return new DBresult($queryResult);
       }
-      else
-      {
-         self::$errorList[] = mysql_error();
-         
-         panic('Nieudane wykonanie zapytania. Błąd: ' . self::lastError());
-         
-         return false;
-      }
-   }
-
-   /*
-    * public static string[] errorList()
-    * 
-    * Zwraca listę błędów
-    */
-
-   public static function errorList()
-   {
-      return self::$errorList;
+      
+      // on error:
+      
+      self::$errorList[] = mysql_error();
+      
+      //panic('Nieudane wykonanie zapytania. Błąd: ' . self::lastError()); // TODO: consider if it always should trigger fatal error on error
+      
+      return false;
    }
 
    /*
     * public static string lastError()
     * 
-    * Zwraca ostatni napotkany błąd
+    * Returns last encountered error
     */
 
    public static function lastError()
    {
       return end(self::$errorList);
    }
-
-   /*
-    * public static uint queries()
-    * 
-    * Zwraca liczbę wykonanych zapytań
-    */
-
-   public static function queries()
-   {
-      return self::$queriesCounter;
-   }
    
    /*
     * public static int insert_id()
     * 
-    * zwraca ID ostatnio dodanego elementu
+    * returns ID generated in last query (usually ID of lastly added record)
     */
    
    public static function insert_id()
@@ -208,75 +150,60 @@ class DB
    /*
     * public static string[] queriesList()
     * 
-    * zwraca listę zapytań gdy włączony
-    * tryb DEBUG, w przeciwnym wypadku
-    * zwraca false
+    * returns list of executed queries if debug mode is on,
+    * otherwise returns false
     */
    
    public static function queriesList()
    {
-      if(defined('DEBUG'))
+      if(defined('WM_DEBUG'))
       {
          return self::$queriesList;
       }
-      else
-      {
-         return false;
-      }
+      
+      return false;
    }
 }
 
-############
-############
-############
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
 class DBresult
 {
-   /*
-    * public mysql_result $res
-    * 
-    * resource zwrócony przez DB::query()
-    */
-   public $res;
-
-   /*
-    * public void DBresult(mysql_result $res)
-    * 
-    * Ustawia $this->res
-    */
+   public $res; // query result resource (returned by DB::query)
+   
    public function DBresult($res)
    {
       $this->res = $res;
    }
-
+   
    /*
     * public int num_rows()
     * 
-    * Zwraca ilość znalezionych wyników
+    * Returns number of rows in result
     */
-
+   
    public function num_rows()
    {
       return mysql_num_rows($this->res);
    }
-
+   
    /*
     * public object to_obj()
     * 
-    * Zwraca dane w postaci obiektu
+    * Returns data as an object
     */
-
+   
    public function to_obj()
    {
       return mysql_fetch_object($this->res);
    }
-
+   
    /*
     * public array to_array()
     * 
-    * Zwraca dane w postaci tablicy
+    * Returns data as an array
     */
-
+   
    public function to_array()
    {
       return mysql_fetch_array($this->res);
@@ -285,7 +212,7 @@ class DBresult
    /*
     * public bool exists()
     * 
-    * Zwraca true, gdy element istnieje, false w przeciwnym wypadku
+    * Returns true if searched record exists, or false otherwise
     */
    
    public function exists()
