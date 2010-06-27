@@ -1,8 +1,9 @@
 <?php
  //  
+ //  text.php
  //  Watermelon CMS
  //  
- //  Copyright 2008-2009 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  This program is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -21,107 +22,122 @@
 /*
  * Text Helpers
  * 
- * helpery związane z obróbką tekstu
+ * helpers related to text processing
  */
 
 /*
- * string generatePlFormOf(int $int, string $odm1, string $odm2, $string $odm3)
+ * string PL_generateFormOf(int $numeral, string $inflection0, string $inflection1, $string $inflection2)
  * 
  * Tworzy odpowiednią polską odmianę rzeczownika dla danego liczebnika.
- * np. 1 pies
- *     2 psy
- *     5 psów
+ * np. 0 arbuzów
+ *     1 arbuz
+ *     2 arbuzy
  * 
- * int $int - liczebnik, do którego ma zostać dopasowana odpowiednia forma rzeczownika
- * string $odm1 - odmiana, taka jaka jest do liczby 1, np. 'pies', 'dom', 'rower'
- * string $odm2 - odmiana, taka jaka jest do liczby 2, np. 'psy', 'domy', 'rowery'
- * string $odm3 - odmiana, taka jaka jest do liczby 5, np. 'psów', 'domów', 'rowerów'
+ * int $numeral - liczebnik, do którego ma zostać dopasowana odpowiednia forma rzeczownika
+ * string $inflection0 - odmiana, taka jaka jest do liczby 0, np. 'arbuzów', 'rowerów'
+ * string $inflection1 - odmiana, taka jaka jest do liczby 1, np. 'arbuz', 'rower'
+ * string $inflection2 - odmiana, taka jaka jest do liczby 2, np. 'arbuzy', 'rowery'
  * 
  * przykład:
  * 
- * generatePlFormOf(  1, 'rower', 'rowery', 'rowerów') -> 'rower'
- * generatePlFormOf( 52, 'arbuz', 'arbuzy', 'arbuzów') -> 'arbuzy'
- * generatePlFormOf(178, 'numer', 'numery', 'numerów') -> 'numerów'
+ * PL_generateFormOf(666, 'arbuzów', 'arbuz', 'arbuzy') -> 'arbuzów'
  */
 
-function generatePlFormOf($int, $odm1, $odm2, $odm3)
+function PL_generateFormOf($numeral, $inflection0, $inflection1, $inflection2)
 {
-   if($int == 0) return $odm3;
-   if($int == 1) return $odm1;
-   if($int > 1 && $int < 5) return $odm2;
-   if($int > 4 && $int < 22) return $odm3;
-   $int = substr($int, -1, 1);
+   if($numeral == 0) return $inflection0;
+   if($numeral == 1) return $inflection1;
+   if($numeral > 1 && $numeral < 5)  return $inflection2;
+   if($numeral > 4 && $numeral < 22) return $inflection0;
+   
+   $numeral = substr($numeral, -1, 1);
 
-   if($int == 0 || $int == 1) return $odm3;
-   if($int > 1 && $int < 5) return $odm2;
-   if($int > 4 && $int < 10) return $odm3;
+   if($numeral == 0 || $numeral == 1) return $inflection0;
+   if($numeral > 1  && $numeral < 5)  return $inflection2;
+   if($numeral > 4  && $numeral < 10) return $inflection0;
 }
 
 /*
- * string plDate(int $timestamp)
+ * string HumanDate(int $timestamp)
  * 
- * tworzy prostą do zrozumienia datę z timestampu
+ * Makes easy to understand date from timestamp
  * 
- * jeśli $timestamp był mniej niż minutę temu zwraca 'przed chwilą'
- * jeśli $timestamp był mniej niż godzinę temu zwraca 'x minut(ę/y) temu'
- * jeśli $timestamp to data z dzisiaj zwraca 'dzisiaj, hh:mm'
- * jeśli $timestamp to data z wczoraj zwraca 'wczoraj, hh:mm'
- * jeśli $timestamp to data z przedwczoraj zwraca 'przedwczoraj, hh:mm'
- * jeśli $timestamp był wcześniej niż przedwczoraj zwraca 'dd.mm.yyyy hh:mm'
+ * if $timestamp był mniej niż minutę temu zwraca 'przed chwilą'
+ * if $timestamp był mniej niż godzinę temu zwraca 'x minut(ę/y) temu'
+ * if $timestamp to data z dzisiaj zwraca 'dzisiaj, hh:mm'
+ * if $timestamp to data z wczoraj zwraca 'wczoraj, hh:mm'
+ * if $timestamp to data z przedwczoraj zwraca 'przedwczoraj, hh:mm'
+ * if $timestamp był wcześniej niż przedwczoraj zwraca 'dd.mm.yyyy hh:mm'
  *                                                 [PHP date() -> d.m.Y H:i]
  * 
- * int $timestamp - Unix timestamp do przekształcenia w datę
+ * int $timestamp - Unix timestamp to be translated into human-readable date.
  */
+ 
+/*
+ 
+TODO here:
 
-function plDate($timestamp)
+- translate description
+- multilingual
+- future dates
+- sentences like "this monday", "last monday" or "next monday"
+- sentences like "2 days ago" (or not?)
+- HTML output where human-readable date is inside <span>, and there's number date (dd.mm.yyyy hh:mm) in its title as an option
+- or other way round as an option
+- date and time or date only (as an option)
+- DMY/MDY/YMD to chose (in ACP)
+
+*/
+
+function HumanDate($timestamp)
 {
    $timestamp = intval($timestamp);
    
-   // mniej niż minuta temu
+   // less than a minute ago
    
    if($timestamp + 60 > time())
    {
       return 'przed chwilą';
    }
    
-   // mniej niż godzina temu
+   // less than an hour ago
    
    if($timestamp + 3600 > time())
    {
       $minutesAgo = (int) ((time() - $timestamp) / 60);
-      return $minutesAgo . ' ' . generatePlFormOf($minutesAgo, 'minutę', 'minuty', 'minut') . ' temu';
+      return $minutesAgo . ' ' . PL_generateFormOf($minutesAgo, 'minutę', 'minuty', 'minut') . ' temu';
    }
    
-   // dane z timestampu
+   // data from timestamp
    
    list($day, $month, $year, $hour, $minute) = explode('.', date('j.m.Y.H.i', $timestamp));
    
-   // dane z teraz
+   // data from now
    
    list($dayN, $monthN, $yearN) = explode('.', date('d.m.Y', time()));
    
-   // dziś, ale więcej niż godzinę temu
+   // today, but more than hour ago
    
    if($day == $dayN and $month == $monthN and $year == $yearN)
    {
       return 'dziś, ' . $hour . ':' . $minute;
    }
    
-   // wczoraj
+   // yesterday
    
    if($day == $dayN - 1 and $month == $monthN and $year == $yearN)
    {
       return 'wczoraj, ' . $hour . ':' . $minute;
    }
    
-   // przedwczoraj
+   // day before yesterday
    
    if($day == $dayN - 2 and $month == $monthN and $year == $yearN)
    {
       return 'przedwczoraj, ' . $hour . ':' . $minute;
    }
    
-   // dawniej niż przedwczoraj
+   // before the day before yesterday
    
    switch($month)
    {
@@ -165,5 +181,67 @@ function plDate($timestamp)
    
    return $day . ' ' . $month . ' ' . $year . ' ' . $hour . ':' . $minute;
 }
+
+
+
+/*
+ * string strHash(string $string[, string/int $algo])
+ * 
+ * tworzy hash z $string
+ * 
+ *  jeśli $algo nie zostało podane:
+ *  
+ *     tworzy hash według domyślnego algorytmu haszującego
+ *  
+ *  jeśli $algo jest stringiem
+ *  
+ *     tworzy hash według nazwy $algo
+ *  
+ *  jeśli $algo jest intem
+ *  
+ *     tworzy hash na podstawie numeru algrorytmu haszującego
+ * 
+ * string     $string - tekst do zahaszowania
+ * string/int $algo   - nazwa lub numer algorytmu haszującego
+ */
+ 
+/*
+
+todo:
+
+adjust this function to new notation
+
+*/
+
+function strHash($string, $algo = NULL)
+{
+   if($algo === NULL)
+   {
+      $algo = Config::$hashAlgo;
+      $algo = $algo[Config::$defaultHashAlgo];
+   }
+   elseif(is_int($algo))
+   {
+      $algo_id = $algo;
+      $algo = Config::$hashAlgo;
+      $algo = $algo[$algo_id];
+   }
+
+   $algoType = $algo[0];
+
+   $algo = substr($algo, 1);
+
+   // jeśli pierwszy znak to "x", używamy do haszowania funkcji hash. Jeśli
+   // inny - używamy standardowej funkcji (obecnie są chyba tylko trzy,
+   // może w PHP6 będzie więcej)
+
+   if($algoType == 'x')
+   {
+      return hash($algo, $string);
+   }
+   else
+   {
+      return $algo($string);
+   }
 
 ?>

@@ -1,8 +1,9 @@
 <?php
  //  
+ //  helpers.php
  //  Watermelon CMS
  //  
- //  Copyright 2008-2009 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  This program is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -22,18 +23,22 @@ include 'gui.php';
 include 'text.php';
 include 'bbcode/bbcode.php';
 
+/*
+
 function makeCard($r){}
 function emoticons_normal($r){return $r;}
+* 
+*/
 
 /*
- * void setH1(string $value)
+ * void SetH1(string $value)
  * 
  * ustawia nagłówek (nazwę) danej podstrony.
  * 
  * string $value - nazwa podstrony
  */
 
-function setH1($value)
+function SetH1($value)
 {
    define('WM_H1',$value);
 
@@ -41,20 +46,18 @@ function setH1($value)
 }
 
 /*
- * object arrayToObject(array $array)
+ * object ArrayToObject(array $array)
  * 
- * Zamienia tablicę na obiekt
- * 
- * array $array - tablica do zamiany na obiekt
+ * Translates $array array into an object
  */
 
-function arrayToObject(array $array)
+function ArrayToObject(array $array)
 {
    foreach($array as $key => $var)
    {
       if(is_array($var))
       {
-         $object->$key = arrayToObject($var);
+         $object->$key = ArrayToObject($var);
       }
       else
       {
@@ -66,20 +69,18 @@ function arrayToObject(array $array)
 }
 
 /*
- * array objectToArray(object $object)
+ * array ObjectToArray(object $object)
  * 
- * Zamienia obiekt na tablicę
- * 
- * object $object - obiekt do zamiany na tablicę
+ * Translates $object object into an array
  */
 
-function objectToArray($object)
+function ObjectToArray($object)
 {
    foreach($object as $key => $var)
    {
       if(is_object($var))
       {
-         $array[$key] = objectToArray($var);
+         $array[$key] = ObjectToArray($var);
       }
       else
       {
@@ -91,20 +92,19 @@ function objectToArray($object)
 }
 
 /*
- * string arrayToHTMLArguments(array $array)
- * string objectToHTMLArguments(object $object)
+ * string ArrayToHTMLArguments(array $array)
+ * string ObjectToHTMLArguments(object $object)
  * 
- * Zamiana tablicy lub obiektu na listę argumentów
- * HTML/XML, np.
+ * Translates an array or an object into list of HTML/XML properties, e.g:
  * 
  * array('foo1' => 'bar1', 'foo2' => 'bar2')
  * 
- * zostanie zamienione na:
+ * will be translated into:
  * 
  * 'foo1="bar1" foo2="bar2"'
  */
 
-function arrayToHTMLArguments($array)
+function ArrayToHTMLArguments($array)
 {
    $arguments = '';
    
@@ -118,95 +118,77 @@ function arrayToHTMLArguments($array)
    return $arguments;
 }
 
-function objectToHTMLArguments($object)
+function ObjectToHTMLArguments($object)
 {
-   return arrayToHTMLArguments($object);
+   return ArrayToHTMLArguments($object);
 }
 
-/*********************************************/
-
-/* zwraca element tablicy $_POST
-********************************/
 /*
-function _POST($key)
-{
-   return $_POST[$key];
-}
-*/
-
-/**********************************************/
-
-/*
- * string site_url(string $url)
+ * string SiteURI(string $urn)
  * 
- * Tworzy URL do danej podstrony
+ * Makes URI to given subpage //FIXTRANSLATE
  * 
- * string $url - podstrona, np.: 'blog/foo/bar/', albo '' - pusty
- *               string, zwróci URL do strony głównej
+ * string $urn - subpage, e.g: 'blog/foo/bar', or '' (URI to main page)
  */
 
-function site_url($url)
+function SiteURI($urn)
 {
-   return WM_SITEURL . $url;
+   return WM_SITEURL . $urn;
 }
 
 /*
- * void redirect(string $url)
+ * void Redirect(string $uri)
  * 
- * Przekierowuje na stronę o URL=$url
+ * Redirects to $uri URI
  */
 
-function redirect($url)
+function Redirect($uri)
 {
-   header('Location: ' . $url);
+   header('Location: ' . $uri);
    exit;
 }
 
 /*
- * void siteredirect(string $url)
+ * void SiteRedirect(string $urn)
  * 
- * Przekierowuje na podstronę $url
+ * Redirects to $urn subpage
  * 
- * równoważność redirect(site_url($url))
+ * Equivalent of Redirect(SiteURI($urn))
  */
 
-function siteredirect($url)
+function SiteRedirect($urn)
 {
-   redirect(site_url($url));
-}
-
-function site_redirect($url)
-{
-   siteredirect($url);
+   Redirect(SiteURI($urn));
 }
 
 /*
  * string ClientIP()
  * 
- * zwraca IP odwiedzającego.
+ * returns visitor's IP
  * 
- * funkcja pochodzi oryginalnie z: http://php.org.pl/artykuly/3/22
+ * function comes from: http://php.org.pl/artykuly/3/22 (dead link).
+ * I don't know if it's original source.
  */
 
 function ClientIP()
 {
    $ip = 0;
-
+   
    if(!empty($_SERVER['HTTP_CLIENT_IP']))
    {
       $ip = $_SERVER['HTTP_CLIENT_IP'];
    }
-
+   
    if(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
    {
       $ipList = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']);
-
+      
       if($ip)
       {
          array_unshift($ipList, $ip);
          $ip = 0;
       }
-
+      
       foreach($ipList as $v)
       {
          if(!ereg('^(192\.168|172\.16|10|224|240|127|0)\.', $v))
@@ -215,59 +197,8 @@ function ClientIP()
          }
       }
    }
+   
    return $ip ? $ip : $_SERVER['REMOTE_ADDR'];
 }
-
-/*
- * string strHash(string $string[, string/int $algo])
- * 
- * tworzy hash z $string
- * 
- *  jeśli $algo nie zostało podane:
- *  
- *     tworzy hash według domyślnego algorytmu haszującego
- *  
- *  jeśli $algo jest stringiem
- *  
- *     tworzy hash według nazwy $algo
- *  
- *  jeśli $algo jest intem
- *  
- *     tworzy hash na podstawie numeru algrorytmu haszującego
- * 
- * string     $string - tekst do zahaszowania
- * string/int $algo   - nazwa lub numer algorytmu haszującego
- */
-
-function strHash($string, $algo = NULL)
-{
-   if($algo === NULL)
-   {
-      $algo = Config::$hashAlgo;
-      $algo = $algo[Config::$defaultHashAlgo];
-   }
-   elseif(is_int($algo))
-   {
-      $algo_id = $algo;
-      $algo = Config::$hashAlgo;
-      $algo = $algo[$algo_id];
-   }
-
-   $algoType = $algo[0];
-
-   $algo = substr($algo, 1);
-
-   // jeśli pierwszy znak to "x", używamy do haszowania funkcji hash. Jeśli
-   // inny - używamy standardowej funkcji (obecnie są chyba tylko trzy,
-   // może w PHP6 będzie więcej)
-
-   if($algoType == 'x')
-   {
-      return hash($algo, $string);
-   }
-   else
-   {
-      return $algo($string);
-   }
 }
 ?>
