@@ -1,7 +1,6 @@
 <?php
  //  
- //  config.php
- //  Watermelon CMS
+ //  This file is part of Watermelon CMS
  // 
 
                                                       // TODO: Write config documentation

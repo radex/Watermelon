@@ -1,7 +1,6 @@
 <?php
  //  
- //  index.php
- //  Watermelon CMS
+ //  This file is part of Watermelon CMS
  //  
  //  Copyright 2008-2010 Radosław Pietruszewski.
  //
