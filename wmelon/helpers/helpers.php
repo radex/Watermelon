@@ -32,7 +32,7 @@ function emoticons_normal($r){return $r;}
 /*
  * void SetH1(string $newHeader)
  * 
- * sets header (name) of current subpage              // () FIXTRANSLATE
+ * Sets header (name) of current subpage
  */
 
 function SetH1($value)
@@ -45,7 +45,7 @@ function SetH1($value)
 /*
  * object ArrayToObject(array $array)
  * 
- * Translates $array array into an object
+ * Translates $array into an object
  */
 
 function ArrayToObject(array $array)
@@ -68,7 +68,7 @@ function ArrayToObject(array $array)
 /*
  * array ObjectToArray(object $object)
  * 
- * Translates $object object into an array
+ * Translates $object into an array
  */
 
 function ObjectToArray($object)
@@ -123,9 +123,9 @@ function ObjectToHTMLArguments($object)
 /*
  * string SiteURI(string $urn)
  * 
- * Makes URI to given subpage //FIXTRANSLATE
+ * Makes URI to given subpage
  * 
- * string $urn - subpage, e.g: 'blog/foo/bar', or '' (URI to main page)
+ * string $urn - subpage, e.g: 'blog/foo/bar', or '' (URN to main page)
  */
 
 function SiteURI($urn)
@@ -136,7 +136,7 @@ function SiteURI($urn)
 /*
  * void Redirect(string $uri)
  * 
- * Redirects to $uri URI
+ * Redirects browser to $uri
  */
 
 function Redirect($uri)
@@ -166,6 +166,8 @@ function SiteRedirect($urn)
  * function comes from: http://php.org.pl/artykuly/3/22 (dead link).
  * I don't know if it's original source.
  */
+
+// TODO: Find some other function to do that (i'm not sure about this function license, and it uses ereg instead of preg)
 
 function ClientIP()
 {
@@ -199,63 +201,30 @@ function ClientIP()
 }
 
 /*
- * string strHash(string $string[, string/int $algo])
+ * string HashString(string $string[, string $algo])
  * 
- * tworzy hash z $string
+ * Makes hash of $string
  * 
- *  jeśli $algo nie zostało podane:
- *  
- *     tworzy hash według domyślnego algorytmu haszującego
- *  
- *  jeśli $algo jest stringiem
- *  
- *     tworzy hash według nazwy $algo
- *  
- *  jeśli $algo jest intem
- *  
- *     tworzy hash na podstawie numeru algrorytmu haszującego
+ * Hash is calculated using $algo algorithm.
+ * If $algo is not given (which is usually true), algorithm specified in config file will be used.
  * 
- * string     $string - tekst do zahaszowania
- * string/int $algo   - nazwa lub numer algorytmu haszującego
+ * HashString uses $algo function to hash the string if exists, or hash() otherwise.
  */
- 
-/*
 
-todo:
-
-adjust this function to new notation
-
-*/
-
-function strHash($string, $algo = NULL)
+function HashString($string, $algo = null)
 {
-   if($algo === NULL)
+   if($algo === null)
    {
       $algo = Config::$hashAlgo;
-      $algo = $algo[Config::$defaultHashAlgo];
    }
-   elseif(is_int($algo))
+   
+   if(function_exists($algo))
    {
-      $algo_id = $algo;
-      $algo = Config::$hashAlgo;
-      $algo = $algo[$algo_id];
-   }
-
-   $algoType = $algo[0];
-
-   $algo = substr($algo, 1);
-
-   // jeśli pierwszy znak to "x", używamy do haszowania funkcji hash. Jeśli
-   // inny - używamy standardowej funkcji (obecnie są chyba tylko trzy,
-   // może w PHP6 będzie więcej)
-
-   if($algoType == 'x')
-   {
-      return hash($algo, $string);
+      return $algo($string);
    }
    else
    {
-      return $algo($string);
+      return hash($algo, $string);
    }
 }
 

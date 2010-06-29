@@ -19,6 +19,16 @@
  //  
 
 /*
+
+todo:
+
+- update handyCode/rainbow
+- change bbcode to something better, like textile, markdown, or something mixed
+
+
+*/
+
+/*
  * string bbcode(string $text)
  * 
  * parsuje bbcode (zamienia na html)

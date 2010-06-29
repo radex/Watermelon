@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2008-2009 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -28,27 +28,7 @@ class Controller
       $this->db    = new DB();
       $this->load  = new Loader();
       $this->user  = new User();
-      self::$_user = $this->user;
-      
-      if(defined('ADMIN_MODE'))
-      {
-         if(!$this->user->IsAdmin())
-         {
-            header('Location: ' . WM_MAINURL . 'login');
-            exit;
-         }
-      }
-   }
-   
-   /* DEPRECATED!!! */
-   
-   public function Controller()
-   {
-      $this->url   = new URL();
-      $this->db    = new DB();
-      $this->load  = new Loader();
-      $this->user  = new User();
-      self::$_user = $this->user;
+      self::$_user = $this->user; // TODO: whut's that?
       
       if(defined('ADMIN_MODE'))
       {

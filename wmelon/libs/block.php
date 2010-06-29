@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2009 Radosław Pietruszewski.
+ //  Copyright 2009-2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ class Block
    
    function addData($data)
    {
-      $this->data = $data;
+      $this->data = $data;  //TODO: wtf is that? documentate.
    }
 }
 

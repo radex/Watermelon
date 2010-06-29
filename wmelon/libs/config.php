@@ -27,15 +27,14 @@
 
 class Config
 {
-   public static $siteName;
-   public static $siteSlogan;
+   //public static $siteName;
+   //public static $siteSlogan;
    public static $hashAlgo;
-   public static $defaultHashAlgo;
-   public static $defaultController;
+   //public static $defaultController;
    public static $theme;
    private static $superusers = null;
-   private static $dbconfig = array();
-   private static $dbconfigLoaded = false;
+   private static $dbconfig = array(); //?
+   private static $dbconfigLoaded = false; //?
    
    /*
     * public static void setSuperusers(string[] $superusers)

@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2008 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,17 @@
  //  You should have received a copy of the GNU General Public License
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
+
+ /*
+
+ todo:
+ - refactorize
+ - translate
+ - make admin/ prefix for admin pages
+ - ... (finish this todo)
+
+
+ */
 
 /*
  * Lib URL

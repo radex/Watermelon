@@ -21,7 +21,7 @@
 include 'url.php';
 include 'db.php';
 
-include 'cache.php';
+//include 'cache.php';
 include 'loader.php';
 include 'config.php';
 include 'pluginscdb.php';
@@ -30,10 +30,10 @@ include 'controller.php';
 include 'model.php';
 include 'plugin.php';
 include 'block.php';
-
+/*
 if(defined('ADMIN_MODE'))
 {
    include 'acinfo.php';
 }
-
+*/
 ?>

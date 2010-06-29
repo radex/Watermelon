@@ -67,7 +67,7 @@ class DB
     *
     * Type tables' names using double underscore prefix
     *
-    * Mark all input data (those we type in apostrophes) as %(number), and pass its value in $arg(number)              //FIXTRANSLATE
+    * Mark all input data (those we type in apostrophes) as %(number), and pass its value in $arg(number)
     * All values passed in separate arguments are filtered by mysql_real_escape_string                                 //TODO: make it true
     *
     * For example:

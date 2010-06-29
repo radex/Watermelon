@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2008-2009 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,6 @@
 class Model
 {
    function __construct()
-   {
-      $this->url = new URL();
-      $this->db  = new DB();
-   }
-   
-   /* DEPRECATED!!!*/
-   
-   function Model()
    {
       $this->url = new URL();
       $this->db  = new DB();
