@@ -11,6 +11,12 @@
                       LEKTURA OBOWIĄZKOWA!
 ____________________________________________________________________________
 
+TODO:
+- HTML-ize
+- translate
+- complete
+- write more docs
+
    To jest obowiązyjący dla kodu Watermelon Watermelona styl programowania.
    Jednolity styl poprawia wygląd kodu i ułatwia jego późniejszą refaktoryzację.
 

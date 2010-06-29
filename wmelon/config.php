@@ -22,10 +22,6 @@ $_w_dbPrefix    = '';
 
 $_w_superusers = array('radex');
 
-/*   Interface   */
-
-$_w_language   = 'pl';
-
 /****************\
      ADVANCED
 \****************/
@@ -52,8 +48,8 @@ define('WM_DEBUGLEVEL', '1') // 0 - no debug notices, no error reporting; real w
 //define('CACHE_VIEWS' , '');
 //define('CACHE_BBCODE', '');
 
-/*   Other   */
+/*   Plugins   */
 
-$_w_autoload = array(array('user', ''), array('benchmark', ''));
+$_w_autoload = array(array('user', ''), array('benchmark', '')); //TODO: change name
 
 ?>

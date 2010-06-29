@@ -19,7 +19,7 @@
  //  
 
 include 'gui.php';
-include 'text.php';
+include 'language.php';
 include 'bbcode/bbcode.php';
 
 /*
@@ -30,18 +30,16 @@ function emoticons_normal($r){return $r;}
 */
 
 /*
- * void SetH1(string $value)
+ * void SetH1(string $newHeader)
  * 
- * ustawia nagłówek (nazwę) danej podstrony.
- * 
- * string $value - nazwa podstrony
+ * sets header (name) of current subpage              // () FIXTRANSLATE
  */
 
 function SetH1($value)
 {
-   define('WM_H1',$value);
+   define('WM_H1', $newHeader);
 
-	return '<h1>' . $value . '</h1>';
+	return '<h1>' . $newHeader . '</h1>';
 }
 
 /*
@@ -199,5 +197,66 @@ function ClientIP()
    
    return $ip ? $ip : $_SERVER['REMOTE_ADDR'];
 }
+
+/*
+ * string strHash(string $string[, string/int $algo])
+ * 
+ * tworzy hash z $string
+ * 
+ *  jeśli $algo nie zostało podane:
+ *  
+ *     tworzy hash według domyślnego algorytmu haszującego
+ *  
+ *  jeśli $algo jest stringiem
+ *  
+ *     tworzy hash według nazwy $algo
+ *  
+ *  jeśli $algo jest intem
+ *  
+ *     tworzy hash na podstawie numeru algrorytmu haszującego
+ * 
+ * string     $string - tekst do zahaszowania
+ * string/int $algo   - nazwa lub numer algorytmu haszującego
+ */
+ 
+/*
+
+todo:
+
+adjust this function to new notation
+
+*/
+
+function strHash($string, $algo = NULL)
+{
+   if($algo === NULL)
+   {
+      $algo = Config::$hashAlgo;
+      $algo = $algo[Config::$defaultHashAlgo];
+   }
+   elseif(is_int($algo))
+   {
+      $algo_id = $algo;
+      $algo = Config::$hashAlgo;
+      $algo = $algo[$algo_id];
+   }
+
+   $algoType = $algo[0];
+
+   $algo = substr($algo, 1);
+
+   // jeśli pierwszy znak to "x", używamy do haszowania funkcji hash. Jeśli
+   // inny - używamy standardowej funkcji (obecnie są chyba tylko trzy,
+   // może w PHP6 będzie więcej)
+
+   if($algoType == 'x')
+   {
+      return hash($algo, $string);
+   }
+   else
+   {
+      return $algo($string);
+   }
 }
+
 ?>
