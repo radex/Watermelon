@@ -39,7 +39,7 @@ class Config
    /*
     * public static void setSuperusers(string[] $superusers)
     * 
-    * ustawia listę administratorów na $superusers                         // TODO: jak to przetłumaczyć... ?
+    * ustawia listę administratorów na $superusers             // () FIXTRANSLATE
     */
    
    public static function setSuperusers(array $superusers)
@@ -53,7 +53,7 @@ class Config
    /*
     * public static string[] getSuperusers()
     * 
-    * returns list of superusers
+    * Returns list of superusers
     */
    
    public static function getSuperusers()
@@ -64,7 +64,7 @@ class Config
    /*
     * public static mixed getConf(string $fieldname)
     * 
-    * fetches value of $fieldname configuration and returns it
+    * Fetches value of $fieldname configuration
     */
    
    public static function getConf($fieldname)
@@ -87,7 +87,7 @@ class Config
    /*
     * public static void setConf(string $fieldname, string $fieldvalue)
     * 
-    * ustawia w bazie danych wartość pola $fieldname na $fieldvalue              // TODO: jak to przetłumaczyć... ?
+    * ustawia w bazie danych wartość pola $fieldname na $fieldvalue             // ( ) FIXTRANSLATE
     */
    
    public static function setConf($fieldname, $fieldvalue)

@@ -25,13 +25,13 @@ class Block
       $this->url   = new URL();
       $this->db    = new DB();
       $this->load  = new Loader();
-      $this->user  = new User();
+      //$this->user  = new User();
    }
-   
+   /*
    function addData($data)
    {
       $this->data = $data;  //TODO: wtf is that? documentate.
-   }
+   }*/
 }
 
 ?>

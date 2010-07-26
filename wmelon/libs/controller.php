@@ -20,41 +20,40 @@
 
 class Controller
 {
-   static public $_user;
+   //static public $_user;
    
    public function __construct()
    {
       $this->url   = new URL();
       $this->db    = new DB();
       $this->load  = new Loader();
-      $this->user  = new User();
-      self::$_user = $this->user; // TODO: whut's that?
+      //$this->user  = new User();
+      //self::$_user = $this->user; // TODO: whut's that?
       
-      if(defined('ADMIN_MODE'))
+      /*if(defined('ADMIN_MODE'))
       {
          if(!$this->user->IsAdmin())
          {
             header('Location: ' . WM_MAINURL . 'login');
             exit;
          }
-      }
+      }*/
    }
 
    /*
-    * static public void addMeta(string $data);
+    * public void HeadAppend(string $tag);
     * 
-    * dodaje element do sekcji <head>
+    * Adds tag to <head> section
     * 
-    * string $data - element do wstawienia, np. '<style type="text/css">*{display:none}</style>'
+    * Equivalent of Watermelon::$headData[] = '...'
+    * 
+    * string $tag - individual element to put in <head> section,
+    *               e.g.: '<style>*{display:none}</style>'
     */
 
-   static public function addMeta($data)
+   public function HeadAppend($tag)
    {
-      $metaSrc = Watermelon::$metaSrc;
-
-      $metaSrc[] = $data;
-
-      Watermelon::$metaSrc = $metaSrc;
+      Watermelon::$headData[] = $tag;
    }
 }
 

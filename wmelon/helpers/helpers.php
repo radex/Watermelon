@@ -18,9 +18,9 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-include 'gui.php';
+//include 'gui.php';
 include 'language.php';
-include 'bbcode/bbcode.php';
+//include 'bbcode/bbcode.php';
 
 /*
 

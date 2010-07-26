@@ -26,14 +26,13 @@ todo: refactorize & translate
 */
 
 /*
- * Lib Loader
- * wersja 1.6.5
+ * Loader library
  * 
- * Ładowanie różnego rodzaju modułów
+ * loading all kinds of modules
  * 
  */
 
-include WM_LIBS . 'viewtags.php';
+//include WM_LIBS . 'viewtags.php';
 
 class Loader
 {

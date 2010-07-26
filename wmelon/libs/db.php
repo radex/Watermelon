@@ -25,6 +25,16 @@
  * 
  */
 
+/*
+
+todo:
+- make calling connect() possible only once
+- what about something like mysql resource cashing?
+- consider if it always should trigger fatal on error (query)
+
+
+*/
+
 class DB
 {
    public static $queriesCounter = 0;       // number of executed queries
@@ -35,11 +45,11 @@ class DB
    private static $prefix; // prefix of tables' names
    
    /*
-    * public void connect(string $host, string $user, string $pass, string $name, string $prefix)
+    * public static void connect(string $host, string $user, string $pass, string $name, string $prefix)
     * 
     * Connects with $name database on $host server as user $user having $pass password with $prefix tables' prefix
     */
-   public function connect($host, $user, $pass, $name, $prefix)
+   public static function connect($host, $user, $pass, $name, $prefix)
    {
       self::$link = @mysql_connect($host, $user, $pass);
       
@@ -47,12 +57,12 @@ class DB
       
       if(!self::$link)
       {
-         trigger_error('DB: error 0 - nie można połączyć z bazą danych', E_USER_ERROR); // TODO: multilingual
+         trigger_error('DB: error 0 - nie można połączyć z bazą danych', E_USER_ERROR);
       }
       
       if(!@mysql_select_db($name))
       {
-         trigger_error('DB: error 1 - nie można wybrać bazy danych', E_USER_ERROR); // TODO: multilingual
+         trigger_error('DB: error 1 - nie można wybrać bazy danych', E_USER_ERROR);
       }
    }
    
@@ -116,12 +126,12 @@ class DB
       }
       
       // on error:
-      
+      /*
       self::$errorList[] = mysql_error();
       
       //panic('Nieudane wykonanie zapytania. Błąd: ' . self::lastError()); // TODO: consider if it always should trigger fatal error on error
       
-      return false;
+      return false;*/
    }
 
    /*
@@ -144,23 +154,6 @@ class DB
    public static function insert_id()
    {
       return mysql_insert_id();
-   }
-   
-   /*
-    * public static string[] queriesList()
-    * 
-    * returns list of executed queries if debug mode is on,
-    * otherwise returns false
-    */
-   
-   public static function queriesList()
-   {
-      if(defined('WM_DEBUG'))
-      {
-         return self::$queriesList;
-      }
-      
-      return false;
    }
 }
 

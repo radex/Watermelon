@@ -1,4 +1,4 @@
-<?php if(!defined('WM_IS')) exit;
+<?php
  //  
  //  This file is part of Watermelon CMS
  //  
@@ -17,6 +17,8 @@
  //  You should have received a copy of the GNU General Public License
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
+
+if(!defined('WM_IS')) exit;
 
 session_start();
 session_regenerate_id();
@@ -40,6 +42,24 @@ if(get_magic_quotes_gpc())
    $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
 }
 
+// setting proper error reporting modes, and debug constants in respect to internal debug level constant
+
+switch(WM_DEBUGLEVEL)
+{
+   case'0':
+   default:
+      error_reporting(0);
+      break;
+   case '1':
+      error_reporting(E_ALL ^ E_NOTICE);
+      define('WM_DEBUG', '');
+      break;
+   case '2':
+      error_reporting(E_ALL);
+      define('WM_DEBUG', '');
+      break;
+}
+
 // constants
 
 define(    'WM_SITEURL', $_w_siteURL                         );
@@ -61,45 +81,6 @@ include WM_HELPERS . 'helpers.php';
 
 Config::$hashAlgo = $_w_hashAlgo;
 Config::setSuperusers($_w_superusers);
-
-// error reporting
-
-switch(WM_DEBUGLEVEL)
-{
-   '0':
-   default:
-      error_reporting(0);
-      break;
-   '1':
-      error_reporting(E_ALL ^ E_NOTICE);
-      define('WM_DEBUG', '');
-      break;
-   '2':
-      error_reporting(E_ALL);
-      define('WM_DEBUG', '');
-      break;
-}
-
-function ErrorHandler($level, $message, $file, $line, $context)                    // TODO: make it more flexible - as a part of theme
-{
-   echo '<div style="position: absolute; z-index: 1005; top: 0; left: 0; width: 100%; height: 100%;
-                     background: #eee; padding: 20px; font-size: 16px; font-family: Palatino, Verdana, sans-serif;">';
-   
-   echo '<div style="display: inline-block; font-size: 2em;border-bottom:2px solid #ccc;margin-bottom:10px">
-        Wystąpił błąd uniemożliwiający kontynuowanie.</div><br>';                 // TODO: I want that to be multilingual.
-        
-   if(defined('WM_DEBUG'))
-   {
-      echo $message . '<br><br>';
-      echo '<strong>Plik:</strong>' . $file . '<br>';
-      echo '<strong>Linia:</strong>' . $line . '<br>';
-   }
-         
-   echo '</div>';
-   exit;
-}
-
-set_error_handler('ErrorHandler', E_ERROR | E_COMPILE_ERROR | E_USER_ERROR);
 
 // main CMS class
 
@@ -128,7 +109,7 @@ class Watermelon
    
    /*
     * public void Watermelon(string $dbHost,   string $dbUser,   string   $dbPass, string $dbName,
-    *                        string $dbPrefix, array  $autoload, string[] $metaSrc)
+    *                        string $dbPrefix, array  $autoload, string[] $headData)
     *
     * Konstuktor. Odpala najważniejsze biblioteki, odpowiedni kontroler
     * i generuje stronę.
@@ -139,7 +120,7 @@ class Watermelon
     * string   $dbName   - nazwa bazy danych
     * string   $dbPrefix - prefiks do tabel
     * array    $autoload - pluginy i kod związany z nimi do automatycznego załadowania
-    * string[] $metaSrc  - dane do wstawienia w sekcji <head>
+    * string[] $headData - dane do wstawienia w sekcji <head>
     *
     * $autoload = array(array(string $plugin_name, string $eval)[, array(string $plugin_name, string $eval)[, ... ]]
     *   $plugin_name - nazwa plugina
@@ -149,19 +130,19 @@ class Watermelon
     *   $head_element - pojedynczy element do umieszczenia w sekcji <head>
     */
 
-   public function Watermelon($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix, array $autoload, array $metaSrc)
+   public function Watermelon($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix, array $autoload, array $headData)
    {
       $url = new URL(Config::$defaultController);
-      $db  = new DB();
-      $db->connect($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
       
-      $this->LoadPlugins($autoload);
+      DB::connect($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
       
-      self::$metaSrc = $metaSrc;
+      //$this->LoadPlugins($autoload);
       
-      $content = $this->loadController();
+      self::$headData = $headData;
       
-      $this->generatePage($content);
+      //$content = $this->loadController();
+      
+      //$this->generatePage($content);
    }
    
    /*
@@ -357,7 +338,7 @@ class Watermelon
     * 
     * string $tab - wygląd wcięcia
     */
-   
+   /*
    public static function getMeta($tab = '   ')
    {
       $metaSrc = Watermelon::$metaSrc;
@@ -368,7 +349,7 @@ class Watermelon
       }
       
       return $meta;
-   }
+   }*/
 }
 
 /***/
