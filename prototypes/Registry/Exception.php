@@ -22,9 +22,9 @@ class WMException extends Exception
 {
    protected $stringCode = '';
    
-   public function __construct($message = '', $stringCode = '', Exception $previous = null)
+   public function __construct($message = '', $stringCode = '')
    {
-      parent::__construct($message, 0, $previous)
+      parent::__construct($message, 0);
       
       $this->stringCode = $stringCode;
    }

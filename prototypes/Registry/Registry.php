@@ -33,7 +33,7 @@ class Registry
     * mixed  $value       = null
     * bool   $isImmutable = false - whether entity is immutable (whether its properties are unchangeable)
     *
-    * Throws an exception if entity with given name exists
+    * Throws an exception if entity with given name already exists (alreadyRegistered)
     */
    
    public static function add($name, $value = null, $isImmutable = false)
@@ -44,7 +44,7 @@ class Registry
       
       if(isset(self::$entities[$name]))
       {
-         throw new Exception('Próba zarejestrowania zarejestrowanej już jednostki w Rejestrze: ' . $name);
+         throw new WMException('Próba zarejestrowania zarejestrowanej już jednostki w Rejestrze: ' . $name, 'Registry:alreadyRegistered');
       }
       
       // validating arguments
@@ -86,8 +86,8 @@ class Registry
     * Sets value of an entity with given name in registry
     *
     * Throws en exception if:
-    * - such entity doesn't exist
-    * - entity is immutable
+    * - such entity doesn't exist (doesNotExist)
+    * - entity is immutable (immutable)
     */
    
    public static function set($name, $value)
@@ -107,7 +107,7 @@ class Registry
     *
     * Returns whether entity with given name is immutable
     *
-    * Throws en exception if such entity doesn't exist
+    * Throws en exception if such entity doesn't exist (doesNotExist)
     */
    
    public static function isImmutable($name)
@@ -141,8 +141,8 @@ class Registry
     * so it's possible to recreate an entity with the same name.
     *
     * Throws en exception if:
-    * - such entity doesn't exist
-    * - entity is immutable
+    * - such entity doesn't exist (doesNotExist)
+    * - entity is immutable (immutable)
     */
    
    public static function delete($name)
@@ -167,8 +167,8 @@ class Registry
     * Similar to deleting, but invalidating also reserves name.
     *
     * Throws en exception if:
-    * - such entity doesn't exist
-    * - entity is immutable
+    * - such entity doesn't exist (doesNotExist)
+    * - entity is immutable (immutable)
     */
    
    public static function invalidate($name)
@@ -191,7 +191,7 @@ class Registry
    {
       if(!is_object(self::$entities[$name]))
       {
-         throw new Exception('Próba dostępu do niezarejestrowanej jednostki w Rejestrze: ' . $name);
+         throw new WMException('Próba dostępu do niezarejestrowanej jednostki w Rejestrze: ' . $name, 'Registry:doesNotExist');
       }
    }
    
@@ -203,7 +203,7 @@ class Registry
    {
       if(self::$entities[$name]->isImmutable)
       {
-         throw new Exception('Próba dostępu do niezmiennej jednostki w Rejestrze: ' . $name);
+         throw new WMException('Próba dostępu do niezmiennej jednostki w Rejestrze: ' . $name, 'Registry:immutable');
       }
    }
 }
