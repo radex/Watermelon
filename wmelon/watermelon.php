@@ -355,7 +355,7 @@ class Watermelon
 /***/
 
 
-var_dump('100');
+include 'prototypes/Registry/proto.php';
 
 exit;
 
