@@ -20,8 +20,8 @@
 
 class RegistryEntity
 {
-   public $value;       // public mixed $value
-   public $isImmutable; // public bool  $isImmutable - whether entity is immutable (whether its properties are unchangeable)
+   public $value;       // [mixed]
+   public $isImmutable; // [bool] - whether entity is immutable (whether its properties are unchangeable)
    
    public function __construct($value, $isImmutable)
    {

@@ -22,10 +22,24 @@ include 'TestCase.php';
 
 class UnitTester
 {
-   private static $testedModuleName = '';
-   private static $unitTestsCounter = 0;
+   private static $testedModuleName   = '';      // name of currently tested module
+   private static $testedUnitsCounter = 0;       // counter of ran test units
+   private static $failedTestsList    = array(); // array of failed tests data (module name, test ID, file name, and line)
    
-   public static function runTest(TestCase $testCaseObject)
+   /*
+    * public static void runTest(TestCase $testCase)
+    * 
+    * Runs test case (TestCase child)
+    * 
+    * Errors in assertions won't be shown immediately, and won't issue warnings
+    * 
+    * Use UnitTester::printFails() to print which tests failed
+    *
+    * Use $this->nextTest() in test case before doing every test (before every assert()),
+    * and specify tested module name - it will help with debugging and statistics
+    */
+   
+   public static function runTest(TestCase $testCase)
    {
       // setting assert options
       
@@ -35,8 +49,8 @@ class UnitTester
       
       // saving tested module name and running the test
       
-      self::$testedModuleName = $testCaseObject->testedModuleName();
-      $testCaseObject->test();
+      self::$testedModuleName = $testCase->testedModuleName();
+      $testCase->test();
       
       // restoring default assert options and UnitTester properties
       
@@ -47,13 +61,67 @@ class UnitTester
       self::$testedModuleName = '';
    }
    
+   /*
+    * public static void printFails()
+    *
+    * Prints which test units failed
+    *
+    * Draws ugly HTML table with statistics and: module name, test ID, file name
+    * and line for every failed test. Does not draw anything if no tests failed
+    *
+    * You shouldn't need to use this - Watermelon will call that for you.
+    */
+   
+   public static function printFails()
+   {
+      $failedTests = count(self::$failedTestsList);
+      
+      if($failedTests == 0)
+      {
+         return;
+      }
+      
+      echo '<hr>' . $failedTests . ' z ' . self::$testedUnitsCounter . ' testów nie powiodło się:<br><br>';
+      
+      echo '<table border="1">';
+      echo '<tr><th>Moduł</th><th>ID testu</th><th>Plik</th><th>Linia</th></tr>';
+      
+      foreach(self::$failedTestsList as $failedTest)
+      {
+         echo '<tr>';
+         
+         foreach($failedTest as $value)
+         {
+            echo '<td>' . $value . '</td>';
+         }
+         
+         echo '</tr>';
+      }
+      
+      echo '</table><hr>';
+   }
+   
+   /*
+    * Don't call it explicitly - use $this->nextTest() in test case instead
+    */
+   
    public static function nextTest()
    {
-      self::$unitTestsCounter++;
+      self::$testedUnitsCounter++;
    }
+   
+   /*
+    * assert() handler. Don't call it.
+    */
    
    public static function assertHandler($file, $line, $expression)
    {
-      var_dump('fail');
+      self::$failedTestsList[] = array
+         (
+            self::$testedModuleName,
+            self::$testedUnitsCounter,
+            $file,
+            $line
+         );
    }
 }

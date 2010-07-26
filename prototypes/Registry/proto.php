@@ -19,8 +19,14 @@ class RegistryPrototypeTest extends TestCase
       
       $this->nextTest();
       
-      assert(8==7);
+      assert(false);
+      
+      $this->nextTest();
+      
+      assert(true);
    }
 }
 
 UnitTester::runTest(new RegistryPrototypeTest);
+
+UnitTester::printFails();
