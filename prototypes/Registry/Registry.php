@@ -38,7 +38,7 @@ class Registry
    
    public static function add($name, $value = null, $isImmutable = false)
    {
-      $name = strval($name);
+      self::throwIfNotString($name);
       
       // if entity with given name exist
       
@@ -66,16 +66,8 @@ class Registry
    
    public static function get($name)
    {
-      $name = strval($name);
-      
-      // if entity with given name doesn't exist
-      
-      if(!is_object(self::$entities[$name]))
-      {
-         return null;
-      }
-      
-      // getting value
+      self::throwIfNotString($name);
+      self::throwIfDoesNotExist($name);
       
       return self::$entities[$name]->value;
    }
@@ -92,8 +84,7 @@ class Registry
    
    public static function set($name, $value)
    {
-      $name = strval($name);
-      
+      self::throwIfNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfImmutable($name);
       
@@ -112,8 +103,7 @@ class Registry
    
    public static function isImmutable($name)
    {
-      $name = strval($name);
-      
+      self::throwIfNotString($name);
       self::throwIfDoesNotExist($name);
 
       return self::$entities[$name]->isImmutable;
@@ -127,7 +117,7 @@ class Registry
    
    public static function exists($name)
    {
-      $name = strval($name);
+      self::throwIfNotString($name);
       
       return is_object(self::$entities[$name]);
    }
@@ -147,8 +137,7 @@ class Registry
    
    public static function delete($name)
    {
-      $name = strval($name);
-      
+      self::throwIfNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfImmutable($name);
       
@@ -173,14 +162,25 @@ class Registry
    
    public static function invalidate($name)
    {
-      $name = strval($name);
-      
+      self::throwIfNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfImmutable($name);
       
       // invalidating
       
       self::$entities[$name] = '';
+   }
+   
+   /*
+    * throws an exception if given entity name is not string
+    */
+   
+   private static function throwIfNotString($name)
+   {
+      if(!is_string($name))
+      {
+         throw new WMException('Nazwa jednostki w Rejestrze musi być typu string!', 'Registry:nameNotString');
+      }
    }
    
    /*
