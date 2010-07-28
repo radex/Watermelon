@@ -16,27 +16,146 @@ class RegistryPrototypeTest extends TestCase
       $r = new Registry;
       
       #####
+      ##### throwIfNameNotString
+      #####
+      
+      {
+         // testing functions that throw an exception if given name is not string
+         
+         $throwIfNameNotStringFunctions = array
+            (
+               'add',
+               'get',
+               'set' => array('null'),
+               'isImmutable',
+               'isTransient',
+               'exists',
+               'delete',
+               'invalidate',
+            );
+         
+         foreach($throwIfNameNotStringFunctions as $key => $value)
+         {
+            list($function, $args) = $this->keyValueToFunctionArgs($key, $value);
+            
+            $this->nextTest();
+            $catched = false;
+
+            try
+            {
+               if($args)
+               {
+                  eval('$r->' . $function . '(0,' . implode(',', $args) . ');');
+               }
+               else
+               {
+                  $r->{$function}(0);
+               }
+            }
+            catch(WMException $e)
+            {
+               if($e->stringCode() == 'Registry:nameNotString')
+                  $catched = true;
+            }
+
+            assert($catched);
+         }
+      }
+      
+      #####
+      ##### throwIfDoesNotExist
+      #####
+      
+      {
+         // testing functions that throw an exception if entity with given name doesn't exist
+         
+         $throwIfDoesNotExistFunctions = array
+            (
+               'get',
+               'set' => array('null'),
+               'isImmutable',
+               'isTransient',
+               'delete',
+               'invalidate',
+            );
+         
+         foreach($throwIfDoesNotExistFunctions as $key => $value)
+         {
+            list($function, $args) = $this->keyValueToFunctionArgs($key, $value);
+
+            $this->nextTest();
+            $catched = false;
+
+            try
+            {
+               if($args)
+               {
+                  eval('$r->' . $function . '("__0",' . implode(',', $args) . ');');
+               }
+               else
+               {
+                  $r->{$function}('__0');
+               }
+            }
+            catch(WMException $e)
+            {
+               if($e->stringCode() == 'Registry:doesNotExist')
+                  $catched = true;
+            }
+
+            assert($catched);
+         }
+      }
+      
+      #####
+      ##### throwIfImmutable
+      #####
+      
+      {
+         // testing functions that throw an exception if entity with given is immutable
+         
+         $r->add('__0.1', null, true);
+         
+         $throwIfImmutableFunctions = array
+            (
+               'set' => array('null'),
+               'delete',
+               'invalidate',
+            );
+         
+         foreach($throwIfImmutableFunctions as $key => $value)
+         {
+            list($function, $args) = $this->keyValueToFunctionArgs($key, $value);
+
+            $this->nextTest();
+            $catched = false;
+
+            try
+            {
+               if($args)
+               {
+                  eval('$r->' . $function . '("__0.1",' . implode(',', $args) . ');');
+               }
+               else
+               {
+                  $r->{$function}('__0.1');
+               }
+            }
+            catch(WMException $e)
+            {
+               if($e->stringCode() == 'Registry:immutable')
+                  $catched = true;
+            }
+            
+            assert($catched);
+         }
+      }
+      
+      #####
       ##### add(), checking existance of added entity, attempting to recreate invalidated entity
       #####
       
       {
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add(0);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:nameNotString')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
          $this->nextTest();
          $catched = false;
       
@@ -87,40 +206,6 @@ class RegistryPrototypeTest extends TestCase
       
       {
          $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->get(0);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:nameNotString')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->get('__2.1');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:doesNotExist')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
 
          $r->add('__2.1');
 
@@ -148,58 +233,6 @@ class RegistryPrototypeTest extends TestCase
       #####
       
       {
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->set(0, null);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:nameNotString')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->set('__3.1', null);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:doesNotExist')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__3.2', null, true);
-            $r->set('__3.2', null);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:immutable')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
          $this->nextTest();
 
          $r->add('__3.3');
@@ -232,40 +265,6 @@ class RegistryPrototypeTest extends TestCase
       #####
       
       {
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->isImmutable(0);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:nameNotString')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->isImmutable('__4.1');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:doesNotExist')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
          $this->nextTest();
 
          $r->add('__4.2');
@@ -312,58 +311,6 @@ class RegistryPrototypeTest extends TestCase
       
       {
          $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->delete(0);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:nameNotString')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->delete('__5.1');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:doesNotExist')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__5.1', null, true);
-            $r->delete('__5.1');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:immutable')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
 
          $r->add('__5.2');
          $r->delete('__5.2');
@@ -397,58 +344,6 @@ class RegistryPrototypeTest extends TestCase
       
       {
          $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->invalidate(0);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:nameNotString')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->invalidate('__6.1');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:doesNotExist')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__6.1', null, true);
-            $r->invalidate('__6.1');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:immutable')
-               $catched = true;
-         }
-
-         assert($catched);
-      
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
 
          $r->add('__6.2');
          $r->invalidate('__6.2');
@@ -462,25 +357,16 @@ class RegistryPrototypeTest extends TestCase
       
       {
          $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->exists(0);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:nameNotString')
-               $catched = true;
-         }
-
-         assert($catched);
-         
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-         
-         $this->nextTest();
          
          assert($r->exists('__0') === false);
+      }
+      
+      #####
+      ##### transience
+      #####
+      
+      {
+         
       }
    }
 }

@@ -21,11 +21,18 @@
 class RegistryEntity
 {
    public $value;       // [mixed]
-   public $isImmutable; // [bool] - whether entity is immutable (whether its properties are unchangeable)
+   public $isImmutable; // [bool] - whether properties of an entity are unchangeable
+   public $isTransient; // [bool/string] - if TRUE, you'll be able to access an entity only once, and then it will be invalidated. String value works the same as TRUE, with the difference, that the access will be permited only to class, which name is given. Note that transient properties are also automatically immutable
    
-   public function __construct($value, $isImmutable)
+   public function __construct($value, $isImmutable, $isTransient)
    {
-      $this->value = $value;
+      if($isTransient !== false)
+      {
+         $isImmutable = true;
+      }
+      
+      $this->value       = $value;
       $this->isImmutable = $isImmutable;
+      $this->isTransient = $isTransient;
    }
 }

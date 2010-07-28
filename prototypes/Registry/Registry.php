@@ -29,14 +29,15 @@ class Registry
     * 
     * Adds entity to registry
     * 
-    * string $name                - identificator used to get or set entity value
-    * mixed  $value       = null
-    * bool   $isImmutable = false - whether entity is immutable (whether its properties are unchangeable)
+    * string $name  - identificator used to get or set entity value
+    * mixed  $value = null
+    * bool        $isImmutable = false - whether properties of an entity are unchangeable
+    * bool/string $isTransient = false - if TRUE, you'll be able to access an entity only once, and then it will be invalidated. String value works the same as TRUE, with the difference, that the access will be permited only to class, which name is given. Note that transient properties are also automatically immutable
     *
     * Throws an exception if entity with given name already exists (alreadyRegistered)
     */
    
-   public static function add($name, $value = null, $isImmutable = false)
+   public static function add($name, $value = null, $isImmutable = false, $isTransient = false)
    {
       self::throwIfNameNotString($name);
       self::throwIfNotBool('isImmutable', $isImmutable);
@@ -50,7 +51,7 @@ class Registry
       
       // registering
       
-      self::$entities[$name] = new RegistryEntity($value, $isImmutable);
+      self::$entities[$name] = new RegistryEntity($value, $isImmutable, false);
    }
    
    /*
@@ -104,6 +105,22 @@ class Registry
       self::throwIfDoesNotExist($name);
 
       return self::$entities[$name]->isImmutable;
+   }
+   
+   /*
+    * public static bool isTransient(string $name)
+    *
+    * Returns whether entity with given name is transient
+    *
+    * Throws en exception if such entity doesn't exist (doesNotExist)
+    */
+   
+   public static function isTransient($name)
+   {
+      self::throwIfNameNotString($name);
+      self::throwIfDoesNotExist($name);
+
+      return (self::$entities[$name]->isTransient !== false);
    }
    
    /*
