@@ -38,7 +38,8 @@ class Registry
    
    public static function add($name, $value = null, $isImmutable = false)
    {
-      self::throwIfNotString($name);
+      self::throwIfNameNotString($name);
+      self::throwIfNotBool('isImmutable', $isImmutable);
       
       // if entity with given name exist
       
@@ -46,10 +47,6 @@ class Registry
       {
          throw new WMException('Próba zarejestrowania zarejestrowanej już jednostki w Rejestrze: ' . $name, 'Registry:alreadyRegistered');
       }
-      
-      // validating arguments
-      
-      $isImmutable = ($isImmutable === true) ? true : false;
       
       // registering
       
@@ -66,7 +63,7 @@ class Registry
    
    public static function get($name)
    {
-      self::throwIfNotString($name);
+      self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
       
       return self::$entities[$name]->value;
@@ -84,7 +81,7 @@ class Registry
    
    public static function set($name, $value)
    {
-      self::throwIfNotString($name);
+      self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfImmutable($name);
       
@@ -103,7 +100,7 @@ class Registry
    
    public static function isImmutable($name)
    {
-      self::throwIfNotString($name);
+      self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
 
       return self::$entities[$name]->isImmutable;
@@ -117,7 +114,7 @@ class Registry
    
    public static function exists($name)
    {
-      self::throwIfNotString($name);
+      self::throwIfNameNotString($name);
       
       return is_object(self::$entities[$name]);
    }
@@ -137,7 +134,7 @@ class Registry
    
    public static function delete($name)
    {
-      self::throwIfNotString($name);
+      self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfImmutable($name);
       
@@ -162,7 +159,7 @@ class Registry
    
    public static function invalidate($name)
    {
-      self::throwIfNotString($name);
+      self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfImmutable($name);
       
@@ -175,11 +172,23 @@ class Registry
     * throws an exception if given entity name is not string
     */
    
-   private static function throwIfNotString($name)
+   private static function throwIfNameNotString($name)
    {
       if(!is_string($name))
       {
          throw new WMException('Nazwa jednostki w Rejestrze musi być typu string!', 'Registry:nameNotString');
+      }
+   }
+   
+   /*
+    * throws an exception if given property is not bool
+    */
+   
+   private static function throwIfNotBool($name, $value)
+   {
+      if(!is_bool($value))
+      {
+         throw new WMException('Atrubut ' . $name . ' musi być typu bool!', 'Registry:propertyNotBool');
       }
    }
    

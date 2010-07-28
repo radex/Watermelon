@@ -276,7 +276,7 @@ class RegistryPrototypeTest extends TestCase
 
          $this->nextTest();
 
-         $r->add('__4.3', null, 'true');
+         $r->add('__4.3', null, false);
 
          assert($r->isImmutable('__4.3') === false);
 
@@ -287,6 +287,23 @@ class RegistryPrototypeTest extends TestCase
          $r->add('__4.4', null, true);
 
          assert($r->isImmutable('__4.4') === true);
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+         $catched = false;
+
+         try
+         {
+            $r->add('__4.5', null, 'true');
+         }
+         catch(WMException $e)
+         {
+            if($e->stringCode() == 'Registry:propertyNotBool')
+               $catched = true;
+         }
+
+         assert($catched);
       }
       
       #####
