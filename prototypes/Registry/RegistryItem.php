@@ -18,21 +18,21 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //
 
-class RegistryEntity
+class RegistryItem
 {
    public $value;       // [mixed]
-   public $isImmutable; // [bool] - whether properties of an entity are unchangeable
-   public $isTransient; // [bool/string] - if TRUE, you'll be able to access an entity only once, and then it will be invalidated. String value works the same as TRUE, with the difference, that the access will be permited only to class, which name is given. Note that transient properties are also automatically immutable
+   public $isReadOnly; // [bool] - whether properties of an item are unchangeable
+   // public $isTransient; // [bool/string] - if TRUE, you'll be able to access an item only once, and then it will be invalidated. String value works the same as TRUE, with the difference, that the access will be permited only to class, which name is given. Note that transient properties are also automatically immutable
    
-   public function __construct($value, $isImmutable, $isTransient)
+   public function __construct($value, $isReadOnly/*, $isTransient*/)
    {
-      if($isTransient !== false)
+      /*if($isTransient !== false)
       {
-         $isImmutable = true;
-      }
+         $isReadOnly = true;
+      }*/
       
       $this->value       = $value;
-      $this->isImmutable = $isImmutable;
-      $this->isTransient = $isTransient;
+      $this->isReadOnly = $isReadOnly;
+      // $this->isTransient = $isTransient;
    }
 }

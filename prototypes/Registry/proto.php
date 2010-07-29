@@ -27,8 +27,8 @@ class RegistryPrototypeTest extends TestCase
                'add',
                'get',
                'set' => array('null'),
-               'isImmutable',
-               'isTransient',
+               'isReadOnly',
+               //'isTransient',
                'exists',
                'delete',
                'invalidate',
@@ -67,14 +67,14 @@ class RegistryPrototypeTest extends TestCase
       #####
       
       {
-         // testing functions that throw an exception if entity with given name doesn't exist
+         // testing functions that throw an exception if item with given name doesn't exist
          
          $throwIfDoesNotExistFunctions = array
             (
                'get',
                'set' => array('null'),
-               'isImmutable',
-               'isTransient',
+               'isReadOnly',
+               //'isTransient',
                'delete',
                'invalidate',
             );
@@ -108,22 +108,22 @@ class RegistryPrototypeTest extends TestCase
       }
       
       #####
-      ##### throwIfImmutable
+      ##### throwIfReadOnly
       #####
       
       {
-         // testing functions that throw an exception if entity with given is immutable
+         // testing functions that throw an exception if item with given is is read-only
          
          $r->add('__0.10', null, true);
          
-         $throwIfImmutableFunctions = array
+         $throwIfReadOnlyFunctions = array
             (
                'set' => array('null'),
                'delete',
                'invalidate',
             );
          
-         foreach($throwIfImmutableFunctions as $key => $value)
+         foreach($throwIfReadOnlyFunctions as $key => $value)
          {
             list($function, $args) = $this->keyValueToFunctionArgs($key, $value);
 
@@ -143,20 +143,20 @@ class RegistryPrototypeTest extends TestCase
             }
             catch(WMException $e)
             {
-               if($e->stringCode() == 'Registry:immutable')
+               if($e->stringCode() == 'Registry:readOnly')
                   $catched = true;
             }
             
             assert($catched);
          }
       }
-      
+      /*
       #####
       ##### throwIfWrongTransienceClass
       #####
       
       {
-         // testing functions that throw an exception if attempting to access entity from other class than specified in isTransient property
+         // testing functions that throw an exception if attempting to access item from other class than specified in isTransient property
          
          $r->add('__0.20', null, false, '__NotExistingClass');
          
@@ -192,10 +192,10 @@ class RegistryPrototypeTest extends TestCase
             assert($catched);
          }
       }
-      
+      */
       
       #####
-      ##### add(), checking existance of added entity, attempting to recreate invalidated entity
+      ##### add(), checking existance of added item, attempting to recreate invalidated item
       #####
       
       {
@@ -235,7 +235,7 @@ class RegistryPrototypeTest extends TestCase
          assert($catched);
          
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
+/*
          $this->nextTest();
          $catched = false;
 
@@ -250,7 +250,7 @@ class RegistryPrototypeTest extends TestCase
          }
 
          assert($catched);
-         
+         */
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
          $this->nextTest();
@@ -261,7 +261,7 @@ class RegistryPrototypeTest extends TestCase
       }
       
       #####
-      ##### get(), getting added entities
+      ##### get(), getting added items
       #####
       
       {
@@ -321,7 +321,7 @@ class RegistryPrototypeTest extends TestCase
       }
       
       #####
-      ##### isImmutable(), checking mutability of added objects
+      ##### isReadOnly(), checking mutability of added objects
       #####
       
       {
@@ -329,7 +329,7 @@ class RegistryPrototypeTest extends TestCase
 
          $r->add('__4.20');
 
-         assert($r->isImmutable('__4.20') === false);
+         assert($r->isReadOnly('__4.20') === false);
 
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
@@ -337,7 +337,7 @@ class RegistryPrototypeTest extends TestCase
 
          $r->add('__4.30', null, false);
 
-         assert($r->isImmutable('__4.30') === false);
+         assert($r->isReadOnly('__4.30') === false);
 
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
@@ -345,7 +345,7 @@ class RegistryPrototypeTest extends TestCase
 
          $r->add('__4.40', null, true);
 
-         assert($r->isImmutable('__4.40') === true);
+         assert($r->isReadOnly('__4.40') === true);
          
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
@@ -366,7 +366,7 @@ class RegistryPrototypeTest extends TestCase
       }
       
       #####
-      ##### delete(), recreating, checking existance of deleted entity
+      ##### delete(), recreating, checking existance of deleted item
       #####
       
       {
@@ -399,7 +399,7 @@ class RegistryPrototypeTest extends TestCase
       }
       
       #####
-      ##### invalidate(), checking existance of invalidated entity
+      ##### invalidate(), checking existance of invalidated item
       #####
       
       {
@@ -412,7 +412,7 @@ class RegistryPrototypeTest extends TestCase
       }
       
       #####
-      ##### exists(), checking existance of not existing entity
+      ##### exists(), checking existance of not existing item
       #####
       
       {
@@ -420,7 +420,7 @@ class RegistryPrototypeTest extends TestCase
          
          assert($r->exists('__0') === false);
       }
-      
+      /*
       #####
       ##### transience
       #####
@@ -454,7 +454,7 @@ class RegistryPrototypeTest extends TestCase
 
          $r->add('__7.40', null, false, true);
 
-         assert($r->isImmutable('__7.40') === true);
+         assert($r->isReadOnly('__7.40') === true);
 
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
@@ -468,7 +468,7 @@ class RegistryPrototypeTest extends TestCase
          }
          catch(WMException $e)
          {
-            if($e->stringCode() == 'Registry:immutable')
+            if($e->stringCode() == 'Registry:readOnly')
                $catched = true;
          }
 
@@ -530,6 +530,7 @@ class RegistryPrototypeTest extends TestCase
 
          
       }
+      */
    }
 }
 
