@@ -34,15 +34,20 @@ class Registry
     * bool        $isImmutable = false - whether properties of an entity are unchangeable
     * bool/string $isTransient = false - if TRUE, you'll be able to access an entity only once, and then it will be invalidated. String value works the same as TRUE, with the difference, that the access will be permited only to class, which name is given. Note that transient properties are also automatically immutable
     *
-    * Throws an exception if entity with given name already exists (alreadyRegistered)
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - $isImmutable isn't bool [propertyNotBool]
+    * - $isTransient is wrong type (neither bool nor string) [transienceWrongType]
+    * - entity with given name already exist (or has been invalidated) [alreadyRegistered]
     */
    
    public static function add($name, $value = null, $isImmutable = false, $isTransient = false)
    {
       self::throwIfNameNotString($name);
       self::throwIfNotBool('isImmutable', $isImmutable);
+      self::throwIfTransienceWrongType($isTransient);
       
-      // if entity with given name exist
+      // if entity with given name already exist
       
       if(isset(self::$entities[$name]))
       {
@@ -51,7 +56,7 @@ class Registry
       
       // registering
       
-      self::$entities[$name] = new RegistryEntity($value, $isImmutable, false);
+      self::$entities[$name] = new RegistryEntity($value, $isImmutable, $isTransient);
    }
    
    /*
@@ -59,15 +64,32 @@ class Registry
     *
     * Fetches value of an entity with given name from registry
     *
-    * Returns null if such entity doesn't exist
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - entity with given name doesn't exist [doesNotExist]
+    * - entity is transient, and caller class is wrong [wrongTransienceClass]
     */
    
    public static function get($name)
    {
       self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
+      self::throwIfWrongTransienceClass($name);
       
-      return self::$entities[$name]->value;
+      //--
+      
+      $value = self::$entities[$name]->value;
+      
+      // invalidate if transient
+      
+      if(self::isTransient($name))
+      {
+         self::$entities[$name] = ''; // we're not calling self::invalidate(), because it would throw Registry:immutable
+      }
+      
+      //--
+      
+      return $value;
    }
    
    /*
@@ -75,9 +97,10 @@ class Registry
     *
     * Sets value of an entity with given name in registry
     *
-    * Throws en exception if:
-    * - such entity doesn't exist (doesNotExist)
-    * - entity is immutable (immutable)
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - entity with given name doesn't exist [doesNotExist]
+    * - entity is immutable [immutable]
     */
    
    public static function set($name, $value)
@@ -96,7 +119,9 @@ class Registry
     *
     * Returns whether entity with given name is immutable
     *
-    * Throws en exception if such entity doesn't exist (doesNotExist)
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - entity with given name doesn't exist [doesNotExist]
     */
    
    public static function isImmutable($name)
@@ -112,7 +137,9 @@ class Registry
     *
     * Returns whether entity with given name is transient
     *
-    * Throws en exception if such entity doesn't exist (doesNotExist)
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - entity with given name doesn't exist [doesNotExist]
     */
    
    public static function isTransient($name)
@@ -127,6 +154,9 @@ class Registry
     * public static bool exists(string $name)
     *
     * Returns whether entity with given name exists
+    * 
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
     */
    
    public static function exists($name)
@@ -144,9 +174,10 @@ class Registry
     * Similar to invalidating, but deleting does not reserve the name,
     * so it's possible to recreate an entity with the same name.
     *
-    * Throws en exception if:
-    * - such entity doesn't exist (doesNotExist)
-    * - entity is immutable (immutable)
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - entity with given name doesn't exist [doesNotExist]
+    * - entity is immutable [immutable]
     */
    
    public static function delete($name)
@@ -169,9 +200,10 @@ class Registry
     *
     * Similar to deleting, but invalidating also reserves name.
     *
-    * Throws en exception if:
-    * - such entity doesn't exist (doesNotExist)
-    * - entity is immutable (immutable)
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - entity with given name doesn't exist [doesNotExist]
+    * - entity is immutable [immutable]
     */
    
    public static function invalidate($name)
@@ -210,6 +242,18 @@ class Registry
    }
    
    /*
+    * throws an exception if given transience property is wrong type (is neither bool nor string)
+    */
+   
+   private static function throwIfTransienceWrongType($transienceProperty)
+   {
+      if(!is_bool($transienceProperty) && !is_string($transienceProperty))
+      {
+         throw new WMException('Atrybut isTransient musi być typu albo bool, albo string!', 'Registry:transienceWrongType');
+      }
+   }
+   
+   /*
     * throws an exception if entity with given name doesn't exist
     */
    
@@ -218,6 +262,23 @@ class Registry
       if(!is_object(self::$entities[$name]))
       {
          throw new WMException('Próba dostępu do niezarejestrowanej jednostki w Rejestrze: ' . $name, 'Registry:doesNotExist');
+      }
+   }
+   
+   /*
+    * throws an exception if entity is transient, and class attempting to access an entity is not the same class as class specified in isTransient property
+    */ 
+   
+   private static function throwIfWrongTransienceClass($name)
+   {
+      if(is_string(self::$entities[$name]->isTransient))
+      {
+         $backtrace = debug_backtrace();
+         
+         if(strtolower(self::$entities[$name]->isTransient) !== strtolower($backtrace[2]['class']))
+         {
+            throw new WMException('Próba dostępu do jednostki krótkotrwałej z innej klasy niż określona w atrybucie isTransient jednostki: ' . $name, 'Registry:wrongTransienceClass');
+         }
       }
    }
    

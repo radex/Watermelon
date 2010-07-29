@@ -35,4 +35,20 @@ abstract class TestCase
    {
       UnitTester::nextTest();
    }
+   
+   public function keyValueToFunctionArgs($key, $value)
+   {
+      if(is_int($key))
+      {
+         $function = $value;
+         $args = false;
+      }
+      else
+      {
+         $function = $key;
+         $args = $value;
+      }
+      
+      return array($function, $args);
+   }
 }
