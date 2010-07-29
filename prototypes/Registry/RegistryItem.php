@@ -21,18 +21,12 @@
 class RegistryItem
 {
    public $value;       // [mixed]
-   public $isReadOnly; // [bool] - whether properties of an item are unchangeable
-   // public $isTransient; // [bool/string] - if TRUE, you'll be able to access an item only once, and then it will be invalidated. String value works the same as TRUE, with the difference, that the access will be permited only to class, which name is given. Note that transient properties are also automatically immutable
+   public $isReadOnly;  // [bool]   - whether properties of an item are unchangeable
+                        // [string] - restricted access is set (access to item is permited only to class, which name is given)
    
-   public function __construct($value, $isReadOnly/*, $isTransient*/)
+   public function __construct($value, $isReadOnly)
    {
-      /*if($isTransient !== false)
-      {
-         $isReadOnly = true;
-      }*/
-      
-      $this->value       = $value;
+      $this->value      = $value;
       $this->isReadOnly = $isReadOnly;
-      // $this->isTransient = $isTransient;
    }
 }

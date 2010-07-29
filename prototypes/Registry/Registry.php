@@ -25,27 +25,25 @@ class Registry
    private static $items = array(); // private static RegistryItem[] $items - items dictionary
    
    /*
-    * public static void add(string $name[, mixed $value = null[, bool $isReadOnly = false]])
+    * public static void add(string $name[, mixed $value = null[, bool/string $isReadOnly = false]])
     * 
     * Adds item to registry
     * 
-    * string $name  - identificator used to get or set item value
-    * mixed  $value = null
-    * bool        $isReadOnly = false - whether properties of an item are unchangeable
-//    * bool/string $isTransient = false - if TRUE, you'll be able to access an item only once, and then it will be invalidated. String value works the same as TRUE, with the difference, that the access will be permited only to class, which name is given. Note that transient properties are also automatically immutable
+    * string      $name               - identificator used to get or set item value
+    * mixed       $value      = null  - value associated with name
+    * bool/string $isReadOnly = false - [bool]   whether properties of an item are unchangeable
+    *                                   [string] restricted access is set (access to item is permited only to class, which name is given)
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
-    * - $isReadOnly isn't bool [propertyNotBool]
-//    * - $isTransient is wrong type (neither bool nor string) [transienceWrongType]
+    * - $isReadOnly is wrong type [readOnlyWrongType]
     * - item with given name already exist (or has been invalidated) [alreadyRegistered]
     */
    
-   public static function add($name, $value = null, $isReadOnly = false)//, $isTransient = false)
+   public static function add($name, $value = null, $isReadOnly = false)
    {
       self::throwIfNameNotString($name);
-      self::throwIfNotBool('isReadOnly', $isReadOnly);
-      // self::throwIfTransienceWrongType($isTransient);
+      self::throwIfReadOnlyWrongType($isReadOnly);
       
       // if item with given name already exist
       
@@ -56,7 +54,7 @@ class Registry
       
       // registering
       
-      self::$items[$name] = new RegistryItem($value, $isReadOnly);//, $isTransient);
+      self::$items[$name] = new RegistryItem($value, $isReadOnly);
    }
    
    /*
@@ -217,6 +215,10 @@ class Registry
       self::$items[$name] = '';
    }
    
+   #####
+   ##### private methods
+   #####
+   
    /*
     * throws an exception if given item name is not string
     */
@@ -230,28 +232,16 @@ class Registry
    }
    
    /*
-    * throws an exception if given property is not bool
+    * throws an exception if given isReadOnly property is wrong type (is neither bool nor string)
     */
    
-   private static function throwIfNotBool($name, $value)
+   private static function throwIfReadOnlyWrongType($readOnlyProperty)
    {
-      if(!is_bool($value))
+      if(!is_bool($readOnlyProperty) && !is_string($readOnlyProperty))
       {
-         throw new WMException('Atrubut ' . $name . ' musi być typu bool!', 'Registry:propertyNotBool');
+         throw new WMException('Atrybut isReadOnly musi być typu albo bool, albo string!', 'Registry:readOnlyWrongType');
       }
    }
-  /* 
-   /*
-    * throws an exception if given transience property is wrong type (is neither bool nor string)
-    * /
-   
-   private static function throwIfTransienceWrongType($transienceProperty)
-   {
-      if(!is_bool($transienceProperty) && !is_string($transienceProperty))
-      {
-         throw new WMException('Atrybut isTransient musi być typu albo bool, albo string!', 'Registry:transienceWrongType');
-      }
-   }*/
    
    /*
     * throws an exception if item with given name doesn't exist
@@ -261,26 +251,26 @@ class Registry
    {
       if(!is_object(self::$items[$name]))
       {
-         throw new WMException('Próba dostępu do niezarejestrowanej jednostki w Rejestrze: ' . $name, 'Registry:doesNotExist');
+         throw new WMException('Próba dostępu do niezarejestrowanej pozycji "' . $name . '" w Rejestrze', 'Registry:doesNotExist');
       }
    }
-   /*
-   /*
-    * throws an exception if item is transient, and class attempting to access an item is not the same class as class specified in isTransient property
-    * / 
    
-   private static function throwIfWrongTransienceClass($name)
+   /*
+    * throws an exception if item with given name has restricted access set, and class attempting to access an item is not the same class as class specified in isReadOnly property
+    */ 
+   
+   private static function throwIfWrongRestrictedAccessClass($name)
    {
-      if(is_string(self::$items[$name]->isTransient))
+      if(is_string(self::$items[$name]->isReadOnly))
       {
          $backtrace = debug_backtrace();
          
-         if(strtolower(self::$items[$name]->isTransient) !== strtolower($backtrace[2]['class']))
+         if(strtolower(self::$items[$name]->isReadOnly) !== strtolower($backtrace[2]['class']))
          {
-            throw new WMException('Próba dostępu do jednostki krótkotrwałej z innej klasy niż określona w atrybucie isTransient jednostki: ' . $name, 'Registry:wrongTransienceClass');
+            throw new WMException('Próba dostępu do jednostki z ograniczonym dostępem z innej klasy niż określona w atrybucie isReadOnly pozycji "' . $name . '" w Rejestrze', 'Registry:wrongRestrictedAccessClass');
          }
       }
-   }*/
+   }
    
    /*
     * throws an exception if item with given name is read-only
@@ -290,7 +280,7 @@ class Registry
    {
       if(self::$items[$name]->isReadOnly)
       {
-         throw new WMException('Próba dostępu do niezmiennej jednostki w Rejestrze: ' . $name, 'Registry:readOnly');
+         throw new WMException('Próba dostępu do niezmiennej pozycji "' . $name . '" w Rejestrze', 'Registry:readOnly');
       }
    }
 }
