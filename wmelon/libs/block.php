@@ -33,5 +33,3 @@ class Block
       $this->data = $data;  //TODO: wtf is that? documentate.
    }*/
 }
-
-?>

@@ -370,5 +370,3 @@ unset($_w_dbUser);
 unset($_w_dbPass);
 unset($_w_dbName);
 unset($_w_dbPrefix);
-
-?>

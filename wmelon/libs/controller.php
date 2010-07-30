@@ -56,5 +56,3 @@ class Controller
       Watermelon::$headData[] = $tag;
    }
 }
-
-?>

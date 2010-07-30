@@ -212,5 +212,3 @@ class DBresult
       return (mysql_num_rows($this->res) == 0) ? false : true;
    }
 }
-
-?>

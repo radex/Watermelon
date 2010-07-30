@@ -422,4 +422,3 @@ class URL
       return count(self::$segments);
    }
 }
-?>

@@ -268,6 +268,3 @@ function view($view, array $vars = array())
 {
    return Loader::view($view, $vars);
 }
-
-
-?>

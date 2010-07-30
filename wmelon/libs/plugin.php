@@ -26,5 +26,3 @@ class Plugin
       $this->load = new Loader();
    }
 }
-
-?>

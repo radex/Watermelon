@@ -26,5 +26,3 @@ class Model
       $this->db  = new DB();
    }
 }
-
-?>
