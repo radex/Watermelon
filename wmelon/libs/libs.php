@@ -18,6 +18,12 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+if(defined('WM_DEBUG'))
+{
+   include 'testing/Exception.php'; // not sure if it should be loaded only in debug mode
+   include 'testing/UnitTester.php';
+}
+
 include 'url.php';
 include 'db.php';
 
@@ -36,4 +42,3 @@ if(defined('ADMIN_MODE'))
    include 'acinfo.php';
 }
 */
-?>
