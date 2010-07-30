@@ -251,22 +251,22 @@ class RegistryTestCase extends TestCase
          assert($catched);
          
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-/*
+         
          $this->nextTest();
          $catched = false;
 
          try
          {
-            $r->add('__1.30',null,false,0);
+            $r->add('__1.30',null,0);
          }
          catch(WMException $e)
          {
-            if($e->stringCode() == 'Registry:transienceWrongType')
+            if($e->stringCode() == 'Registry:readOnlyWrongType')
                $catched = true;
          }
 
          assert($catched);
-         */
+         
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
          $this->nextTest();
@@ -362,23 +362,6 @@ class RegistryTestCase extends TestCase
          $r->add('__4.40', null, true);
 
          assert($r->isReadOnly('__4.40') === true);
-         
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__4.50', null, 0);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:readOnlyWrongType')
-               $catched = true;
-         }
-
-         assert($catched);
       }
       
       #####

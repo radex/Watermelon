@@ -20,9 +20,18 @@
 
 include 'RegistryItem.php';
 
+/*
+
+TODO:
+
+- default values (or not?)
+- persistent items (saved in DB)
+
+*/
+
 class Registry
 {
-   private static $items = array(); // private static RegistryItem[] $items - items dictionary
+   private static $items = array(); // [RegistryItem[]] - items dictionary
    
    /*
     * public static void add(string $name[, mixed $value = null[, bool/string $isReadOnly = false]])
@@ -43,7 +52,13 @@ class Registry
    public static function add($name, $value = null, $isReadOnly = false)
    {
       self::throwIfNameNotString($name);
-      self::throwIfReadOnlyWrongType($isReadOnly);
+      
+      // if $isReadOnly is wrong type
+      
+      if(!is_bool($isReadOnly) && !is_string($isReadOnly))
+      {
+         throw new WMException('Atrybut isReadOnly musi być typu albo bool, albo string!', 'Registry:readOnlyWrongType');
+      }
       
       // if item with given name already exist
       
@@ -225,18 +240,6 @@ class Registry
    }
    
    /*
-    * throws an exception if given isReadOnly property is wrong type (is neither bool nor string)
-    */
-   
-   private static function throwIfReadOnlyWrongType($readOnlyProperty)
-   {
-      if(!is_bool($readOnlyProperty) && !is_string($readOnlyProperty))
-      {
-         throw new WMException('Atrybut isReadOnly musi być typu albo bool, albo string!', 'Registry:readOnlyWrongType');
-      }
-   }
-   
-   /*
     * throws an exception if item with given name doesn't exist
     */
    
@@ -245,6 +248,18 @@ class Registry
       if(!is_object(self::$items[$name]))
       {
          throw new WMException('Próba dostępu do niezarejestrowanej pozycji "' . $name . '" w Rejestrze', 'Registry:doesNotExist');
+      }
+   }
+   
+   /*
+    * throws an exception if item with given name is read-only
+    */
+   
+   private static function throwIfReadOnly($name)
+   {
+      if(self::$items[$name]->isReadOnly === true)
+      {
+         throw new WMException('Próba dostępu do niezmiennej pozycji "' . $name . '" w Rejestrze', 'Registry:readOnly');
       }
    }
    
@@ -276,18 +291,6 @@ class Registry
       if(strtolower(self::$items[$name]->isReadOnly) !== strtolower($backtrace[$callerClassPos]['class']))
       {
          throw new WMException('Próba dostępu do prywatnej pozycji "' . $name . '" z innej klasy niż określona w atrybucie isReadOnly w Rejestrze', 'Registry:wrongPrivateItemClass');
-      }
-   }
-   
-   /*
-    * throws an exception if item with given name is read-only
-    */
-   
-   private static function throwIfReadOnly($name)
-   {
-      if(self::$items[$name]->isReadOnly === true)
-      {
-         throw new WMException('Próba dostępu do niezmiennej pozycji "' . $name . '" w Rejestrze', 'Registry:readOnly');
       }
    }
 }
