@@ -32,7 +32,7 @@ class Registry
     * string      $name               - identificator used to get or set item value
     * mixed       $value      = null  - value associated with name
     * bool/string $isReadOnly = false - [bool]   whether properties of an item are unchangeable
-    *                                   [string] restricted access is set (access to item is permited only to class, which name is given)
+    *                                   [string] item is private (access to item is permited only to class, which name is given)
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
@@ -65,29 +65,16 @@ class Registry
     * Throws an exception if:
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
-    // * - item is transient, and caller class is wrong [wrongTransienceClass]
+    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function get($name)
    {
       self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
-      // self::throwIfWrongTransienceClass($name);
+      self::throwIfWrongPrivateItemClass($name);
       
-      //--
-      
-      $value = self::$items[$name]->value;
-      /*
-      // invalidate if transient
-      
-      if(self::isTransient($name))
-      {
-         self::$items[$name] = ''; // we're not calling self::invalidate(), because it would throw Registry:readOnly
-      }*/
-      
-      //--
-      
-      return $value;
+      return self::$items[$name]->value;
    }
    
    /*
@@ -99,6 +86,7 @@ class Registry
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
     * - item is read-only [readOnly]
+    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function set($name, $value)
@@ -106,6 +94,7 @@ class Registry
       self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfReadOnly($name);
+      self::throwIfWrongPrivateItemClass($name);
       
       // changing value
       
@@ -127,26 +116,26 @@ class Registry
       self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
 
-      return self::$items[$name]->isReadOnly;
+      return self::$items[$name]->isReadOnly === true;
    }
-/*
+
    /*
-    * public static bool isTransient(string $name)
+    * public static bool isPrivate(string $name)
     *
-    * Returns whether item with given name is transient
+    * Returns whether item with given name is private
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
-    * /
+    */
     
-   public static function isTransient($name)
+   public static function isPrivate($name)
    {
       self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
 
-      return (self::$items[$name]->isTransient !== false);
-   }*/
+      return is_string(self::$items[$name]->isReadOnly);
+   }
    
    /*
     * public static bool exists(string $name)
@@ -165,7 +154,7 @@ class Registry
    }
    
    /*
-    * public static void set(string $name)
+    * public static void delete(string $name)
     *
     * Deletes item with given name in registry
     *
@@ -176,6 +165,7 @@ class Registry
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
     * - item is read-only [readOnly]
+    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function delete($name)
@@ -183,6 +173,7 @@ class Registry
       self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfReadOnly($name);
+      self::throwIfWrongPrivateItemClass($name);
       
       // deleting
       
@@ -202,6 +193,7 @@ class Registry
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
     * - item is read-only [readOnly]
+    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function invalidate($name)
@@ -209,6 +201,7 @@ class Registry
       self::throwIfNameNotString($name);
       self::throwIfDoesNotExist($name);
       self::throwIfReadOnly($name);
+      self::throwIfWrongPrivateItemClass($name);
       
       // invalidating
       
@@ -256,19 +249,33 @@ class Registry
    }
    
    /*
-    * throws an exception if item with given name has restricted access set, and class attempting to access an item is not the same class as class specified in isReadOnly property
+    * throws an exception if item with given name is private, and class attempting to access an item is not the same class as class specified in isReadOnly property
     */ 
    
-   private static function throwIfWrongRestrictedAccessClass($name)
+   private static function throwIfWrongPrivateItemClass($name)
    {
-      if(is_string(self::$items[$name]->isReadOnly))
+      if(!is_string(self::$items[$name]->isReadOnly)) return;
+      
+      $backtrace = debug_backtrace();
+      
+      // [0] in backtrace is this function, [1] is this class' method calling this function
+      // [2] should be the same class as in isReadOnly
+      // of eval(), in which case, [3] should be the same class as in isReadOnly
+      
+      if($backtrace[2]['function'] == 'eval' && !isset($backtrace[2]['class'])) // very important to check non-existence of class!
       {
-         $backtrace = debug_backtrace();
-         
-         if(strtolower(self::$items[$name]->isReadOnly) !== strtolower($backtrace[2]['class']))
-         {
-            throw new WMException('Próba dostępu do jednostki z ograniczonym dostępem z innej klasy niż określona w atrybucie isReadOnly pozycji "' . $name . '" w Rejestrze', 'Registry:wrongRestrictedAccessClass');
-         }
+         $callerClassPos = 3;
+      }
+      else
+      {
+         $callerClassPos = 2;
+      }
+      
+      // checking if class names match
+      
+      if(strtolower(self::$items[$name]->isReadOnly) !== strtolower($backtrace[$callerClassPos]['class']))
+      {
+         throw new WMException('Próba dostępu do prywatnej pozycji "' . $name . '" z innej klasy niż określona w atrybucie isReadOnly w Rejestrze', 'Registry:wrongPrivateItemClass');
       }
    }
    
@@ -278,7 +285,7 @@ class Registry
    
    private static function throwIfReadOnly($name)
    {
-      if(self::$items[$name]->isReadOnly)
+      if(self::$items[$name]->isReadOnly === true)
       {
          throw new WMException('Próba dostępu do niezmiennej pozycji "' . $name . '" w Rejestrze', 'Registry:readOnly');
       }

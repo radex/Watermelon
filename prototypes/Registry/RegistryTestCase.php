@@ -42,7 +42,7 @@ class RegistryTestCase extends TestCase
                'get',
                'set' => array('null'),
                'isReadOnly',
-               //'isTransient',
+               'isPrivate',
                'exists',
                'delete',
                'invalidate',
@@ -88,7 +88,7 @@ class RegistryTestCase extends TestCase
                'get',
                'set' => array('null'),
                'isReadOnly',
-               //'isTransient',
+               'isPrivate',
                'delete',
                'invalidate',
             );
@@ -164,19 +164,22 @@ class RegistryTestCase extends TestCase
             assert($catched);
          }
       }
-      /*
+      
       #####
-      ##### throwIfWrongTransienceClass
+      ##### throwIfWrongPrivateItemClass
       #####
       
       {
-         // testing functions that throw an exception if attempting to access item from other class than specified in isTransient property
+         // testing functions that throw an exception if attempting to access private item from other class than specified in isReadOnly property
          
-         $r->add('__0.20', null, false, '__NotExistingClass');
+         $r->add('__0.20', null, '__NonExistingClass');
          
          $throwIfWrongTransienceClassFunctions = array
             (
                'get',
+               'set' => array('null'),
+               'delete',
+               'invalidate',
             );
          
          foreach($throwIfWrongTransienceClassFunctions as $key => $value)
@@ -199,14 +202,13 @@ class RegistryTestCase extends TestCase
             }
             catch(WMException $e)
             {
-               if($e->stringCode() == 'Registry:wrongTransienceClass')
+               if($e->stringCode() == 'Registry:wrongPrivateItemClass')
                   $catched = true;
             }
             
             assert($catched);
          }
       }
-      */
       
       #####
       ##### add(), checking existance of added item, attempting to recreate invalidated item
@@ -368,11 +370,11 @@ class RegistryTestCase extends TestCase
 
          try
          {
-            $r->add('__4.50', null, 'true');
+            $r->add('__4.50', null, 0);
          }
          catch(WMException $e)
          {
-            if($e->stringCode() == 'Registry:propertyNotBool')
+            if($e->stringCode() == 'Registry:readOnlyWrongType')
                $catched = true;
          }
 
@@ -434,9 +436,9 @@ class RegistryTestCase extends TestCase
          
          assert($r->exists('__0') === false);
       }
-      /*
+      
       #####
-      ##### transience
+      ##### isPrivate(), private items
       #####
       
       {
@@ -444,106 +446,48 @@ class RegistryTestCase extends TestCase
 
          $r->add('__7.10');
 
-         assert($r->isTransient('__7.10') === false);
+         assert($r->isPrivate('__7.10') === false);
 
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
          $this->nextTest();
 
-         $r->add('__7.20', null, false, true);
+         $r->add('__7.20', null, true);
 
-         assert($r->isTransient('__7.20') === true);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-
-         $r->add('__7.30', null, false, false);
-
-         assert($r->isTransient('__7.30') === false);
+         assert($r->isPrivate('__7.20') === false);
 
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
          $this->nextTest();
 
-         $r->add('__7.40', null, false, true);
+         $r->add('__7.30', null, false);
 
-         assert($r->isReadOnly('__7.40') === true);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__7.50', null, false, true);
-            $r->set('__7.50', null);
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:readOnly')
-               $catched = true;
-         }
-
-         assert($catched);
+         assert($r->isPrivate('__7.30') === false);
 
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
          $this->nextTest();
 
-         $r->add('__7.60', 'foo', false, true);
+         $r->add('__7.40', null, 'foo');
+
+         assert($r->isPrivate('__7.40') === true);
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->add('__7.50', null, 'foo');
+
+         assert($r->isReadOnly('__7.50') === false);
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->add('__7.60', null, 'registrytestcase');
+         $r->set('__7.60', 'foo');
 
          assert($r->get('__7.60') === 'foo');
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__7.70', null, false, true);
-            $r->get('__7.70');
-            $r->get('__7.70');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:doesNotExist')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-
-         $r->add('__7.80', 'foo', false, 'RegistryPrototypeTest'); //TODO: remember to change this
-
-         assert($r->get('__7.80') === 'foo');
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__7.90', null, false, 'RegistryPrototypeTest'); //TODO: remember to change this
-            $r->get('__7.90');
-            $r->get('__7.90');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:doesNotExist')
-               $catched = true;
-         }
-
-         assert($catched);
-
-         
       }
-      */
    }
 }

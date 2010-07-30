@@ -22,7 +22,7 @@ class RegistryItem
 {
    public $value;       // [mixed]
    public $isReadOnly;  // [bool]   - whether properties of an item are unchangeable
-                        // [string] - restricted access is set (access to item is permited only to class, which name is given)
+                        // [string] - item is private (access to item is permited only to class, which name is given)
    
    public function __construct($value, $isReadOnly)
    {
