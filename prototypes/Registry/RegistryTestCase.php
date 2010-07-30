@@ -213,7 +213,7 @@ class RegistryTestCase extends TestCase
       }
       
       #####
-      ##### add(), checking existance of added item, attempting to recreate invalidated item
+      ##### add(), checking existance of added item
       #####
       
       {
@@ -232,25 +232,6 @@ class RegistryTestCase extends TestCase
          }
 
          assert($catched);
-      
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->add('__1.2');
-            $r->invalidate('__1.2');
-            $r->add('__1.2');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:alreadyRegistered')
-               $catched = true;
-         }
-
-         assert($catched);
          
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 
@@ -259,7 +240,7 @@ class RegistryTestCase extends TestCase
 
          try
          {
-            $r->add('__1.2.5',null,'true');
+            $r->add('__1.2',null,'true');
          }
          catch(WMException $e)
          {
@@ -281,6 +262,23 @@ class RegistryTestCase extends TestCase
          catch(WMException $e)
          {
             if($e->stringCode() == 'Registry:isReadOnlyWrongType')
+               $catched = true;
+         }
+
+         assert($catched);
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+         $catched = false;
+
+         try
+         {
+            $r->add('__1.3.5',null,true,'foo');
+         }
+         catch(WMException $e)
+         {
+            if($e->stringCode() == 'Registry:privateAndPersistent')
                $catched = true;
          }
 
@@ -417,16 +415,35 @@ class RegistryTestCase extends TestCase
       }
       
       #####
-      ##### invalidate(), checking existance of invalidated item
+      ##### invalidate(), checking existance of invalidated item, attempting to recreate invalidated item
       #####
       
       {
          $this->nextTest();
 
-         $r->add('__6.2');
-         $r->invalidate('__6.2');
+         $r->add('__6.1');
+         $r->invalidate('__6.1');
 
-         assert($r->exists('__6.2') === false);
+         assert($r->exists('__6.1') === false);
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+         $catched = false;
+
+         try
+         {
+            $r->add('__6.2');
+            $r->invalidate('__6.2');
+            $r->add('__6.2');
+         }
+         catch(WMException $e)
+         {
+            if($e->stringCode() == 'Registry:alreadyRegistered')
+               $catched = true;
+         }
+
+         assert($catched);
       }
       
       #####

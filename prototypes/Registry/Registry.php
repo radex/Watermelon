@@ -43,14 +43,14 @@ class Registry
     * 
     * mixed $value = null
     *    Value associated with name
-    *    Note that value is ignored if $isPersistent is set to TRUE
+    *    Note that $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
     * 
     * bool $isPersistent = false
     *    Whether the item's value is saved to database
     *    Note that:
     *       - read-only item can be changed anyway if is also persistent
     *       - item can't be private and persistent at the same time
-    *       - value is ignored if $isPersistent is set to TRUE
+    *       - $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
     * 
     * bool/string $isReadOnly = false
     *    [bool]:
@@ -62,9 +62,10 @@ class Registry
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
-    * - $isReadOnly is wrong type [readOnlyWrongType]
-    * - $isPersistent is wrong type [isPersistentWrongType]
     * - item with given name already exist (or has been invalidated) [alreadyRegistered]
+    * - $isPersistent is wrong type [isPersistentWrongType]
+    * - $isReadOnly is wrong type [readOnlyWrongType]
+    * - item is set to be both private and persistent [privateAndPersistent]
     */
    
    public static function add($name, $value = null, $isPersistent = false, $isReadOnly = false)
@@ -75,7 +76,7 @@ class Registry
       
       if(isset(self::$items[$name]))
       {
-         throw new WMException('Próba zarejestrowania zarejestrowanej już jednostki w Rejestrze: ' . $name, 'Registry:alreadyRegistered');
+         throw new WMException('Próba zarejestrowania zarejestrowanej już pozycji "' . $name . '" w Rejestrze', 'Registry:alreadyRegistered');
       }
       
       // if $isPersistent is wrong type
@@ -92,9 +93,21 @@ class Registry
          throw new WMException('Atrybut isReadOnly musi być typu albo bool, albo string!', 'Registry:isReadOnlyWrongType');
       }
       
+      // if item is set to be both private and persistent
+      
+      if(is_string($isReadOnly) && $isPersistent)
+      {
+         throw new WMException('Pozycja w Rejestrze nie może być jednocześnie prywatna i trwała!', 'Registry:privateAndPersistent');
+      }
+      
       // registering
       
       self::$items[$name] = new RegistryItem($value, $isPersistent, $isReadOnly);
+      
+      if($isPersistent)
+      {
+         // TODO: synchronize with database
+      }
    }
    
    /*
