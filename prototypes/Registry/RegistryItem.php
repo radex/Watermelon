@@ -20,13 +20,54 @@
 
 class RegistryItem
 {
-   public $value;       // [mixed]
-   public $isReadOnly;  // [bool]   - whether properties of an item are unchangeable
-                        // [string] - item is private (access to item is permited only to class, which name is given)
+   /*
+    * public mixed $value
+    * 
+    * Value associated with name
+    */
+    
+   public $value;
    
-   public function __construct($value, $isReadOnly)
+   /*
+    * public mixed $defaultValue
+    * 
+    * [to be done]
+    */
+    
+   //public $defaultValue
+    
+   /*
+    * public bool $isPersistent
+    * 
+    * Whether the item's value is saved to database
+    * 
+    * Note that read-only item can be changed anyway if is also persistent, and that item can't be private and persistent at the same time
+    */
+     
+   public $isPersistent;
+   
+   /*
+    * public bool/string $isReadOnly;
+    * 
+    * [bool]:
+    *    Whether properties of an item are unchangeable
+    * 
+    *    Note that read-only item can be changed anyway if is also persistent
+    * 
+    * [string]:
+    *    Item is private (access to item is permited only to class, which name is given)
+    * 
+    *    Note that item can't be private and persistent at the same time
+    */
+   
+   public $isReadOnly;
+   
+   //--
+   
+   public function __construct($value, $isPersistent, $isReadOnly)
    {
-      $this->value      = $value;
-      $this->isReadOnly = $isReadOnly;
+      $this->value        = $value;
+      $this->isPersistent = $isPersistent;
+      $this->isReadOnly   = $isReadOnly;
    }
 }

@@ -36,19 +36,21 @@ abstract class TestCase
       UnitTester::nextTest();
    }
    
-   public function keyValueToFunctionArgs($key, $value)
+   // TODO: make it global and more universal (in name)
+   
+   public function keyValueToMethodArgs($key, $value)
    {
       if(is_int($key))
       {
-         $function = $value;
-         $args = false;
+         $method = $value;
+         $args   = false;
       }
       else
       {
-         $function = $key;
-         $args = $value;
+         $method = $key;
+         $args   = $value;
       }
       
-      return array($function, $args);
+      return array($method, $args);
    }
 }

@@ -38,27 +38,38 @@ class Registry
     * 
     * Adds item to registry
     * 
-    * string      $name               - identificator used to get or set item value
-    * mixed       $value      = null  - value associated with name
-    * bool/string $isReadOnly = false - [bool]   whether properties of an item are unchangeable
-    *                                   [string] item is private (access to item is permited only to class, which name is given)
+    * string $name
+    *    Identificator used to access an item
+    * 
+    * mixed $value = null
+    *    Value associated with name
+    *    Note that value is ignored if $isPersistent is set to TRUE
+    * 
+    * bool $isPersistent = false
+    *    Whether the item's value is saved to database
+    *    Note that:
+    *       - read-only item can be changed anyway if is also persistent
+    *       - item can't be private and persistent at the same time
+    *       - value is ignored if $isPersistent is set to TRUE
+    * 
+    * bool/string $isReadOnly = false
+    *    [bool]:
+    *       Whether properties of an item are unchangeable
+    *       Note that read-only item can be changed anyway if is also persistent
+    *    [string]:
+    *       Item is private (access to item is permited only to class, which name is given)
+    *       Note that item can't be private and persistent at the same time
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
     * - $isReadOnly is wrong type [readOnlyWrongType]
+    * - $isPersistent is wrong type [isPersistentWrongType]
     * - item with given name already exist (or has been invalidated) [alreadyRegistered]
     */
    
-   public static function add($name, $value = null, $isReadOnly = false)
+   public static function add($name, $value = null, $isPersistent = false, $isReadOnly = false)
    {
       self::throwIfNameNotString($name);
-      
-      // if $isReadOnly is wrong type
-      
-      if(!is_bool($isReadOnly) && !is_string($isReadOnly))
-      {
-         throw new WMException('Atrybut isReadOnly musi być typu albo bool, albo string!', 'Registry:readOnlyWrongType');
-      }
       
       // if item with given name already exist
       
@@ -67,9 +78,23 @@ class Registry
          throw new WMException('Próba zarejestrowania zarejestrowanej już jednostki w Rejestrze: ' . $name, 'Registry:alreadyRegistered');
       }
       
+      // if $isPersistent is wrong type
+      
+      if(!is_bool($isPersistent))
+      {
+         throw new WMException('Atrybut isPersistent musi być typu albo bool!', 'Registry:isPersistentWrongType');
+      }
+      
+      // if $isReadOnly is wrong type
+      
+      if(!is_bool($isReadOnly) && !is_string($isReadOnly))
+      {
+         throw new WMException('Atrybut isReadOnly musi być typu albo bool, albo string!', 'Registry:isReadOnlyWrongType');
+      }
+      
       // registering
       
-      self::$items[$name] = new RegistryItem($value, $isReadOnly);
+      self::$items[$name] = new RegistryItem($value, $isPersistent, $isReadOnly);
    }
    
    /*
@@ -150,6 +175,24 @@ class Registry
       self::throwIfDoesNotExist($name);
 
       return is_string(self::$items[$name]->isReadOnly);
+   }
+
+   /*
+    * public static bool isPersistent(string $name)
+    *
+    * Returns whether item with given name is persistent
+    *
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - item with given name doesn't exist [doesNotExist]
+    */
+    
+   public static function isPersistent($name)
+   {
+      self::throwIfNameNotString($name);
+      self::throwIfDoesNotExist($name);
+
+      return self::$items[$name]->isPersistent;
    }
    
    /*
