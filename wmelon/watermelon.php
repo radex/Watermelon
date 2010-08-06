@@ -51,7 +51,7 @@ switch(WM_DEBUGLEVEL)
       error_reporting(0);
       break;
    case '1':
-      error_reporting(E_ALL ^ E_NOTICE);
+      error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
       define('WM_DEBUG', '');
       break;
    case '2':
