@@ -132,9 +132,21 @@ class Registry
       self::throwIfDoesNotExist($name);
       self::throwIfWrongPrivateItemClass($name);
       
-      return self::$items[$name]->value;
+      // if item is persistent and not synchronized, first synchronize.
       
-      // TODO: sync with database
+      if(self::$items[$name]->isPersistent && !self::$items[$name]->isSynced)
+      {
+         $value = DB::query("SELECT `registry_value` FROM `__registry` WHERE `registry_name` = '%1'", $name);
+         $value = $value->toObj->registry_value;
+         $value = unserialize($value); // value saved in database is serialized, so we have to unserialize it
+         
+         self::$items[$name]->value    = $value;
+         self::$items[$name]->isSynced = true;
+      }
+      
+      //--
+      
+      return self::$items[$name]->value;
    }
    
    /*
@@ -164,7 +176,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         // TODO: save to database
+         DB::query("UPDATE `__registry` SET `registry_value` = '%2' WHERE `registry_name` = '%1'", $name, $value);
       }
    }
 
