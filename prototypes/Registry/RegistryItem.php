@@ -25,7 +25,7 @@ class RegistryItem
     * 
     * Value associated with name
     * 
-    * Note that $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
+    * Note that if item is persistent, and $isSynced is FALSE, $value contents may be not be real
     */
     
    public $value;
@@ -38,7 +38,7 @@ class RegistryItem
     * Note that:
     *    - read-only item can be changed anyway if is also persistent
     *    - item can't be private and persistent at the same time
-    *    - $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
+    *    - if item is persistent, and $isSynced is FALSE, $value contents may be not be real
     */
      
    public $isPersistent;
@@ -49,7 +49,9 @@ class RegistryItem
     * [bool]:
     *    Whether properties of an item are unchangeable
     * 
-    *    Note that read-only item can be changed anyway if is also persistent
+    *    Note that:
+    *       - read-only item can be changed anyway if is also persistent (so it's not recommended to create item being both read-only and persistent)
+    *       - being read-only is not saved in database if item is persistent (so be careful)
     * 
     * [string]:
     *    Item is private (access to item is permited only to class, which name is given)
@@ -64,7 +66,7 @@ class RegistryItem
    /*
     * public bool $isSynced
     * 
-    * Whether property is synchronized with database (if persistent)
+    * Whether item's value is synchronized with value in database (if persistent)
     */
    
    public $isSynced = false;

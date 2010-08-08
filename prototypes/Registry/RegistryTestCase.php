@@ -38,7 +38,7 @@ class RegistryTestCase extends TestCase
          
          $throwIfNameNotStringMethods = array
             (
-               'add',
+               'create',
                'get',
                'set' => array('null'),
                'isReadOnly',
@@ -130,7 +130,7 @@ class RegistryTestCase extends TestCase
       {
          // testing methods that throw an exception if item with given is is read-only
          
-         $r->add('__0.1', null, false, true);
+         $r->create('__0.1', null, false, true);
          
          $throwIfReadOnlyMethods = array
             (
@@ -174,7 +174,7 @@ class RegistryTestCase extends TestCase
       {
          // testing methods that throw an exception if attempting to access private item from other class than specified in isReadOnly property
          
-         $r->add('__0.2', null, false, '__NonExistingClass');
+         $r->create('__0.2', null, false, '__NonExistingClass');
          
          $throwIfWrongTransienceClassMethods = array
             (
@@ -213,7 +213,7 @@ class RegistryTestCase extends TestCase
       }
       
       #####
-      ##### add(), checking existance of added item
+      ##### create(), checking existance of created item
       #####
       
       {
@@ -222,8 +222,8 @@ class RegistryTestCase extends TestCase
       
          try
          {
-            $r->add('__1.1');
-            $r->add('__1.1');
+            $r->create('__1.1');
+            $r->create('__1.1');
          }
          catch(WMException $e)
          {
@@ -240,7 +240,7 @@ class RegistryTestCase extends TestCase
 
          try
          {
-            $r->add('__1.2',null,'true');
+            $r->create('__1.2',null,'true');
          }
          catch(WMException $e)
          {
@@ -257,7 +257,7 @@ class RegistryTestCase extends TestCase
 
          try
          {
-            $r->add('__1.3',null,false,0);
+            $r->create('__1.3',null,false,0);
          }
          catch(WMException $e)
          {
@@ -274,7 +274,7 @@ class RegistryTestCase extends TestCase
 
          try
          {
-            $r->add('__1.3.5',null,true,'foo');
+            $r->create('__1.3.5',null,true,'foo');
          }
          catch(WMException $e)
          {
@@ -288,7 +288,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__1.4');
+         $r->create('__1.4');
 
          assert($r->exists('__1.4') === true);
       }
@@ -300,7 +300,7 @@ class RegistryTestCase extends TestCase
       {
          $this->nextTest();
 
-         $r->add('__2.1');
+         $r->create('__2.1');
 
          assert($r->get('__2.1') === null);
 
@@ -308,7 +308,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__2.2', 'foo');
+         $r->create('__2.2', 'foo');
 
          assert($r->get('__2.2') === 'foo');
 
@@ -316,7 +316,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__2.3', array(true, 'foo'));
+         $r->create('__2.3', array(true, 'foo'));
 
          assert($r->get('__2.3') === array(true, 'foo'));
       }
@@ -328,7 +328,7 @@ class RegistryTestCase extends TestCase
       {
          $this->nextTest();
 
-         $r->add('__3.3');
+         $r->create('__3.3');
          $r->set('__3.3', 'true');
 
          assert($r->get('__3.3') === 'true');
@@ -337,7 +337,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__3.4');
+         $r->create('__3.4');
          $r->set('__3.4', false);
 
          assert($r->get('__3.4') === false);
@@ -346,7 +346,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__3.5', '1');
+         $r->create('__3.5', '1');
          $r->set('__3.5', '2');
          $r->set('__3.5', '3');
 
@@ -360,7 +360,7 @@ class RegistryTestCase extends TestCase
       {
          $this->nextTest();
 
-         $r->add('__4.2');
+         $r->create('__4.2');
 
          assert($r->isReadOnly('__4.2') === false);
 
@@ -368,7 +368,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__4.3', null, false, false);
+         $r->create('__4.3', null, false, false);
 
          assert($r->isReadOnly('__4.3') === false);
 
@@ -376,7 +376,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__4.4', null, false, true);
+         $r->create('__4.4', null, false, true);
 
          assert($r->isReadOnly('__4.4') === true);
       }
@@ -388,7 +388,7 @@ class RegistryTestCase extends TestCase
       {
          $this->nextTest();
 
-         $r->add('__5.2');
+         $r->create('__5.2');
          $r->delete('__5.2');
 
          assert($r->exists('__5.2') === false);
@@ -397,9 +397,9 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__5.3');
+         $r->create('__5.3');
          $r->delete('__5.3');
-         $r->add('__5.3');
+         $r->create('__5.3');
 
          assert($r->exists('__5.3') === true);
 
@@ -407,9 +407,9 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__5.4', 'foo');
+         $r->create('__5.4', 'foo');
          $r->delete('__5.4');
-         $r->add('__5.4', 'bar');
+         $r->create('__5.4', 'bar');
 
          assert($r->get('__5.4') === 'bar');
       }
@@ -421,7 +421,7 @@ class RegistryTestCase extends TestCase
       {
          $this->nextTest();
 
-         $r->add('__6.1');
+         $r->create('__6.1');
          $r->invalidate('__6.1');
 
          assert($r->exists('__6.1') === false);
@@ -433,9 +433,9 @@ class RegistryTestCase extends TestCase
 
          try
          {
-            $r->add('__6.2');
+            $r->create('__6.2');
             $r->invalidate('__6.2');
-            $r->add('__6.2');
+            $r->create('__6.2');
          }
          catch(WMException $e)
          {
@@ -463,7 +463,7 @@ class RegistryTestCase extends TestCase
       {
          $this->nextTest();
 
-         $r->add('__7.1');
+         $r->create('__7.1');
 
          assert($r->isPrivate('__7.1') === false);
 
@@ -471,7 +471,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__7.2', null, false, true);
+         $r->create('__7.2', null, false, true);
 
          assert($r->isPrivate('__7.2') === false);
 
@@ -479,7 +479,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__7.3', null, false, false);
+         $r->create('__7.3', null, false, false);
 
          assert($r->isPrivate('__7.3') === false);
 
@@ -487,7 +487,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__7.4', null, false, 'foo');
+         $r->create('__7.4', null, false, 'foo');
 
          assert($r->isPrivate('__7.4') === true);
          
@@ -495,7 +495,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__7.5', null, false, 'foo');
+         $r->create('__7.5', null, false, 'foo');
 
          assert($r->isReadOnly('__7.5') === false);
          
@@ -503,7 +503,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__7.6', null, false, 'registrytestcase');
+         $r->create('__7.6', null, false, 'registrytestcase');
          $r->set('__7.6', 'foo');
 
          assert($r->get('__7.6') === 'foo');
@@ -516,7 +516,7 @@ class RegistryTestCase extends TestCase
       {
          $this->nextTest();
 
-         $r->add('__8.1', null);
+         $r->create('__8.1', null);
 
          assert($r->isPersistent('__8.1') === false);
 
@@ -524,7 +524,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__8.2', null, false);
+         $r->create('__8.2', null, false);
 
          assert($r->isPersistent('__8.2') === false);
 
@@ -532,7 +532,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->add('__8.3', null, true);
+         $r->create('__8.3', null, true);
 
          assert($r->isPersistent('__8.3') === true);
 

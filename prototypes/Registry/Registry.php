@@ -25,9 +25,9 @@ class Registry
    private static $items = array(); // [RegistryItem[]] - items dictionary
    
    /*
-    * public static void add(string $name[, mixed $value = null[, bool $isPersistent = false[, bool/string $isReadOnly = false]]])
+    * public static void create(string $name[, mixed $value = null[, bool $isPersistent = false[, bool/string $isReadOnly = false]]])
     * 
-    * Adds item to Registry
+    * Creates new item in Registry
     * 
     * string $name
     *    Identificator used to access an item
@@ -46,7 +46,9 @@ class Registry
     * bool/string $isReadOnly = false
     *    [bool]:
     *       Whether properties of an item are unchangeable
-    *       Note that read-only item can be changed anyway if is also persistent
+    *       Note that:
+    *          - read-only item can be changed anyway if is also persistent (so it's not recommended to create item being both read-only and persistent)
+    *          - being read-only is not saved in database if item is persistent (so be careful)
     *    [string]:
     *       Item is private (access to item is permited only to class, which name is given)
     *       Note that item can't be private and persistent at the same time
@@ -59,7 +61,7 @@ class Registry
     * - item is set to be both private and persistent [privateAndPersistent]
     */
    
-   public static function add($name, $value = null, $isPersistent = false, $isReadOnly = false)
+   public static function create($name, $value = null, $isPersistent = false, $isReadOnly = false)
    {
       self::throwIfNameNotString($name);
       
