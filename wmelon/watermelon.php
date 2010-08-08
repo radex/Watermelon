@@ -132,7 +132,7 @@ class Watermelon
 
    public function Watermelon($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix, array $autoload, array $headData)
    {
-      $url = new URL(Config::$defaultController);
+      //$url = new URL('test');
       
       DB::connect($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
       
@@ -352,6 +352,16 @@ class Watermelon
    }*/
 }
 
+new Watermelon($_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix, array(), array()); // TODO: use Registry to pass DB parameters - for security reasons - in case of uncaught exception full trace of invoked functions is shown, revealing passwords.
+
+// unsetting database configuration data (for safety)
+
+unset($_w_dbHost);
+unset($_w_dbUser);
+unset($_w_dbPass);
+unset($_w_dbName);
+unset($_w_dbPrefix);
+
 /***/
 
 
@@ -360,13 +370,3 @@ include 'prototypes/Registry/proto.php';
 exit;
 
 /***/
-
-new Watermelon($_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix, $_w_autoload, $_w_metaSrc); // TODO: use some other DB parameters passing method - for security reasons - in case of uncaught exception full trace of invoked functions is shown, revealing passwords.
-
-// dla bezpieczeństwa usuwamy dane konfiguracji bazy danych
-
-unset($_w_dbHost);
-unset($_w_dbUser);
-unset($_w_dbPass);
-unset($_w_dbName);
-unset($_w_dbPrefix);

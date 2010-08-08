@@ -59,7 +59,7 @@ class DB
    
    public static function connect($host, $user, $pass, $name, $prefix)
    {
-      if(self::link !== null)
+      if(self::$link !== null)
       {
          return false;
       }
