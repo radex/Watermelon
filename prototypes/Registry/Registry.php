@@ -137,7 +137,7 @@ class Registry
       if(self::$items[$name]->isPersistent && !self::$items[$name]->isSynced)
       {
          $value = DB::query("SELECT `registry_value` FROM `__registry` WHERE `registry_name` = '%1'", $name);
-         $value = $value->toObj->registry_value;
+         $value = $value->toObj()->registry_value;
          $value = unserialize($value); // value saved in database is serialized, so we have to unserialize it
          
          self::$items[$name]->value    = $value;
@@ -256,6 +256,8 @@ class Registry
     * Deletes item with given name in Registry
     *
     * Similar to invalidating, but deleting does not reserve the name, so it's possible to recreate an item with the same name.
+    * 
+    * Note that it also deletes value in database (if persistent)
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
@@ -289,6 +291,8 @@ class Registry
     * Invalidates item with given name in Registry - deletes it, and reserves the name, so it's not possible to recreate item with the same name
     *
     * Similar to deleting, but invalidating also reserves name.
+    *
+    * Note that it also deletes value in database (if persistent)
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]

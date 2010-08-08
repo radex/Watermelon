@@ -536,7 +536,75 @@ class RegistryTestCase extends TestCase
 
          assert($r->isPersistent('__8.3') === true);
 
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// following tests don't really test adding to DB, so they aren't very useful
+
+         $this->nextTest();
+
+         $r->create('__8.4', 'foo', true);
          
+         assert($r->get('__8.4') === 'foo');
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->create('__8.4.5', 'foo', true);
+         $r->set('__8.4.5', 'bar');
+
+         assert($r->get('__8.4.5') === 'bar');
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->create('__8.5', null, true);
+         $r->delete('__8.5');
+
+         assert($r->exists('__8.5') === false);
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->create('__8.6', null, true);
+         $r->invalidate('__8.6');
+
+         assert($r->exists('__8.6') === false);
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+         $catched = false;
+
+         try
+         {
+            $r->create('__8.7', null, true);
+            $r->invalidate('__8.7');
+            $r->create('__8.7');
+         }
+         catch(WMException $e)
+         {
+            if($e->stringCode() == 'Registry:alreadyRegistered')
+               $catched = true;
+         }
+
+         assert($catched);
+         
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// cleaning up
+         
+         $maxItem = 7;
+         $nonStandardItems = array('4.5');
+         
+         for($i = 1; $i <= $maxItem; $i++)
+         {
+            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $i);
+         }
+         
+         foreach($nonStandardItems as $item)
+         {
+            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $item);
+         }
       }
    }
 }
