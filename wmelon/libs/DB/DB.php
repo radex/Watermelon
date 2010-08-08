@@ -112,11 +112,11 @@ class DB
       
       // replacing input data palceholders (%number) with their (filtered by mysql_real_escape_string) values passed in arguments
       
-      $args = array_shift(func_get_args()); // shifting query off the beginning of array
+      $args = func_get_args();
       
-      foreach($args as $arg)
+      for($i = 1; $i < count($args); $i++) // i=1 to omit query
       {
-         $arg = mysql_real_escape_string($arg);
+         $arg = mysql_real_escape_string($args[$i]);
          
          $query = str_replace('%' . $i, $arg, $query);
       }
@@ -175,5 +175,18 @@ class DB
    public static function insertedID()
    {
       return mysql_insert_id();
+   }
+   
+   /*
+    * public static int affectedRows()
+    * 
+    * Returns number of rows affected in last query
+    * 
+    * See mysql_affected_rows() documentation for more details
+    */
+   
+   public static function affectedRows()
+   {
+      return mysql_affected_rows();
    }
 }

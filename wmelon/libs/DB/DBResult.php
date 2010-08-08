@@ -28,12 +28,12 @@ class DBResult
    }
    
    /*
-    * public int numRows()
+    * public int rows()
     * 
     * Returns number of rows in result
     */
    
-   public function numRows()
+   public function rows()
    {
       return mysql_num_rows($this->res);
    }
