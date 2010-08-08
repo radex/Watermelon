@@ -68,28 +68,28 @@ class Registry
       
       if(isset(self::$items[$name]))
       {
-         throw new WMException('Próba stworzenia istniejącej już pozycji "' . $name . '" w Rejestrze', 'Registry:alreadyRegistered');
+         throw new WMException('Attempt to create already existing item "' . $name . '" in Registry', 'Registry:alreadyRegistered');
       }
       
       // if $isPersistent is wrong type
       
       if(!is_bool($isPersistent))
       {
-         throw new WMException('Atrybut isPersistent musi być typu bool!', 'Registry:isPersistentWrongType');
+         throw new WMException('isPersistent property has to be bool!', 'Registry:isPersistentWrongType');
       }
       
       // if $isReadOnly is wrong type
       
       if(!is_bool($isReadOnly) && !is_string($isReadOnly))
       {
-         throw new WMException('Atrybut isReadOnly musi być typu bool lub string!', 'Registry:isReadOnlyWrongType');
+         throw new WMException('isReadOnly property has to be bool or string!', 'Registry:isReadOnlyWrongType');
       }
       
       // if item is set to be both private and persistent
       
       if(is_string($isReadOnly) && $isPersistent)
       {
-         throw new WMException('Pozycja w Rejestrze nie może być jednocześnie prywatna i trwała!', 'Registry:privateAndPersistent');
+         throw new WMException('Registry item can\'t be both private and persistent!', 'Registry:privateAndPersistent');
       }
       
       // registering
@@ -334,7 +334,7 @@ class Registry
    {
       if(!is_string($name))
       {
-         throw new WMException('Nazwa jednostki w Rejestrze musi być typu string!', 'Registry:nameNotString');
+         throw new WMException('Item name in Registry has to be string!', 'Registry:nameNotString');
       }
    }
    
@@ -346,7 +346,7 @@ class Registry
    {
       if(!is_object(self::$items[$name]))
       {
-         throw new WMException('Próba dostępu do nieistniejącej pozycji "' . $name . '" w Rejestrze', 'Registry:doesNotExist');
+         throw new WMException('Attempt to access nonexisting item "' . $name . '" in Registry', 'Registry:doesNotExist');
       }
    }
    
@@ -358,7 +358,7 @@ class Registry
    {
       if(self::$items[$name]->isReadOnly === true)
       {
-         throw new WMException('Próba dostępu do niezmiennej pozycji "' . $name . '" w Rejestrze', 'Registry:readOnly');
+         throw new WMException('Attempt to access read-only item "' . $name . '" in Registry', 'Registry:readOnly');
       }
    }
    
@@ -389,7 +389,7 @@ class Registry
       
       if(strtolower(self::$items[$name]->isReadOnly) !== strtolower($backtrace[$callerClassPos]['class']))
       {
-         throw new WMException('Próba dostępu do prywatnej pozycji "' . $name . '" z innej klasy niż określona w atrybucie isReadOnly w Rejestrze', 'Registry:wrongPrivateItemClass');
+         throw new WMException('Attempt to access private item "' . $name . '" from other class than specified in isReadOnly property in Registry', 'Registry:wrongPrivateItemClass');
       }
    }
 }
