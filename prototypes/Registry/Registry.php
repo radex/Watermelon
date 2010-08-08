@@ -95,9 +95,21 @@ class Registry
       
       self::$items[$name] = new RegistryItem($value, $isPersistent, $isReadOnly);
       
+      // if item is persistent and doesn't exist yet in database, create it
+      
       if($isPersistent)
       {
-         // TODO: synchronize with database
+         // inserts serialized value (for cases where value is not string)
+         // "ON DUPLICATE KEY UPDATE `registry_name`=`registry_name`" does nothing. It's just for not throwing exception if item already exists in database
+         
+         DB::query("INSERT INTO `__registry` SET `registry_name` = '%1', `registry_value` = '%2' ON DUPLICATE KEY UPDATE `registry_name`=`registry_name`", $name, serialize($value));
+         
+         // if didn't exist and was inserted, sets isSynced to TRUE
+         
+         if(DB::affectedRows() > 0)
+         {
+            self::$items[$name]->isSynced = true;
+         }
       }
    }
    

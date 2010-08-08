@@ -61,6 +61,16 @@ class RegistryItem
    
    //--
    
+   /*
+    * public bool $isSynced
+    * 
+    * Whether property is synchronized with database (if persistent)
+    */
+   
+   public $isSynced = false;
+   
+   //--
+   
    public function __construct($value, $isPersistent, $isReadOnly)
    {
       $this->value        = $value;
