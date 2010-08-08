@@ -16,7 +16,7 @@
  //  
  //  You should have received a copy of the GNU General Public License
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
- //
+ //  
 
 class RegistryItem
 {
@@ -24,24 +24,21 @@ class RegistryItem
     * public mixed $value
     * 
     * Value associated with name
+    * 
+    * Note that $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
     */
     
    public $value;
-   
-   /*
-    * public mixed $defaultValue
-    * 
-    * [to be done]
-    */
-    
-   //public $defaultValue
     
    /*
     * public bool $isPersistent
     * 
     * Whether the item's value is saved to database
     * 
-    * Note that read-only item can be changed anyway if is also persistent, and that item can't be private and persistent at the same time
+    * Note that:
+    *    - read-only item can be changed anyway if is also persistent
+    *    - item can't be private and persistent at the same time
+    *    - $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
     */
      
    public $isPersistent;

@@ -16,27 +16,18 @@
  //  
  //  You should have received a copy of the GNU General Public License
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
- //
+ //  
 
 include 'RegistryItem.php';
-
-/*
-
-TODO:
-
-- default values (or not?)
-- persistent items (saved in DB)
-
-*/
 
 class Registry
 {
    private static $items = array(); // [RegistryItem[]] - items dictionary
    
    /*
-    * public static void add(string $name[, mixed $value = null[, bool/string $isReadOnly = false]])
+    * public static void add(string $name[, mixed $value = null[, bool $isPersistent = false[, bool/string $isReadOnly = false]]])
     * 
-    * Adds item to registry
+    * Adds item to Registry
     * 
     * string $name
     *    Identificator used to access an item
@@ -83,14 +74,14 @@ class Registry
       
       if(!is_bool($isPersistent))
       {
-         throw new WMException('Atrybut isPersistent musi być typu albo bool!', 'Registry:isPersistentWrongType');
+         throw new WMException('Atrybut isPersistent musi być typu bool!', 'Registry:isPersistentWrongType');
       }
       
       // if $isReadOnly is wrong type
       
       if(!is_bool($isReadOnly) && !is_string($isReadOnly))
       {
-         throw new WMException('Atrybut isReadOnly musi być typu albo bool, albo string!', 'Registry:isReadOnlyWrongType');
+         throw new WMException('Atrybut isReadOnly musi być typu bool lub string!', 'Registry:isReadOnlyWrongType');
       }
       
       // if item is set to be both private and persistent
@@ -128,12 +119,14 @@ class Registry
       self::throwIfWrongPrivateItemClass($name);
       
       return self::$items[$name]->value;
+      
+      // TODO: sync with database
    }
    
    /*
     * public static void set(string $name, mixed $value)
     *
-    * Sets value of an item with given name in registry
+    * Sets value of an item with given name in Registry
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
@@ -152,6 +145,31 @@ class Registry
       // changing value
       
       self::$items[$name]->value = $value;
+      
+      // synchronizing with database (if persistent)
+      
+      if(self::$items[$name]->isPersistent)
+      {
+         // TODO: save to database
+      }
+   }
+
+   /*
+    * public static bool isPersistent(string $name)
+    *
+    * Returns whether item with given name is persistent
+    *
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - item with given name doesn't exist [doesNotExist]
+    */
+    
+   public static function isPersistent($name)
+   {
+      self::throwIfNameNotString($name);
+      self::throwIfDoesNotExist($name);
+
+      return self::$items[$name]->isPersistent;
    }
 
    /*
@@ -189,24 +207,6 @@ class Registry
 
       return is_string(self::$items[$name]->isReadOnly);
    }
-
-   /*
-    * public static bool isPersistent(string $name)
-    *
-    * Returns whether item with given name is persistent
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    */
-    
-   public static function isPersistent($name)
-   {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-
-      return self::$items[$name]->isPersistent;
-   }
    
    /*
     * public static bool exists(string $name)
@@ -227,10 +227,9 @@ class Registry
    /*
     * public static void delete(string $name)
     *
-    * Deletes item with given name in registry
+    * Deletes item with given name in Registry
     *
-    * Similar to invalidating, but deleting does not reserve the name,
-    * so it's possible to recreate an item with the same name.
+    * Similar to invalidating, but deleting does not reserve the name, so it's possible to recreate an item with the same name.
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
@@ -254,9 +253,7 @@ class Registry
    /*
     * public static void invalidate(string $name)
     *
-    * Invalidates item with given name in registry - deletes it, and
-    * reserves the name, so that it won't be possible to recreate item
-    * with the same name
+    * Invalidates item with given name in Registry - deletes it, and reserves the name, so it's not possible to recreate item with the same name
     *
     * Similar to deleting, but invalidating also reserves name.
     *
