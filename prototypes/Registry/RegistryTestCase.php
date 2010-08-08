@@ -590,10 +590,108 @@ class RegistryTestCase extends TestCase
 
          assert($catched);
          
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// these are much more precise
+
+         $this->nextTest();
+
+         $r->create('__8.8', array('foo', 'bar'), true);
+
+         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.8')->toObj()->registry_value;
+
+         assert(unserialize($g8t8) === array('foo', 'bar'));
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->create('__8.9', 'test', true);
+
+         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.9')->toObj()->registry_value;
+
+         assert(unserialize($g8t8) === 'test');
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         DB::query("INSERT INTO `__registry` SET `registry_name` = '%1', `registry_value` = '%2'", '__8.10', serialize('foo'));
+         
+         $r->create('__8.10', 'bar', true);
+         
+         assert($r->get('__8.10') === 'foo');
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         DB::query("INSERT INTO `__registry` SET `registry_name` = '%1', `registry_value` = '%2'", '__8.11', serialize('foo'));
+         
+         $r->create('__8.11', 'bar', true);
+         
+         $g8t11 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.11')->toObj()->registry_value;
+
+         assert(unserialize($g8t11) === 'foo');
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->create('__8.12', 'foo', true);
+         $r->set('__8.12', 'bar');
+         
+         $g8t12 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.12')->toObj()->registry_value;
+
+         assert(unserialize($g8t12) === 'bar');
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+         
+         DB::query("INSERT INTO `__registry` SET `registry_name` = '%1', `registry_value` = '%2'", '__8.13', serialize('1'));
+         
+         $r->create('__8.13', '2', true);
+         $r->set('__8.13', '3');
+
+         assert($r->get('__8.13') === '3');
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+         
+         DB::query("INSERT INTO `__registry` SET `registry_name` = '%1', `registry_value` = '%2'", '__8.14', serialize('1'));
+         
+         $r->create('__8.14', '2', true);
+         $r->set('__8.14', '3');
+         
+         $g8t14 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.14')->toObj()->registry_value;
+
+         assert(unserialize($g8t14) === '3');
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->create('__8.15', null, true);
+         $r->delete('__8.15');
+         
+         $g8t15 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.15')->rows();
+         
+         assert($g8t15 === 0);
+
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+
+         $this->nextTest();
+
+         $r->create('__8.16', null, true);
+         $r->invalidate('__8.16');
+         
+         $g8t16 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.16')->rows();
+
+         assert($g8t16 === 0);
          
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// cleaning up
          
-         $maxItem = 7;
+         $maxItem = 16;
          $nonStandardItems = array('4.5');
          
          for($i = 1; $i <= $maxItem; $i++)

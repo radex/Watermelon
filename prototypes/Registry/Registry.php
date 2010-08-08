@@ -176,7 +176,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         DB::query("UPDATE `__registry` SET `registry_value` = '%2' WHERE `registry_name` = '%1'", $name, $value);
+         DB::query("UPDATE `__registry` SET `registry_value` = '%1' WHERE `registry_name` = '%2'", serialize($value), $name);
       }
    }
 
@@ -273,16 +273,16 @@ class Registry
       self::throwIfReadOnly($name);
       self::throwIfWrongPrivateItemClass($name);
       
-      // deleting
-      
-      unset(self::$items[$name]);
-      
-      // ... and in database if persistent
+      // deleting in database if persistent
       
       if(self::$items[$name]->isPersistent)
       {
          DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", $name);
       }
+      
+      // deleting locally
+      
+      unset(self::$items[$name]);
    }
    
    /*
@@ -308,16 +308,16 @@ class Registry
       self::throwIfReadOnly($name);
       self::throwIfWrongPrivateItemClass($name);
       
-      // invalidating
-      
-      self::$items[$name] = '';
-      
-      // ... and in database if persistent
+      // deleting in database if persistent
       
       if(self::$items[$name]->isPersistent)
       {
          DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", $name);
       }
+      
+      // invalidating
+      
+      self::$items[$name] = '';
    }
    
    #####
