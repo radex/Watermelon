@@ -39,7 +39,6 @@ class Registry
     * bool $isPersistent = false
     *    Whether the item's value is saved to database
     *    Note that:
-    *       - read-only item can be changed anyway if is also persistent
     *       - item can't be private and persistent at the same time
     *       - $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
     * 
@@ -63,13 +62,13 @@ class Registry
    
    public static function create($name, $value = null, $isPersistent = false, $isReadOnly = false)
    {
-      self::throwIfNameNotString($name);
+      self::runThrowers($name, 'nameNotString');
       
       // if item with given name already exist
       
       if(isset(self::$items[$name]))
       {
-         throw new WMException('Próba zarejestrowania zarejestrowanej już pozycji "' . $name . '" w Rejestrze', 'Registry:alreadyRegistered');
+         throw new WMException('Próba stworzenia istniejącej już pozycji "' . $name . '" w Rejestrze', 'Registry:alreadyRegistered');
       }
       
       // if $isPersistent is wrong type
@@ -118,7 +117,7 @@ class Registry
    /*
     * public static mixed get(string $name)
     *
-    * Fetches value of an item with given name from registry
+    * Fetches value of an item with given name from Registry
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
@@ -128,9 +127,7 @@ class Registry
    
    public static function get($name)
    {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-      self::throwIfWrongPrivateItemClass($name);
+      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'wrongPrivateItemClass');
       
       // if item is persistent and not synchronized, first synchronize.
       
@@ -163,10 +160,7 @@ class Registry
    
    public static function set($name, $value)
    {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-      self::throwIfReadOnly($name);
-      self::throwIfWrongPrivateItemClass($name);
+      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly', 'wrongPrivateItemClass');
       
       // changing value
       
@@ -178,76 +172,6 @@ class Registry
       {
          DB::query("UPDATE `__registry` SET `registry_value` = '%1' WHERE `registry_name` = '%2'", serialize($value), $name);
       }
-   }
-
-   /*
-    * public static bool isPersistent(string $name)
-    *
-    * Returns whether item with given name is persistent
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    */
-    
-   public static function isPersistent($name)
-   {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-
-      return self::$items[$name]->isPersistent;
-   }
-
-   /*
-    * public static bool isReadOnly(string $name)
-    *
-    * Returns whether item with given name is read-only
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    */
-   
-   public static function isReadOnly($name)
-   {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-
-      return self::$items[$name]->isReadOnly === true;
-   }
-
-   /*
-    * public static bool isPrivate(string $name)
-    *
-    * Returns whether item with given name is private
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    */
-    
-   public static function isPrivate($name)
-   {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-
-      return is_string(self::$items[$name]->isReadOnly);
-   }
-   
-   /*
-    * public static bool exists(string $name)
-    *
-    * Returns whether item with given name exists
-    * 
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    */
-   
-   public static function exists($name)
-   {
-      self::throwIfNameNotString($name);
-      
-      return is_object(self::$items[$name]);
    }
    
    /*
@@ -268,10 +192,7 @@ class Registry
    
    public static function delete($name)
    {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-      self::throwIfReadOnly($name);
-      self::throwIfWrongPrivateItemClass($name);
+      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly', 'wrongPrivateItemClass');
       
       // deleting in database if persistent
       
@@ -303,10 +224,7 @@ class Registry
    
    public static function invalidate($name)
    {
-      self::throwIfNameNotString($name);
-      self::throwIfDoesNotExist($name);
-      self::throwIfReadOnly($name);
-      self::throwIfWrongPrivateItemClass($name);
+      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly', 'wrongPrivateItemClass');
       
       // deleting in database if persistent
       
@@ -320,9 +238,93 @@ class Registry
       self::$items[$name] = '';
    }
    
+   /*
+    * public static bool exists(string $name)
+    *
+    * Returns whether item with given name exists
+    * 
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    */
+   
+   public static function exists($name)
+   {
+      self::runThrowers($name, 'nameNotString');
+      
+      return is_object(self::$items[$name]);
+   }
+
+   /*
+    * public static bool isPersistent(string $name)
+    *
+    * Returns whether item with given name is persistent
+    *
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - item with given name doesn't exist [doesNotExist]
+    */
+    
+   public static function isPersistent($name)
+   {
+      self::runThrowers($name, 'nameNotString', 'doesNotExist');
+
+      return self::$items[$name]->isPersistent;
+   }
+
+   /*
+    * public static bool isReadOnly(string $name)
+    *
+    * Returns whether item with given name is read-only
+    *
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - item with given name doesn't exist [doesNotExist]
+    */
+   
+   public static function isReadOnly($name)
+   {
+      self::runThrowers($name, 'nameNotString', 'doesNotExist');
+
+      return self::$items[$name]->isReadOnly === true;
+   }
+
+   /*
+    * public static bool isPrivate(string $name)
+    *
+    * Returns whether item with given name is private
+    *
+    * Throws an exception if:
+    * - $name isn't string [nameNotString]
+    * - item with given name doesn't exist [doesNotExist]
+    */
+    
+   public static function isPrivate($name)
+   {
+      self::runThrowers($name, 'nameNotString', 'doesNotExist');
+
+      return is_string(self::$items[$name]->isReadOnly);
+   }
+   
    #####
    ##### private methods
    #####
+   
+   /*
+    * runs given exception throwers. Give $name as first argument, and throwers' string codes as following
+    */
+   
+   private static function runThrowers($name)
+   {
+      $wantedThrowers = func_get_args();
+      array_shift($wantedThrowers); // shifting $name off beginning of an array
+      
+      foreach($wantedThrowers as $thrower)
+      {
+         $methodName = 'throwIf' . $thrower;
+         
+         self::$methodName($name);
+      }
+   }
    
    /*
     * throws an exception if given item name is not string
@@ -344,7 +346,7 @@ class Registry
    {
       if(!is_object(self::$items[$name]))
       {
-         throw new WMException('Próba dostępu do niezarejestrowanej pozycji "' . $name . '" w Rejestrze', 'Registry:doesNotExist');
+         throw new WMException('Próba dostępu do nieistniejącej pozycji "' . $name . '" w Rejestrze', 'Registry:doesNotExist');
       }
    }
    
@@ -361,7 +363,7 @@ class Registry
    }
    
    /*
-    * throws an exception if item with given name is private, and class attempting to access an item is not the same class as class specified in isReadOnly property
+    * throws an exception if item with given name is private, and class attempting to access an item is not the same class as class specified in isReadOnly property. Don't call it explicitly. Use ::runThrowers() instead.
     */ 
    
    private static function throwIfWrongPrivateItemClass($name)
@@ -370,17 +372,17 @@ class Registry
       
       $backtrace = debug_backtrace();
       
-      // [0] in backtrace is this function, [1] is this class' method calling this function
-      // [2] should be the same class as in isReadOnly
-      // of eval(), in which case, [3] should be the same class as in isReadOnly
+      // [0] in backtrace is this function, [1] is ::runThrowers(), and [2] is method of this class invoking ::runThrowers()
+      // [3] should be the same class as in isReadOnly
+      // of eval(), in which case, [4] should be the same class as in isReadOnly
       
-      if($backtrace[2]['function'] == 'eval' && !isset($backtrace[2]['class'])) // very important to check non-existence of class!
+      if($backtrace[3]['function'] == 'eval' && !isset($backtrace[3]['class'])) // very important to check non-existence of class!
       {
-         $callerClassPos = 3;
+         $callerClassPos = 4;
       }
       else
       {
-         $callerClassPos = 2;
+         $callerClassPos = 3;
       }
       
       // checking if class names match

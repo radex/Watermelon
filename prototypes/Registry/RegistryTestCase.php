@@ -590,6 +590,21 @@ class RegistryTestCase extends TestCase
 
          assert($catched);
          
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// cleaning up
+         
+         $maxItem = 16;
+         $nonStandardItems = array('4.5');
+         
+         for($i = 1; $i <= $maxItem; $i++)
+         {
+            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $i);
+         }
+         
+         foreach($nonStandardItems as $item)
+         {
+            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $item);
+         }
+         
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// these are much more precise
 
          $this->nextTest();
@@ -688,21 +703,6 @@ class RegistryTestCase extends TestCase
          $g8t16 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.16')->rows();
 
          assert($g8t16 === 0);
-         
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// cleaning up
-         
-         $maxItem = 16;
-         $nonStandardItems = array('4.5');
-         
-         for($i = 1; $i <= $maxItem; $i++)
-         {
-            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $i);
-         }
-         
-         foreach($nonStandardItems as $item)
-         {
-            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $item);
-         }
       }
    }
 }

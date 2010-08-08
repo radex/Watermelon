@@ -36,7 +36,6 @@ class RegistryItem
     * Whether the item's value is saved to database
     * 
     * Note that:
-    *    - read-only item can be changed anyway if is also persistent
     *    - item can't be private and persistent at the same time
     *    - if item is persistent, and $isSynced is FALSE, $value contents may be not be real
     */
