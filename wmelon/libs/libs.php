@@ -20,12 +20,12 @@
 
 if(defined('WM_DEBUG'))
 {
-   include 'testing/Exception.php'; // not sure if it should be loaded only in debug mode
    include 'testing/UnitTester.php';
 }
+include 'testing/Exception.php';
 
 include 'url.php';
-include 'db.php';
+include 'DB/DB.php';
 
 //include 'cache.php';
 include 'loader.php';
