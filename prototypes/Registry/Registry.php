@@ -274,6 +274,13 @@ class Registry
       // deleting
       
       unset(self::$items[$name]);
+      
+      // ... and in database if persistent
+      
+      if(self::$items[$name]->isPersistent)
+      {
+         DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", $name);
+      }
    }
    
    /*
@@ -300,6 +307,13 @@ class Registry
       // invalidating
       
       self::$items[$name] = '';
+      
+      // ... and in database if persistent
+      
+      if(self::$items[$name]->isPersistent)
+      {
+         DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", $name);
+      }
    }
    
    #####
