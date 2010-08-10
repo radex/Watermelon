@@ -20,14 +20,8 @@
 
 //include 'gui.php';
 include 'language.php';
-//include 'bbcode/bbcode.php';
 
-/*
-
-function makeCard($r){}
-function emoticons_normal($r){return $r;}
-* 
-*/
+include 'markup/textile.php';
 
 /*
  * void SetH1(string $newHeader)

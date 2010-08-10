@@ -18,29 +18,25 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+// general libraries
+
+include 'DB/DB.php';
+include 'url.php';
+include 'loader.php';
+include 'Registry/Registry.php';
+//include 'cache.php';
+
+// testing&development stuff
+
 if(defined('WM_DEBUG'))
 {
    include 'testing/UnitTester.php';
 }
 include 'testing/Exception.php';
 
-include 'Registry/Registry.php';
+// module types headers
 
-include 'url.php';
-include 'DB/DB.php';
-
-//include 'cache.php';
-include 'loader.php';
-//include 'config.php';
-include 'pluginscdb.php';
-
-include 'controller.php';
-include 'model.php';
-include 'plugin.php';
-include 'block.php';
-/*
-if(defined('ADMIN_MODE'))
-{
-   include 'acinfo.php';
-}
-*/
+include 'headers/controller.php';
+include 'headers/model.php';
+include 'headers/plugin.php';
+include 'headers/block.php';
