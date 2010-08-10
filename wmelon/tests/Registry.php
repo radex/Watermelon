@@ -18,7 +18,7 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class RegistryTestCase extends TestCase
+class Registry_TestCase extends TestCase
 {
    public function testedModuleName()
    {
@@ -503,7 +503,7 @@ class RegistryTestCase extends TestCase
 
          $this->nextTest();
 
-         $r->create('__7.6', null, false, 'registrytestcase');
+         $r->create('__7.6', null, false, 'registry_testcase');
          $r->set('__7.6', 'foo');
 
          assert($r->get('__7.6') === 'foo');

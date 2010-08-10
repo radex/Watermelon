@@ -19,7 +19,7 @@ $_w_dbPrefix    = '';
 
 /*   Users   */
 
-$_w_superusers = array('radex');
+$_w_superuser   = 'radex';
 
 /****************\
      ADVANCED

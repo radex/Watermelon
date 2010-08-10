@@ -24,12 +24,14 @@ if(defined('WM_DEBUG'))
 }
 include 'testing/Exception.php';
 
+include 'Registry/Registry.php';
+
 include 'url.php';
 include 'DB/DB.php';
 
 //include 'cache.php';
 include 'loader.php';
-include 'config.php';
+//include 'config.php';
 include 'pluginscdb.php';
 
 include 'controller.php';
