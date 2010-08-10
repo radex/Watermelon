@@ -15,7 +15,7 @@ $_w_dbHost      = 'localhost';
 $_w_dbUser      = 'watermeloner';
 $_w_dbPass      = 'wtrmln123';
 $_w_dbName      = 'watermelon';
-$_w_dbPrefix    = '';
+$_w_dbPrefix    = 'wm_';
 
 /*   Users   */
 

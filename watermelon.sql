@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 08 Sie 2010, 16:54
+-- Czas wygenerowania: 10 Sie 2010, 19:32
 -- Wersja serwera: 5.1.37
 -- Wersja PHP: 5.2.11
 
@@ -22,16 +22,16 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `registry`
+-- Struktura tabeli dla  `wm_registry`
 --
 
-CREATE TABLE `registry` (
+CREATE TABLE `wm_registry` (
   `registry_name` varchar(256) NOT NULL,
   `registry_value` text NOT NULL,
   PRIMARY KEY (`registry_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Zrzut danych tabeli `registry`
+-- Zrzut danych tabeli `wm_registry`
 --
 

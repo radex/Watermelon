@@ -79,8 +79,27 @@ include WM_HELPERS . 'helpers.php';
 
 // config
 
-Config::$hashAlgo = $_w_hashAlgo;
-Config::setSuperusers($_w_superusers);
+Registry::create('hashAlgo',  $_w_hashAlgo,  false, true);
+Registry::create('superuser', $_w_superuser, false, true);
+
+$_w_dbConfig = array
+   (
+      'host'   => $_w_dbHost,
+      'user'   => $_w_dbUser,
+      'pass'   => $_w_dbPass,
+      'name'   => $_w_dbName,
+      'prefix' => $_w_dbPrefix
+   );
+
+Registry::create('wmelon.db.config',  $_w_dbConfig,  false, 'DB');
+
+// unsetting database configuration data (for safety)
+
+unset($_w_dbHost);
+unset($_w_dbUser);
+unset($_w_dbPass);
+unset($_w_dbName);
+unset($_w_dbPrefix);
 
 // main CMS class
 
@@ -108,17 +127,11 @@ class Watermelon
    //private static $acceptMessages = array('login_success', 'login_loggedout');
    
    /*
-    * public void Watermelon(string $dbHost,   string $dbUser,   string   $dbPass, string $dbName,
-    *                        string $dbPrefix, array  $autoload, string[] $headData)
+    * public void Watermelon(array  $autoload, string[] $headData)
     *
     * Konstuktor. Odpala najważniejsze biblioteki, odpowiedni kontroler
     * i generuje stronę.
     *
-    * string   $dbHost   - host bazy danych
-    * string   $dbUser   - użytkownik bazy danych
-    * string   $dbPass   - hasło do bazy danych
-    * string   $dbName   - nazwa bazy danych
-    * string   $dbPrefix - prefiks do tabel
     * array    $autoload - pluginy i kod związany z nimi do automatycznego załadowania
     * string[] $headData - dane do wstawienia w sekcji <head>
     *
@@ -130,11 +143,11 @@ class Watermelon
     *   $head_element - pojedynczy element do umieszczenia w sekcji <head>
     */
 
-   public function Watermelon($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix, array $autoload, array $headData)
+   public function Watermelon(array $autoload, array $headData)
    {
       //$url = new URL('test');
       
-      DB::connect($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
+      DB::connect();
       
       //$this->LoadPlugins($autoload);
       
@@ -352,20 +365,15 @@ class Watermelon
    }*/
 }
 
-new Watermelon($_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix, array(), array()); // TODO: use Registry to pass DB parameters - for security reasons - in case of uncaught exception full trace of invoked functions is shown, revealing passwords.
+new Watermelon(array(), array());
 
-// unsetting database configuration data (for safety)
-
-unset($_w_dbHost);
-unset($_w_dbUser);
-unset($_w_dbPass);
-unset($_w_dbName);
-unset($_w_dbPrefix);
 
 /***/
 
+include 'wmelon/tests/Registry.php';
 
-include 'prototypes/Registry/proto.php';
+UnitTester::runTest(new Registry_TestCase);
+UnitTester::printFails();
 
 exit;
 

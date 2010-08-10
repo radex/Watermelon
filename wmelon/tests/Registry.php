@@ -611,7 +611,7 @@ class Registry_TestCase extends TestCase
 
          $r->create('__8.8', array('foo', 'bar'), true);
 
-         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.8')->toObj()->registry_value;
+         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.8')->object->registry_value;
 
          assert(unserialize($g8t8) === array('foo', 'bar'));
 
@@ -621,7 +621,7 @@ class Registry_TestCase extends TestCase
 
          $r->create('__8.9', 'test', true);
 
-         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.9')->toObj()->registry_value;
+         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.9')->object->registry_value;
 
          assert(unserialize($g8t8) === 'test');
 
@@ -643,7 +643,7 @@ class Registry_TestCase extends TestCase
          
          $r->create('__8.11', 'bar', true);
          
-         $g8t11 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.11')->toObj()->registry_value;
+         $g8t11 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.11')->object->registry_value;
 
          assert(unserialize($g8t11) === 'foo');
 
@@ -654,7 +654,7 @@ class Registry_TestCase extends TestCase
          $r->create('__8.12', 'foo', true);
          $r->set('__8.12', 'bar');
          
-         $g8t12 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.12')->toObj()->registry_value;
+         $g8t12 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.12')->object->registry_value;
 
          assert(unserialize($g8t12) === 'bar');
 
@@ -678,7 +678,7 @@ class Registry_TestCase extends TestCase
          $r->create('__8.14', '2', true);
          $r->set('__8.14', '3');
          
-         $g8t14 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.14')->toObj()->registry_value;
+         $g8t14 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.14')->object->registry_value;
 
          assert(unserialize($g8t14) === '3');
          

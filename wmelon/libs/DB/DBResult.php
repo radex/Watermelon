@@ -29,6 +29,7 @@ class DBResult
    
    /*
     * public int rows()
+    * public int $rows
     * 
     * Returns number of rows in result
     */
@@ -40,6 +41,7 @@ class DBResult
    
    /*
     * public object toObj()
+    * public object $object
     * 
     * Returns data as an object
     */
@@ -51,6 +53,7 @@ class DBResult
    
    /*
     * public array toArray()
+    * public array $array
     * 
     * Returns data as an array
     */
@@ -62,6 +65,7 @@ class DBResult
    
    /*
     * public bool exists()
+    * public bool $exists
     * 
     * Returns TRUE if searched record exists (num_rows > 0), or FALSE otherwise
     */
@@ -69,5 +73,16 @@ class DBResult
    public function exists()
    {
       return (mysql_num_rows($this->res) == 0) ? false : true;
+   }
+   
+   public function __get($name)
+   {
+      switch($name)
+      {
+         case 'rows':   return $this->rows();
+         case 'object': return $this->toObj();
+         case 'array':  return $this->toArray();
+         case 'exists': return $this->exists();
+      }
    }
 }

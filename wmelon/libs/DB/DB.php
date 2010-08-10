@@ -31,7 +31,6 @@ TODO:
 
 - write test case, and generally test it
 - perhaps some performance improvements (?)
-- change host/user/pass/name/prefix passing to use Registry (when done)
 
 */
 
@@ -39,47 +38,29 @@ include 'DBResult.php';
 
 class DB
 {
-   public static $queriesCounter = 0;       // number of executed queries
-   public static $errorsArray    = array(); // array of encountered erorrs (strings). Works only in debug mode
-   public static $queriesArray   = array(); // array of executed queries (strings)
+   
+   /*
+    * public static string[] $errorsArray
+    * 
+    * List of encountered errors
+    */
+   
+   public static $errorsArray = array();
+   
+   /*
+    * public static string[] $queriesArray
+    * 
+    * List of executed queries
+    * 
+    * Works only in debug mode
+    */
+   
+   public static $queriesArray = array();
+   
+   //---
    
    private static $link;   // resource of database (returned by mysql_connect)
    private static $prefix; // prefix of tables' names
-   
-   /*
-    * public static void connect(string $host, string $user, string $pass, string $name, string $prefix)
-    * 
-    * Connects with $name database on $host server as $user having $pass password with $prefix tables' prefix
-    * 
-    * Returns TRUE if connection was established correctly
-    * Returns FALSE if connection was already established
-    * 
-    * Throws an exception if connection was unsuccessful
-    */
-   
-   public static function connect($host, $user, $pass, $name, $prefix)
-   {
-      if(self::$link !== null)
-      {
-         return false;
-      }
-      
-      self::$link = @mysql_connect($host, $user, $pass);
-      
-      self::$prefix = $prefix;
-      
-      if(!self::$link)
-      {
-         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd)', 'DB:connectError');
-      }
-      
-      if(!@mysql_select_db($name))
-      {
-         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd)', 'DB:selectError');
-      }
-      
-      return true;
-   }
    
    /*
     * public static DBresult query(string $query[, string $arg1[, string $arg2[, ...]]])
@@ -121,9 +102,7 @@ class DB
          $query = str_replace('%' . $i, $arg, $query);
       }
       
-      // incrementing queries counter, and saving a query if debug mode is on
-      
-      self::$queriesCounter++;
+      // saving a query if debug mode is on
       
       if(defined('WM_DEBUG'))
       {
@@ -188,5 +167,54 @@ class DB
    public static function affectedRows()
    {
       return mysql_affected_rows();
+   }
+   
+   /*
+    * public static void connect()
+    * 
+    * Connects with database. You don't need to do it for yourself.
+    * 
+    * Returns TRUE if connection was established correctly
+    * Returns FALSE if connection was already established
+    * 
+    * Throws an exception if connection was unsuccessful
+    */
+   
+   public static function connect()
+   {
+      // return false, if connection was already established
+      
+      if(self::$link !== null)
+      {
+         return false;
+      }
+      
+      // get database configuration from Registry
+      
+      $dbConfig = Registry::get('wmelon.db.config');
+      
+      Registry::invalidate('wmelon.db.config');
+      
+      // establish connection
+      
+      self::$link = @mysql_connect($dbConfig['host'], $dbConfig['user'], $dbConfig['pass']);
+      
+      self::$prefix = $dbConfig['prefix'];
+      
+      // on errors
+      
+      if(!self::$link)
+      {
+         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd: ' . mysql_error() . ')', 'DB:connectError');
+      }
+      
+      if(!@mysql_select_db($dbConfig['name']))
+      {
+         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error() . ')', 'DB:selectError');
+      }
+      
+      //--
+      
+      return true;
    }
 }
