@@ -30,8 +30,12 @@ class UnitTester
    
    public static $testedUnitsCounter = 0;
    
+   //--
+   
    private static $failedTestsList  = array(); // array of failed tests data (module name, test ID, file name, and line)
    private static $testedModuleName = '';      // name of currently tested module
+   
+   //--
    
    /*
     * public static void runTest(TestCase $testCase)
@@ -72,14 +76,14 @@ class UnitTester
    /*
     * public static void runTests()
     * 
-    * Runs all test cases from tests/ directory, and its subdirectories (uses recursive search)
+    * Runs all test cases from tests/ directory (NOT including subdirectories)
     * 
     * You don't need to call it for yourself.
     */
    
    public static function runTests()
    {
-      $files = FilesForDirectory(WM_TESTS);
+      $files = FilesForDirectory(WM_TESTS, false);
       
       foreach($files as $file)
       {

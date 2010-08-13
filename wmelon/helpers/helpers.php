@@ -25,12 +25,13 @@ include 'textile.php';
 /*
  * string[] FilesForDirectory(string $dirPath)
  * 
- * Returns array with paths for every file in specified directory (including files in subdirectories - recursive search)
+ * Returns array with paths for every file in specified directory (if $recursive == true, also including files in subdirectories)
  * 
- * string $dirPath - path for directory, in which search will be performed
+ * string $dirPath          - path for directory, in which search will be performed
+ * bool   $recursive = true - whether returned list will include files in subdirectories
  */
 
-function FilesForDirectory($dirPath)
+function FilesForDirectory($dirPath, $recursive = true)
 {
    $iterator = new DirectoryIterator($dirPath);
    
@@ -42,9 +43,9 @@ function FilesForDirectory($dirPath)
       {
          $files[] = $file->getPathname();
       }
-      elseif($file->isDir() && !$file->isDot())
+      elseif($file->isDir() && !$file->isDot() && $recursive === true)
       {
-         $subdirFiles = AllFilePathsForDirectory($file->getPathname());
+         $subdirFiles = FilesForDirectory($file->getPathname(), $recursive);
          
          foreach($subdirFiles as $subdirFile)
          {
