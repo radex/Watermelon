@@ -20,43 +20,40 @@
 
 //include 'gui.php';
 include 'language.php';
-
-include 'markup/textile.php';
-
-/*
- * void SetH1(string $newHeader)
- * 
- * Sets header (name) of current subpage
- */
-
-function SetH1($value)
-{
-   define('WM_H1', $newHeader);
-
-	return '<h1>' . $newHeader . '</h1>';
-}
+include 'textile.php';
 
 /*
- * object ArrayToObject(array $array)
+ * string[] FilesForDirectory(string $dirPath)
  * 
- * Translates $array into an object
+ * Returns array with paths for every file in specified directory (including files in subdirectories - recursive search)
+ * 
+ * string $dirPath - path for directory, in which search will be performed
  */
 
-function ArrayToObject(array $array)
+function FilesForDirectory($dirPath)
 {
-   foreach($array as $key => $var)
+   $iterator = new DirectoryIterator($dirPath);
+   
+   $files = array();
+   
+   foreach($iterator as $file)
    {
-      if(is_array($var))
+      if($file->isFile())
       {
-         $object->$key = ArrayToObject($var);
+         $files[] = $file->getPathname();
       }
-      else
+      elseif($file->isDir() && !$file->isDot())
       {
-         $object->$key = $var;
+         $subdirFiles = AllFilePathsForDirectory($file->getPathname());
+         
+         foreach($subdirFiles as $subdirFile)
+         {
+            $files[] = $subdirFile;
+         }
       }
    }
    
-   return $object;
+   return $files;
 }
 
 /*
@@ -155,43 +152,41 @@ function SiteRedirect($urn)
 /*
  * string ClientIP()
  * 
- * returns visitor's IP
- * 
- * function comes from: http://php.org.pl/artykuly/3/22 (dead link).
- * I don't know if it's original source.
+ * Returns visitor's IP address
  */
-
-// TODO: Find some other function to do that (i'm not sure about this function license, and it uses ereg instead of preg)
 
 function ClientIP()
 {
-   $ip = 0;
+   $ip = false;
    
    if(!empty($_SERVER['HTTP_CLIENT_IP']))
    {
       $ip = $_SERVER['HTTP_CLIENT_IP'];
    }
-   
-   if(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+   elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
    {
-      $ipList = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']);
+      $ips = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']);
       
       if($ip)
       {
-         array_unshift($ipList, $ip);
-         $ip = 0;
+         array_unshift($ips, $ip);
+         $ip = false;
       }
       
-      foreach($ipList as $v)
+      foreach($ips as $v)
       {
-         if(!ereg('^(192\.168|172\.16|10|224|240|127|0)\.', $v))
+         if(!preg_match('#^(192\.168|172\.16|10|224|240|127|0)\.#', $v))
          {
             return $v;
          }
       }
    }
+   else
+   {
+      $ip = $_SERVER['REMOTE_ADDR'];
+   }
    
-   return $ip ? $ip : $_SERVER['REMOTE_ADDR'];
+   return $ip;
 }
 
 /*
