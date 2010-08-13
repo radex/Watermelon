@@ -69,8 +69,9 @@ define('WM_UPLOADEDURL', $_w_baseURL  . $_w_uploadedDir . '/');
 define(    'WM_CMSPATH', $_w_basePath . $_w_cmsDir      . '/');
 define(    'WM_PUBPATH', $_w_basePath . $_w_publicDir   . '/');
 
-define(       'WM_LIBS', WM_CMSPATH . 'libs/'                );
-define(    'WM_HELPERS', WM_CMSPATH . 'helpers/'             );
+define(       'WM_LIBS', WM_CMSPATH . 'libs/');
+define(    'WM_HELPERS', WM_CMSPATH . 'helpers/');
+define(      'WM_TESTS', WM_CMSPATH . 'tests/');
 
 // loading libraries and helpers
 
@@ -370,9 +371,7 @@ new Watermelon(array(), array());
 
 /***/
 
-include 'wmelon/tests/Registry.php';
-
-UnitTester::runTest(new Registry_TestCase);
+UnitTester::runTests();
 UnitTester::printFails();
 
 exit;

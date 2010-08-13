@@ -22,21 +22,29 @@ include 'TestCase.php';
 
 class UnitTester
 {
-   private static $testedModuleName   = '';      // name of currently tested module
-   private static $testedUnitsCounter = 0;       // counter of ran test units
-   private static $failedTestsList    = array(); // array of failed tests data (module name, test ID, file name, and line)
+   /*
+    * public static int $testedUnitsCounter;
+    * 
+    * Number of ran test units
+    */
+   
+   public static $testedUnitsCounter = 0;
+   
+   private static $failedTestsList  = array(); // array of failed tests data (module name, test ID, file name, and line)
+   private static $testedModuleName = '';      // name of currently tested module
    
    /*
     * public static void runTest(TestCase $testCase)
     * 
-    * Runs test case (TestCase child)
+    * Runs test case (TestCase child class instance)
     * 
     * Errors in assertions won't be shown immediately, and won't issue warnings
     * 
     * Use UnitTester::printFails() to print which tests failed
     *
-    * Use $this->nextTest() in test case before doing every test (before every assert()),
-    * and specify tested module name - it will help with debugging and statistics
+    * Use $this->nextTest() in test case before doing every test (before every assert()), and specify tested module name - it will help with debugging and statistics
+    * 
+    * You won't need to call it if you place your test case in proper directory.
     */
    
    public static function runTest(TestCase $testCase)
@@ -62,6 +70,34 @@ class UnitTester
    }
    
    /*
+    * public static void runTests()
+    * 
+    * Runs all test cases from tests/ directory, and its subdirectories (uses recursive search)
+    * 
+    * You don't need to call it for yourself.
+    */
+   
+   public static function runTests()
+   {
+      $files = FilesForDirectory(WM_TESTS);
+      
+      foreach($files as $file)
+      {
+         include $file;
+         
+         // composing class name - extracting file name from file path, then striping ".php", and then appending "_TestCase"
+         
+         $className = substr(basename($file), 0, -4) . '_TestCase';
+         
+         //--
+         
+         $testCase = new $className;
+         
+         self::runTest($testCase);
+      }
+   }
+   
+   /*
     * public static void printFails()
     *
     * Prints which test units failed
@@ -69,7 +105,7 @@ class UnitTester
     * Draws ugly HTML table with statistics and: module name, test ID, file name
     * and line for every failed test. Does not draw anything if no tests failed
     *
-    * You shouldn't need to use this - Watermelon will call that for you.
+    * You don't need to call it for yourself.
     */
    
    public static function printFails()
@@ -102,6 +138,8 @@ class UnitTester
    }
    
    /*
+    * public static void nextTest()
+    * 
     * Don't call it explicitly - use $this->nextTest() in test case instead
     */
    

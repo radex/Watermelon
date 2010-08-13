@@ -20,15 +20,28 @@
 
 abstract class TestCase
 {
-   abstract public function testedModuleName(); // return module name which is tested
-   abstract public function test();             // make tests (asserts) here, all of them preceded with $this->nextTest() calls
+   /*
+    * abstract public string testedModuleName()
+    * 
+    * Return module name which is tested here
+    */
+   
+   abstract public function testedModuleName();
+   
+   /*
+    * abstract public void test()
+    * 
+    * Make tests (asserts) here, all of them preceded with $this->nextTest() call
+    */
+   
+   abstract public function test();
    
    /*
     * public void nextTest()
-    *
+    * 
     * Incrments tests counter
     * 
-    * Call this before every test (!)
+    * Call this before every test!
     */
    
    public function nextTest()
