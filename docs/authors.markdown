@@ -4,9 +4,10 @@ Authors of Watermelon CMS
 * Radosław _'radex'_ Pietruszewski - radexpl[at]gmail[dot]com
 
 
-Libraries Watermelon CMS use
-----------------------------
+Libraries Watermelon CMS uses
+-----------------------------
 
-* "handyCode library with modifications"(http://srodek.info/) (details: wmelon/helpers/bbcode/README)
-* "Silk icons set (FAM FAM FAM)"(http://www.famfamfam.com/lab/icons/silk/) (license: CC-BY 2.5)
-* "Tango icons set"(http://tango.freedesktop.org/) (license: CC-BY-SA 2.5)
+* "Fugue icons set"(http://p.yusukekamiyamane.com/icons/search/fugue/) (license: CC-BY 3.0)
+* "SyntaxHighligher"(http://alexgorbatchev.com/SyntaxHighlighter/) (license: MIT)
+* "PHP Markdown Extra"(http://michelf.com/projects/php-markdown/) (license: BSD)
+* "Textile"(http://thresholdstate.com/) (license: BSD)

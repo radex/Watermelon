@@ -1,4 +1,0 @@
-Watermelon CMS
-==============
-
-TODO
