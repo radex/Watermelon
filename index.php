@@ -32,7 +32,7 @@ $_w_startTime = substr($_w_startTime[1] . substr($_w_startTime[0],2), 0, -2);
 
 include $_w_cmsDir . '/config.php';
 
-if(!isset($_w_baseURL))
+if(!isset($_w_dbHost))
 {
    header('Location: wm-installer/index.php');
    
@@ -47,12 +47,14 @@ $_w_basePath = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/';
 
 include $_w_basePath . $_w_cmsDir . '/watermelon.php';
 
-new Watermelon;
+Watermelon::run();
 
 /***/
 
 UnitTester::runTests();
 UnitTester::printFails();
+
+echo 'done.';
 
 exit;
 

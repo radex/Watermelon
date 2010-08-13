@@ -29,14 +29,14 @@ class Watermelon
    public static $headData = array();
    
    /*
-    * public void __construct()
+    * public static void run()
     * 
-    * Constructor. Loads libraries, proper controller and generates a page
+    * Loads libraries, proper controller and generates a page
     */
    
-   public function __construct()
+   public static function run()
    {
-      $this->prepare();
+      self::prepare();
       
       DB::connect();
       
@@ -45,7 +45,15 @@ class Watermelon
       // to do
    }
    
-   private function prepare()
+   /*
+    * private static void prepare()
+    * 
+    * Prepares Watermelon to actually run a controller and generate a page.
+    * 
+    * It does stuff like turning sessions and output buffering on, fixing magic quotes, loading libraries and helpers etc.
+    */
+   
+   private static function prepare()
    {
       // running some stuff
       
@@ -72,56 +80,33 @@ class Watermelon
          $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
       }
       
-      // setting proper error reporting modes, and debug constants in respect to internal debug level constant
+      // importing some variables from global scope
+      
+      global $_w_cmsDir, $_w_basePath;
+      global $_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix;
+      global $_w_superuser, $_w_debugLevel, $_w_startTime;
+      
+      // setting proper error reporting mode, and debug constant in respect to internal debug level variable
 
-      switch(WM_DEBUGLEVEL)
+      switch($_w_debugLevel)
       {
-         case'0':
+         case 0:
          default:
             error_reporting(0);
             break;
-         case '1':
+         case 1:
             error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
             define('WM_DEBUG', '');
             break;
-         case '2':
+         case 2:
             error_reporting(E_ALL);
             define('WM_DEBUG', '');
             break;
       }
       
-      // importing some variables from global scope
+      // saving database configuration in array, and unsetting its variables for safety (saving it to Registry happens later)
       
-      global $_w_baseURL, $_w_siteURL, $_w_publicDir, $_w_uploadedDir, $_w_cmsDir, $_w_basePath;
-      global $_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix;
-      global $_w_superuser, $_w_hashAlgo, $_w_startTime;
-      
-      // setting constants
-      
-      // TODO: change to class constants
-
-      define(    'WM_SITEURL', $_w_siteURL                         );
-      define(     'WM_PUBURL', $_w_baseURL  . $_w_publicDir   . '/');
-      define('WM_UPLOADEDURL', $_w_baseURL  . $_w_uploadedDir . '/');
-
-      define(    'WM_CMSPATH', $_w_basePath . $_w_cmsDir      . '/');
-      define(    'WM_PUBPATH', $_w_basePath . $_w_publicDir   . '/');
-
-      define(       'WM_LIBS', WM_CMSPATH . 'libs/');
-      define(    'WM_HELPERS', WM_CMSPATH . 'helpers/');
-      define(      'WM_TESTS', WM_CMSPATH . 'tests/');
-      
-      // loading libraries and helpers
-
-      include WM_LIBS    . 'libs.php';
-      include WM_HELPERS . 'helpers.php';
-
-      // config
-
-      Registry::create('hashAlgo',  $_w_hashAlgo,  false, true);
-      Registry::create('superuser', $_w_superuser, false, true);
-
-      $_w_dbConfig = array
+      $dbConfig = array
          (
             'host'   => $_w_dbHost,
             'user'   => $_w_dbUser,
@@ -129,23 +114,31 @@ class Watermelon
             'name'   => $_w_dbName,
             'prefix' => $_w_dbPrefix
          );
-
-      Registry::create('wmelon.db.config',  $_w_dbConfig,  false, 'DB');
-
-      // unsetting database configuration data (for safety)
-
-      unset($_w_dbHost);
-      unset($_w_dbUser);
-      unset($_w_dbPass);
-      unset($_w_dbName);
-      unset($_w_dbPrefix);
+      
+      unset($_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix);
+      
+      // setting constants
+      
+      define('WM_CMSPATH',       $_w_basePath . $_w_cmsDir . '/');
+      define('WM_LIBS',          WM_CMSPATH . 'libs/');
+      define('WM_HELPERS',       WM_CMSPATH . 'helpers/');
+      define('WM_TESTS',         WM_CMSPATH . 'tests/');
+      
+      // loading libraries and helpers
+      
+      include WM_LIBS    . 'libs.php';
+      include WM_HELPERS . 'helpers.php';
+      
+      // config
+      
+      Registry::create('wmelon.db.config', $dbConfig, false, 'DB');
    }
    
    /*
-    * private void generatePage(string $content)
+    * private static void generatePage(string $content)
     */
    
-   private function generatePage($content)
+   private static function generatePage($content)
    {
       // replacing made in simple manner links into HTML
       
