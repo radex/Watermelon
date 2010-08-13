@@ -21,10 +21,7 @@
 // general libraries
 
 include 'DB/DB.php';
-include 'url.php';
-include 'loader.php';
 include 'Registry/Registry.php';
-//include 'cache.php';
 
 // testing&development stuff
 
@@ -32,6 +29,7 @@ if(defined('WM_DEBUG'))
 {
    include 'testing/UnitTester.php';
 }
+
 include 'testing/Exception.php';
 
 // module types headers

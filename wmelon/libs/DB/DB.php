@@ -111,7 +111,7 @@ class DB
       
       // executing query, and returning DBResult if everything is fine
       
-      $queryResult = mysql_query($query);
+      $queryResult = mysql_query($query, self::$link);
       
       if($queryResult)
       {
@@ -120,9 +120,9 @@ class DB
       
       // on error: saving an error, and throwing an exception
       
-      self::$errorsArray[] = mysql_error();
+      self::$errorsArray[] = mysql_error(self::$link);
       
-      throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error() . '"', 'DB:queryError');
+      throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error(self::$link) . '"', 'DB:queryError');
    }
 
    /*
@@ -153,7 +153,7 @@ class DB
    
    public static function insertedID()
    {
-      return mysql_insert_id();
+      return mysql_insert_id(self::$link);
    }
    
    /*
@@ -166,7 +166,7 @@ class DB
    
    public static function affectedRows()
    {
-      return mysql_affected_rows();
+      return mysql_affected_rows(self::$link);
    }
    
    /*
@@ -205,12 +205,12 @@ class DB
       
       if(!self::$link)
       {
-         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd: ' . mysql_error() . ')', 'DB:connectError');
+         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:connectError');
       }
       
       if(!@mysql_select_db($dbConfig['name']))
       {
-         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error() . ')', 'DB:selectError');
+         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:selectError');
       }
       
       //--
