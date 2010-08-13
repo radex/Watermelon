@@ -40,15 +40,4 @@ define('WM_DEBUGLEVEL', '1'); // 0 - no debug notices, no error reporting; real 
                               // 1 - debug notices, E_ALL ^ E_NOTICE error reporting; programming
                               // 2 - debug notices, E_ALL error reporting; testing & debugging
 
-//define('WM_BENCHMARK', '');
-
-/*   Caching   */
-
-//define('CACHE_VIEWS' , '');
-//define('CACHE_BBCODE', '');
-
-/*   Plugins   */
-
-$_w_autoload = array(array('user', ''), array('benchmark', '')); //TODO: change name
-
 ?>
