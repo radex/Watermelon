@@ -30,6 +30,16 @@ class UnitTester
    
    public static $testedUnitsCounter = 0;
    
+   /*
+    * public static bool $areTestsRunning
+    * 
+    * Whether unit testing is currently performed
+    * 
+    * Useful for changing behavior in libraries
+    */
+   
+   public static $areTestsRunning = false;
+   
    //--
    
    private static $failedTestsList  = array(); // array of failed tests data (module name, test ID, file name, and line)
@@ -53,6 +63,8 @@ class UnitTester
    
    public static function runTest(TestCase $testCase)
    {
+      self::$areTestsRunning = true;
+      
       // setting assert options
       
       assert_options(ASSERT_WARNING,    false);
@@ -71,6 +83,7 @@ class UnitTester
       assert_options(ASSERT_CALLBACK,   null);
       
       self::$testedModuleName = '';
+      self::$areTestsRunning  = false;
    }
    
    /*
@@ -89,9 +102,9 @@ class UnitTester
       {
          include $file;
          
-         // composing class name - extracting file name from file path, then striping ".php", and then appending "_TestCase"
+         // composing class name - extracting file name from file path, then striping ".test.php", and then appending "_TestCase"
          
-         $className = substr(basename($file), 0, -4) . '_TestCase';
+         $className = substr(basename($file), 0, -9) . '_TestCase';
          
          //--
          
