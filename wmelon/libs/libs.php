@@ -21,6 +21,7 @@
 // general libraries
 
 include 'DB/DB.php';
+include 'URI.php';
 include 'Registry/Registry.php';
 
 // testing&development stuff

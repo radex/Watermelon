@@ -39,6 +39,9 @@ class Watermelon
       self::prepare();
       
       DB::connect();
+      URI::divide();
+      
+      var_dump(URI::$appType, URI::$segments);
       
       self::$headData = $headData;
       
