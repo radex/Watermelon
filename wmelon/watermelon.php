@@ -46,14 +46,10 @@ class Watermelon
       
       // to do
       
-      $content = '<strong>Test!</strong>';
+      $content = ob_get_clean();
+      UnitTester::runTests();
       
       self::generate($content);
-      
-      //--
-      
-      UnitTester::runTests();
-      UnitTester::printFails();
    }
    
    /*

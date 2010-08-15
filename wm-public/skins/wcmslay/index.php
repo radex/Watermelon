@@ -31,7 +31,9 @@
       Wygenerowano w: ∞ sekund :><br>
       URL:<?var_dump(URI::$segments); ?><br>
       Wykonane zapytania:<br>
-      <?php echo '<pre>' . htmlspecialchars(implode("\n", DB::$queriesArray)) . '</pre>'; ?>
+      <?php echo '<pre>' . htmlspecialchars(implode("\n", DB::$queriesArray)) . '</pre>'; ?><br>
+      Błędy testów jednostkowych:<br>
+      <?php UnitTester::printFails(); ?>
       <?php } ?>
    </div>
 </body>

@@ -102,9 +102,9 @@ class DB
          $query = str_replace('%' . $i, $arg, $query);
       }
       
-      // saving a query if debug mode is on
+      // saving a query if debug mode is on, and query is not made in unit test
       
-      if(defined('WM_DEBUG'))
+      if(defined('WM_DEBUG') && !UnitTester::$areTestsRunning)
       {
          self::$queriesArray[] = $query;
       }
