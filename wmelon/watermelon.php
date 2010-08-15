@@ -41,11 +41,19 @@ class Watermelon
       DB::connect();
       URI::divide();
       
-      var_dump(URI::$appType, URI::$segments);
+      //var_dump(URI::$appType, URI::$segments);
       
-      self::$headData = $headData;
       
       // to do
+      
+      $content = '<strong>Test!</strong>';
+      
+      self::generate($content);
+      
+      //--
+      
+      UnitTester::runTests();
+      UnitTester::printFails();
    }
    
    /*
@@ -141,13 +149,22 @@ class Watermelon
     * private static void generatePage(string $content)
     */
    
-   private static function generatePage($content)
+   private static function generate($content)
    {
       // replacing made in simple manner links into HTML
       
-      $content = str_replace('href="$/',   'href="'   . WM_SITEURL, $content);
-      $content = str_replace('action="$/', 'action="' . WM_SITEURL, $content);
+      // $content = str_replace('href="$/',   'href="'   . WM_SITEURL, $content);
+      // $content = str_replace('action="$/', 'action="' . WM_SITEURL, $content);
       
-      //to do...
+      define('WM_SkinPath', 'wm-public/skins/wcmslay/');
+      define('WM_THEMEURL', 'http://localhost/w/wm-public/skins/wcmslay/');
+      
+      include WM_SkinPath . 'skin.php';
+      
+      self::$headData = '<title>Test!</title>';
+      
+      $skin = new WCMSLay_skin($content, self::$headData);
+      
+      $skin->display();
    }
 }

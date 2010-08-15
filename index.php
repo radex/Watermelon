@@ -49,15 +49,4 @@ include $_w_basePath . $_w_cmsDir . '/watermelon.php';
 
 Watermelon::run();
 
-/***/
-
-UnitTester::runTests();
-UnitTester::printFails();
-
-echo 'done.';
-
-exit;
-
-/***/
-
 ?>

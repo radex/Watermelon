@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2009-2010 Radosław Pietruszewski.
+ //  Copyright 2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -18,25 +18,22 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-// general libraries
-
-include 'DB/DB.php';
-include 'URI.php';
-include 'Registry/Registry.php';
-
-// testing&development stuff
-
-if(defined('WM_DEBUG'))
+abstract class Skin
 {
-   include 'testing/UnitTester.php';
+   private $content;  // page content to generate. Value is defined by Watermelon class
+   private $headData; // data (tags) to put in <head> section. -||-
+   
+   public function __construct($content, $headData)
+   {
+      $this->content  = $content;
+      $this->headData = $headData;
+   }
+   
+   public function display()
+   {
+      $headData = $this->headData;
+      $content  = $this->content;
+      
+      include WM_SkinPath . 'index.php';
+   }
 }
-
-include 'testing/Exception.php';
-
-// module types headers
-
-include 'headers/controller.php';
-include 'headers/model.php';
-include 'headers/plugin.php';
-include 'headers/block.php';
-include 'headers/skin.php';
