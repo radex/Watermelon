@@ -28,6 +28,8 @@ class Watermelon
    
    public static $headData = array();
    
+   public static $segments = array();
+   
    /*
     * public static void run()
     * 
@@ -41,7 +43,7 @@ class Watermelon
       self::loadController();
       
       UnitTester::runTests();
-      
+      var_dump(self::$segments);
       self::generate();
    }
    
@@ -156,7 +158,7 @@ class Watermelon
       Registry::set('wmelon.modulesList', $modulesList);
       
       Registry::create('wmelon.controllerHandler', null,    true, 'Watermelon');
-      Registry::set('wmelon.controllerHandler', null);
+      Registry::set('wmelon.controllerHandler', 'cnthnd');
       Registry::create('wmelon.defaultController', 'test',  true, 'Watermelon');
       Registry::set('wmelon.defaultController', 'test');
    }
@@ -169,6 +171,8 @@ class Watermelon
       $segments   = URI::$segments;
       $controller = strtolower($segments[0]);
       $action     = strtolower($segments[1]);
+      
+      self::$segments = $segments;
       
       // getting configuration
       
@@ -184,8 +188,6 @@ class Watermelon
       
       if(empty($segments))
       {
-         // if no controller is specified in URI, use default one
-         
          $controller = $defaultController;
       }
       else
@@ -201,10 +203,11 @@ class Watermelon
             if(file_exists($controllerPath))
             {
                $moduleExists = true;
+               array_shift(self::$segments); // shifting controller name out of beginning of segments array
             }
          }
          
-         // if controller doesn't exist, use controller handler if set, or 'e404' ("no page found" page) otherwise
+         // if controller doesn't exist, use controller handler if set, or load error page otherwise
 
          if(!$moduleExists)
          {
@@ -223,8 +226,6 @@ class Watermelon
       
       // loading controller
       
-      var_dump('cnt ==>' . $controller);
-      
       $controllerPath      = WM_Modules . $modulesList->controllers[$controller];
       $controllerClassName = $controller . '_Controller';
       
@@ -232,40 +233,46 @@ class Watermelon
       
       $controllerObj = new $controllerClassName;
       
-      // running proper action
+      /// if controller handler is set, run it
       
       if($useControllerHandler)
       {
-         // if controllerHandler is set, run it
-         var_dump('cnthnd');
-         $controllerObj->_controllerHandler(); // TODO: parameters
+         $controllerObj->_controllerHandler(self::$segments);
+         return;
       }
-      else
+      
+      // if action is not specified in URI, run default action
+      
+      if(count($segments) <= 1)
       {
-         if(count($segments) <= 1)
-         {
-            var_dump('defact');
-            $controllerObj->index_action(); // TODO: parameters
-         }
-         elseif(method_exists($controllerObj, $action . '_action'))
-         {
-            // if action specified in URI exists, run it
-            var_dump('exists');
-            $controllerObj->{$action . '_action'}(); // TODO: parameters
-         }
-         elseif(method_exists($controllerObj, '_actionHandler'))
-         {
-            // if action handler exists in loaded controller, run it
-            var_dump('acthnd');
-            $controllerObj->_actionHandler(); // TODO: parameters
-         }
-         else
-         {
-            // if neither action specified in URI, nor action handler exists
-            var_dump('err');
-            self::loadErrorPage();
-         }
+         @$controllerObj->index_action();
+         return;
       }
+      
+      // if action specified in URI exists, run it
+      
+      if(method_exists($controllerObj, $action . '_action'))
+      {
+         array_shift(self::$segments); // shifting action name out of beginning of segments array
+         
+         // running action with parameters from URI as arguments
+         // quieting missing arguments warnings
+         
+         @call_user_func_array(array(&$controllerObj, $action . '_action'), self::$segments);
+         return;
+      }
+      
+      // if action handler exists in loaded controller, run it
+      
+      if(method_exists($controllerObj, '_actionHandler'))
+      {
+         $controllerObj->_actionHandler(); // TODO: parameters
+         return;
+      }
+      
+      // if neither action specified in URI, nor action handler exists
+      
+      self::loadErrorPage(); // TODO: details
    }
    
    private static function loadErrorPage()
@@ -276,7 +283,7 @@ class Watermelon
       
       $controllerObj = new e404_Controller();
       
-      $controllerObj->index();
+      $controllerObj->index_action();
    }
    
    /*

@@ -2,8 +2,9 @@
 
 class test_Controller
 {
-   function index_action()
+   function index_action($a, $b, $c)
    {
+      var_dump($a, $b, $c);
       echo str_repeat('index!', 5);
    }
    
@@ -12,7 +13,7 @@ class test_Controller
       echo str_repeat('test!', 5);
    }
    
-   function _actionHandlfer()
+   function _actionHandler()
    {
       echo str_repeat('actionhnd!', 5);
    }
