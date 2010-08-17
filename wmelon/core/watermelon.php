@@ -148,11 +148,17 @@ class Watermelon
       $modulesList->controllers = array
          (
             'e404' => 'watermelon/e404.php',
+            'test' => 'test/test.php',
+            'cnthnd' => 'test/cnthnd.php',
          );
       
       Registry::create('wmelon.modulesList',       $modulesList, true, 'Watermelon');
+      Registry::set('wmelon.modulesList', $modulesList);
+      
       Registry::create('wmelon.controllerHandler', null,    true, 'Watermelon');
+      Registry::set('wmelon.controllerHandler', null);
       Registry::create('wmelon.defaultController', 'test',  true, 'Watermelon');
+      Registry::set('wmelon.defaultController', 'test');
    }
    
    private static function loadController()
@@ -170,60 +176,107 @@ class Watermelon
       $controllerHandler = Registry::get('wmelon.controllerHandler');
       $defaultController = Registry::get('wmelon.defaultController');
       
-      //--
+      // other stuff
       
-      var_dump('appType', $appType,
-               'segments', $segments,
-               'controller', $controller,
-               'action', $action,
-               'modules', $modulesList,
-               'cntHandler', $controllerHandler,
-               'defCnt', $defaultController);
+      $useControllerHandler = false;
       
-      //--
-      
-      // if no controller is specified in URI, use default one.
+      // determining controller to load
       
       if(empty($segments))
       {
+         // if no controller is specified in URI, use default one
+         
          $controller = $defaultController;
       }
-      
-      // check if controller exists
-      
-      $moduleExists = false;
-      
-      if(isset($modulesList->controllers[$controller]))
+      else
       {
-         if(true) // check if _really_ exists
+         // check if controller exists (in modules list, and in filesystem)
+         
+         $moduleExists = false;
+
+         if(isset($modulesList->controllers[$controller]))
          {
-            $moduleExists = true;
+            $controllerPath = WM_Modules . $modulesList->controllers[$controller];
+
+            if(file_exists($controllerPath))
+            {
+               $moduleExists = true;
+            }
          }
-      }
-      
-      // if controller don't exist, use controller handler if set, or 'e404' ("no page found" page) otherwise
-      
-      if(!$moduleExists)
-      {
-         if(is_string($controllerHandler))
+         
+         // if controller doesn't exist, use controller handler if set, or 'e404' ("no page found" page) otherwise
+
+         if(!$moduleExists)
          {
-            $controller = $controllerHandler;
-         }
-         else
-         {
-            $controller = 'e404';
+            if(is_string($controllerHandler))
+            {
+               $controller           = $controllerHandler;
+               $useControllerHandler = true;
+            }
+            else
+            {
+               self::loadErrorPage(); // TODO: details
+               return;
+            }
          }
       }
       
       // loading controller
       
-      var_dump('==>', $controller);
-      include WM_Modules . $modulesList->controllers[$controller];
-      $controllerClassName = $controller.'_Controller';
-      $cnt = new $controllerClassName;
+      var_dump('cnt ==>' . $controller);
       
-      echo '-------------';
-      $cnt->test();
+      $controllerPath      = WM_Modules . $modulesList->controllers[$controller];
+      $controllerClassName = $controller . '_Controller';
+      
+      include $controllerPath;
+      
+      $controllerObj = new $controllerClassName;
+      
+      // running proper action
+      
+      if($useControllerHandler)
+      {
+         // if controllerHandler is set, run it
+         var_dump('cnthnd');
+         $controllerObj->_controllerHandler(); // TODO: parameters
+      }
+      else
+      {
+         if(count($segments) <= 1)
+         {
+            var_dump('defact');
+            $controllerObj->index_action(); // TODO: parameters
+         }
+         elseif(method_exists($controllerObj, $action . '_action'))
+         {
+            // if action specified in URI exists, run it
+            var_dump('exists');
+            $controllerObj->{$action . '_action'}(); // TODO: parameters
+         }
+         elseif(method_exists($controllerObj, '_actionHandler'))
+         {
+            // if action handler exists in loaded controller, run it
+            var_dump('acthnd');
+            $controllerObj->_actionHandler(); // TODO: parameters
+         }
+         else
+         {
+            // if neither action specified in URI, nor action handler exists
+            var_dump('err');
+            self::loadErrorPage();
+         }
+      }
+   }
+   
+   private static function loadErrorPage()
+   {
+      $modulesList       = Registry::get('wmelon.modulesList');
+      
+      include WM_Modules . $modulesList->controllers['e404'];
+      
+      $controllerObj = new e404_Controller();
+      
+      $controllerObj->index();
    }
    
    /*
