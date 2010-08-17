@@ -20,6 +20,12 @@
 
 include 'RegistryItem.php';
 
+/*
+ * class Registry
+ * 
+ * Data storing facility. Beyond just storing data in array it also provides options to store data in database, make item read-only, or private (accessible only from specified class)
+ */
+
 class Registry
 {
    private static $items = array(); // [RegistryItem[]] - items dictionary
@@ -31,33 +37,30 @@ class Registry
     * 
     * string $name
     *    Identificator used to access an item
+    *    Note that name is case-insensitive
     * 
     * mixed $value = null
     *    Value associated with name
-    *    Note that $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
     * 
     * bool $isPersistent = false
     *    Whether the item's value is saved to database
-    *    Note that:
-    *       - item can't be private and persistent at the same time
-    *       - $value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
+    *    Note that value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
     * 
     * bool/string $isReadOnly = false
     *    [bool]:
     *       Whether properties of an item are unchangeable
     *       Note that:
-    *          - read-only item can be changed anyway if is also persistent (so it's not recommended to create item being both read-only and persistent)
-    *          - being read-only is not saved in database if item is persistent (so be careful)
+    *          - read-only item can be changed anyway if is also persistent
+    *          - being read-only is not saved in database if item is persistent
     *    [string]:
     *       Item is private (access to item is permited only to class, which name is given)
-    *       Note that item can't be private and persistent at the same time
+    *       Note that private item can be changed anyway if is also persistent
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
     * - item with given name already exist (or has been invalidated) [alreadyRegistered]
     * - $isPersistent is wrong type [isPersistentWrongType]
     * - $isReadOnly is wrong type [readOnlyWrongType]
-    * - item is set to be both private and persistent [privateAndPersistent]
     */
    
    public static function create($name, $value = null, $isPersistent = false, $isReadOnly = false)
@@ -83,13 +86,6 @@ class Registry
       if(!is_bool($isReadOnly) && !is_string($isReadOnly))
       {
          throw new WMException('isReadOnly property has to be bool or string!', 'Registry:isReadOnlyWrongType');
-      }
-      
-      // if item is set to be both private and persistent
-      
-      if(is_string($isReadOnly) && $isPersistent)
-      {
-         throw new WMException('Registry item can\'t be both private and persistent!', 'Registry:privateAndPersistent');
       }
       
       // registering
@@ -311,12 +307,18 @@ class Registry
    
    /*
     * runs given exception throwers. Give $name as first argument, and throwers' string codes as following
+    * 
+    * additionally, runs strtolower on name (to assure case-insensitivity)
     */
    
-   private static function runThrowers($name)
+   private static function runThrowers(&$name)
    {
+      // getting throwers' names
+      
       $wantedThrowers = func_get_args();
       array_shift($wantedThrowers); // shifting $name off beginning of an array
+      
+      // running throwers
       
       foreach($wantedThrowers as $thrower)
       {
@@ -327,14 +329,20 @@ class Registry
    }
    
    /*
-    * throws an exception if given item name is not string
+    * throws an exception if given item name is not string, and runs strtolower on name (to assure case-insensitivity)
     */
    
-   private static function throwIfNameNotString($name)
+   private static function throwIfNameNotString(&$name)
    {
       if(!is_string($name))
       {
          throw new WMException('Item name in Registry has to be string!', 'Registry:nameNotString');
+      }
+      else
+      {
+         // name is case-insensitive - strtolower-ing
+      
+         $name = strtolower($name);
       }
    }
    

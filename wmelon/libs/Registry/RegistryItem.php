@@ -18,6 +18,14 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+/*
+ * class RegistryItem
+ * 
+ * Data representation of an item in Registry
+ * 
+ * Notice that you never access it directly. Use Registry methods to manipulate items instead.
+ */
+
 class RegistryItem
 {
    /*
@@ -25,7 +33,9 @@ class RegistryItem
     * 
     * Value associated with name
     * 
-    * Note that if item is persistent, and $isSynced is FALSE, $value contents may be not be real
+    * Note that:
+    *    - if item is persistent, and $isSynced is FALSE, $value contents may be not be real
+    *    - name is case-insensitive
     */
     
    public $value;
@@ -35,9 +45,7 @@ class RegistryItem
     * 
     * Whether the item's value is saved to database
     * 
-    * Note that:
-    *    - item can't be private and persistent at the same time
-    *    - if item is persistent, and $isSynced is FALSE, $value contents may be not be real
+    * Note that if item is persistent, and $isSynced is FALSE, $value contents may be not be real
     */
      
    public $isPersistent;
@@ -45,17 +53,8 @@ class RegistryItem
    /*
     * public bool/string $isReadOnly;
     * 
-    * [bool]:
-    *    Whether properties of an item are unchangeable
-    * 
-    *    Note that:
-    *       - read-only item can be changed anyway if is also persistent (so it's not recommended to create item being both read-only and persistent)
-    *       - being read-only is not saved in database if item is persistent (so be careful)
-    * 
-    * [string]:
-    *    Item is private (access to item is permited only to class, which name is given)
-    * 
-    *    Note that item can't be private and persistent at the same time
+    * [bool]:   Whether properties of an item are unchangeable
+    * [string]: Item is private (access to item is permited only to class, which name is given)
     */
    
    public $isReadOnly;

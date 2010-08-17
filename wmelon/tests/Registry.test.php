@@ -35,6 +35,7 @@ class Registry_TestCase extends TestCase
       
       {
          // testing methods that throw an exception if given name is not string
+         // also, testing if names are case-insensitive
          
          $throwIfNameNotStringMethods = array
             (
@@ -48,6 +49,8 @@ class Registry_TestCase extends TestCase
                'delete',
                'invalidate',
             );
+         
+         $i = 0;
          
          foreach($throwIfNameNotStringMethods as $key => $value)
          {
@@ -74,6 +77,37 @@ class Registry_TestCase extends TestCase
             }
 
             assert($catched);
+            
+            // case insensitivity
+            
+            $this->nextTest();
+            $catched = false;
+            
+            $r->create('__0.TESTINGcaseINSENSITIVITY.' . $i);
+            
+            try
+            {
+               if($args)
+               {
+                  eval('$r->' . $method . '("__0.testingCaseInsensitivty.' . $i . '",' . implode(',', $args) . ');');
+               }
+               else
+               {
+                  $r->{$method}('__0.testingCaseInsensitivty.' . $i);
+               }
+            }
+            catch(WMException $e)
+            {
+               if($e->stringCode() == 'Registry:nameNotString')
+                  $catched = true;
+            }
+
+            assert(!$catched);
+            
+            //--
+            
+            
+            $i++;
          }
       }
       
@@ -262,23 +296,6 @@ class Registry_TestCase extends TestCase
          catch(WMException $e)
          {
             if($e->stringCode() == 'Registry:isReadOnlyWrongType')
-               $catched = true;
-         }
-
-         assert($catched);
-         
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-         $catched = false;
-
-         try
-         {
-            $r->create('__1.3.5',null,true,'foo');
-         }
-         catch(WMException $e)
-         {
-            if($e->stringCode() == 'Registry:privateAndPersistent')
                $catched = true;
          }
 
