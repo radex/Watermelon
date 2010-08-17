@@ -38,18 +38,11 @@ class Watermelon
    {
       self::prepare();
       
-      DB::connect();
-      URI::divide();
+      self::loadController();
       
-      //var_dump(URI::$appType, URI::$segments);
-      
-      
-      // to do
-      
-      $content = ob_get_clean();
       UnitTester::runTests();
       
-      self::generate($content);
+      self::generate();
    }
    
    /*
@@ -127,33 +120,125 @@ class Watermelon
       // setting constants
       
       define('WM_CMSPATH',       $_w_basePath . $_w_cmsDir . '/');
-      define('WM_LIBS',          WM_CMSPATH . 'libs/');
-      define('WM_HELPERS',       WM_CMSPATH . 'helpers/');
-      define('WM_TESTS',         WM_CMSPATH . 'tests/');
+      define('WM_Core_Path',     WM_CMSPATH . 'core/');
+      
+      define('WM_LIBS',          WM_Core_Path . 'libs/');
+      define('WM_HELPERS',       WM_Core_Path . 'helpers/');
+      define('WM_TESTS',         WM_Core_Path . 'tests/');
+      
+      define('WM_Modules',       WM_CMSPATH . 'modules/');
       
       // loading libraries and helpers
       
       include WM_LIBS    . 'libs.php';
       include WM_HELPERS . 'helpers.php';
       
-      // config
+      // running DB and URI
+      
       Registry::create('wmelon.db.config', ToObject($dbConfig), false, 'DB');
       
+      DB::connect();
+      URI::divide();
+      
+      // other config
+      
+      $modulesList = new stdClass;
+      $modulesList->controllers = array
+         (
+            'e404' => 'watermelon/e404.php',
+         );
+      
+      Registry::create('wmelon.modulesList',       $modulesList, true, 'Watermelon');
+      Registry::create('wmelon.controllerHandler', null,    true, 'Watermelon');
+      Registry::create('wmelon.defaultController', 'test',  true, 'Watermelon');
+   }
+   
+   private static function loadController()
+   {
+      // URI stuff
+      
+      $appType    = URI::$appType;
+      $segments   = URI::$segments;
+      $controller = strtolower($segments[0]);
+      $action     = strtolower($segments[1]);
+      
+      // getting configuration
+      
+      $modulesList       = Registry::get('wmelon.modulesList');
+      $controllerHandler = Registry::get('wmelon.controllerHandler');
+      $defaultController = Registry::get('wmelon.defaultController');
+      
+      //--
+      
+      var_dump('appType', $appType,
+               'segments', $segments,
+               'controller', $controller,
+               'action', $action,
+               'modules', $modulesList,
+               'cntHandler', $controllerHandler,
+               'defCnt', $defaultController);
+      
+      //--
+      
+      // if no controller is specified in URI, use default one.
+      
+      if(empty($segments))
+      {
+         $controller = $defaultController;
+      }
+      
+      // check if controller exists
+      
+      $moduleExists = false;
+      
+      if(isset($modulesList->controllers[$controller]))
+      {
+         if(true) // check if _really_ exists
+         {
+            $moduleExists = true;
+         }
+      }
+      
+      // if controller don't exist, use controller handler if set, or 'e404' ("no page found" page) otherwise
+      
+      if(!$moduleExists)
+      {
+         if(is_string($controllerHandler))
+         {
+            $controller = $controllerHandler;
+         }
+         else
+         {
+            $controller = 'e404';
+         }
+      }
+      
+      // loading controller
+      
+      var_dump('==>', $controller);
+      include WM_Modules . $modulesList->controllers[$controller];
+      $controllerClassName = $controller.'_Controller';
+      $cnt = new $controllerClassName;
+      
+      echo '-------------';
+      $cnt->test();
    }
    
    /*
     * private static void generatePage(string $content)
     */
    
-   private static function generate($content)
+   private static function generate()
    {
+      $content = ob_get_clean();
+      
       // replacing made in simple manner links into HTML
       
       // $content = str_replace('href="$/',   'href="'   . WM_SITEURL, $content);
       // $content = str_replace('action="$/', 'action="' . WM_SITEURL, $content);
       
-      define('WM_SkinPath', 'wm-public/skins/wcmslay/');
-      define('WM_THEMEURL', 'http://localhost/w/wm-public/skins/wcmslay/');
+      define('WM_SkinPath', WM_Modules . 'wcmslay/');
+      define('WM_THEMEURL', 'http://localhost/w/wmelon/modules/wcmslay/');
       
       include WM_SkinPath . 'skin.php';
       
