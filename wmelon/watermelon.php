@@ -137,8 +137,8 @@ class Watermelon
       include WM_HELPERS . 'helpers.php';
       
       // config
+      Registry::create('wmelon.db.config', ToObject($dbConfig), false, 'DB');
       
-      Registry::create('wmelon.db.config', $dbConfig, false, 'DB');
    }
    
    /*

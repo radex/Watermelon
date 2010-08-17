@@ -57,27 +57,63 @@ function FilesForDirectory($dirPath, $recursive = true)
    return $files;
 }
 
+function ToObject($structure)
+{
+   return TranslateStructure($structure, 'object');
+}
+
+function ToArray($structure)
+{
+   return TranslateStructure($structure, 'array');
+}
+
 /*
- * array ObjectToArray(object $object)
- * 
- * Translates $object into an array
+ * not done yet
  */
 
-function ObjectToArray($object)
+function TranslateStructure($structure, $toType)
 {
-   foreach($object as $key => $var)
+   if(!is_array($structure) && !is_object($structure))
    {
-      if(is_object($var))
+      throw new WMException('$structure is neither array nor object', 'wrongType');
+   }
+   
+   if($toType !== 'object' && $totype !== 'array')
+   {
+      throw new WMException('$toType is neither "object" nor "array"', 'badArgument');
+   }
+   
+   if($toType == 'object')
+   {
+      $result = new stdClass;
+   }
+   else
+   {
+      $result = array();
+   }
+   
+   foreach($structure as $key => $value)
+   {
+      if($toType == 'object')
       {
-         $array[$key] = ObjectToArray($var);
+         $dest = &$result->$key;
       }
       else
       {
-         $array[$key] = $var;
+         $dest = &$result[$key];
+      }
+      
+      if(is_array($value) || is_object($value))
+      {
+         $dest = TranslateStructure($value, $toType);
+      }
+      else
+      {
+         $dest = $value;
       }
    }
    
-   return $array;
+   return $result;
 }
 
 /*
@@ -189,6 +225,15 @@ function ClientIP()
    
    return $ip;
 }
+/*
+$obj = new stdClass;
+$obj->a = false;
+$obj->b = '1';
+$array = array(1,2,3,'foo','bar',array(1,2,43, $obj));
+
+var_dump(ObjectToArray(ArrayToObject($array)));
+var_dump(ArrayToObject($array));
+var_dump($array);*/
 
 /*
  * string HashString(string $string[, string $algo])

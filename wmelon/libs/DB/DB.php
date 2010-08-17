@@ -197,9 +197,9 @@ class DB
       
       // establish connection
       
-      self::$link = @mysql_connect($dbConfig['host'], $dbConfig['user'], $dbConfig['pass']);
+      self::$link = @mysql_connect($dbConfig->host, $dbConfig->user, $dbConfig->pass);
       
-      self::$prefix = $dbConfig['prefix'];
+      self::$prefix = $dbConfig->prefix;
       
       // on errors
       
@@ -208,7 +208,7 @@ class DB
          throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:connectError');
       }
       
-      if(!@mysql_select_db($dbConfig['name']))
+      if(!@mysql_select_db($dbConfig->name))
       {
          throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:selectError');
       }
