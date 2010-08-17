@@ -20,7 +20,6 @@
 
 //include 'gui.php';
 include 'language.php';
-include 'textile.php';
 
 /*
  * string[] FilesForDirectory(string $dirPath)

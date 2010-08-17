@@ -18,9 +18,9 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class Plugin
+abstract class Plugin
 {
-   function Plugin()
+   function __construct()
    {
       $this->db   = new DB();
       $this->load = new Loader();

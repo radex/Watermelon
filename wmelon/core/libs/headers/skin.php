@@ -20,19 +20,40 @@
 
 abstract class Skin
 {
+   /*
+    * private string $content
+    * 
+    * Page content
+    * 
+    * Value is defined by Watermelon class
+    * 
+    * Variable is accessible in skin by $content
+    */
+   
    private $content;  // page content to generate. Value is defined by Watermelon class
+   
+   /*
+    * private string $headData
+    * 
+    * Data (tags) to put in <head> section
+    * 
+    * Value is defined by Watermelon class
+    * 
+    * Variable is accessible in skin by $headData
+    */
+   
    private $headData; // data (tags) to put in <head> section. -||-
    
-   public function __construct($content, $headData)
+   public function __construct(&$content, &$headData)
    {
-      $this->content  = $content;
-      $this->headData = $headData;
+      $this->content  = &$content;
+      $this->headData = &$headData;
    }
    
    public function display()
    {
-      $headData = $this->headData;
-      $content  = $this->content;
+      $headData = &$this->headData;
+      $content  = &$this->content;
       
       include WM_SkinPath . 'index.php';
    }

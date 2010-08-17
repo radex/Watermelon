@@ -18,7 +18,7 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class Model
+abstract class Model
 {
    function __construct()
    {

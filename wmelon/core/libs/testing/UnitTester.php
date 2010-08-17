@@ -96,7 +96,7 @@ class UnitTester
    
    public static function runTests()
    {
-      $files = FilesForDirectory(WM_TESTS, false);
+      $files = FilesForDirectory(WM_Tests, false);
       
       foreach($files as $file)
       {

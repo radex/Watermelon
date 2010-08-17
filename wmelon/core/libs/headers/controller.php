@@ -18,41 +18,12 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class Controller
+abstract class Controller
 {
-   //static public $_user;
-   
    public function __construct()
    {
       $this->url   = new URL();
       $this->db    = new DB();
       $this->load  = new Loader();
-      //$this->user  = new User();
-      //self::$_user = $this->user; // TODO: whut's that?
-      
-      /*if(defined('ADMIN_MODE'))
-      {
-         if(!$this->user->IsAdmin())
-         {
-            header('Location: ' . WM_MAINURL . 'login');
-            exit;
-         }
-      }*/
-   }
-
-   /*
-    * public void HeadAppend(string $tag);
-    * 
-    * Adds tag to <head> section
-    * 
-    * Equivalent of Watermelon::$headData[] = '...'
-    * 
-    * string $tag - individual element to put in <head> section,
-    *               e.g.: '<style>*{display:none}</style>'
-    */
-
-   public function HeadAppend($tag)
-   {
-      Watermelon::$headData[] = $tag;
    }
 }

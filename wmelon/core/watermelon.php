@@ -117,21 +117,23 @@ class Watermelon
       
       unset($_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix);
       
-      // setting constants
+      // Setting paths constants
       
-      define('WM_CMSPATH',       $_w_basePath . $_w_cmsDir . '/');
-      define('WM_Core_Path',     WM_CMSPATH . 'core/');
+      define('WM_Watermelon_Path', $_w_basePath . $_w_cmsDir . '/');
+      define('WM_Core',            WM_Watermelon_Path . 'core/');
       
-      define('WM_LIBS',          WM_Core_Path . 'libs/');
-      define('WM_HELPERS',       WM_Core_Path . 'helpers/');
-      define('WM_TESTS',         WM_Core_Path . 'tests/');
+      define('WM_Libs',     WM_Core . 'libs/');
+      define('WM_Helpers',  WM_Core . 'helpers/');
+      define('WM_Tests',    WM_Core . 'tests/');
       
-      define('WM_Modules',       WM_CMSPATH . 'modules/');
+      define('WM_Modules',  WM_Watermelon_Path . 'modules/');
+      define('WM_Uploaded', WM_Watermelon_Path . 'uploaded/');
+      define('WM_Cache',    WM_Watermelon_Path . 'cache/');
       
       // loading libraries and helpers
       
-      include WM_LIBS    . 'libs.php';
-      include WM_HELPERS . 'helpers.php';
+      include WM_Libs    . 'libs.php';
+      include WM_Helpers . 'helpers.php';
       
       // running DB and URI
       

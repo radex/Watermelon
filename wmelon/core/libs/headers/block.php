@@ -18,18 +18,12 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class Block
+abstract class Block
 {
    function __construct()
    {
       $this->url   = new URL();
       $this->db    = new DB();
       $this->load  = new Loader();
-      //$this->user  = new User();
    }
-   /*
-   function addData($data)
-   {
-      $this->data = $data;  //TODO: wtf is that? documentate.
-   }*/
 }
