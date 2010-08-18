@@ -44,7 +44,37 @@ class Loader
    
    public static function model($name)
    {
+      $name      = strtolower($name);
+      $className = $name . '_Model';
       
+      // checking whether requested model has been already loaded
+      
+      if(class_exists($className))
+      {
+         return new $className;
+      }
+      
+      // checking whether requested model exists in modulesList
+      
+      if(!isset(Watermelon::$modulesList->models[$name]))
+      {
+         throw new WMException('Żądany model nie istnieje w modulesList', 'Loader:modelNotExistInModulesList');
+      }
+      
+      // checking whether requested model exists in filesystem
+      
+      $modelPath = Watermelon::$modulesList->models[$name];
+      
+      if(!file_exists(WM_Modules . $modelPath))
+      {
+         throw new WMException('Żądany model nie istnieje w systemie plików', 'Loader:modelNotExistInFilesystem');
+      }
+      
+      // loading model
+      
+      include WM_Modules . $modelPath;
+      
+      return new $className;
    }
    
    /*
