@@ -245,7 +245,7 @@ class Watermelon
             }
             else
             {
-               self::loadErrorPage(); // TODO: details
+               self::loadErrorPage();
                return;
             }
          }
@@ -272,7 +272,7 @@ class Watermelon
       
       if(count($segments) <= 1)
       {
-         self::invokeMethod($controllerObj, 'index_action');
+         CallMethodQuietly($controllerObj, 'index_action');
          return;
       }
       
@@ -284,7 +284,7 @@ class Watermelon
       {
          array_shift(self::$segments); // shifting action name out of beginning of segments array
          
-         self::invokeMethod($controllerObj, $actionName, self::$segments);
+         CallMethodQuietly($controllerObj, $actionName, self::$segments);
          return;
       }
       
@@ -292,41 +292,22 @@ class Watermelon
       
       if(method_exists($controllerObj, '_actionHandler'))
       {
-         self::invokeMethod($controllerObj, '_actionHandler', self::$segments);
+         CallMethodQuietly($controllerObj, '_actionHandler', self::$segments);
          return;
       }
       
       // if neither action specified in URI, nor action handler exists
       
-      self::loadErrorPage(); // TODO: details
+      self::loadErrorPage();
    }
    
    private static function loadErrorPage()
    {
-      $modulesList       = Registry::get('wmelon.modulesList');
-      
-      include WM_Modules . $modulesList->controllers['e404'];
+      include WM_Modules . self::$modulesList->controllers['e404'];
       
       $controllerObj = new e404_Controller();
       
       $controllerObj->index_action();
-   }
-   
-   private static function invokeMethod(&$object, $method, $args = array())
-   {
-      $reflection       = new ReflectionMethod(&$object, $method);
-      $methodArgsNumber = $reflection->getNumberOfRequiredParameters();
-      $args = (is_array($args)) ? $args : array();
-      
-      if(count($args) < $methodArgsNumber)
-      {
-         for($i = 0, $j = $methodArgsNumber - count($args); $i < $j; $i++)
-         {
-            $args[] = null;
-         }
-      }
-      
-      call_user_func_array(array(&$object, $method), $args);
    }
    
    /*

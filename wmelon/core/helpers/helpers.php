@@ -22,6 +22,37 @@
 include 'language.php';
 
 /*
+ * mixed CallMethodQuietly(object &$object, string $methodName[, array $args])
+ * 
+ * Calls method $methodName on $object object with arguments from $args array without triggering warnings about insufficient number of arguments, and returns result returned by called method
+ * 
+ * object &$object     - object to call method on
+ * string  $methodName - name of method to call
+ * array   $args       - list of parameters to be passed to specified method
+ * 
+ * Note that this function passes NULL for all required, but not given in $args parameters
+ */
+
+function CallMethodQuietly(&$object, $methodName, $args = array())
+{
+   $reflection       = new ReflectionMethod(&$object, $methodName);
+   $methodArgsNumber = $reflection->getNumberOfRequiredParameters();
+   $args             = (is_array($args)) ? $args : array();
+   
+   // assigning NULL for missing parameters
+   
+   if(count($args) < $methodArgsNumber)
+   {
+      for($i = 0, $j = $methodArgsNumber - count($args); $i < $j; $i++)
+      {
+         $args[] = null;
+      }
+   }
+   
+   return call_user_func_array(array(&$object, $methodName), $args);
+}
+
+/*
  * string[] FilesForDirectory(string $dirPath)
  * 
  * Returns array with paths for every file in specified directory (if $recursive == true, also including files in subdirectories)
