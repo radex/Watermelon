@@ -28,6 +28,12 @@ class Watermelon
    
    public static $headData = array();
    
+   /*
+    * public static string[] $segments
+    * 
+    * Array of resource identificator (in URI) segments, stripped from controller and action name (if available)
+    */
+   
    public static $segments = array();
    
    /*
@@ -43,7 +49,7 @@ class Watermelon
       self::loadController();
       
       UnitTester::runTests();
-      var_dump(self::$segments);
+      
       self::generate();
    }
    
@@ -95,15 +101,17 @@ class Watermelon
          case 0:
          default:
             error_reporting(0);
-            break;
+         break;
+         
          case 1:
             error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
             define('WM_DEBUG', '');
-            break;
+         break;
+         
          case 2:
             error_reporting(E_ALL);
             define('WM_DEBUG', '');
-            break;
+         break;
       }
       
       // saving database configuration in array, and unsetting its variables for safety (saving it to Registry happens later)
@@ -122,7 +130,7 @@ class Watermelon
       // Setting paths constants
       
       define('WM_Watermelon_Path', $_w_basePath . $_w_cmsDir . '/');
-      define('WM_Core',            WM_Watermelon_Path . 'core/');
+      define('WM_Core',     WM_Watermelon_Path . 'core/');
       
       define('WM_Libs',     WM_Core . 'libs/');
       define('WM_Helpers',  WM_Core . 'helpers/');
@@ -266,7 +274,10 @@ class Watermelon
       
       if(method_exists($controllerObj, '_actionHandler'))
       {
-         $controllerObj->_actionHandler(); // TODO: parameters
+         // running action with parameters from URI as arguments
+         // quieting missing arguments warnings
+         
+         @call_user_func_array(array(&$controllerObj, '_actionHandler'), self::$segments);
          return;
       }
       

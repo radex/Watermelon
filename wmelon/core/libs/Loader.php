@@ -1,0 +1,86 @@
+<?php
+ //  
+ //  This file is part of Watermelon CMS
+ //  
+ //  Copyright 2010 Radosław Pietruszewski.
+ //  
+ //  Watermelon CMS is free software: you can redistribute it and/or modify
+ //  it under the terms of the GNU General Public License as published by
+ //  the Free Software Foundation, either version 3 of the License, or
+ //  (at your option) any later version.
+ //  
+ //  Watermelon CMS is distributed in the hope that it will be useful,
+ //  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ //  GNU General Public License for more details.
+ //  
+ //  You should have received a copy of the GNU General Public License
+ //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
+ //  
+
+/*
+ * class Loader
+ * 
+ * Loading all kinds of modules
+ */
+
+/*
+TODO:
+
+- implement
+
+- design and implement loading blocks
+- design and implement loading plugins
+
+*/
+
+class Loader
+{
+   /*
+    * public static Model model(string $name)
+    * 
+    * Loads model with name = $name, and returns its object
+    */
+   
+   public static function model($name)
+   {
+      
+   }
+   
+   /*
+    * public static View view(string $name[, bool $isGlobal = false])
+    * 
+    * Loads view, and returns its object
+    * 
+    * If you want load local view (view from the same module as class you're requesting from), just pass its name in $name
+    * 
+    * If you want load global view (view from other other module than class you're requesting from), pass 'moduleName/viewName' in $name, and set $isGlobal to TRUE
+    */
+   
+   public static function view($name, $isGlobal = false)
+   {
+      
+   }
+}
+
+/*
+ * Model Model(string $name)
+ * 
+ * Handy shortcut for Loader::model()
+ */
+
+function Model($name)
+{
+   return Loader::model($name);
+}
+
+/*
+ * View View(string $name[, bool $isGlobal = false])
+ * 
+ * Handy shortcut for Loader::view()
+ */
+
+function View($name, $isGlobal = false)
+{
+   return Loader::view($name, $isGlobal);
+}

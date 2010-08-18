@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2009-2010 Radosław Pietruszewski.
+ //  Copyright 2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -18,27 +18,37 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-// general libraries
+/*
+ * class View
+ * 
+ * View object
+ * 
+ * Notice that you don't create any View objects. You get them from Loader::view(), or its shortcut view().
+ */
 
-include 'DB/DB.php';
-include 'URI.php';
-include 'Registry/Registry.php';
-include 'Loader.php';
-
-// testing&development stuff
-
-if(defined('WM_DEBUG'))
+class View
 {
-   include 'testing/UnitTester.php';
+   public $viewPath;   // path to view (set by Loader::view(), and then used by ->display() to load actual view)
+   public $paramaters; // [dictionary] parameters to be passed to actual view
+   
+   /*
+    * public void display()
+    * 
+    * Loads actual view
+    */
+   
+   public function display()
+   {
+      
+   }
+   
+   public function __get($name)
+   {
+      return $this->parameters[$name];
+   }
+   
+   public function __set($name, $value)
+   {
+      $this->parameters[$name] = $value;
+   }
 }
-
-include 'testing/Exception.php';
-
-// module types headers
-
-include 'headers/controller.php';
-include 'headers/model.php';
-include 'headers/plugin.php';
-include 'headers/block.php';
-include 'headers/skin.php';
-include 'headers/view.php';
