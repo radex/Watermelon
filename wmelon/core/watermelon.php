@@ -37,6 +37,21 @@ class Watermelon
    public static $segments = array();
    
    /*
+    * public static object $modulesList
+    * 
+    * List of all kinds of module classes - controllers, models, views, etc.
+    * 
+    * Structure of list:
+    * 
+    * $modules->controllers: string[]
+    * $modules->models:      string[]
+    * $modules->views =
+    *    'moduleName' => array('viewName' => 'viewPath', ...), ...
+    */
+   
+   public static $modulesList;          // TODO: complete documentation when done
+   
+   /*
     * public static void run()
     * 
     * Loads libraries, proper controller and generates a page
@@ -161,9 +176,14 @@ class Watermelon
             'test' => 'test/test.php',
             'cnthnd' => 'test/cnthnd.php',
          );
+      $modulesList->models = array
+         (
+            'testmodel' => 'test/testmodel.model.php',
+         );
       
       Registry::create('wmelon.modulesList',       $modulesList, true, 'Watermelon');
       Registry::set('wmelon.modulesList', $modulesList);
+      self::$modulesList = $modulesList;
       
       Registry::create('wmelon.controllerHandler', null,    true, 'Watermelon');
       Registry::set('wmelon.controllerHandler', 'cnthnd');
@@ -184,7 +204,6 @@ class Watermelon
       
       // getting configuration
       
-      $modulesList       = Registry::get('wmelon.modulesList');
       $controllerHandler = Registry::get('wmelon.controllerHandler');
       $defaultController = Registry::get('wmelon.defaultController');
       
@@ -204,9 +223,9 @@ class Watermelon
          
          $moduleExists = false;
 
-         if(isset($modulesList->controllers[$controller]))
+         if(isset(self::$modulesList->controllers[$controller]))
          {
-            $controllerPath = WM_Modules . $modulesList->controllers[$controller];
+            $controllerPath = WM_Modules . self::$modulesList->controllers[$controller];
 
             if(file_exists($controllerPath))
             {
@@ -234,7 +253,7 @@ class Watermelon
       
       // loading controller
       
-      $controllerPath      = WM_Modules . $modulesList->controllers[$controller];
+      $controllerPath      = WM_Modules . self::$modulesList->controllers[$controller];
       $controllerClassName = $controller . '_Controller';
       
       include $controllerPath;
@@ -253,20 +272,19 @@ class Watermelon
       
       if(count($segments) <= 1)
       {
-         @$controllerObj->index_action();
+         self::invokeMethod($controllerObj, 'index_action');
          return;
       }
       
       // if action specified in URI exists, run it
       
-      if(method_exists($controllerObj, $action . '_action'))
+      $actionName = $action . '_action';
+      
+      if(method_exists($controllerObj, $actionName))
       {
          array_shift(self::$segments); // shifting action name out of beginning of segments array
          
-         // running action with parameters from URI as arguments
-         // quieting missing arguments warnings
-         
-         @call_user_func_array(array(&$controllerObj, $action . '_action'), self::$segments);
+         self::invokeMethod($controllerObj, $actionName, self::$segments);
          return;
       }
       
@@ -274,10 +292,7 @@ class Watermelon
       
       if(method_exists($controllerObj, '_actionHandler'))
       {
-         // running action with parameters from URI as arguments
-         // quieting missing arguments warnings
-         
-         @call_user_func_array(array(&$controllerObj, '_actionHandler'), self::$segments);
+         self::invokeMethod($controllerObj, '_actionHandler', self::$segments);
          return;
       }
       
@@ -295,6 +310,23 @@ class Watermelon
       $controllerObj = new e404_Controller();
       
       $controllerObj->index_action();
+   }
+   
+   private static function invokeMethod(&$object, $method, $args = array())
+   {
+      $reflection       = new ReflectionMethod(&$object, $method);
+      $methodArgsNumber = $reflection->getNumberOfRequiredParameters();
+      $args = (is_array($args)) ? $args : array();
+      
+      if(count($args) < $methodArgsNumber)
+      {
+         for($i = 0, $j = $methodArgsNumber - count($args); $i < $j; $i++)
+         {
+            $args[] = null;
+         }
+      }
+      
+      call_user_func_array(array(&$object, $method), $args);
    }
    
    /*
