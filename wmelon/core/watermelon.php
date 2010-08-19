@@ -18,6 +18,8 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+Watermelon::run();
+
 class Watermelon
 {
    /*
@@ -29,9 +31,22 @@ class Watermelon
    public static $headData = array();
    
    /*
+    * public static enum $appType
+    * 
+    * Type of running application - either URI::AppType_Site (website) or URI::AppType_Admin (admin control panel)
+    * 
+    * Type is set to AppType_Admin if first segment is "admin", or AppType_Site otherwise
+    */
+   
+   public static $appType;
+   
+   const AppType_Site  = 1;
+   const AppType_Admin = 2;
+   
+   /*
     * public static string[] $segments
     * 
-    * Array of resource identificator (in URI) segments, stripped from controller and action name (if available)
+    * Array of resource identificator segments, stripped from controller and action name (if available)
     */
    
    public static $segments = array();
@@ -39,7 +54,7 @@ class Watermelon
    /*
     * public static string $moduleName
     * 
-    * Name of module, currently running controller belongs to
+    * Name of module currently running controller belongs to
     */
    
    public static $moduleName = '';
@@ -61,6 +76,23 @@ class Watermelon
    public static $modulesList;          // TODO: complete documentation when done
    
    /*
+    * public static void displayNoPageFoundError()
+    * 
+    * Loads 'e404' controller ("no page found" page)
+    */
+   
+   public static function displayNoPageFoundError()
+   {
+      include WM_Modules . 'watermelon/e404.controller.php';
+      
+      self::$moduleName = 'watermelon';
+      self::$controllerName = 'e404';
+      
+      $controllerObj = new e404_Controller();
+      $controllerObj->index_action();
+   }
+   
+   /*
     * public static void run()
     * 
     * Loads libraries, proper controller and generates a page
@@ -69,7 +101,6 @@ class Watermelon
    public static function run()
    {
       self::prepare();
-      
       self::loadController();
       
       UnitTester::runTests();
@@ -80,24 +111,22 @@ class Watermelon
    /*
     * private static void prepare()
     * 
-    * Prepares Watermelon to actually run a controller and generate a page.
+    * Prepares Watermelon to run a controller and generate a page
     * 
     * It does stuff like turning sessions and output buffering on, fixing magic quotes, loading libraries and helpers etc.
     */
    
    private static function prepare()
    {
-      // running some stuff
-      
       session_start();
       session_regenerate_id();
-
+      
       ob_start();
-
+      
       header('Content-Type: text/html; charset=UTF-8');
       
       // fixing "magic" quotes
-
+      
       if(get_magic_quotes_gpc())
       {
          function stripslashes_deep($value)
@@ -112,15 +141,13 @@ class Watermelon
          $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
       }
       
-      // importing some variables from global scope
+      // loading configuration
       
-      global $_w_cmsDir, $_w_basePath;
-      global $_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix;
-      global $_w_superuser, $_w_debugLevel, $_w_startTime;
+      include '../config.php';
       
       // setting proper error reporting mode, and debug constant in respect to internal debug level variable
 
-      switch($_w_debugLevel)
+      switch($debugLevel)
       {
          case 0:
          default:
@@ -129,52 +156,54 @@ class Watermelon
          
          case 1:
             error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
-            define('WM_DEBUG', '');
+            define('WM_Debug', '');
          break;
          
          case 2:
             error_reporting(E_ALL);
-            define('WM_DEBUG', '');
+            define('WM_Debug', '');
          break;
       }
       
-      // saving database configuration in array, and unsetting its variables for safety (saving it to Registry happens later)
+      // dividing URI
+      
+      self::divide();
+      
+      // saving database configuration to array (saving it to Registry happens later)
       
       $dbConfig = array
          (
-            'host'   => $_w_dbHost,
-            'user'   => $_w_dbUser,
-            'pass'   => $_w_dbPass,
-            'name'   => $_w_dbName,
-            'prefix' => $_w_dbPrefix
+            'host'   => $dbHost,
+            'user'   => $dbUser,
+            'pass'   => $dbPass,
+            'name'   => $dbName,
+            'prefix' => $dbPrefix
          );
       
-      unset($_w_dbHost, $_w_dbUser, $_w_dbPass, $_w_dbName, $_w_dbPrefix);
+      unset($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
       
-      // Setting paths constants
+      // paths
       
-      define('WM_Watermelon_Path', $_w_basePath . $_w_cmsDir . '/');
-      define('WM_Core',     WM_Watermelon_Path . 'core/');
+      define('WM_BasePath', str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . '/');
+      define('WM_Core',     WM_BasePath . 'core/');
       
       define('WM_Libs',     WM_Core . 'libs/');
       define('WM_Helpers',  WM_Core . 'helpers/');
       define('WM_Tests',    WM_Core . 'tests/');
       
-      define('WM_Modules',  WM_Watermelon_Path . 'modules/');
-      define('WM_Uploaded', WM_Watermelon_Path . 'uploaded/');
-      define('WM_Cache',    WM_Watermelon_Path . 'cache/');
+      define('WM_Modules',  WM_BasePath . 'modules/');
+      define('WM_Uploaded', WM_BasePath . 'uploaded/');
+      define('WM_Cache',    WM_BasePath . 'cache/');
       
       // loading libraries and helpers
       
       include WM_Libs    . 'libs.php';
       include WM_Helpers . 'helpers.php';
       
-      // running DB and URI
+      // running DB
       
       Registry::create('wmelon.db.config', ToObject($dbConfig), false, 'DB');
-      
       DB::connect();
-      URI::divide();
       
       // other config
       
@@ -200,11 +229,58 @@ class Watermelon
       Registry::set('wmelon.defaultController', 'test');
    }
    
+   /*
+    * private static void divide()
+    * 
+    * Divides resource identificator (part of URI after index.php containing information about module and action to call, and parameters to be sent to that action) to segments; fills ::$appType and ::$segments
+    */
+   
+   private static function divide()
+   {
+      $resourceIdentificator = $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : '';
+      
+      // dividing
+      
+      $segments = array();
+      
+      foreach(explode('/', $resourceIdentificator) as $segment)
+      {
+         // ignoring empty segments
+         
+         if(!empty($segment))
+         {
+            $segments[] = $segment;
+         }
+      }
+      
+      // setting app type
+      
+      if($segments[0] == 'admin')
+      {
+         self::$appType = self::AppType_Admin;
+         
+         array_shift($segments);
+      }
+      else
+      {
+         self::$appType = self::AppType_Site;
+      }
+      
+      //--
+      
+      self::$segments = $segments;
+   }
+   
+   /*
+    * private static void loadController()
+    * 
+    * Determines which controller, and what action to run, and then runs it
+    */
+   
    private static function loadController()
    {
       // URI stuff
       
-      self::$segments       = URI::$segments;
       self::$controllerName = strtolower(self::$segments[0]);
       $action               = strtolower(self::$segments[1]);
       
@@ -250,7 +326,7 @@ class Watermelon
             }
             else
             {
-               self::loadErrorPage();
+               self::displayNoPageFoundError();
                return;
             }
          }
@@ -264,7 +340,7 @@ class Watermelon
          
          if($controllerDetails == false)
          {
-            self::loadErrorPage();
+            self::displayNoPageFoundError();
          }
       }
       
@@ -314,19 +390,18 @@ class Watermelon
       
       // if neither action specified in URI, nor action handler exists
       
-      self::loadErrorPage();
+      self::displayNoPageFoundError();
    }
    
-   private static function loadErrorPage()
-   {
-      include WM_Modules . 'watermelon/e404.controller.php';
-      
-      self::$moduleName = 'watermelon';
-      self::$controllerName = 'e404';
-      
-      $controllerObj = new e404_Controller();
-      $controllerObj->index_action();
-   }
+   /*
+    * private static array controllerDetails(string $controllerName)
+    * 
+    * Returns controller details - path, and module name it belongs to
+    * 
+    * Returned data is in format: array($path, $moduleName)
+    * 
+    * Used by ::loadController()
+    */
    
    private static function controllerDetails($controllerName)
    {
@@ -342,7 +417,9 @@ class Watermelon
    }
    
    /*
-    * private static void generatePage(string $content)
+    * private static void generatePage()
+    * 
+    * Generates page (loads skin etc)
     */
    
    private static function generate()

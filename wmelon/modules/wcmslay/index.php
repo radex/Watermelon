@@ -25,7 +25,7 @@
    <div id="footer">
       powered by <strong>Watermelon CMS</strong><br>
       <br>
-      <?php if(defined('WM_DEBUG')){ ?>
+      <?php if(defined('WM_Debug')){ ?>
       Konsola:<br>
       <form method="post" action="http://localhost/w/">
          <textarea name="terminal" style="width:90%; height:40px"></textarea>
@@ -37,10 +37,9 @@
       Zapytań do bazy danych: <?php echo count(DB::$queriesArray) ?><br>
       Zużyto pamięci: <?php echo memory_get_peak_usage() ?> <?php echo memory_get_usage() ?><br>
       Wygenerowano w: ∞ sekund :><br>
-      URL segments:<?var_dump(URI::$segments); ?><br>
-      Watermelon segments:<?var_dump(Watermelon::$segments); ?><br>
-      Watermelon controller:<?var_dump(Watermelon::$controllerName); ?><br>
-      Watermelon module:<?var_dump(Watermelon::$moduleName); ?><br>
+      segments:<?var_dump(Watermelon::$segments); ?><br>
+      controller:<?var_dump(Watermelon::$controllerName); ?><br>
+      module:<?var_dump(Watermelon::$moduleName); ?><br>
       Wykonane zapytania:<br>
       <?php echo '<pre>' . htmlspecialchars(implode("\n", DB::$queriesArray)) . '</pre>'; ?><br>
       Błędy testów jednostkowych:<br>

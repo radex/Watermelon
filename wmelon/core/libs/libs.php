@@ -21,13 +21,12 @@
 // general libraries
 
 include 'DB/DB.php';
-include 'URI.php';
 include 'Registry/Registry.php';
 include 'Loader.php';
 
 // testing&development stuff
 
-if(defined('WM_DEBUG'))
+if(defined('WM_Debug'))
 {
    include 'testing/UnitTester.php';
 }

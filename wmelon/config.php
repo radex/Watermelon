@@ -1,26 +1,19 @@
 <?php
- //  
- //  This file is part of Watermelon CMS
- // 
 
-                                                      // TODO: Write config documentation
+// TODO: Write config documentation
 
 /*   Database   */
 
-$_w_dbHost     = 'localhost';
-$_w_dbUser     = 'watermeloner';
-$_w_dbPass     = 'wtrmln123';
-$_w_dbName     = 'watermelon';
-$_w_dbPrefix   = 'wm_';
-
-/*   Users   */
-
-$_w_superuser  = 'radex';
+$dbHost     = 'localhost';
+$dbUser     = 'watermeloner';
+$dbPass     = 'wtrmln123';
+$dbName     = 'watermelon';
+$dbPrefix   = 'wm_';
 
 /*   Advanced   */
 
-$_w_debugLevel = 1; // 0 - no debug notices, no error reporting; real world applications
-                    // 1 - debug notices, E_ALL ^ E_NOTICE error reporting; programming
-                    // 2 - debug notices, E_ALL error reporting; testing & debugging
+$debugLevel = 1; // 0 - no debug notices, no error reporting; real world applications
+                 // 1 - debug notices, E_ALL ^ E_NOTICE error reporting; programming
+                 // 2 - debug notices, E_ALL error reporting; testing & debugging
 
 ?>

@@ -104,7 +104,7 @@ class DB
       
       // saving a query if debug mode is on, and query is not made in unit test
       
-      if(defined('WM_DEBUG') && !UnitTester::$areTestsRunning)
+      if(defined('WM_Debug') && !UnitTester::$areTestsRunning)
       {
          self::$queriesArray[] = $query;
       }
