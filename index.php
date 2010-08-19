@@ -48,5 +48,3 @@ $_w_basePath = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/';
 include $_w_basePath . $_w_cmsDir . '/core/watermelon.php';
 
 Watermelon::run();
-
-?>

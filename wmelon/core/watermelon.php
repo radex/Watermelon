@@ -37,16 +37,25 @@ class Watermelon
    public static $segments = array();
    
    /*
+    * public static string $moduleName
+    * 
+    * Name of module, currently running controller belongs to
+    */
+   
+   public static $moduleName = '';
+   
+   /*
+    * public static string $controllerName
+    * 
+    * Name of currently running controller
+    */
+   
+   public static $controllerName = '';
+   
+   /*
     * public static object $modulesList
     * 
     * List of all kinds of module classes - controllers, models, views, etc.
-    * 
-    * Structure of list:
-    * 
-    * $modules->controllers: string[]
-    * $modules->models:      string[]
-    * $modules->views =
-    *    'moduleName' => array('viewName' => 'viewPath', ...), ...
     */
    
    public static $modulesList;          // TODO: complete documentation when done
@@ -172,9 +181,9 @@ class Watermelon
       $modulesList = new stdClass;
       $modulesList->controllers = array
          (
-            'e404' => 'watermelon/e404.php',
-            'test' => 'test/test.php',
-            'cnthnd' => 'test/cnthnd.php',
+            'e404' => array('watermelon', false),
+            'test' => array('test', false),
+            'cnthnd' => array('test', true),
          );
       $modulesList->models = array
          (
@@ -195,49 +204,45 @@ class Watermelon
    {
       // URI stuff
       
-      $appType    = URI::$appType;
-      $segments   = URI::$segments;
-      $controller = strtolower($segments[0]);
-      $action     = strtolower($segments[1]);
+      self::$segments       = URI::$segments;
+      self::$controllerName = strtolower(self::$segments[0]);
+      $action               = strtolower(self::$segments[1]);
       
-      self::$segments = $segments;
+      // shortcuts
       
-      // getting configuration
+      $segments   = &self::$segments;
+      $controller = &self::$controllerName;
+      
+      // controllers configuration
       
       $controllerHandler = Registry::get('wmelon.controllerHandler');
       $defaultController = Registry::get('wmelon.defaultController');
       
-      // other stuff
-      
       $useControllerHandler = false;
+      $useDefaultController = false;
       
       // determining controller to load
       
       if(empty($segments))
       {
          $controller = $defaultController;
+         
+         $useDefaultController = true;
       }
       else
       {
-         // check if controller exists (in modules list, and in filesystem)
+         // check if controller exists in modules list
          
-         $moduleExists = false;
-
-         if(isset(self::$modulesList->controllers[$controller]))
+         $controllerDetails = list($controllerPath, self::$moduleName) = self::controllerDetails($controller);
+         
+         if($controllerDetails != false)
          {
-            $controllerPath = WM_Modules . self::$modulesList->controllers[$controller];
-
-            if(file_exists($controllerPath))
-            {
-               $moduleExists = true;
-               array_shift(self::$segments); // shifting controller name out of beginning of segments array
-            }
+            array_shift($segments); // shifting controller name out of beginning of segments array
          }
-         
-         // if controller doesn't exist, use controller handler if set, or load error page otherwise
-
-         if(!$moduleExists)
+         else
          {
+            // if controller doesn't exist, use controller handler if set, or load error page otherwise
+            
             if(is_string($controllerHandler))
             {
                $controller           = $controllerHandler;
@@ -251,14 +256,24 @@ class Watermelon
          }
       }
       
-      // loading controller
+      // loading controller details if loading default controller, or controller handler (and not controller from URI)
       
-      $controllerPath      = WM_Modules . self::$modulesList->controllers[$controller];
-      $controllerClassName = $controller . '_Controller';
+      if($useDefaultController || $useControllerHandler)
+      {
+         $controllerDetails = list($controllerPath, self::$moduleName) = self::controllerDetails($controller);
+         
+         if($controllerDetails == false)
+         {
+            self::loadErrorPage();
+         }
+      }
+      
+      // loading controller
       
       include $controllerPath;
       
-      $controllerObj = new $controllerClassName;
+      $controllerClassName = $controller . '_Controller';
+      $controllerObj       = new $controllerClassName;
       
       /// if controller handler is set, run it
       
@@ -270,8 +285,9 @@ class Watermelon
       
       // if action is not specified in URI, run default action
       
-      if(count($segments) <= 1)
+      if(count($segments) == 0)
       {
+         $action = 'index';
          CallMethodQuietly($controllerObj, 'index_action');
          return;
       }
@@ -282,9 +298,9 @@ class Watermelon
       
       if(method_exists($controllerObj, $actionName))
       {
-         array_shift(self::$segments); // shifting action name out of beginning of segments array
+         array_shift($segments); // shifting action name out of beginning of segments array
          
-         CallMethodQuietly($controllerObj, $actionName, self::$segments);
+         CallMethodQuietly($controllerObj, $actionName, $segments);
          return;
       }
       
@@ -292,7 +308,7 @@ class Watermelon
       
       if(method_exists($controllerObj, '_actionHandler'))
       {
-         CallMethodQuietly($controllerObj, '_actionHandler', self::$segments);
+         CallMethodQuietly($controllerObj, '_actionHandler', $segments);
          return;
       }
       
@@ -303,11 +319,26 @@ class Watermelon
    
    private static function loadErrorPage()
    {
-      include WM_Modules . self::$modulesList->controllers['e404'];
+      include WM_Modules . 'watermelon/e404.controller.php';
+      
+      self::$moduleName = 'watermelon';
+      self::$controllerName = 'e404';
       
       $controllerObj = new e404_Controller();
-      
       $controllerObj->index_action();
+   }
+   
+   private static function controllerDetails($controllerName)
+   {
+      if(!isset(self::$modulesList->controllers[$controllerName]))
+      {
+         return false;
+      }
+      
+      $info  = self::$modulesList->controllers[$controllerName];
+      $path  = WM_Modules . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
+      
+      return array($path, $info[0]);
    }
    
    /*

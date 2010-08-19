@@ -5,7 +5,7 @@ class test_Controller extends Controller
    function index_action($foo, $bar, $a = 5)
    {
       echo str_repeat('index!', 5);
-      $model = $this->load->model('testMODEL');
+      $model = model('testMODEL');
       var_dump($model->foo);
    }
    
@@ -14,7 +14,7 @@ class test_Controller extends Controller
       echo str_repeat('test!', 5);
    }
    
-   function _actionHandler()
+   function _actionHandler_()
    {
       echo str_repeat('actionhnd!', 5);
    }

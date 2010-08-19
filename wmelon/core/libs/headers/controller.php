@@ -22,7 +22,6 @@ abstract class Controller
 {
    public function __construct()
    {
-      $this->url   = new URI();
       $this->db    = new DB();
       $this->load  = new Loader();
    }
