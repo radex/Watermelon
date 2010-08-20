@@ -112,6 +112,7 @@ class Registry
    
    /*
     * public static mixed get(string $name)
+    * public mixed __invoke(string $name)
     *
     * Fetches value of an item with given name from Registry
     *
@@ -144,6 +145,7 @@ class Registry
    
    /*
     * public static void set(string $name, mixed $value)
+    * public void __invoke(string $name, mixed $value)
     *
     * Sets value of an item with given name in Registry
     *
@@ -299,6 +301,20 @@ class Registry
       self::runThrowers($name, 'nameNotString', 'doesNotExist');
 
       return is_string(self::$items[$name]->isReadOnly);
+   }
+   
+   public function __invoke()
+   {
+      $args = func_get_args();
+      
+      if(count($args) == 2)
+      {
+         self::set($args[0], $args[1]);
+      }
+      else
+      {
+         return self::get($args[0]);
+      }
    }
    
    #####
