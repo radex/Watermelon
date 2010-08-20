@@ -118,6 +118,8 @@ class Watermelon
    
    private static function prepare()
    {
+      define('WM', '');
+      
       session_start();
       session_regenerate_id();
       

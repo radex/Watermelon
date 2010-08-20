@@ -28,8 +28,8 @@
 
 class View
 {
-   public $viewPath;   // path to view (set by Loader::view(), and then used by ->display() to load actual view)
-   public $paramaters; // [dictionary] parameters to be passed to actual view
+   private $viewPath;             // path to view (set by Loader::view(), and then used by ->display() to load actual view)
+   public  $parameters = array(); // [dictionary] parameters to be passed to actual view
    
    /*
     * public void display()
@@ -39,7 +39,14 @@ class View
    
    public function display()
    {
+      extract($this->parameters);
       
+      include $this->viewPath;
+   }
+   
+   public function __construct($viewPath)
+   {
+      $this->viewPath = $viewPath;
    }
    
    public function __get($name)

@@ -89,7 +89,29 @@ class Loader
    
    public static function view($name, $isGlobal = false)
    {
+      $name = strtolower($name);
       
+      // getting module name, requested view belongs to
+      
+      if($isGlobal)
+      {
+         $name   = explode('/', $name);
+         $module = $name[0];
+         array_shift($name); // shifting module name off beginning of view path
+         $name   = implode('/', $name);
+      }
+      else
+      {
+         $module = Watermelon::$moduleName;
+      }
+      
+      // generating path
+      
+      $path = WM_Modules . $module . '/views/' . $name . '.view.php';
+      
+      // returning view object
+      
+      return new View($path);
    }
 }
 
