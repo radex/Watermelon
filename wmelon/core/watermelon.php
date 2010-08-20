@@ -23,14 +23,6 @@ Watermelon::run();
 class Watermelon
 {
    /*
-    * public static string[] $headData
-    *
-    * Array of data (tags) to put in <head> section in generated page
-    */
-   
-   public static $headData = array();
-   
-   /*
     * public static enum $appType
     * 
     * Type of running application - either URI::AppType_Site (website) or URI::AppType_Admin (admin control panel)
@@ -438,9 +430,22 @@ class Watermelon
       
       include WM_SkinPath . 'skin.php';
       
-      self::$headData = '<title>Test!</title>';
+      $nav = array(array
+         (
+            array('Foo', '#foo', null),
+            array('Bar', '#bar', 'Bar!!!')
+         ));
       
-      $skin = new WCMSLay_skin($content, self::$headData);
+      $skin = new WCMSLay_skin;
+      
+      $skin->content    = &$content;
+      $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
+      $skin->pageTitle  = 'Tytuł podstrony';
+      $skin->siteName   = 'Nazwa strony';
+      $skin->siteSlogan = 'Slogan strony';
+      $skin->footer     = 'Testowanie <em>stopki</em>…';
+      $skin->blockMenus = null;
+      $skin->textMenus  = $nav;
       
       $skin->display();
    }

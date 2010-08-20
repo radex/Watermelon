@@ -4,25 +4,28 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <link rel="stylesheet" type="text/css" href="<?php echo WM_THEMEURL ?>style.css">
+   <?=$this->drawHeadTags()?>
 </head>
 <body>
    <div id="container">
       <div id="header">
-         <div id="ha">Watermelon CMS</div>
-         <div id="hs">…bo arbuzy dobre są…</div>
+         <div id="ha"><?=$siteName?></div>
+         <div id="hs"><?=$siteSlogan?></div>
          <ul>
-            <li><a>Top</a><li><a>Menu</a>
+            <?=$this->drawTextMenu(0)?>
          </ul>
       </div>
       <div id="sidebar">
          Sidebar
       </div>
       <div id="content">
-         <?php echo $content; ?>
+         <h1><?=$pageTitle?></h1>
+         <?=$content?>
       </div>
       <div id="bottom-bg"></div>
    </div>
    <div id="footer">
+      <?=$footer?><br>
       powered by <strong>Watermelon CMS</strong><br>
       <br>
       <?php if(defined('WM_Debug')){ ?>

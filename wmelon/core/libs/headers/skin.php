@@ -21,39 +21,126 @@
 abstract class Skin
 {
    /*
-    * private string $content
+    * public string $content
     * 
     * Page content
-    * 
-    * Value is defined by Watermelon class
-    * 
-    * Variable is accessible in skin by $content
     */
    
-   private $content;  // page content to generate. Value is defined by Watermelon class
+   public $content;
    
    /*
-    * private string $headData
+    * public string $headTags
     * 
-    * Data (tags) to put in <head> section
-    * 
-    * Value is defined by Watermelon class
-    * 
-    * Variable is accessible in skin by $headData
+    * Array of tags to put in <head> section
     */
    
-   private $headData; // data (tags) to put in <head> section. -||-
+   public $headTags;
    
-   public function __construct(&$content, &$headData)
+   /*
+    * public string $pageTitle
+    * 
+    * Title of currently loaded page (page header)
+    */
+   
+   public $pageTitle;
+   
+   /*
+    * public string $siteName
+    * 
+    * Name of whole website
+    */
+   
+   public $siteName;
+   
+   /*
+    * public string $siteSlogan
+    * 
+    * Slogan (some text, usually placed below site name) of website
+    */
+   
+   public $siteSlogan;
+   
+   /*
+    * public string $footer
+    * 
+    * Text to place in footer
+    */
+   
+   public $footer;
+   
+   /*
+    * public array $blockMenus
+    * 
+    * Array of block-based menus
+    */
+   
+   // TODO: finish this one after designing and implementing Blocks
+   
+   public $blockMenus;
+   
+   /*
+    * public array $textMenus
+    * 
+    * Array of text-based menus
+    * 
+    * $textMenus = array(0 => $menu, 1 => $menu, ...)
+    *    $menu = array(array($name, $URI, $title), ...)
+    *       $name  - name of link
+    *       $URI   - URI links points to
+    *       $title - description of link, shown when hovered (or NULL if none)
+    */
+   
+   public $textMenus;
+   
+   /*
+    * protected void drawTextMenu(int $id)
+    * 
+    * Prints text menu number $id
+    */
+   
+   protected function drawTextMenu($id)
    {
-      $this->content  = &$content;
-      $this->headData = &$headData;
+      foreach($this->textMenus[$id] as $menuItem)
+      {
+         echo '<li>';
+         echo '<a href="' . $menuItem[1] . '"' . (is_string($menuItem[2]) ? ' title="' . $menuItem[2] . '"' : '') . '>';
+         echo $menuItem[0];
+         echo '</a></li>';
+      }
    }
    
-   public function display()
+   /*
+    * protected void drawHeadTags()
+    * 
+    * Prints tags from ->headTags
+    */
+   
+   protected function drawHeadTags()
    {
-      $headData = &$this->headData;
-      $content  = &$this->content;
+      foreach($this->headTags as $tag)
+      {
+         echo $tag . "\n";
+      }
+   }
+   
+   /*
+    * public void display()
+    * 
+    * Displays skin
+    * 
+    * (Watermelon calls it for you)
+    */
+   
+   public function display()
+   {   
+      $content    = &$this->content;
+      $headTags   = &$this->headTags;
+      $pageTitle  = &$this->pageTitle;
+      $siteName   = &$this->siteName;
+      $siteSlogan = &$this->siteSlogan;
+      $footer     = &$this->footer;
+      $blockMenus = &$this->blockMenus;
+      $textMenus  = &$this->textMenus;
       
       include WM_SkinPath . 'index.php';
    }
