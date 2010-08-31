@@ -95,7 +95,12 @@ class Watermelon
       self::prepare();
       self::loadController();
       
-      UnitTester::runTests();
+      // tests
+      
+      include WM_Libs . 'Registry/Registry.test.php';
+      UnitTester::runTest(new Registry_TestCase);
+      
+      // generating
       
       self::generate();
    }

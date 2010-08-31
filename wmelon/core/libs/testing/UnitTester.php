@@ -87,34 +87,6 @@ class UnitTester
    }
    
    /*
-    * public static void runTests()
-    * 
-    * Runs all test cases from tests/ directory (NOT including subdirectories)
-    * 
-    * You don't need to call it for yourself.
-    */
-   
-   public static function runTests()
-   {
-      $files = FilesForDirectory(WM_Tests, false);
-      
-      foreach($files as $file)
-      {
-         include $file;
-         
-         // composing class name - extracting file name from file path, then striping ".test.php", and then appending "_TestCase"
-         
-         $className = substr(basename($file), 0, -9) . '_TestCase';
-         
-         //--
-         
-         $testCase = new $className;
-         
-         self::runTest($testCase);
-      }
-   }
-   
-   /*
     * public static void printFails()
     *
     * Prints which test units failed
