@@ -23,6 +23,7 @@
 include 'DB/DB.php';
 include 'Registry/Registry.php';
 include 'Loader.php';
+include 'PluginsCenter.php';
 
 // testing&development stuff
 

@@ -135,9 +135,13 @@ class Watermelon
          $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
       }
       
+      // base path
+      
+      $basePath = str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . '/';
+      
       // loading configuration
       
-      include '../config.php';
+      include $basePath . 'config.php';
       
       // setting proper error reporting mode, and debug constant in respect to internal debug level variable
 
@@ -178,7 +182,7 @@ class Watermelon
       
       // paths
       
-      define('WM_BasePath', str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . '/');
+      define('WM_BasePath', $basePath);
       define('WM_Core',     WM_BasePath . 'core/');
       
       define('WM_Libs',     WM_Core . 'libs/');
