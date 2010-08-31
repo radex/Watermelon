@@ -33,6 +33,7 @@ if(defined('WM_Debug'))
 }
 
 include 'testing/Exception.php';
+include 'testing/Benchmark.php';
 
 // module types headers
 
