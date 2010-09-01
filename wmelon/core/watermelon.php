@@ -219,7 +219,13 @@ class Watermelon
          );
       $modulesList->models = array
          (
-            'testmodel' => 'test/testmodel.model.php',
+            'testmodel' => array('test', false),
+            'testmodel2' => array('test', true),
+         );
+      $modulesList->blocksets = array
+         (
+            'test' => array('test', false),
+            'test2' => array('test', true),
          );
       
       Registry::create('wmelon.modulesList',       $modulesList, true, 'Watermelon');

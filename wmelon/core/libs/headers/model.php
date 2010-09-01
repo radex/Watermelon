@@ -22,7 +22,6 @@ abstract class Model
 {
    function __construct()
    {
-      $this->url = new URL();
       $this->db  = new DB();
    }
 }

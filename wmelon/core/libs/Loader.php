@@ -47,32 +47,18 @@ class Loader
       $name      = strtolower($name);
       $className = $name . '_Model';
       
-      // checking whether requested model has been already loaded
+      // return if already loaded
       
       if(class_exists($className))
       {
          return new $className;
       }
       
-      // checking whether requested model exists in modulesList
-      
-      if(!isset(Watermelon::$modulesList->models[$name]))
-      {
-         throw new WMException('Żądany model nie istnieje w modulesList', 'Loader:modelNotExistInModulesList');
-      }
-      
-      // checking whether requested model exists in filesystem
-      
-      $modelPath = Watermelon::$modulesList->models[$name];
-      
-      if(!file_exists(WM_Modules . $modelPath))
-      {
-         throw new WMException('Żądany model nie istnieje w systemie plików', 'Loader:modelNotExistInFilesystem');
-      }
-      
       // loading model
       
-      include WM_Modules . $modelPath;
+      $pathInfo = Watermelon::$modulesList->models[$name];
+      
+      include WM_Modules . $pathInfo[0] . ($pathInfo[1] ? '/models/' : '/') . $name . '.model.php';
       
       return new $className;
    }
@@ -80,7 +66,7 @@ class Loader
    /*
     * public static View view(string $name[, bool $isGlobal = false])
     * 
-    * Loads view, and returns its object
+    * Loads view, and returns object representing it
     * 
     * If you want load local view (view from the same module as class you're requesting from), just pass its name in $name
     * 
@@ -113,6 +99,33 @@ class Loader
       
       return new View($path);
    }
+   
+   /*
+    * public static BlockSet blockSet(string $name)
+    * 
+    * Loads BlockSet, and returns its object
+    */
+   
+   public static function blockSet($name)
+   {
+      $name      = strtolower($name);
+      $className = $name . '_BlockSet';
+      
+      // return if already loaded
+      
+      if(class_exists($className))
+      {
+         return new $className;
+      }
+      
+      // loading blockset
+      
+      $pathInfo = Watermelon::$modulesList->blocksets[$name];
+      
+      include WM_Modules . $pathInfo[0] . ($pathInfo[1] ? '/blocksets/' : '/') . $name . '.blockset.php';
+      
+      return new $className;
+   }
 }
 
 /*
@@ -135,4 +148,15 @@ function Model($name)
 function View($name, $isGlobal = false)
 {
    return Loader::view($name, $isGlobal);
+}
+
+/*
+ * BlockSet BlockSet(string $name
+ * 
+ * Handy shortcut for Loader::blockSet()
+ */
+
+function BlockSet($name)
+{
+   return Loader::blockSet($name);
 }

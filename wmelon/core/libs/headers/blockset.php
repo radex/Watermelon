@@ -18,12 +18,11 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-abstract class Block
+abstract class BlockSet
 {
    function __construct()
    {
-      $this->url   = new URL();
-      $this->db    = new DB();
-      $this->load  = new Loader();
+      $this->db   = new DB();
+      $this->load = new Loader();
    }
 }

@@ -40,6 +40,6 @@ include 'testing/Benchmark.php';
 include 'headers/controller.php';
 include 'headers/model.php';
 include 'headers/plugin.php';
-include 'headers/block.php';
+include 'headers/blockset.php';
 include 'headers/skin.php';
 include 'headers/view.php';
