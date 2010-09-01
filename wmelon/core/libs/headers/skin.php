@@ -72,9 +72,14 @@ abstract class Skin
     * public array $blockMenus
     * 
     * Array of block-based menus
+    * 
+    * $blockMenus = array($menu, $menu, ...)
+    *    $menu = array(array($title, $blockSet, $block, array $parameters), ...)
+    *       $title      - header above block
+    *       $blockSet   - name of BlockSet containing requested block
+    *       $block      - name of block to be called
+    *       $parameters - arguments to be passed to block
     */
-   
-   // TODO: finish this one after designing and implementing Blocks
    
    public $blockMenus;
    
@@ -83,7 +88,7 @@ abstract class Skin
     * 
     * Array of text-based menus
     * 
-    * $textMenus = array(0 => $menu, 1 => $menu, ...)
+    * $textMenus = array($menu, $menu, ...)
     *    $menu = array(array($name, $URI, $title), ...)
     *       $name  - name of link
     *       $URI   - URI links points to

@@ -451,6 +451,14 @@ class Watermelon
             array('Bar', '#bar', 'Bar!!!')
          ));
       
+      $blockMenus = array(array
+         (
+            array('Test::foo', 'test', 'foo', array()),
+            array('Test::bar', 'test', 'bar', array('foo', 'bar')),
+            array('Test2::foo2', 'test2', 'foo2', array()),
+            array('Test2::bar2', 'test2', 'bar2', array('foo2', 'bar2')),
+         ));
+      
       $skin = new WCMSLay_skin;
       
       $skin->content    = &$content;
@@ -459,7 +467,7 @@ class Watermelon
       $skin->siteName   = 'Nazwa strony';
       $skin->siteSlogan = 'Slogan strony';
       $skin->footer     = 'Testowanie <em>stopki</em>…';
-      $skin->blockMenus = null;
+      $skin->blockMenus = $blockMenus;
       $skin->textMenus  = $nav;
       
       $skin->display();

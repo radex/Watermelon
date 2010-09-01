@@ -16,7 +16,7 @@
          </ul>
       </div>
       <div id="sidebar">
-         Sidebar
+         <?$this->drawBlockMenu(0)?>
       </div>
       <div id="content">
          <h1><?=$pageTitle?></h1>
