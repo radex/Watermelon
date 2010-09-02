@@ -21,18 +21,8 @@
 /*
  * class Loader
  * 
- * Loading all kinds of modules
+ * Loading all kinds of modules - models, view, blocks and extensions
  */
-
-/*
-TODO:
-
-- implement
-
-- design and implement loading blocks
-- design and implement loading plugins
-
-*/
 
 class Loader
 {
@@ -126,6 +116,33 @@ class Loader
       
       return new $className;
    }
+   
+   /*
+    * public static Extension extension(string $name)
+    * 
+    * Loads extension, and returns its object
+    */
+   
+   public static function extension($name)
+   {
+      $name      = strtolower($name);
+      $className = $name . '_Extension';
+      
+      // return if already loaded
+      
+      if(class_exists($className))
+      {
+         return new $className;
+      }
+      
+      // loading blockset
+      
+      $pathInfo = Watermelon::$modulesList->extensions[$name];
+      
+      include WM_Modules . $pathInfo[0] . ($pathInfo[1] ? '/extensions/' : '/') . $name . '.extension.php';
+      
+      return new $className;
+   }
 }
 
 /*
@@ -151,7 +168,7 @@ function View($name, $isGlobal = false)
 }
 
 /*
- * BlockSet BlockSet(string $name
+ * BlockSet BlockSet(string $name)
  * 
  * Handy shortcut for Loader::blockSet()
  */
@@ -159,4 +176,15 @@ function View($name, $isGlobal = false)
 function BlockSet($name)
 {
    return Loader::blockSet($name);
+}
+
+/*
+ * Extension Extension(string $name)
+ * 
+ * Handy shortcut for Loader::extension()
+ */
+
+function Extension($name)
+{
+   return Loader::extension($name);
 }

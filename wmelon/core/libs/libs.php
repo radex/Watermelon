@@ -23,7 +23,7 @@
 include 'DB/DB.php';
 include 'Registry/Registry.php';
 include 'Loader.php';
-include 'PluginsCenter.php';
+include 'EventCenter.php';
 
 // testing&development stuff
 
@@ -39,7 +39,7 @@ include 'testing/Benchmark.php';
 
 include 'headers/controller.php';
 include 'headers/model.php';
-include 'headers/plugin.php';
+include 'headers/extension.php';
 include 'headers/blockset.php';
 include 'headers/skin.php';
 include 'headers/view.php';

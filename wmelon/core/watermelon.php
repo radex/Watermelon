@@ -227,15 +227,33 @@ class Watermelon
             'test' => array('test', false),
             'test2' => array('test', true),
          );
+      $modulesList->extensions = array
+         (
+            'test' => array('test', false),
+            'test2' => array('test', true),
+         );
       
       Registry::create('wmelon.modulesList',       $modulesList, true, 'Watermelon');
       Registry::set('wmelon.modulesList', $modulesList);
       self::$modulesList = $modulesList;
       
+      $autoload = array('test', 'test2');
+      
+      Registry::create('wmelon.autoload', $autolaod, true, 'Watermelon');
+      Registry::set('wmelon.autoload', $autoload);
+      
       Registry::create('wmelon.controllerHandler', null,    true, 'Watermelon');
       Registry::set('wmelon.controllerHandler', 'cnthnd');
       Registry::create('wmelon.defaultController', 'test',  true, 'Watermelon');
       Registry::set('wmelon.defaultController', 'test');
+      
+      // auto-loading extensions
+      
+      foreach($autoload as $extensionName)
+      {
+         $extension = Loader::extension($extensionName);
+         $extension->onAutoload();
+      }
    }
    
    /*

@@ -18,7 +18,7 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class PluginsCenter
+class EventCenter
 {
    private static $eventHandlers;
    

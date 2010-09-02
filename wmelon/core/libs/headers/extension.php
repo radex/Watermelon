@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2008 Radosław Pietruszewski.
+ //  Copyright 2008-2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -18,11 +18,27 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-abstract class Plugin
+/*
+ * abstract class Extension
+ * 
+ * Watermelon Extension base class
+ */
+
+abstract class Extension
 {
-   function __construct()
+   public function __construct()
    {
       $this->db   = new DB();
       $this->load = new Loader();
    }
+   
+   /*
+    * public void onAutoload()
+    * 
+    * Function, that will be called on plugin autoload
+    * 
+    * Override it, if you need to do something on extensions auto-loading (but not on normal loading)
+    */
+   
+   public function onAutoload(){}
 }
