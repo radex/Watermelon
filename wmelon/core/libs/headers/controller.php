@@ -18,11 +18,18 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+/*
+ * abstract class Controller
+ * 
+ * Controllers base class
+ */
+
 abstract class Controller
 {
    public function __construct()
    {
-      $this->db    = new DB();
-      $this->load  = new Loader();
+      $this->db       = new DB();
+      $this->load     = new Loader();
+      $this->registry = new Registry();
    }
 }

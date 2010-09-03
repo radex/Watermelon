@@ -38,6 +38,18 @@ class test_Controller extends Controller
       $view2->display();
    }
    
+   function dbtest_action()
+   {
+      /*
+      define('DBTEST','');
+      $arg1 = '"Blah blah %2"';
+      $arg2 = '"Foo bar %1"';
+      
+      DB::query("%1    %2 fooo %1", $arg1, $arg2);
+      define('AFTER','');
+      */
+   }
+   
    function _actionHandler_()
    {
       echo str_repeat('actionhnd!', 5);

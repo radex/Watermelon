@@ -40,25 +40,23 @@ class DBResult
    }
    
    /*
-    * public object toObj()
-    * public object $object
+    * public object fetchObject()
     * 
-    * Returns data as an object
+    * Fetches a row as an object
     */
    
-   public function toObj()
+   public function fetchObject()
    {
       return mysql_fetch_object($this->res);
    }
    
    /*
-    * public array toArray()
-    * public array $array
+    * public array fetchArray()
     * 
-    * Returns data as an array
+    * Fetches a row as an array
     */
    
-   public function toArray()
+   public function fetchArray()
    {
       return mysql_fetch_array($this->res);
    }
@@ -80,8 +78,6 @@ class DBResult
       switch($name)
       {
          case 'rows':   return $this->rows();
-         case 'object': return $this->toObj();
-         case 'array':  return $this->toArray();
          case 'exists': return $this->exists();
       }
    }

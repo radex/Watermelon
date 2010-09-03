@@ -131,7 +131,7 @@ class Registry
       if(self::$items[$name]->isPersistent && !self::$items[$name]->isSynced)
       {
          $value = DB::query("SELECT `registry_value` FROM `__registry` WHERE `registry_name` = '%1'", $name);
-         $value = $value->toObj()->registry_value;
+         $value = $value->fetchObject()->registry_value;
          $value = unserialize($value); // value saved in database is serialized, so we have to unserialize it
          
          self::$items[$name]->value    = $value;

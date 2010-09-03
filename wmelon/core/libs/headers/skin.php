@@ -18,6 +18,12 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+/*
+ * abstract class Skin
+ * 
+ * Skins base class
+ */
+
 abstract class Skin
 {
    /*

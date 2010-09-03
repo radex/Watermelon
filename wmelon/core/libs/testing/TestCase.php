@@ -49,7 +49,11 @@ abstract class TestCase
       UnitTester::nextTest();
    }
    
-   // TODO: make it global and more universal (in name)
+   /*
+    * public array keyValueToMethodArgs($key, $value)
+    * 
+    * Converts key and value from array item to method name and method arguments
+    */
    
    public function keyValueToMethodArgs($key, $value)
    {

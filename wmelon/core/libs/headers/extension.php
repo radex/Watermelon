@@ -21,15 +21,16 @@
 /*
  * abstract class Extension
  * 
- * Watermelon Extension base class
+ * Extensions base class
  */
 
 abstract class Extension
 {
    public function __construct()
    {
-      $this->db   = new DB();
-      $this->load = new Loader();
+      $this->db       = new DB();
+      $this->load     = new Loader();
+      $this->registry = new Registry();
    }
    
    /*

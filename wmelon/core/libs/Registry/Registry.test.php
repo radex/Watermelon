@@ -609,18 +609,7 @@ class Registry_TestCase extends TestCase
          
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// cleaning up
          
-         $maxItem = 16;
-         $nonStandardItems = array('4.5');
-         
-         for($i = 1; $i <= $maxItem; $i++)
-         {
-            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $i);
-         }
-         
-         foreach($nonStandardItems as $item)
-         {
-            DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $item);
-         }
+         $this->cleanDB();
          
          //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// these are much more precise
 
@@ -628,7 +617,7 @@ class Registry_TestCase extends TestCase
 
          $r->create('__8.8', array('foo', 'bar'), true);
 
-         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.8')->object->registry_value;
+         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.8')->fetchObject()->registry_value;
 
          assert(unserialize($g8t8) === array('foo', 'bar'));
 
@@ -638,7 +627,7 @@ class Registry_TestCase extends TestCase
 
          $r->create('__8.9', 'test', true);
 
-         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.9')->object->registry_value;
+         $g8t8 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.9')->fetchObject()->registry_value;
 
          assert(unserialize($g8t8) === 'test');
 
@@ -660,7 +649,7 @@ class Registry_TestCase extends TestCase
          
          $r->create('__8.11', 'bar', true);
          
-         $g8t11 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.11')->object->registry_value;
+         $g8t11 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.11')->fetchObject()->registry_value;
 
          assert(unserialize($g8t11) === 'foo');
 
@@ -671,7 +660,7 @@ class Registry_TestCase extends TestCase
          $r->create('__8.12', 'foo', true);
          $r->set('__8.12', 'bar');
          
-         $g8t12 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.12')->object->registry_value;
+         $g8t12 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.12')->fetchObject()->registry_value;
 
          assert(unserialize($g8t12) === 'bar');
 
@@ -695,7 +684,7 @@ class Registry_TestCase extends TestCase
          $r->create('__8.14', '2', true);
          $r->set('__8.14', '3');
          
-         $g8t14 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.14')->object->registry_value;
+         $g8t14 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.14')->fetchObject()->registry_value;
 
          assert(unserialize($g8t14) === '3');
          
@@ -720,6 +709,26 @@ class Registry_TestCase extends TestCase
          $g8t16 = DB::query("SELECT * FROM `__registry` WHERE `registry_name` = '%1'", '__8.16')->rows();
 
          assert($g8t16 === 0);
+         
+         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-// cleaning up
+         
+         $this->cleanDB();
+      }
+   }
+   
+   private function cleanDB()
+   {
+      $maxItem = 16;
+      $nonStandardItems = array('4.5');
+      
+      for($i = 1; $i <= $maxItem; $i++)
+      {
+         DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $i);
+      }
+      
+      foreach($nonStandardItems as $item)
+      {
+         DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", '__8.' . $item);
       }
    }
 }

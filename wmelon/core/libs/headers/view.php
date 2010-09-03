@@ -21,7 +21,7 @@
 /*
  * class View
  * 
- * View object
+ * Object representating view
  * 
  * Notice that you don't create any View objects. You get them from Loader::view(), or its shortcut view().
  */

@@ -100,6 +100,8 @@ class DB
          $arg = mysql_real_escape_string($args[$i]);
          
          $query = str_replace('%' . $i, $arg, $query);
+         
+         //FIXME: if argument contains "%x", it will be replaced too. I'll probably have to use strpos to determine argument placeholders position first, and then replace them. Or write a simple parser.
       }
       
       // saving a query if debug mode is on, and query is not made in unit test

@@ -13,23 +13,23 @@ Step one
 
 (not necessarily in this order)
 
-1. Seriously refactor Watermelon class (working on it)
-2. Seriously refactor DB (done!)
-3. Rewrite Loader (soon)
-4. Rewrite URL (soon)
-5. Write Registry (done!)
-6. Create unit testing kit (done!)
-7. Refactor helpers (working on it)
-8. Write test case for:
-   * DB (soon)
+1. (Done!) Seriously refactor Watermelon class
+2. (Done!) Seriously refactor DB
+3. (Done!) Rewrite Loader
+4. (Done!) Rewrite URL
+5. (Done!) Write Registry
+6. (Done!) Create unit testing kit
+7. (Done!) Implement new modules system
+8. (Done!) Implement new themes system
+9. Write Cache
+10. Write multi-language support
+11. Refactor helpers
+12. Write test case for:
+   * DB
    * URL
    * Loader
-   * Registry (done!)
-   * helpers (soon)
-9. Design new modules system (soon)
-10. Implement new modules system
-11. Design new themes system (soon)
-12. Implement new themes system
+   * (Done!) Registry
+   * helpers
 
 Step two
 --------

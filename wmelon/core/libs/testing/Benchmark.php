@@ -91,7 +91,7 @@ class Benchmark
    {
       $timesRes = DB::query("SELECT `benchmark_value` FROM `__benchmark` WHERE `benchmark_name` = '%1'", $benchmarkName);
       
-      while($time = $timesRes->toObj())
+      while($time = $timesRes->fetchObject())
       {
          $times[] = $time->benchmark_value;
       }
