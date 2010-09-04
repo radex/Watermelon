@@ -143,6 +143,11 @@ class Loader
       
       return new $className;
    }
+   
+   public static function translation($module)
+   {
+      //Translations::parseTranslationFile(WM_Modules . $module . 'translations/' . $module . 'en' . '.php');
+   }
 }
 
 /*
