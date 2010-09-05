@@ -51,18 +51,94 @@ class Translations
    }
    
    /*
-    * public static void addTextTranslation(string $scope, string $original, string $translationText)
+    * public static void addTextTranslation(string $scope, string $original, string $translationText[, bool $return = false])
     * 
     * Adds text-based translation
     * 
     * string $scope           - scope of translation (module or library name)
     * string $original        - original text to be translated (text used when calling tr/gtr)
     * string $translationText - translated text
+    * bool   $return = false  - if true, instead of adding translation, translation code will be returned
     */
    
    public static function addTextTranslation($scope, $original, $translationText)
    {
+      $translationCode = 'return \''; // output translation code
+      $argNumState     = false;       // TRUE when collecting numbers after '%' sign
+      $argNumber       = '';          // arg number (figures after '%' sign)
       
+      for($i = 0, $j = strlen($translationText); $i < $j; $i++)
+      { 
+         $char         = $translationText[$i];
+         $prevChar     = $translationText[$i - 1];
+         $prevPrevChar = $translationText[$i - 2];
+         $nextChar     = $translationText[$i + 1];
+         
+         
+         
+         // if collecting arg number figures
+         
+         if($argNumState)
+         {
+            // if last char
+
+            if($i == $j - 1)
+            {
+               $lastChar = true;
+            }
+            
+            // if first figure; validation is already done
+            
+            if($argNumber == '')
+            {
+               $argNumber .= $char;
+               
+               if($lastChar)
+               {
+                  $translationCode .= $argNumber . '].\'';
+               }
+               
+               continue;
+            }
+            
+            // if number
+            
+            if($char >= '0' && $char <= '9')
+            {
+               $argNumber .= $char;
+               
+               if($lastChar)
+               {
+                  $translationCode .= $argNumber . '].\'';
+               }
+               
+               continue;
+            }
+            else
+            {
+               $argNumState      = false;
+               $translationCode .= $argNumber . '].\'';
+               $argNumber        = '';
+            }
+         }
+         
+         // if current char is '%', previous char isn't '\' (or two previous chars are '\\'), and next char is a number
+         
+         if($char == '%' && ($prevChar != '\\' || $prevPrevChar == '\\') && $nextChar >= '1' && $nextChar <= '9')
+         {
+            $translationCode .= '\'.$arg[';
+            $argNumState = true;
+            continue;
+         }
+         
+         // if just a text char
+         
+         $translationCode .= $char;
+      }
+      
+      $translationCode .= '\';';
+      
+      var_dump($translationCode);
    }
    
    /*
@@ -77,48 +153,76 @@ class Translations
    
    public static function addCodeTranslation($scope, $original, $translationCode)
    {
-      
+      self::$translations[$scope][$original] = $translationCode;
    }
    
    /*
-    * public static string translate(string $scope, string $text)
+    * public static string translate(string $scope, string $text[, $arg1[, $arg2[, ...]]])
     * 
     * Translates text
     * 
     * string $scope - scope of translation (module or library name)
     * string $text  - text to be translated
+    * mixed  $args  - parameters, that will be passed to translation
     * 
     * Once again - don't call it explicitly, use gtr() or tr() instead
     */
    
    public static function translate($scope, $text)
    {
+      // composing an array of translation parameters
       
+      $args = func_get_args();
+      array_shift($args);         // scope
+      array_shift($args);         // text
+      array_unshift($args, null); // args will start with 1 to maintain consistency with text translations
+      
+      //TODO: if doesn't exist
+      
+      // translating
+      
+      return eval(self::$translations[$scope][$text]);
    }
 }
 
+//--
+
+Translations::addCodeTranslation('testScope', 'foobar', 'return "foo:" . $args[1] . ", bar:" . $args[2];');
+var_dump(gtr('testScope', 'foobar', 10, 15));
+
+$tt = '%1F\\\\o \b \\\\%123,
+ \%1%1 %F %0 %10 %1';
+
+var_dump($tt);
+
+Translations::addTextTranslation(null,null,$tt,true);
+
+//--
+
 /*
- * string gtr(string $scope, string $text)
+ * string gtr(string $scope, string $text[, $arg1[, $arg2[, ...]]])
  * 
  * Translates text
  * 
  * string $scope - scope of translation (module or library name)
  * string $text  - text to be translated
+ * mixed  $args  - parameters, that will be passed to translation
  * 
  * In modules, use tr instead
  */
 
 function gtr($scope, $text)
 {
-   
+   return call_user_func_array(array('Translations', 'translate'), func_get_args());
 }
 
 /*
- * string tr(string $text)
+ * string tr(string $text[, $arg1[, $arg2[, ...]]])
  * 
  * Translates text from current module scope
  * 
  * string $text - text to be translated
+ * mixed  $args  - parameters, that will be passed to translation
  * 
  * Use it in modules
  */
@@ -126,5 +230,8 @@ function gtr($scope, $text)
 
 function tr($text)
 {
+   $args = func_get_args();
+   array_unshift($args, Watermelon::$moduleName);
    
+   return call_user_func_array(array('Translations', 'translate'), func_get_args());
 }
