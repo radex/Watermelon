@@ -144,9 +144,17 @@ class Loader
       return new $className;
    }
    
-   public static function translation($module)
+   /*
+    * public static void translation(string $moduleName)
+    * 
+    * Loads translations file for $moduleName
+    */
+   
+   public static function translation($moduleName)
    {
-      //Translations::parseTranslationFile(WM_Modules . $module . 'translations/' . $module . 'en' . '.php');
+      $moduleName = strtolower($moduleName);
+      
+      Translations::parseTranslationFile(WM_Modules . $moduleName . '/languages/' . $moduleName . '.' . 'en' . '.php', $moduleName);
    }
 }
 

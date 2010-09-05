@@ -40,14 +40,52 @@ class Translations
    private static $translations = array();
    
    /*
-    * public static void/array parseTranslationFile(string $filePath[, bool $return = false])
+    * public static void/array parseTranslationFile(string $filePath, string $scope[, bool $return = false])
     * 
-    * Parses translation file from $filePath, and adds translations from it if $return == false, or returns translation codes otherwise (used by caching engine)
+    * Parses translation file from $filePath, and adds translations from it to $scope if $return == false, or returns translation codes otherwise (used by caching engine and test case)
     */
    
-   public static function parseTranslationFile($filePath, $return = false)
+   public static function parseTranslationFile($filePath, $scope, $return = false)
    {
+      $file = file_get_contents($filePath);
+      $file = str_replace('<?exit?>', '', $file); // deleting < ?exit? > sentence
+      $xml  = new SimpleXMLElement($file);
       
+      $translations = array();
+      
+      // processing XML tree
+      
+      foreach($xml->item as $item)
+      {
+         // if text translation, processing to code translation first
+         
+         if($item->translation['type'] == 'text')
+         {
+            $code = self::addTextTranslation(null, null, (string) $item->translation, true);
+         }
+         else
+         {
+            $code = (string) $item->translation;
+         }
+         
+         $translations[] = array((string) $item->original, $code);
+      }
+      
+      // returning translation codes
+      
+      if($return)
+      {
+         return $translations;
+      }
+      
+      // or adding translations
+      
+      foreach($translations as $item)
+      {
+         list($original, $translation) = $item;
+         
+         self::addCodeTranslation($scope, $original, $translation);
+      }
    }
    
    /*
@@ -61,8 +99,10 @@ class Translations
     * bool   $return = false  - if true, instead of adding translation, translation code will be returned
     */
    
-   public static function addTextTranslation($scope, $original, $translationText)
+   public static function addTextTranslation($scope, $original, $translationText, $return = false)
    {
+      // processing text translation into code
+      
       $translationCode = 'return \''; // output translation code
       $argNumState     = false;       // TRUE when collecting numbers after '%' sign
       $argNumber       = '';          // arg number (figures after '%' sign)
@@ -73,8 +113,6 @@ class Translations
          $prevChar     = $translationText[$i - 1];
          $prevPrevChar = $translationText[$i - 2];
          $nextChar     = $translationText[$i + 1];
-         
-         
          
          // if collecting arg number figures
          
@@ -126,7 +164,7 @@ class Translations
          
          if($char == '%' && ($prevChar != '\\' || $prevPrevChar == '\\') && $nextChar >= '1' && $nextChar <= '9')
          {
-            $translationCode .= '\'.$arg[';
+            $translationCode .= '\'.$args[';
             $argNumState = true;
             continue;
          }
@@ -138,7 +176,16 @@ class Translations
       
       $translationCode .= '\';';
       
-      var_dump($translationCode);
+      // adding or returning translation code
+      
+      if($return)
+      {
+         return $translationCode;
+      }
+      else
+      {
+         self::addCodeTranslation($scope, $original, $translationCode);
+      }
    }
    
    /*
@@ -190,12 +237,15 @@ class Translations
 Translations::addCodeTranslation('testScope', 'foobar', 'return "foo:" . $args[1] . ", bar:" . $args[2];');
 var_dump(gtr('testScope', 'foobar', 10, 15));
 
-$tt = '%1F\\\\o \b \\\\%123,
- \%1%1 %F %0 %10 %1';
+Translations::addTextTranslation('testScope', 'test', 'Apples: %1, Watermelons: %2');
+var_dump(gtr('testScope', 'test', 1, 60));
 
-var_dump($tt);
+Loader::translation('test');
 
-Translations::addTextTranslation(null,null,$tt,true);
+var_dump(gtr('test', 'He had %1 apples and %2 watermelons', 50, 1050));
+var_dump(gtr('test', 'He liked/didn\'t like watermelons', true));
+var_dump(gtr('test', 'He liked/didn\'t like watermelons', false));
+
 
 //--
 
@@ -233,5 +283,5 @@ function tr($text)
    $args = func_get_args();
    array_unshift($args, Watermelon::$moduleName);
    
-   return call_user_func_array(array('Translations', 'translate'), func_get_args());
+   return call_user_func_array(array('Translations', 'translate'), $args);
 }
