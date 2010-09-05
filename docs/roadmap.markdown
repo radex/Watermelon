@@ -22,7 +22,7 @@ Step one
 7. (Done!) Implement new modules system
 8. (Done!) Implement new themes system
 9. (Done!) Write multi-language support
-9. Write Cache
+10. Write Cache
 11. Refactor helpers
 12. Write test case for:
    * DB
@@ -34,13 +34,14 @@ Step one
 Step two
 --------
 
-1. Blog/news
-2. Comments
-3. Pages
-3. HTML/Textile/Markdown
-4. SyntaxHighlighter
-5. Spam checking
-6. Some basic skin/theme
+1. Installer
+2. Blog/news
+3. Comments
+4. Pages
+5. HTML/Textile/Markdown
+6. SyntaxHighlighter
+7. Spam checking
+8. Some basic skin/theme
 
 Step three
 ----------

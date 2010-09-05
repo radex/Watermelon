@@ -18,27 +18,91 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+include 'CacheDriver.php';
+
+/*
+ * class Cache
+ * 
+ * Access to cache
+ */
+
 class Cache
 {
-   public static function fetch($type, $id); // fetch? get? retrieve? | type? engine? driver? | id? input?
-   public static function set($type, $id, $content); // content? value? output?
-   public static function delete($type, $id);
-   public static function clear($type, $type, ...);
-   public static function clearAll();
+   /*
+    * public static mixed fetch(string $type, mixed $id)
+    * 
+    * Returns contents of $id item from $type cache
+    * 
+    * string $type - type of cache
+    * mixed  $id   - name of item in cache (usually string)
+    */
    
-   public static function registerDriver($type, $driverObject); // pass by object? by name (and static methods there)?
-}
-
-// cache drivers as delegates (yep, Cocoa habit)
-// or maybe not...
-
-interface CacheDriver
-{
-   public function cache_fetch($id); // only id? or perhaps type too (multiple drivers in same class)?
-   public function cache_set($id, $content);
-   public function cache_delete($id);
-   public function cache_clear();
+   public static function fetch($type, $id)
+   {
+      
+   }
    
-   public function cache_filterID($id); // changing ID (which might contain non-ASCII characters) to something more certain (like hash) - it's the point, where inheritance (instead of implementing interface) would be better
-   public function cache_expires();     // how long to retain cache item before auto-deletion [it could also be variable]
+   /*
+    * public static void save(string $type, mixed $id, mixed $content)
+    * 
+    * Saves $content in $id item in $type cache
+    * 
+    * string $type    - type of cache
+    * mixed  $id      - name of item in cache (usually string)
+    * mixed  $content - content to be saved in specified item (usually string)
+    */
+   
+   public static function save($type, $id, $content)
+   {
+      
+   }
+   
+   /*
+    * public static void delete(string $type, mixed $id[, mixed $id[, ...]])
+    * 
+    * Deletes $id item(s) in $type cache
+    * 
+    * string $type - type of cache
+    * mixed  $id   - name of item in cache (usually string; you can specify more than one)
+    */
+   
+   public static function delete($type)
+   {
+      
+   }
+   
+   /*
+    * public static void clear(string $type[, string $type[, ...]])
+    * 
+    * Clears $type cache(s)
+    * 
+    * string $type - type of cache (you can specify more than one)
+    */
+   
+   public static function clear()
+   {
+      
+   }
+   
+   /*
+    * public static void clearAll()
+    * 
+    * Clears all caches
+    */
+   
+   public static function clearAll()
+   {
+      
+   }
+   
+   /*
+    * public static void registerDriver(string $type, CacheDriver $driverObject)
+    * 
+    * Registers $driverObject as Cache driver for $type
+    */
+   
+   public static function registerDriver($type, CacheDriver $driverObject)
+   {
+      
+   }
 }

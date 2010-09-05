@@ -25,6 +25,7 @@ include 'Registry/Registry.php';
 include 'Loader.php';
 include 'EventCenter.php';
 include 'Translations.php';
+include 'Cache/Cache.php';
 
 // testing&development stuff
 
