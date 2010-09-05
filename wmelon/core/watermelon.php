@@ -68,6 +68,14 @@ class Watermelon
    public static $modulesList;          // TODO: complete documentation when done
    
    /*
+    * public static string $siteURL;
+    * 
+    * Base URL for website pages
+    */
+   
+   public static $siteURL;
+   
+   /*
     * public static void displayNoPageFoundError()
     * 
     * Loads 'e404' controller ("no page found" page)
@@ -93,6 +101,18 @@ class Watermelon
    public static function run()
    {
       self::prepare();
+      self::config();
+      
+      // auto-loading extensions
+      
+      foreach(Registry::get('wmelon.autoload') as $extensionName)
+      {
+         $extension = Loader::extension($extensionName);
+         $extension->onAutoload();
+      }
+      
+      //--
+      
       self::loadController();
       
       // tests
@@ -207,9 +227,16 @@ class Watermelon
       
       Registry::create('wmelon.db.config', ToObject($dbConfig), false, 'DB');
       DB::connect();
-      
-      // other config
-      
+   }
+   
+   /*
+    * private static void config()
+    * 
+    * Loading configuration
+    */
+   
+   private static function config()
+   {
       $modulesList = new stdClass;
       $modulesList->controllers = array
          (
@@ -247,13 +274,11 @@ class Watermelon
       Registry::create('wmelon.defaultController', 'test',  true, 'Watermelon');
       Registry::set('wmelon.defaultController', 'test');
       
-      // auto-loading extensions
+      $siteURL = 'http://localhost/w/index.php/';
       
-      foreach($autoload as $extensionName)
-      {
-         $extension = Loader::extension($extensionName);
-         $extension->onAutoload();
-      }
+      Registry::create('wmelon.siteURL', $siteURL,  true, 'Watermelon');
+      Registry::set('wmelon.siteURL', $siteURL);
+      self::$siteURL = $siteURL;
    }
    
    /*
@@ -455,8 +480,10 @@ class Watermelon
       
       // replacing made in simple manner links into HTML
       
-      // $content = str_replace('href="$/',   'href="'   . WM_SITEURL, $content);
-      // $content = str_replace('action="$/', 'action="' . WM_SITEURL, $content);
+      $content = str_replace('href="$/',   'href="'   . Watermelon::$siteURL, $content);
+      $content = str_replace('action="$/', 'action="' . Watermelon::$siteURL, $content);
+      
+      //---
       
       define('WM_SkinPath', WM_Modules . 'wcmslay/');
       define('WM_THEMEURL', 'http://localhost/w/wmelon/modules/wcmslay/');

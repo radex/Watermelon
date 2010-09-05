@@ -154,7 +154,7 @@ class Loader
    {
       $moduleName = strtolower($moduleName);
       
-      Translations::parseTranslationFile(WM_Modules . $moduleName . '/languages/' . $moduleName . '.' . 'en' . '.php', $moduleName);
+      Translations::parseTranslationFile(WM_Modules . $moduleName . '/languages/' . $moduleName . '.' . 'en' . '.php', $moduleName); // TODO: store language in DB
    }
 }
 

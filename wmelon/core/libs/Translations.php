@@ -232,23 +232,6 @@ class Translations
    }
 }
 
-//--
-
-Translations::addCodeTranslation('testScope', 'foobar', 'return "foo:" . $args[1] . ", bar:" . $args[2];');
-var_dump(gtr('testScope', 'foobar', 10, 15));
-
-Translations::addTextTranslation('testScope', 'test', 'Apples: %1, Watermelons: %2');
-var_dump(gtr('testScope', 'test', 1, 60));
-
-Loader::translation('test');
-
-var_dump(gtr('test', 'He had %1 apples and %2 watermelons', 50, 1050));
-var_dump(gtr('test', 'He liked/didn\'t like watermelons', true));
-var_dump(gtr('test', 'He liked/didn\'t like watermelons', false));
-
-
-//--
-
 /*
  * string gtr(string $scope, string $text[, $arg1[, $arg2[, ...]]])
  * 

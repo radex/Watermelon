@@ -4,10 +4,12 @@ class test_Controller extends Controller
 {
    function index_action($foo, $bar, $a = 5)
    {
-      echo str_repeat('index!', 5);
+      echo '<a href="$/test/modules">Modules tests</a><br>';
+      echo '<a href="$/test/translations">Translations tests</a><br>';
+      echo '<a href="$/test/dbtest">DB tests</a><br>';
    }
    
-   function test_action()
+   function modules_action()
    {
       // Models
       
@@ -38,15 +40,28 @@ class test_Controller extends Controller
       $view2->display();
    }
    
+   function translations_action()
+   {
+      Translations::addCodeTranslation('testScope', 'foobar', 'return "foo:" . $args[1] . ", bar:" . $args[2];');
+      var_dump(gtr('testScope', 'foobar', 10, 15));
+
+      Translations::addTextTranslation('testScope', 'test', 'Apples: %1, Watermelons: %2');
+      var_dump(gtr('testScope', 'test', 1, 60));
+
+      Loader::translation('test');
+
+      var_dump(gtr('test', 'He had %1 apples and %2 watermelons', 50, 1050));
+      var_dump(gtr('test', 'He liked/didn\'t like watermelons', true));
+      var_dump(gtr('test', 'He liked/didn\'t like watermelons', false));
+   }
+   
    function dbtest_action()
    {
       /*
-      define('DBTEST','');
       $arg1 = '"Blah blah %2"';
       $arg2 = '"Foo bar %1"';
       
       DB::query("%1    %2 fooo %1", $arg1, $arg2);
-      define('AFTER','');
       */
    }
    

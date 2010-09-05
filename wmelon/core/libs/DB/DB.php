@@ -94,15 +94,9 @@ class DB
       // replacing input data palceholders (%number) with their (filtered by mysql_real_escape_string) values passed in arguments
       
       $args = func_get_args();
+      array_shift($args);
       
-      for($i = 1; $i < count($args); $i++) // i=1 to omit query
-      {
-         $arg = mysql_real_escape_string($args[$i]);
-         
-         $query = str_replace('%' . $i, $arg, $query);
-         
-         //FIXME: if argument contains "%x", it will be replaced too. I'll probably have to use strpos to determine argument placeholders position first, and then replace them. Or write a simple parser.
-      }
+      $query = self::replaceArgs($query, $args);
       
       // saving a query if debug mode is on, and query is not made in unit test
       
@@ -126,7 +120,7 @@ class DB
       
       throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error(self::$link) . '"', 'DB:queryError');
    }
-
+   
    /*
     * public static string lastError()
     * 
@@ -218,5 +212,87 @@ class DB
       //--
       
       return true;
+   }
+   
+   /*
+    * private static string replaceArgs(string $query, array $args)
+    * 
+    * Replaces %x in $query with contents of $args[x-1]
+    */
+   
+   private static function replaceArgs($query, $args)
+   {
+      $argNumState = false; // TRUE when collecting numbers after '%' sign
+      $argNumber   = '';    // arg number (figures after '%' sign)
+      
+      for($i = 0, $j = strlen($query); $i < $j; $i++)
+      { 
+         $char         = $query[$i];
+         $prevChar     = $query[$i - 1];
+         $prevPrevChar = $query[$i - 2];
+         $nextChar     = $query[$i + 1];
+         
+         // if collecting arg number figures
+         
+         if($argNumState)
+         {
+            // if last char
+
+            if($i == $j - 1)
+            {
+               $lastChar = true;
+            }
+            
+            // if first figure; validation is already done
+            
+            if($argNumber == '')
+            {
+               $argNumber .= $char;
+               
+               if($lastChar)
+               {
+                  $query2 .= $args[(int) $argNumber - 1];
+               }
+               
+               continue;
+            }
+            
+            // if number
+            
+            if($char >= '0' && $char <= '9')
+            {
+               $argNumber .= $char;
+               
+               if($lastChar)
+               {
+                  $query2 .= $args[(int) $argNumber - 1];
+               }
+               
+               continue;
+            }
+            else
+            {
+               $argNumState = false;
+               $query2     .= $args[(int) $argNumber - 1];
+               $argNumber   = '';
+            }
+         }
+         
+         // if current char is '%', previous char isn't '\' (or two previous chars are '\\'), and next char is a number
+         
+         if($char == '%' && ($prevChar != '\\' || $prevPrevChar == '\\') && $nextChar >= '1' && $nextChar <= '9')
+         {
+            $argNumState = true;
+            continue;
+         }
+         
+         // if just a text char
+         
+         $query2 .= $char;
+      }
+      
+      //--
+      
+      return $query2;
    }
 }

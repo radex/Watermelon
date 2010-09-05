@@ -21,8 +21,8 @@ Step one
 6. (Done!) Create unit testing kit
 7. (Done!) Implement new modules system
 8. (Done!) Implement new themes system
+9. (Done!) Write multi-language support
 9. Write Cache
-10. Write multi-language support
 11. Refactor helpers
 12. Write test case for:
    * DB
