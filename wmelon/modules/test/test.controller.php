@@ -7,6 +7,12 @@ class test_Controller extends Controller
       echo '<a href="$/test/modules">Modules tests</a><br>';
       echo '<a href="$/test/translations">Translations tests</a><br>';
       echo '<a href="$/test/dbtest">DB tests</a><br>';
+      echo '<a href="$/test/cache">Cache tests</a><br>';
+   }
+   
+   function cache_action()
+   {
+      
    }
    
    function modules_action()
