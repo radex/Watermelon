@@ -280,7 +280,9 @@ function HashString($string, $algo = null)
 {
    if($algo === null)
    {
-      $algo = Config::$hashAlgo;
+      //$algo = Config::$hashAlgo; //TODO: fix it
+      
+      $algo = 'sha1';
    }
    
    if(function_exists($algo))

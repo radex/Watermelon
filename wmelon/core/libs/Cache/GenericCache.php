@@ -30,8 +30,66 @@
 
 class GenericCache extends FileCache
 {
-   protected function directory()
+   protected static function directory()
    {
-      
+      return 'generic';
+   }
+   
+   /*
+    * public static string fetch(mixed $id)
+    * 
+    * Returns contents of $id item
+    * 
+    * mixed $id - name of item in cache
+    * 
+    * Throws [Cache:doesNotExist] exception if requested item doesn't exist
+    */
+   
+   public static function fetch($id)
+   {
+      return unserialize(parent::fetch($id));
+   }
+   
+   /*
+    * public static void save(mixed $id, mixed $content)
+    * 
+    * Saves $content in $id item
+    * 
+    * mixed $id      - name of item in cache
+    * mixed $content - content to be saved in specified item
+    */
+   
+   public static function save($id, $content)
+   {
+      parent::save($id, serialize($content));
+   }
+   
+   /*
+    * public static void delete(mixed $id[, mixed $id[, ...]])
+    * 
+    * Deletes $id item(s)
+    * 
+    * mixed $id - name of item in cache (you can specify more than one)
+    */
+   
+   // just inheriting
+   
+   /*
+    * public static abstract bool doesExist(mixed $id)
+    * 
+    * Returns whether $id item exists in cache
+    * 
+    * mixed $id - name of item in cache
+    */
+    
+    // just inheriting
+   
+   /*
+    * path for $id
+    */
+   
+   public static function itemPath($id)
+   {
+      return parent::itemPath(md5(serialize($id)));
    }
 }

@@ -30,35 +30,37 @@ include 'GenericCache.php';
 abstract class Cache
 {
    /*
-    * public static abstract mixed fetch(mixed $id)
+    * public static abstract mixed fetch($id)
     * 
     * Returns contents of $id item
     * 
-    * mixed $id - name of item in cache (usually string)
+    * $id - name of item in cache
+    * 
+    * Throws [Cache:doesNotExist] exception if requested item doesn't exist
     */
    
-   public abstract function fetch($id);
+   public static abstract function fetch($id);
    
    /*
-    * public static abstract void save(mixed $id, mixed $content)
+    * public static abstract void save($id, $content)
     * 
     * Saves $content in $id item
     * 
-    * mixed $id      - name of item in cache (usually string)
-    * mixed $content - content to be saved in specified item (usually string)
+    * $id      - name of item in cache
+    * $content - content to be saved in specified item
     */
    
-   public abstract function save($id, $content);
+   public static abstract function save($id, $content);
    
    /*
-    * public static abstract void delete(mixed $id[, mixed $id[, ...]])
+    * public static abstract void delete($id[, $id[, ...]])
     * 
     * Deletes $id item(s)
     * 
-    * mixed $id - name of item in cache (usually string; you can specify more than one)
+    * $id - name of item in cache (you can specify more than one)
     */
    
-   public abstract function delete($id);
+   public static abstract function delete($id);
    
    /*
     * public static abstract void clear()
@@ -66,10 +68,15 @@ abstract class Cache
     * Clears cache
     */
    
-   public abstract function clear();
+   public static abstract function clear();
    
    /*
-   public function filterID($id); // changing ID (which might contain non-ASCII characters) to something more certain (like hash) - it's the point, where inheritance (instead of implementing interface) would be better
-   public function expires();     // how long to retain cache item before auto-deletion [it could also be variable]
-   */
+    * public static abstract bool doesExist($id)
+    * 
+    * Returns whether $id item exists in cache
+    * 
+    * $id - name of item in cache
+    */
+   
+   public static abstract function doesExist($id);
 }

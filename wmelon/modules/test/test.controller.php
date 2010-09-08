@@ -1,5 +1,13 @@
 <?php
 
+class Test_Cache extends FileCache
+{
+   protected static function directory()
+   {
+      return 'test';
+   }
+}
+
 class test_Controller extends Controller
 {
    function index_action($foo, $bar, $a = 5)
@@ -12,7 +20,60 @@ class test_Controller extends Controller
    
    function cache_action()
    {
+      Test_Cache::save('foo', 'bar');
       
+      //--
+      
+      try
+      {
+         Test_Cache::fetch('asd');
+      }
+      catch(WMException $e)
+      {
+         if($e->stringCode() == 'Cache:doesNotExist')
+         {
+            echo 'Doesn\'t exist';
+         }
+         else
+         {
+            throw $e;
+         }
+      }
+      
+      //--
+      
+      var_dump(Test_Cache::fetch('foo'));
+      var_dump(Test_Cache::doesExist('foo'));
+      var_dump(Test_Cache::doesExist('dupah'));
+      
+      Test_Cache::save('foo1','');
+      Test_Cache::save('foo12','');
+      Test_Cache::save('foo13','');
+      Test_Cache::save('foo14','');
+      Test_Cache::save('foo15','');
+      
+      Test_Cache::delete('foo1', 'foo14', 'foo15');
+      Test_Cache::clear();
+      
+      //-----
+      
+      $c = new stdClass;
+      $c->foo = 'bar';
+      $c = array($c, 'foo');
+      
+      GenericCache::save(array('foo', 'bar'), $c);
+      
+      //--
+      
+      var_dump(GenericCache::fetch(array('foo', 'bar')));
+      var_dump(GenericCache::doesExist(array('foo', 'bar')));
+      var_dump(GenericCache::doesExist('dupah'));
+      
+      GenericCache::save('foo1', '');
+      GenericCache::save('foo2', '');
+      
+      GenericCache::delete('foo1', 'foo2');
+      GenericCache::clear();
    }
    
    function modules_action()

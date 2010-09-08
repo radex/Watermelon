@@ -29,48 +29,113 @@
 abstract class FileCache
 {
    /*
-    * protected abstract string directory()
+    * protected abstract static string directory()
     * 
     * Returns directory name to which cache items will be saved
     * 
     * Override it in your class
     */
    
-   protected abstract function directory();
+   protected abstract static function directory();
    
    /*
+    * public static string fetch(string $id)
+    * 
     * Returns contents of $id item
+    * 
+    * string $id - name of item in cache
+    * 
+    * Throws [Cache:doesNotExist] exception if requested item doesn't exist
     */
    
-   public function fetch($id)
+   public static function fetch($id)
    {
+      $path = static::itemPath($id);
       
+      if(!file_exists($path))
+      {
+         throw new WMException('Requested cache item does not exist', 'Cache:doesNotExist');
+      }
+      
+      include $path;
+      
+      return $contents;
    }
    
    /*
+    * public static void save(string $id, string $content)
+    * 
     * Saves $content in $id item
+    * 
+    * string $id      - name of item in cache
+    * string $content - content to be saved in specified item
     */
    
-   public function save($id, $content)
+   public static function save($id, $content)
    {
+      $fileContents = '<? $contents=\'' . $content . '\';';
       
+      file_put_contents(static::itemPath($id), $fileContents, LOCK_EX);
    }
    
    /*
+    * public static void delete(string $id[, string $id[, ...]])
+    * 
     * Deletes $id item(s)
+    * 
+    * string $id - name of item in cache (you can specify more than one)
     */
    
-   public function delete($id)
+   public static function delete($id1)
    {
-      
+      foreach(func_get_args() as $id)
+      {
+         unlink(static::itemPath($id));
+      }
    }
    
    /*
+    * public static void clear()
+    * 
     * Clears cache
     */
    
-   public function clear()
+   public static function clear()
    {
+      $files = FilesForDirectory(WM_Cache . static::directory() . '/');
       
+      foreach($files as $file)
+      {
+         unlink($file);
+      }
+   }
+   
+   /*
+    * public static abstract bool doesExist(string $id)
+    * 
+    * Returns whether $id item exists in cache
+    * 
+    * string $id - name of item in cache
+    */
+   
+   public static function doesExist($id)
+   {
+      if(file_exists(static::itemPath($id)))
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   /*
+    * path for $id item
+    */
+   
+   protected static function itemPath($id)
+   {
+      return WM_Cache . static::directory() . '/' . $id . '.php';
    }
 }
