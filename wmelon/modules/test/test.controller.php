@@ -52,6 +52,9 @@ class test_Controller extends Controller
       Test_Cache::save('foo14','');
       Test_Cache::save('foo15','');
       
+      Test_Cache::save('bar', 'some\'thing');
+      var_dump(Test_Cache::fetch('bar'));
+      
       Test_Cache::delete('foo1', 'foo14', 'foo15');
       Test_Cache::clear();
       

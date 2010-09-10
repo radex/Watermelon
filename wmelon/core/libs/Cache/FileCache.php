@@ -59,7 +59,7 @@ abstract class FileCache
       
       include $path;
       
-      return $contents;
+      return stripslashes($contents);
    }
    
    /*
@@ -73,6 +73,8 @@ abstract class FileCache
    
    public static function save($id, $content)
    {
+      $content = addslashes($content);
+      
       $fileContents = '<? $contents=\'' . $content . '\';';
       
       file_put_contents(static::itemPath($id), $fileContents, LOCK_EX);
