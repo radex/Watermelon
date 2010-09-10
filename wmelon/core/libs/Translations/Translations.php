@@ -26,6 +26,8 @@
  * Notice that you don't usually use this class explicitly. You only create translation files, and get translations using helpers tr() and gtr()
  */
 
+include 'TranslationsCache.php';
+
 class Translations
 {
    /*

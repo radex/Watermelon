@@ -77,6 +77,17 @@ class test_Controller extends Controller
       
       GenericCache::delete('foo1', 'foo2');
       GenericCache::clear();
+      
+      //-----
+      
+      $c = array();
+      $c[] = array("asddas'as das da's da's d'a\" asda sdasd", 'fofoofofof %1 asff %2 \%3');
+      $c[] = array('foo', 'baaarrr');
+      
+      TranslationsCache::save(array('test','pl'),$c);
+      //TranslationsCache::fetch(array('test','pl'));
+      
+      //var_dump(Translations::$translations);
    }
    
    function modules_action()

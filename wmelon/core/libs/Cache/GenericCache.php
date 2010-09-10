@@ -30,11 +30,6 @@
 
 class GenericCache extends FileCache
 {
-   protected static function directory()
-   {
-      return 'generic';
-   }
-   
    /*
     * public static string fetch(mixed $id)
     * 
@@ -82,7 +77,16 @@ class GenericCache extends FileCache
     * mixed $id - name of item in cache
     */
     
-    // just inheriting
+   // just inheriting
+   
+   /*
+    * cache directory name
+    */
+   
+   protected static function directory()
+   {
+      return 'generic';
+   }
    
    /*
     * path for $id
