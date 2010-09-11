@@ -26,7 +26,7 @@
 
 abstract class BlockSet
 {
-   function __construct()
+   public function __construct()
    {
       $this->db       = new DB();
       $this->load     = new Loader();

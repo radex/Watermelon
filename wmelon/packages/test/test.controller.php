@@ -88,6 +88,8 @@ class test_Controller extends Controller
       //TranslationsCache::fetch(array('test','pl'));
       
       //var_dump(Translations::$translations);
+      
+      TranslationsCache::delete(array('test','pl'));
    }
    
    function modules_action()

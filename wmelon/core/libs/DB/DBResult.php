@@ -18,6 +18,12 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+/*
+ * class DBResult
+ * 
+ * Class representing database query result
+ */
+
 class DBResult
 {
    public $res; // query result resource (returned by DB::query)
@@ -72,6 +78,10 @@ class DBResult
    {
       return (mysql_num_rows($this->res) == 0) ? false : true;
    }
+   
+   /*
+    * __get magic
+    */
    
    public function __get($name)
    {

@@ -18,6 +18,12 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+/*
+ * class EventCenter
+ * 
+ * Events management
+ */
+
 class EventCenter
 {
    private static $eventHandlers;

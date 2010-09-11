@@ -34,23 +34,7 @@ class Loader
    
    public static function model($name)
    {
-      $name      = strtolower($name);
-      $className = $name . '_Model';
-      
-      // return if already loaded
-      
-      if(class_exists($className))
-      {
-         return new $className;
-      }
-      
-      // loading model
-      
-      $pathInfo = Watermelon::$modulesList->models[$name];
-      
-      include WM_Modules . $pathInfo[0] . ($pathInfo[1] ? '/models/' : '/') . $name . '.model.php';
-      
-      return new $className;
+      return self::module($name, 'model');
    }
    
    /*
@@ -78,12 +62,12 @@ class Loader
       }
       else
       {
-         $module = Watermelon::$moduleName;
+         $module = Watermelon::$packageName;
       }
       
       // generating path
       
-      $path = WM_Modules . $module . '/views/' . $name . '.view.php';
+      $path = WM_Packages . $module . '/views/' . $name . '.view.php';
       
       // returning view object
       
@@ -98,23 +82,7 @@ class Loader
    
    public static function blockSet($name)
    {
-      $name      = strtolower($name);
-      $className = $name . '_BlockSet';
-      
-      // return if already loaded
-      
-      if(class_exists($className))
-      {
-         return new $className;
-      }
-      
-      // loading blockset
-      
-      $pathInfo = Watermelon::$modulesList->blocksets[$name];
-      
-      include WM_Modules . $pathInfo[0] . ($pathInfo[1] ? '/blocksets/' : '/') . $name . '.blockset.php';
-      
-      return new $className;
+      return self::module($name, 'blockset');
    }
    
    /*
@@ -125,23 +93,7 @@ class Loader
    
    public static function extension($name)
    {
-      $name      = strtolower($name);
-      $className = $name . '_Extension';
-      
-      // return if already loaded
-      
-      if(class_exists($className))
-      {
-         return new $className;
-      }
-      
-      // loading blockset
-      
-      $pathInfo = Watermelon::$modulesList->extensions[$name];
-      
-      include WM_Modules . $pathInfo[0] . ($pathInfo[1] ? '/extensions/' : '/') . $name . '.extension.php';
-      
-      return new $className;
+      return self::module($name, 'extension');
    }
    
    /*
@@ -154,7 +106,32 @@ class Loader
    {
       $moduleName = strtolower($moduleName);
       
-      Translations::parseTranslationFile(WM_Modules . $moduleName . '/languages/' . $moduleName . '.' . 'en' . '.php', $moduleName); // TODO: store language in DB
+      Translations::parseTranslationFile(WM_Packages . $moduleName . '/languages/' . $moduleName . '.' . WM_Lang . '.php', $moduleName);
+   }
+   
+   /*
+    * models, extensions, blocks
+    */
+   
+   private static function module($name, $typeName)
+   {
+      $name      = strtolower($name);
+      $className = $name . '_' . $typeName;
+      
+      // return if already loaded
+      
+      if(class_exists($className))
+      {
+         return new $className;
+      }
+      
+      // loading
+      
+      $pathInfo = Watermelon::$modulesList->{$typeName . 's'}[$name];
+      
+      include WM_Packages . $pathInfo[0] . ($pathInfo[1] ? '/' . $typeName . 's/' : '/') . $name . '.' . $typeName . '.php';
+      
+      return new $className;
    }
 }
 

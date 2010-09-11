@@ -266,7 +266,7 @@ function gtr($scope, $text)
 function tr($text)
 {
    $args = func_get_args();
-   array_unshift($args, Watermelon::$moduleName);
+   array_unshift($args, Watermelon::$packageName);
    
    return call_user_func_array(array('Translations', 'translate'), $args);
 }

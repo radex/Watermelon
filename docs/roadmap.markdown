@@ -22,14 +22,10 @@ Step one
 7. (Done!) Implement new modules system
 8. (Done!) Implement new themes system
 9. (Done!) Write multi-language support
-10. Write Cache
+10. (Done!) Write Cache
 11. Refactor helpers
-12. Write test case for:
-   * DB
-   * URL
-   * Loader
-   * (Done!) Registry
-   * helpers
+12. Re-refactor what needs still needs refactoring
+13. Write test cases for everything
 
 Step two
 --------

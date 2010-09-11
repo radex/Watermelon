@@ -3,7 +3,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <link rel="stylesheet" type="text/css" href="<?php echo WM_THEMEURL ?>style.css">
+   <link rel="stylesheet" type="text/css" href="<?php echo WM_SkinURL ?>style.css">
    <?=$this->drawHeadTags()?>
 </head>
 <body>
@@ -42,7 +42,7 @@
       Wygenerowano w: ∞ sekund :><br>
       segments:<?var_dump(Watermelon::$segments); ?><br>
       controller:<?var_dump(Watermelon::$controllerName); ?><br>
-      module:<?var_dump(Watermelon::$moduleName); ?><br>
+      package:<?var_dump(Watermelon::$packageName); ?><br>
       Wykonane zapytania:<br>
       <?php echo '<pre>' . htmlspecialchars(implode("\n", DB::$queriesArray)) . '</pre>'; ?><br>
       Błędy testów jednostkowych:<br>

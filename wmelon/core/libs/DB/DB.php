@@ -19,34 +19,15 @@
  //  
 
 /*
- * DB library
+ * class DB
  * 
- * communication with database
- * 
+ * communication with MySQL database
  */
-
-/*
-
-TODO:
-
-- write test case, and generally test it
-- perhaps some performance improvements (?)
-
-*/
 
 include 'DBResult.php';
 
 class DB
 {
-   
-   /*
-    * public static string[] $errorsArray
-    * 
-    * List of encountered errors
-    */
-   
-   public static $errorsArray = array();
-   
    /*
     * public static string[] $queriesArray
     * 
@@ -60,10 +41,10 @@ class DB
    //---
    
    private static $link;   // resource of database (returned by mysql_connect)
-   private static $prefix; // prefix of tables' names
+   private static $prefix; // table names prefix
    
    /*
-    * public static DBresult query(string $query[, string $arg1[, string $arg2[, ...]]])
+    * public static DBResult query(string $query[, string $arg1[, string $arg2[, ...]]])
     * 
     * Executes database query, and returns DBResult object as a result
     * 
@@ -71,16 +52,16 @@ class DB
     * 
     * QUERIES SYNTAX:
     * 
-    * Type tables' names using double underscore prefix
+    * Precede table names with double underscore
     * 
-    * Mark all input data (those we type in apostrophes) as %(number), and pass its value in $arg(number)
-    * All values passed in separate arguments are filtered by mysql_real_escape_string, so don't do this for yourself
+    * Mark all input data (those typed in apostrophes) as %(number), and pass their values in $arg(number)
+    * All values passed in arguments are filtered by mysql_real_escape_string
     *
     * For example:
     * 
     * DB::query("SELECT `id`, `password` FROM `__users` WHERE `nick` = '%1' AND `salt` = '%2'", 'radex', '86fcf28678ebe8a0');
     * 
-    * will be interpreted (assuming that tables' prefix is set to 'wcms_') as:
+    * will be interpreted (assuming that table prefix is set to 'wcms_') as:
     * 
     * "SELECT `id`, `password` FROM `wcms_users` WHERE `nick` = 'radex' AND `salt` = '86fcf28678ebe8a0'"
     */
@@ -98,7 +79,7 @@ class DB
       
       $query = self::replaceArgs($query, $args);
       
-      // saving a query if debug mode is on, and query is not made in unit test
+      // saving a query if debug mode is on, and query is not made during unit testing
       
       if(defined('WM_Debug') && !UnitTester::$areTestsRunning)
       {
@@ -114,31 +95,9 @@ class DB
          return new DBResult($queryResult);
       }
       
-      // on error: saving an error, and throwing an exception
-      
-      self::$errorsArray[] = mysql_error(self::$link);
+      // on error - throwing an exception
       
       throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error(self::$link) . '"', 'DB:queryError');
-   }
-   
-   /*
-    * public static string lastError()
-    * 
-    * Returns last encountered error, or FALSE if none was encountered
-    */
-
-   public static function lastError()
-   {
-      $errors = count(self::$errorsArray);
-      
-      if($errors > 0)
-      {
-         return self::$errorsArray[$errors - 1];
-      }
-      else
-      {
-         return false;
-      }
    }
    
    /*
@@ -169,33 +128,22 @@ class DB
     * public static void connect()
     * 
     * Connects with database. You don't need to do it for yourself.
-    * 
-    * Returns TRUE if connection was established correctly
-    * Returns FALSE if connection was already established
-    * 
-    * Throws an exception if connection was unsuccessful
     */
    
-   public static function connect()
+   public static function connect($host, $name, $user, $pass, $prefix)
    {
-      // return false, if connection was already established
+      // returning, if connection was already established
       
       if(self::$link !== null)
       {
-         return false;
+         return;
       }
       
-      // get database configuration from Registry
+      // establishing connection
       
-      $dbConfig = Registry::get('wmelon.db.config');
+      self::$link = @mysql_connect($host, $user, $pass);
       
-      Registry::invalidate('wmelon.db.config');
-      
-      // establish connection
-      
-      self::$link = @mysql_connect($dbConfig->host, $dbConfig->user, $dbConfig->pass);
-      
-      self::$prefix = $dbConfig->prefix;
+      self::$prefix = $prefix;
       
       // on errors
       
@@ -204,14 +152,10 @@ class DB
          throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:connectError');
       }
       
-      if(!@mysql_select_db($dbConfig->name))
+      if(!@mysql_select_db($name))
       {
          throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:selectError');
       }
-      
-      //--
-      
-      return true;
    }
    
    /*

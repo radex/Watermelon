@@ -25,31 +25,33 @@ class Watermelon
    /*
     * public static enum $appType
     * 
-    * Type of running application - either URI::AppType_Site (website) or URI::AppType_Admin (admin control panel)
-    * 
-    * Type is set to AppType_Admin if first segment is "admin", or AppType_Site otherwise
+    * Type of running application:
+    *    ::AppType_Site      - for website
+    *    ::AppType_Admin     - for admin control panel
+    *    ::AppType_Installer - for Watermelon installer
     */
    
    public static $appType;
    
-   const AppType_Site  = 1;
-   const AppType_Admin = 2;
+   const AppType_Site      = 1;
+   const AppType_Admin     = 2;
+   const AppType_Installer = 3;
    
    /*
     * public static string[] $segments
     * 
-    * Array of resource identificator segments, stripped from controller and action name (if available)
+    * Array of resource identificator segments, stripped from controller and action name
     */
    
    public static $segments = array();
    
    /*
-    * public static string $moduleName
+    * public static string $packageName
     * 
-    * Name of module currently running controller belongs to
+    * Name of package currently running controller belongs to
     */
    
-   public static $moduleName = '';
+   public static $packageName = '';
    
    /*
     * public static string $controllerName
@@ -68,14 +70,6 @@ class Watermelon
    public static $modulesList;          // TODO: complete documentation when done
    
    /*
-    * public static string $siteURL;
-    * 
-    * Base URL for website pages
-    */
-   
-   public static $siteURL;
-   
-   /*
     * public static void displayNoPageFoundError()
     * 
     * Loads 'e404' controller ("no page found" page)
@@ -83,9 +77,9 @@ class Watermelon
    
    public static function displayNoPageFoundError()
    {
-      include WM_Modules . 'watermelon/e404.controller.php';
+      include WM_Packages . 'watermelon/e404.controller.php';
       
-      self::$moduleName = 'watermelon';
+      self::$packageName = 'watermelon';
       self::$controllerName = 'e404';
       
       $controllerObj = new e404_Controller();
@@ -155,21 +149,20 @@ class Watermelon
          }
          
          $_POST    = array_map('stripslashes_deep', $_POST);
-         $_GET     = array_map('stripslashes_deep', $_GET);
          $_COOKIE  = array_map('stripslashes_deep', $_COOKIE);
          $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
       }
       
-      // base path
+      // paths
       
       $basePath = str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . '/';
       
-      // loading configuration
+      define('WM_BasePath', $basePath);
+      
+      // loading configuration, setting proper error reporting mode and debug constant
       
       include $basePath . 'config.php';
       
-      // setting proper error reporting mode, and debug constant in respect to internal debug level variable
-
       switch($debugLevel)
       {
          case 0:
@@ -188,55 +181,53 @@ class Watermelon
          break;
       }
       
-      // dividing URI
-      
-      self::divide();
-      
-      // saving database configuration to array (saving it to Registry happens later)
-      
-      $dbConfig = array
-         (
-            'host'   => $dbHost,
-            'user'   => $dbUser,
-            'pass'   => $dbPass,
-            'name'   => $dbName,
-            'prefix' => $dbPrefix
-         );
-      
-      unset($dbHost, $dbUser, $dbPass, $dbName, $dbPrefix);
-      
-      // paths
-      
-      define('WM_BasePath', $basePath);
-      define('WM_Core',     WM_BasePath . 'core/');
-      
-      define('WM_Libs',     WM_Core . 'libs/');
-      define('WM_Helpers',  WM_Core . 'helpers/');
-      define('WM_Tests',    WM_Core . 'tests/');
-      
-      define('WM_Modules',  WM_BasePath . 'modules/');
-      define('WM_Uploaded', WM_BasePath . 'uploaded/');
-      define('WM_Cache',    WM_BasePath . 'cache/');
-      
       // loading libraries and helpers
       
-      include WM_Libs    . 'libs.php';
-      include WM_Helpers . 'helpers.php';
+      include WM_BasePath . 'core/libs/libs.php';
+      include WM_BasePath . 'core/helpers/helpers.php';
       
-      // running DB
+      // running DB, and dividing URL
       
-      Registry::create('wmelon.db.config', ToObject($dbConfig), false, 'DB');
-      DB::connect();
+      DB::connect($dbHost, $dbName, $dbUser, $dbPass, $dbPrefix);
+      
+      self::divide();
    }
    
    /*
     * private static void config()
     * 
-    * Loading configuration
+    * Loads configuration, sets URL constants, etc
     */
    
    private static function config()
    {
+      $r = new Registry;
+      
+      // paths
+      
+      define('WM_Core',     WM_BasePath . 'core/');
+      
+      define('WM_Libs',         WM_Core . 'libs/');
+      define('WM_Helpers',      WM_Core . 'helpers/');
+      define('WM_CorePackages', WM_Core . 'corepackages/');
+      
+      define('WM_Packages', WM_BasePath . 'packages/');
+      define('WM_Uploaded', WM_BasePath . 'uploaded/');
+      define('WM_Cache',    WM_BasePath . 'cache/');
+      
+      // URL-s
+      
+      $r->create('wmelon.siteURL',   null, true);
+      $r->create('wmelon.systemURL', null, true);
+      
+      define('WM_SiteURL',   $r('wmelon.siteURL'));
+      define('WM_SystemURL', $r('wmelon.systemURL'));
+      
+      define('WM_PackagesURL',     WM_SystemURL . 'packages/');
+      define('WM_CorePackagesURL', WM_SystemURL . 'core/corepackages/');
+      
+      //----
+      
       $modulesList = new stdClass;
       $modulesList->controllers = array
          (
@@ -259,26 +250,36 @@ class Watermelon
             'test' => array('test', false),
             'test2' => array('test', true),
          );
+      $modulesList->skins = array
+         (
+            'wcmslay',
+         );
       
-      Registry::create('wmelon.modulesList',       $modulesList, true, 'Watermelon');
-      Registry::set('wmelon.modulesList', $modulesList);
+      $r->create('wmelon.modulesList', $modulesList, true);
+      $r->set('wmelon.modulesList', $modulesList);
       self::$modulesList = $modulesList;
+      
+      //----
       
       $autoload = array('test', 'test2');
       
-      Registry::create('wmelon.autoload', $autolaod, true, 'Watermelon');
-      Registry::set('wmelon.autoload', $autoload);
+      $r->create('wmelon.autoload', $autolaod, true);
       
-      Registry::create('wmelon.controllerHandler', null,    true, 'Watermelon');
-      Registry::set('wmelon.controllerHandler', 'cnthnd');
-      Registry::create('wmelon.defaultController', 'test',  true, 'Watermelon');
-      Registry::set('wmelon.defaultController', 'test');
+      $r->create('wmelon.controllerHandler', null,   true);
+      $r->create('wmelon.defaultController', 'e404', true);
       
-      $siteURL = 'http://localhost/w/index.php/';
+      //----
       
-      Registry::create('wmelon.siteURL', $siteURL,  true, 'Watermelon');
-      Registry::set('wmelon.siteURL', $siteURL);
-      self::$siteURL = $siteURL;
+      $r->create('wmelon.skin', 'wcmslay', true);
+      
+      define('WM_SkinPath', WM_Packages    . $r('wmelon.skin') . '/');
+      define('WM_SkinURL',  WM_PackagesURL . $r('wmelon.skin') . '/');
+      
+      //----
+      
+      $r->create('wmelon.lang', 'pl', true);
+      
+      define('WM_Lang', $r('wmelon.lang'));
    }
    
    /*
@@ -361,7 +362,7 @@ class Watermelon
       {
          // check if controller exists in modules list
          
-         $controllerDetails = list($controllerPath, self::$moduleName) = self::controllerDetails($controller);
+         $controllerDetails = list($controllerPath, self::$packageName) = self::controllerDetails($controller);
          
          if($controllerDetails != false)
          {
@@ -388,7 +389,7 @@ class Watermelon
       
       if($useDefaultController || $useControllerHandler)
       {
-         $controllerDetails = list($controllerPath, self::$moduleName) = self::controllerDetails($controller);
+         $controllerDetails = list($controllerPath, self::$packageName) = self::controllerDetails($controller);
          
          if($controllerDetails == false)
          {
@@ -450,7 +451,7 @@ class Watermelon
     * 
     * Returns controller details - path, and module name it belongs to
     * 
-    * Returned data is in format: array($path, $moduleName)
+    * Returned data is in format: array($path, $packageName)
     * 
     * Used by ::loadController()
     */
@@ -463,7 +464,7 @@ class Watermelon
       }
       
       $info  = self::$modulesList->controllers[$controllerName];
-      $path  = WM_Modules . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
+      $path  = WM_Packages . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
       
       return array($path, $info[0]);
    }
@@ -480,13 +481,10 @@ class Watermelon
       
       // replacing made in simple manner links into HTML
       
-      $content = str_replace('href="$/',   'href="'   . Watermelon::$siteURL, $content);
-      $content = str_replace('action="$/', 'action="' . Watermelon::$siteURL, $content);
+      $content = str_replace('href="$/',   'href="'   . WM_SiteURL, $content);
+      $content = str_replace('action="$/', 'action="' . WM_SiteURL, $content);
       
       //---
-      
-      define('WM_SkinPath', WM_Modules . 'wcmslay/');
-      define('WM_THEMEURL', 'http://localhost/w/wmelon/modules/wcmslay/');
       
       include WM_SkinPath . 'skin.php';
       
