@@ -70,6 +70,16 @@ class Watermelon
    public static $modulesList;          // TODO: complete documentation when done
    
    /*
+    * public static array $config
+    * 
+    * Watermelon configuration
+    * 
+    * DO NOT CHANGE IT!
+    */
+   
+   public static $config;
+   
+   /*
     * public static void displayNoPageFoundError()
     * 
     * Loads 'e404' controller ("no page found" page)
@@ -99,7 +109,7 @@ class Watermelon
       
       // auto-loading extensions
       
-      foreach(Registry::get('wmelon.autoload') as $extensionName)
+      foreach(self::$config['autoload'] as $extensionName)
       {
          $extension = Loader::extension($extensionName);
          $extension->onAutoload();
@@ -201,32 +211,9 @@ class Watermelon
    
    private static function config()
    {
-      $r = new Registry;
+      $w = array();      // array with Watermelon configuration
       
-      // paths
-      
-      define('WM_Core',     WM_BasePath . 'core/');
-      
-      define('WM_Libs',         WM_Core . 'libs/');
-      define('WM_Helpers',      WM_Core . 'helpers/');
-      define('WM_CorePackages', WM_Core . 'corepackages/');
-      
-      define('WM_Packages', WM_BasePath . 'packages/');
-      define('WM_Uploaded', WM_BasePath . 'uploaded/');
-      define('WM_Cache',    WM_BasePath . 'cache/');
-      
-      // URL-s
-      
-      $r->create('wmelon.siteURL',   null, true);
-      $r->create('wmelon.systemURL', null, true);
-      
-      define('WM_SiteURL',   $r('wmelon.siteURL'));
-      define('WM_SystemURL', $r('wmelon.systemURL'));
-      
-      define('WM_PackagesURL',     WM_SystemURL . 'packages/');
-      define('WM_CorePackagesURL', WM_SystemURL . 'core/corepackages/');
-      
-      //----
+      // ModulesList
       
       $modulesList = new stdClass;
       $modulesList->controllers = array
@@ -255,31 +242,75 @@ class Watermelon
             'wcmslay',
          );
       
-      $r->create('wmelon.modulesList', $modulesList, true);
-      $r->set('wmelon.modulesList', $modulesList);
-      self::$modulesList = $modulesList;
+      $w['modulesList'] = $modulesList;
       
-      //----
+      // other
       
-      $autoload = array('test', 'test2');
+      $w['autoload']          = array('test', 'test2');
+      $w['controllerHandler'] = null;
+      $w['defaultController'] = 'test';
       
-      $r->create('wmelon.autoload', $autolaod, true);
+      $w['siteURL']           = 'http://localhost/w/index.php/';
+      $w['systemURL']         = 'http://localhost/w/wmelon/';
       
-      $r->create('wmelon.controllerHandler', null,   true);
-      $r->create('wmelon.defaultController', 'e404', true);
+      $w['skin']              = 'wcmslay';
+      $w['lang']              = 'pl';
+      $w['algo']              = 'sha1';
       
-      //----
+      // frontend
       
-      $r->create('wmelon.skin', 'wcmslay', true);
+      $textMenus = array(array
+         (
+            array('Foo', '#foo', null),
+            array('Bar', '#bar', 'Bar!!!')
+         ));
       
-      define('WM_SkinPath', WM_Packages    . $r('wmelon.skin') . '/');
-      define('WM_SkinURL',  WM_PackagesURL . $r('wmelon.skin') . '/');
+      $blockMenus = array(array
+         (
+            array('Test::foo', 'test', 'foo', array()),
+            array('Test::bar', 'test', 'bar', array('foo', 'bar')),
+            array('Test2::foo2', 'test2', 'foo2', array()),
+            array('Test2::bar2', 'test2', 'bar2', array('foo2', 'bar2')),
+         ));
       
-      //----
+      $w['pageTitle']  = 'Tytuł podstrony';
+      $w['siteName']   = 'Nazwa strony';
+      $w['siteSlogan'] = 'Slogan strony';
+      $w['footer']     = 'Testowanie <em>stopki</em>…';
+      $w['blockMenus'] = $blockMenus;
+      $w['textMenus']  = $textMenus;
       
-      $r->create('wmelon.lang', 'pl', true);
+      // setting config
       
-      define('WM_Lang', $r('wmelon.lang'));
+      Registry::create('wmelon', $w, true);
+      Registry::set('wmelon', $w);           // only for development
+      
+      // $w = Registry::get('wmelon'); // after development
+      
+      self::$config = &$w;
+      
+      self::$modulesList = $w['modulesList']; // change it
+      
+      // setting constants
+      
+      define('WM_Core',      WM_BasePath . 'core/');
+      define('WM_Packages',  WM_BasePath . 'packages/');
+      define('WM_Uploaded',  WM_BasePath . 'uploaded/');
+      define('WM_Cache',     WM_BasePath . 'cache/');
+      
+      define('WM_Libs',      WM_Core . 'libs/');
+      define('WM_Helpers',   WM_Core . 'helpers/');
+      
+      define('WM_SiteURL',     $w['siteURL']);
+      define('WM_SystemURL',   $w['systemURL']);
+      define('WM_PackagesURL', WM_SystemURL . 'packages/');
+      define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
+      
+      define('WM_SkinPath', WM_Packages    . $w['skin'] . '/');
+      define('WM_SkinURL',  WM_PackagesURL . $w['skin'] . '/');
+      
+      define('WM_Lang', $w['lang']);
+      define('WM_Algo', $w['algo']);
    }
    
    /*
@@ -344,8 +375,8 @@ class Watermelon
       
       // controllers configuration
       
-      $controllerHandler = Registry::get('wmelon.controllerHandler');
-      $defaultController = Registry::get('wmelon.defaultController');
+      $controllerHandler = self::$config['controllerHandler'];
+      $defaultController = self::$config['defaultController'];
       
       $useControllerHandler = false;
       $useDefaultController = false;
@@ -484,34 +515,21 @@ class Watermelon
       $content = str_replace('href="$/',   'href="'   . WM_SiteURL, $content);
       $content = str_replace('action="$/', 'action="' . WM_SiteURL, $content);
       
-      //---
+      // running skin
       
       include WM_SkinPath . 'skin.php';
-      
-      $nav = array(array
-         (
-            array('Foo', '#foo', null),
-            array('Bar', '#bar', 'Bar!!!')
-         ));
-      
-      $blockMenus = array(array
-         (
-            array('Test::foo', 'test', 'foo', array()),
-            array('Test::bar', 'test', 'bar', array('foo', 'bar')),
-            array('Test2::foo2', 'test2', 'foo2', array()),
-            array('Test2::bar2', 'test2', 'bar2', array('foo2', 'bar2')),
-         ));
       
       $skin = new WCMSLay_skin;
       
       $skin->content    = &$content;
       $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
-      $skin->pageTitle  = 'Tytuł podstrony';
-      $skin->siteName   = 'Nazwa strony';
-      $skin->siteSlogan = 'Slogan strony';
-      $skin->footer     = 'Testowanie <em>stopki</em>…';
-      $skin->blockMenus = $blockMenus;
-      $skin->textMenus  = $nav;
+      
+      $skin->pageTitle  = self::$config['pageTitle'];
+      $skin->siteName   = self::$config['siteName'];
+      $skin->siteSlogan = self::$config['siteSlogan'];
+      $skin->footer     = self::$config['footer'];
+      $skin->blockMenus = self::$config['blockMenus'];
+      $skin->textMenus  = self::$config['textMenus'];
       
       $skin->display();
    }
