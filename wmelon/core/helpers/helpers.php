@@ -147,8 +147,7 @@ function TranslateStructure($structure, $toType)
 }
 
 /*
- * string ArrayToHTMLArguments(array $array)
- * string ObjectToHTMLArguments(object $object)
+ * string ToHTMLArgs(array/object $array)
  * 
  * Translates an array or an object into list of HTML/XML properties, e.g:
  * 
@@ -159,11 +158,11 @@ function TranslateStructure($structure, $toType)
  * 'foo1="bar1" foo2="bar2"'
  */
 
-function ArrayToHTMLArguments($array)
+function ToHTMLArgs($struct)
 {
    $arguments = '';
    
-   foreach($array as $key => $var)
+   foreach($struct as $key => $var)
    {
       $arguments .= ' ' . $key . '="' . $var . '"';
    }
@@ -171,11 +170,6 @@ function ArrayToHTMLArguments($array)
    $arguments = substr($arguments, 1);
    
    return $arguments;
-}
-
-function ObjectToHTMLArguments($object)
-{
-   return ArrayToHTMLArguments($object);
 }
 
 /*
@@ -188,7 +182,7 @@ function ObjectToHTMLArguments($object)
 
 function SiteURI($urn)
 {
-   return WM_SITEURL . $urn;
+   return WM_SiteURL . $urn;
 }
 
 /*
@@ -255,15 +249,6 @@ function ClientIP()
    
    return $ip;
 }
-/*
-$obj = new stdClass;
-$obj->a = false;
-$obj->b = '1';
-$array = array(1,2,3,'foo','bar',array(1,2,43, $obj));
-
-var_dump(ObjectToArray(ArrayToObject($array)));
-var_dump(ArrayToObject($array));
-var_dump($array);*/
 
 /*
  * string HashString(string $string[, string $algo])
@@ -271,18 +256,16 @@ var_dump($array);*/
  * Makes hash of $string
  * 
  * Hash is calculated using $algo algorithm.
- * If $algo is not given (which is usually true), algorithm specified in config file will be used.
+ * If $algo is not given (which is usually true), default algorithm will be used
  * 
- * HashString uses $algo function to hash the string if exists, or hash() otherwise.
+ * HashString uses $algo() if exists, or hash() otherwise.
  */
 
 function HashString($string, $algo = null)
 {
    if($algo === null)
    {
-      //$algo = Config::$hashAlgo; //TODO: fix it
-      
-      $algo = 'sha1';
+      $algo = WM_Algo;
    }
    
    if(function_exists($algo))
