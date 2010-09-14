@@ -105,6 +105,24 @@ class Watermelon
    public static function run()
    {
       self::prepare();
+      
+      // if installer - skipping configuration etc, just loading controller and generating
+      
+      if(self::$appType == self::AppType_Installer)
+      {
+         include WM_Packages . 'installer/installer.controller.php';
+         
+         $installer = new Installer_Controller;
+         
+         $installer->installer();
+         
+         self::generate();
+         
+         return;
+      }
+      
+      //--
+      
       self::config();
       
       // auto-loading extensions
@@ -120,9 +138,10 @@ class Watermelon
       self::loadController();
       
       // tests
-      
+      /*
       include WM_Libs . 'Registry/Registry.test.php';
       UnitTester::runTest(new Registry_TestCase);
+      */
       
       // generating
       
@@ -168,10 +187,31 @@ class Watermelon
       $basePath = str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . '/';
       
       define('WM_BasePath', $basePath);
+      define('WM_Core',     WM_BasePath . 'core/');
+      define('WM_Packages', WM_BasePath . 'packages/');
+      define('WM_Uploaded', WM_BasePath . 'uploaded/');
+      define('WM_Cache',    WM_BasePath . 'cache/');
       
-      // loading configuration, setting proper error reporting mode and debug constant
+      define('WM_Libs',     WM_Core . 'libs/');
+      define('WM_Helpers',  WM_Core . 'helpers/');
+      
+      // loading config file, and setting app type to installer if empty
       
       include $basePath . 'config.php';
+      
+      if(!isset($dbHost))
+      {
+         self::$appType = self::AppType_Installer;
+         
+         error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE); // TODO: delete it later
+         
+         include WM_Libs . 'libs.php';
+         include WM_Helpers . 'helpers.php';
+         
+         return;
+      }
+      
+      // setting proper error reporting mode and debug constant
       
       switch($debugLevel)
       {
@@ -193,8 +233,8 @@ class Watermelon
       
       // loading libraries and helpers
       
-      include WM_BasePath . 'core/libs/libs.php';
-      include WM_BasePath . 'core/helpers/helpers.php';
+      include WM_Libs . 'libs.php';
+      include WM_Helpers . 'helpers.php';
       
       // running DB, and dividing URL
       
@@ -292,14 +332,6 @@ class Watermelon
       self::$modulesList = $w['modulesList']; // change it
       
       // setting constants
-      
-      define('WM_Core',      WM_BasePath . 'core/');
-      define('WM_Packages',  WM_BasePath . 'packages/');
-      define('WM_Uploaded',  WM_BasePath . 'uploaded/');
-      define('WM_Cache',     WM_BasePath . 'cache/');
-      
-      define('WM_Libs',      WM_Core . 'libs/');
-      define('WM_Helpers',   WM_Core . 'helpers/');
       
       define('WM_SiteURL',     $w['siteURL']);
       define('WM_SystemURL',   $w['systemURL']);
@@ -519,17 +551,19 @@ class Watermelon
       
       include WM_SkinPath . 'skin.php';
       
-      $skin = new WCMSLay_skin;
+      $className = self::$config['skin'] . '_skin';
+      
+      $skin = new $className;
       
       $skin->content    = &$content;
       $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
       
-      $skin->pageTitle  = self::$config['pageTitle'];
-      $skin->siteName   = self::$config['siteName'];
-      $skin->siteSlogan = self::$config['siteSlogan'];
-      $skin->footer     = self::$config['footer'];
-      $skin->blockMenus = self::$config['blockMenus'];
-      $skin->textMenus  = self::$config['textMenus'];
+      $skin->pageTitle  = &self::$config['pageTitle'];
+      $skin->siteName   = &self::$config['siteName'];
+      $skin->siteSlogan = &self::$config['siteSlogan'];
+      $skin->footer     = &self::$config['footer'];
+      $skin->blockMenus = &self::$config['blockMenus'];
+      $skin->textMenus  = &self::$config['textMenus'];
       
       $skin->display();
    }
