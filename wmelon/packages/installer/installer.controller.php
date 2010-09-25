@@ -60,14 +60,14 @@ class Installer_Controller extends Controller
       */
       // progress percent
       
-      if($step >= 3)
+      if($step >= 2)
       {
          $this->additionalData->progress = (int) (($step - 1) / 6 * 100);
       }
       
-      // previous step
+      // previous step (but you can't go back after you unblock the blockade)
       
-      if($step >= 4)
+      if($step == 2 || $step == 3 || $step >= 5)
       {
          $this->additionalData->previous = $step - 1;
       }
@@ -78,10 +78,39 @@ class Installer_Controller extends Controller
       
       // next step
       
-      if($step >= 3)
+      if($step >= 2)
       {
          $this->additionalData->next = $step + 1;
       }
+      
+      // checking if blockade is unlocked
+      
+      if($step > 3)
+      {
+         $fileName = $_SESSION['unblocking-filename'];
+         
+         if(!file_exists(WM_BasePath . $fileName) || !isset($_SESSION['unblocking-filename']))
+         {
+            $_SESSION['errors'] = array('Hmm... Nie widzę pliku. Spróbuj jeszcze raz.');
+            
+            SiteRedirect('3');
+         }
+      }
+      
+      // previous step number
+      
+      if(isset($_SESSION['currentStep']))
+      {
+         $_SESSION['previousStep'] = $_SESSION['currentStep'];
+      }
+      else
+      {
+         $_SESSION['previousStep'] = 1;
+      }
+      
+      $_SESSION['currentStep'] = $step;
+      
+      //TODO: here!
       
       // running proper step action
       
@@ -89,12 +118,15 @@ class Installer_Controller extends Controller
       {
          case '1':
          default: $this->langChooser(); break;
-         case '2': $this->blockadeMessage(); break;
-         case '3': $this->intro(); break;
+         case '2': $this->greeting(); break;
+         case '3': $this->blockadeMessage(); break;
          case '4': $this->dbInfo(); break;
          case '5': $this->userdata(); break;
          case '6': $this->websiteName(); break;
          case '7': $this->thank(); break;
+         case 'clear':
+            session_destroy();
+         break;
       }
    }
    
@@ -117,45 +149,51 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * Second step - message saying to create file with requested name
+    * Second step - greeting
+    */
+   
+   public function greeting()
+   {
+      $this->pageTitle = 'Witaj';
+      
+      View('greeting')->display();
+   }
+   
+   /*
+    * Third step - message saying to create file with requested name
     * 
     * (it's a protection against someone else installing it)
     */
    
    public function blockadeMessage()
    {
-      $this->additionalData = 'no-container';
-      
       // determining language
       
       $lang = Watermelon::$segments[1];
       
-      $langs = array('pl');
-      
-      if(!in_array($lang, $langs))
+      if(!in_array($lang, array('pl')))
       {
          $lang = 'pl';
       }
       
       $_SESSION['lang'] = $lang;
+      
       define('WM_Lang', $lang);
       
-      var_dump($lang);
+      // establishing name of file unblocking the installer
       
-      // redirecting later (will implement blockade later)
+      $fileName = 'b-' . uniqid() . '.php';
       
-      SiteRedirect('3');
-   }
-   
-   /*
-    * Third step - greeting
-    */
-   
-   public function intro()
-   {
-      $this->pageTitle = 'Witaj';
+      $_SESSION['unblocking-filename'] = $fileName;
       
-      View('greeting')->display();
+      // displaying
+      
+      $this->pageTitle = 'Blokada';
+      
+      $view = View('blockade');
+      $view->fileName = $fileName;
+      $view->errors   = $this->errors();
+      $view->display();
    }
    
    /*
@@ -165,27 +203,160 @@ class Installer_Controller extends Controller
    public function dbInfo()
    {
       $this->pageTitle = 'Dane do bazy danych';
+      $this->additionalData->form = '';
       
-      View('dbInfo')->display();
+      //--
+      
+      if(isset($_SESSION['dbForm']))
+      {
+         $form = ToObject($_SESSION['dbForm']);
+      }
+      else
+      {
+         $form = array
+            (
+               'name' => 'watermelon',
+               'user' => '',
+               'pass' => '',
+               'host' => 'localhost',
+               'prefix' => 'wm_'
+            );
+         
+         $form = ToObject($form);
+      }
+      
+      //--
+      
+      $view = View('dbInfo');
+      $view->errors = $this->errors();
+      $view->form = $form;
+      $view->display();
    }
    
    /*
-    * fifth step - admin username and password
+    * fifth step - admin username and password.
+    * 
+    * Checking correctness of given DB data,
+    * but not yet importing tables to database (it will be done in last step)
     */
    
    public function userdata()
    {
-      $this->pageTitle = 'Dane użytkownika';
+      // checking correctness of given DB data
       
-      View('userdata')->display();
+      $name = $_POST['name'];
+      $user = $_POST['user'];
+      $pass = $_POST['pass'];
+      $host = $_POST['host'];
+      $prefix = $_POST['prefix'];
+      
+      $_SESSION['dbForm'] = $_POST;
+      
+      $errors = array();
+      
+      $fieldNames = array
+         (
+            'name' => 'nazwa bazy danych',
+            'user' => 'nazwa użytkownika',
+            'host' => 'serwer',
+         );
+      
+      // checking whether all required fields are filled
+      
+      $emptyFields = array();
+      
+      foreach(array('name', 'user', 'host') as $field)
+      {
+         if(empty($$field))
+         {
+            $emptyFields[] = '"' . $fieldNames[$field] . '"';
+         }
+      }
+      
+      if(count($emptyFields) >= 2)
+      {
+         $errors[] = 'Pola ' . implode(', ', $emptyFields) . ' nie mogą być puste';
+      }
+      elseif(count($emptyFields) == 1)
+      {
+         $errors[] = 'Pole ' . $emptyFields[0] . ' nie może być puste';
+      }
+      
+      if(!empty($errors))
+      {
+         $_SESSION['errors'] = $errors;
+         
+         SiteRedirect('4');
+      }
+      
+      // checking whether it's possible to connect using given data
+      
+      try
+      {
+         DB::connect($host, $name, $user, $pass, $prefix);
+      }
+      catch(WMException $e)
+      {
+         if($e->stringCode() == 'DB:connectError')
+         {
+            $_SESSION['errors'][0] = 'Nie udało się połączyć z serwerem bazy danych za pomocą podanych danych. Spróbuj jeszcze raz.';
+            
+            SiteRedirect('4');
+         }
+         elseif($e->stringCode() == 'DB:selectError')
+         {
+            $_SESSION['errors'][0] = 'Nie udało się wybrać bazy danych "' . $name . '". Spróbuj jeszcze raz.';
+            
+            SiteRedirect('4');
+            
+            //TODO: try to create database
+         }
+      }
+      
+      // rendering
+      
+      $this->pageTitle = 'Dane admina';
+      $this->additionalData->form = '';
+      
+      if(isset($_SESSION['userdataForm']))
+      {
+         $form = ToObject($_SESSION['userdataForm']);
+      }
+      else
+      {
+         $form = ToObject(array());
+      }
+      
+      $view = View('userData');
+      $view->errors = $this->errors();
+      $view->form = $form;
+      $view->display();
    }
    
    /*
     * sixth step - website name
+    * 
+    * And checking whether username and password is filled
     */
    
    public function websiteName()
    {
+      // checking whether all required fields are filled
+      
+      $user = $_POST['user'];
+      $pass = $_POST['pass'];
+      
+      $_SESSION['userdataForm'] = $_POST;
+      
+      if(empty($user) || empty($pass))
+      {
+         $_SESSION['errors'] = array('Oba pola są wymagane');
+         
+         SiteRedirect('5');
+      }
+      
+      // rendering
+      
       $this->pageTitle = 'Nazwa strony';
       
       View('websiteName')->display();
@@ -197,5 +368,36 @@ class Installer_Controller extends Controller
    
    public function thank()
    {
+   }
+   
+   /*
+    * errors
+    */
+   
+   private function errors()
+   {
+      if(empty($_SESSION['errors']))
+      {
+         return;
+      }
+      
+      $errors = $_SESSION['errors'];
+      
+      unset($_SESSION['errors']);
+      
+      // composing
+      
+      $ret = '<div class="error-box">';
+      
+      if(count($errors) == 1)
+      {
+         $ret .= $errors[0];
+      }
+      
+      $ret .= '</div>';
+      
+      //--
+      
+      return $ret;
    }
 }

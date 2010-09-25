@@ -102,7 +102,7 @@ header
    border-top:1px solid #bba;
 }
 
-#status-bar button
+#status-bar button, #status-bar input
 {
    float:right;
    line-height:1.2em;  /* needed for opera to show round buttons */
@@ -172,7 +172,7 @@ label span
    line-height:1.3em;
 }
 
-input
+label + input
 {
    width:200px;
    height:13px;
