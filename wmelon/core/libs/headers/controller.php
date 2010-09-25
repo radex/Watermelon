@@ -26,6 +26,26 @@
 
 abstract class Controller
 {
+   /*
+    * public string $pageTitle
+    * 
+    * Header of page
+    */
+   
+   public $pageTitle;
+   
+   /*
+    * public mixed $additionalData
+    * 
+    * Non-standard data to be passed to skin
+    * 
+    * Useful in making custom apps
+    */
+   
+   public $additionalData;
+   
+   //--
+   
    public function __construct()
    {
       $this->db       = new DB();

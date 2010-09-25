@@ -80,6 +80,12 @@ class Watermelon
    public static $config;
    
    /*
+    * controller object
+    */
+   
+   private static $controllerObject;
+   
+   /*
     * public static void displayNoPageFoundError()
     * 
     * Loads 'e404' controller ("no page found" page)
@@ -113,6 +119,10 @@ class Watermelon
          include WM_Packages . 'installer/installer.controller.php';
          
          $installer = new Installer_Controller;
+         
+         self::$controllerObject = $installer;
+         self::$controllerName   = 'installer';
+         self::$packageName      = 'installer';
          
          $installer->installer();
          
@@ -207,6 +217,8 @@ class Watermelon
          
          include WM_Libs . 'libs.php';
          include WM_Helpers . 'helpers.php';
+         
+         self::divide();
          
          return;
       }
@@ -313,7 +325,6 @@ class Watermelon
             array('Test2::bar2', 'test2', 'bar2', array('foo2', 'bar2')),
          ));
       
-      $w['pageTitle']  = 'Tytuł podstrony';
       $w['siteName']   = 'Nazwa strony';
       $w['siteSlogan'] = 'Slogan strony';
       $w['footer']     = 'Testowanie <em>stopki</em>…';
@@ -369,17 +380,20 @@ class Watermelon
          }
       }
       
-      // setting app type
+      // setting app type (but only if not already set to installer)
       
-      if($segments[0] == 'admin')
+      if(self::$appType != self::AppType_Installer)
       {
-         self::$appType = self::AppType_Admin;
+         if($segments[0] == 'admin')
+         {
+            self::$appType = self::AppType_Admin;
          
-         array_shift($segments);
-      }
-      else
-      {
-         self::$appType = self::AppType_Site;
+            array_shift($segments);
+         }
+         else
+         {
+            self::$appType = self::AppType_Site;
+         }
       }
       
       //--
@@ -466,6 +480,8 @@ class Watermelon
       
       $controllerClassName = $controller . '_Controller';
       $controllerObj       = new $controllerClassName;
+      
+      self::$controllerObject = $controllerObj;
       
       /// if controller handler is set, run it
       
@@ -558,12 +574,13 @@ class Watermelon
       $skin->content    = &$content;
       $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
       
-      $skin->pageTitle  = &self::$config['pageTitle'];
+      $skin->pageTitle  = self::$controllerObject->pageTitle;
       $skin->siteName   = &self::$config['siteName'];
       $skin->siteSlogan = &self::$config['siteSlogan'];
       $skin->footer     = &self::$config['footer'];
       $skin->blockMenus = &self::$config['blockMenus'];
       $skin->textMenus  = &self::$config['textMenus'];
+      $skin->additionalData = self::$controllerObject->additionalData;
       
       $skin->display();
    }

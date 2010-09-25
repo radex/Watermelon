@@ -104,6 +104,16 @@ abstract class Skin
    public $textMenus;
    
    /*
+    * public mixed $additionalData
+    * 
+    * Other data to be passed to skin
+    * 
+    * Useful in making custom apps
+    */
+   
+   public $additionalData;
+   
+   /*
     * protected void drawTextMenu(int $id)
     * 
     * Prints text menu number $id
@@ -152,6 +162,7 @@ abstract class Skin
       $footer     = &$this->footer;
       $blockMenus = &$this->blockMenus;
       $textMenus  = &$this->textMenus;
+      $additionalData = &$this->additionalData;
       
       include WM_SkinPath . 'index.php';
    }

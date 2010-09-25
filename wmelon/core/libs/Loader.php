@@ -101,14 +101,14 @@ class Loader
     * 
     * Loads translations file for $moduleName
     */
-   
+   /*
    public static function translation($moduleName)
    {
       $moduleName = strtolower($moduleName);
       
       Translations::parseTranslationFile(WM_Packages . $moduleName . '/languages/' . $moduleName . '.' . WM_Lang . '.php', $moduleName);
    }
-   
+   */
    /*
     * models, extensions, blocks
     */

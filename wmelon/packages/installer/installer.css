@@ -182,6 +182,57 @@ input
 
 /*-=-=-=-=-=-=-*/
 
+#langChooser
+{
+   margin: 100px auto 0;
+   width: 750px;
+   
+   text-align: center;
+}
+
+#langChooser a
+{
+   display: inline-block;
+   
+   width: 100px;
+   margin: 20px;
+   padding: 15px;
+   
+   background: #ddd;
+   border: 1px solid #ddd;
+   border-radius: 10px;
+   color: #555;
+   box-shadow: #aaa 0 0 3px, #aaa 2px 2px 5px;
+}
+
+#langChooser a:hover
+{
+   background: #d8d8d8;
+   border: 1px solid #999;
+}
+
+#langChooser img
+{
+   box-shadow: #777 0 0 3px;
+}
+
+#langChooser a:hover img
+{
+   box-shadow: #777 0 0 10px;
+}
+
+.advanced-hr
+{
+   margin-top: 25px;
+}
+
+.advanced-hr hr
+{
+   margin-top: 0;
+}
+
+/*-=-=-=-=-=-=-*/
+
 .error-box
 {
    border: 1px solid #B65;
