@@ -149,9 +149,10 @@ class Watermelon
       
       // tests
       
+      /*
       include WM_Libs . 'Registry/Registry.test.php';
       UnitTester::runTest(new Registry_TestCase);
-      
+      */
       
       // generating
       

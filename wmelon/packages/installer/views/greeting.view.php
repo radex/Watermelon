@@ -1,3 +1,5 @@
 <?defined('WM') or die?>
 
-(tekst powitania)
+<tal:block>
+   (tekst powitania)
+</tal:block>

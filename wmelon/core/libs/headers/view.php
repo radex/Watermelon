@@ -39,12 +39,6 @@ class View
    
    public function display()
    {
-      /*
-      extract($this->parameters);
-      
-      include $this->viewPath;
-      */
-      
       $view = new PHPTAL($this->viewPath);
       
       foreach($this->parameters as $key => $value)

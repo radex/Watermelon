@@ -140,8 +140,7 @@ class Installer_Controller extends Controller
       
       $langs = array();
       
-      $langs[] = array('pl', 'Polski');
-      //$langs[] = array('en', 'English (US)');
+      $langs[] = array('pl', 'Polski', WM_SkinURL . 'img/pl.png');
       
       $view = View('langChooser');
       $view->langs = $langs;
@@ -260,7 +259,7 @@ class Installer_Controller extends Controller
       }
       else
       {
-         $form = ToObject(array());
+         $form = ToObject(array('user' => '','pass' => '','pass2' => ''));
       }
       
       $view = View('userData');
@@ -314,7 +313,7 @@ class Installer_Controller extends Controller
       }
       else
       {
-         $form = ToObject(array());
+         $form = ToObject(array('siteName' => ''));
       }
       
       $view = View('websiteName');
@@ -403,6 +402,8 @@ CONFIG;
       
       foreach($sql as $query)
       {
+         $query = trim($query);
+         
          if(empty($query))
          {
             continue;
