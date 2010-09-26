@@ -244,6 +244,150 @@ class Installer_Controller extends Controller
    {
       // checking correctness of given DB data
       
+      if($_SESSION['previousStep'] == 4)
+      {
+         $this->DBvalidate();
+      }
+      
+      // rendering
+      
+      $this->pageTitle = 'Dane admina';
+      $this->additionalData->form = '';
+      
+      if(isset($_SESSION['userdataForm']))
+      {
+         $form = ToObject($_SESSION['userdataForm']);
+      }
+      else
+      {
+         $form = ToObject(array());
+      }
+      
+      $view = View('userData');
+      $view->errors = $this->errors();
+      $view->form = $form;
+      $view->display();
+   }
+   
+   /*
+    * sixth step - website name
+    * 
+    * And checking whether username and password is filled
+    */
+   
+   public function websiteName()
+   {
+      // checking whether all required fields are filled
+      
+      if($_SESSION['previousStep'] == 5)
+      {
+         $user = $_POST['user'];
+         $pass = $_POST['pass'];
+      
+         $_SESSION['userdataForm'] = $_POST;
+      
+         if(empty($user) || empty($pass))
+         {
+            $_SESSION['errors'] = array('Oba pola są wymagane');
+         
+            SiteRedirect('5');
+         }
+      }
+      
+      // rendering
+      
+      $this->pageTitle = 'Nazwa strony';
+      $this->additionalData->form = '';
+      
+      if(isset($_SESSION['sitenameForm']))
+      {
+         $form = ToObject($_SESSION['sitenameForm']);
+      }
+      else
+      {
+         $form = ToObject(array());
+      }
+      
+      $view = View('websiteName');
+      $view->errors = $this->errors();
+      $view->form = $form;
+      $view->display();
+   }
+   
+   /*
+    * seventh step - thank
+    */
+   
+   public function thank()
+   {
+      // checking whether all required fields are filled
+      
+      if($_SESSION['previousStep'] == 6)
+      {
+         $siteName = $_POST['siteName'];
+      
+         $_SESSION['sitenameForm'] = $_POST;
+      
+         if(empty($siteName))
+         {
+            $_SESSION['errors'] = array('Pole jest wymagane');
+         
+            SiteRedirect('6');
+         }
+      }
+      
+      // rendering
+      
+      $this->pageTitle = 'Dzięki!';
+      
+      $view = View('thank');
+      $view->db   = ToObject($_SESSION['dbForm']);
+      $view->user = ToObject($_SESSION['userdataForm']);
+      $view->site = ToObject($_SESSION['sitenameForm']);
+      
+      $view->db->pass = $this->starPassword($view->db->pass);
+      $view->user->pass = $this->starPassword($view->user->pass);
+      
+      $view->display();
+   }
+   
+   /*
+    * errors
+    */
+   
+   private function errors()
+   {
+      if(empty($_SESSION['errors']))
+      {
+         return;
+      }
+      
+      $errors = $_SESSION['errors'];
+      
+      unset($_SESSION['errors']);
+      
+      // composing
+      
+      $ret = '<div class="error-box">';
+      
+      if(count($errors) == 1)
+      {
+         $ret .= $errors[0];
+      }
+      
+      $ret .= '</div>';
+      
+      //--
+      
+      return $ret;
+   }
+   
+   /*
+    * checking correctness of given DB data
+    */
+   
+   private function DBValidate()
+   {
       $name = $_POST['name'];
       $user = $_POST['user'];
       $pass = $_POST['pass'];
@@ -312,92 +456,23 @@ class Installer_Controller extends Controller
             //TODO: try to create database
          }
       }
+   }
+   
+   /*
+    * obscures password (e.g. changes qwerty to q****y)
+    */
+   
+   private function starPassword($pass)
+   {
+      $len = strlen($pass);
       
-      // rendering
-      
-      $this->pageTitle = 'Dane admina';
-      $this->additionalData->form = '';
-      
-      if(isset($_SESSION['userdataForm']))
+      if($len < 4)
       {
-         $form = ToObject($_SESSION['userdataForm']);
+         return str_repeat('*', $len) . ' (' . $len . ')';
       }
       else
       {
-         $form = ToObject(array());
+         return $pass[0] . str_repeat('*', $len - 2) . $pass[$len - 1] . ' (' . $len . ')';
       }
-      
-      $view = View('userData');
-      $view->errors = $this->errors();
-      $view->form = $form;
-      $view->display();
-   }
-   
-   /*
-    * sixth step - website name
-    * 
-    * And checking whether username and password is filled
-    */
-   
-   public function websiteName()
-   {
-      // checking whether all required fields are filled
-      
-      $user = $_POST['user'];
-      $pass = $_POST['pass'];
-      
-      $_SESSION['userdataForm'] = $_POST;
-      
-      if(empty($user) || empty($pass))
-      {
-         $_SESSION['errors'] = array('Oba pola są wymagane');
-         
-         SiteRedirect('5');
-      }
-      
-      // rendering
-      
-      $this->pageTitle = 'Nazwa strony';
-      
-      View('websiteName')->display();
-   }
-   
-   /*
-    * seventh step - thank
-    */
-   
-   public function thank()
-   {
-   }
-   
-   /*
-    * errors
-    */
-   
-   private function errors()
-   {
-      if(empty($_SESSION['errors']))
-      {
-         return;
-      }
-      
-      $errors = $_SESSION['errors'];
-      
-      unset($_SESSION['errors']);
-      
-      // composing
-      
-      $ret = '<div class="error-box">';
-      
-      if(count($errors) == 1)
-      {
-         $ret .= $errors[0];
-      }
-      
-      $ret .= '</div>';
-      
-      //--
-      
-      return $ret;
    }
 }

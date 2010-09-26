@@ -69,6 +69,11 @@ h1
    color:#000;
 }
 
+p
+{
+   margin-bottom: 10px;
+}
+
 header
 {
    margin:25px auto;
@@ -182,7 +187,32 @@ label + input
 
 /*-=-=-=-=-=-=-*/
 
-#langChooser
+table
+{
+   width: 100%;
+}
+
+td, th
+{
+   border: 1px solid #ccc;
+   padding: 5px 10px;
+}
+
+th
+{
+   width: 250px;
+   text-align:right;
+   color:#000;
+}
+
+table tr:nth-child(odd)
+{
+   background-color: #f8f8f8;
+}
+
+/*-=-=-=-=-=-=-*/
+
+#lang-chooser
 {
    margin: 100px auto 0;
    width: 750px;
@@ -190,7 +220,7 @@ label + input
    text-align: center;
 }
 
-#langChooser a
+#lang-chooser a
 {
    display: inline-block;
    
@@ -205,18 +235,18 @@ label + input
    box-shadow: #aaa 0 0 3px, #aaa 2px 2px 5px;
 }
 
-#langChooser a:hover
+#lang-chooser a:hover
 {
    background: #d8d8d8;
    border: 1px solid #999;
 }
 
-#langChooser img
+#lang-chooser img
 {
    box-shadow: #777 0 0 3px;
 }
 
-#langChooser a:hover img
+#lang-chooser a:hover img
 {
    box-shadow: #777 0 0 10px;
 }
