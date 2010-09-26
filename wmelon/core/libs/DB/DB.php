@@ -77,6 +77,11 @@ class DB
       $args = func_get_args();
       array_shift($args);
       
+      foreach($args as &$arg)
+      {
+         $arg = mysql_real_escape_string($arg, self::$link);
+      }
+      
       $query = self::replaceArgs($query, $args);
       
       // saving a query if debug mode is on, and query is not made during unit testing

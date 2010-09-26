@@ -15,4 +15,12 @@ Podaj nick i hasło, które chcesz mieć dla siebie na swojej stronie.
       <label>Hasło</label>
       <input type="password" name="pass" value="<?=$form->pass?>">
    </div>
+   
+   <div>
+      <label>
+         Hasło (powtórz)
+         <span>Aby upewnić się, że nie popełnisz błędu podczas wpisywania</span>
+      </label>
+      <input type="password" name="pass2" value="<?=$form->pass2?>">
+   </div>
 </form>

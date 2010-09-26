@@ -40,7 +40,6 @@ class Installer_Controller extends Controller
       Watermelon::$config['skin'] = 'installer';
       
       define('WM_Lang', $_SESSION['lang']);
-      // define('WM_Algo', $w['algo']);
       
       // determining step number
       
@@ -124,6 +123,7 @@ class Installer_Controller extends Controller
          case '5': $this->userdata(); break;
          case '6': $this->websiteName(); break;
          case '7': $this->thank(); break;
+         case '8': $this->save(); break;
          case 'clear':
             session_destroy();
          break;
@@ -283,13 +283,22 @@ class Installer_Controller extends Controller
       {
          $user = $_POST['user'];
          $pass = $_POST['pass'];
+         $pass2 = $_POST['pass2'];
       
          $_SESSION['userdataForm'] = $_POST;
       
-         if(empty($user) || empty($pass))
+         if(empty($user) || empty($pass) || empty($pass2))
          {
-            $_SESSION['errors'] = array('Oba pola są wymagane');
+            $_SESSION['errors'][] = 'Wszystkie pola są wymagane';
+         }
          
+         if(!empty($pass) && !empty($pass2) && $pass != $pass2)
+         {
+            $_SESSION['errors'][] = 'Podane hasła się różnią';
+         }
+         
+         if(!empty($_SESSION['errors']))
+         {
             SiteRedirect('5');
          }
       }
@@ -352,6 +361,127 @@ class Installer_Controller extends Controller
    }
    
    /*
+    * eighth step - saving configuration
+    */
+   
+   public function save()
+   {
+      // configuration
+      
+      $db   = ToObject($_SESSION['dbForm']);
+      $user = ToObject($_SESSION['userdataForm']);
+      $site = ToObject($_SESSION['sitenameForm']);
+      
+      // saving config.php
+      
+      $configFile = <<<CONFIG
+<?php
+
+/*   Database   */
+
+\$dbHost     = '$db->host';
+\$dbUser     = '$db->user';
+\$dbPass     = '$db->pass';
+\$dbName     = '$db->name';
+\$dbPrefix   = '$db->prefix';
+
+/*   Advanced   */
+
+\$debugLevel = 0; // 0 - no debug notices, no error reporting; real world applications
+                 // 1 - debug notices, E_ALL ^ E_NOTICE error reporting; programming
+                 // 2 - debug notices, E_ALL error reporting; testing & debugging
+CONFIG;
+      
+      file_put_contents(WM_BasePath . 'config.php', $configFile);
+      
+      // installing SQL
+      
+      DB::connect($db->host, $db->name, $db->user, $db->pass, $db->prefix);
+      
+      $sql = file_get_contents(WM_Packages . 'installer/watermelon.sql');
+      $sql = explode(';', $sql);
+      
+      foreach($sql as $query)
+      {
+         if(empty($query))
+         {
+            continue;
+         }
+         
+         $query = str_replace('`wm_', '`' . $db->prefix, $query);
+         
+         DB::query($query);
+      }
+      
+      // adding wmelon configuration to Registry
+      
+      //TODO: make it better
+      
+      $w = array();      // array with Watermelon configuration
+      
+      // ModulesList
+      
+      $modulesList = new stdClass;
+      $modulesList->controllers = array
+         (
+            'e404' => array('watermelon', false),
+            'test' => array('test', false),
+            'cnthnd' => array('test', true),
+         );
+      $modulesList->models = array
+         (
+            'testmodel' => array('test', false),
+            'testmodel2' => array('test', true),
+         );
+      $modulesList->blocksets = array
+         (
+            'test' => array('test', false),
+            'test2' => array('test', true),
+         );
+      $modulesList->extensions = array
+         (
+            'test' => array('test', false),
+            'test2' => array('test', true),
+         );
+      $modulesList->skins = array
+         (
+            'wcmslay',
+         );
+      
+      $w['modulesList'] = $modulesList;
+      
+      $w['autoload']          = array('test', 'test2');
+      $w['controllerHandler'] = null;
+      $w['defaultController'] = 'test';
+      
+      $w['siteURL']           = WM_SiteURL;
+      $w['systemURL']         = WM_SystemURL;
+      
+      $w['skin']              = 'wcmslay';
+      $w['lang']              = WM_Lang;
+      
+      $w['siteName']   = $site->siteName;
+      $w['siteSlogan'] = '';
+      $w['footer']     = '';
+      $w['blockMenus'] = array();
+      $w['textMenus']  = array();
+      
+      Registry::create('wmelon', $w, true);
+      
+      // adding superuser
+      
+      //TODO: adding superuser
+      
+      // removing session and redirecting to home page
+      
+      //TODO: auto-logging
+      
+      session_destroy();
+      
+      SiteRedirect('');
+   }
+   
+   /*
     * errors
     */
    
@@ -368,14 +498,12 @@ class Installer_Controller extends Controller
       
       // composing
       
-      $ret = '<div class="error-box">';
-      
-      if(count($errors) == 1)
+      foreach($errors as $error)
       {
-         $ret .= $errors[0];
+         $ret .= '<div class="error-box">';
+         $ret .= $error;
+         $ret .= '</div>';
       }
-      
-      $ret .= '</div>';
       
       //--
       

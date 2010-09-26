@@ -307,7 +307,6 @@ class Watermelon
       
       $w['skin']              = 'wcmslay';
       $w['lang']              = 'pl';
-      $w['algo']              = 'sha1';
       
       // frontend
       
@@ -353,7 +352,6 @@ class Watermelon
       define('WM_SkinURL',  WM_PackagesURL . $w['skin'] . '/');
       
       define('WM_Lang', $w['lang']);
-      define('WM_Algo', $w['algo']);
    }
    
    /*

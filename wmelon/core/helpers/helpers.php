@@ -265,7 +265,7 @@ function HashString($string, $algo = null)
 {
    if($algo === null)
    {
-      $algo = WM_Algo;
+      $algo = 'sha1';
    }
    
    if(function_exists($algo))
