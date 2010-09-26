@@ -51,10 +51,9 @@ class RegistryItem
    public $isPersistent;
    
    /*
-    * public bool/string $isReadOnly;
+    * public bool $isReadOnly
     * 
-    * [bool]:   Whether properties of an item are unchangeable
-    * [string]: Item is private (access to item is permited only to class, which name is given)
+    * Whether only value of an item is accesible
     */
    
    public $isReadOnly;

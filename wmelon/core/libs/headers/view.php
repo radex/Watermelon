@@ -39,9 +39,21 @@ class View
    
    public function display()
    {
+      /*
       extract($this->parameters);
       
       include $this->viewPath;
+      */
+      
+      $view = new PHPTAL($this->viewPath);
+      
+      foreach($this->parameters as $key => $value)
+      {
+         $view->set($key, $value);
+      }
+      
+      $view->setOutputMode(PHPTAL::HTML5);
+      echo $view->execute();
    }
    
    public function __construct($viewPath)

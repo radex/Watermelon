@@ -23,7 +23,7 @@ include 'RegistryItem.php';
 /*
  * class Registry
  * 
- * Data storing facility. Beyond just storing data in array it also provides options to store data in database, make item read-only, or private (accessible only from specified class)
+ * Data storing facility. Beyond just storing data in array it also provides options to store data in database, and make item read-only
  */
 
 class Registry
@@ -31,7 +31,7 @@ class Registry
    private static $items = array(); // [RegistryItem[]] - items dictionary
    
    /*
-    * public static void create(string $name[, mixed $value = null[, bool $isPersistent = false[, bool/string $isReadOnly = false]]])
+    * public static void create(string $name[, mixed $value = null[, bool $isPersistent = false[, bool $isReadOnly = false]]])
     * 
     * Creates new item in Registry
     * 
@@ -44,17 +44,13 @@ class Registry
     * 
     * bool $isPersistent = false
     *    Whether the item's value is saved to database
-    *    Note that value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equaling default value
+    *    Note that value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equal default value
     * 
-    * bool/string $isReadOnly = false
-    *    [bool]:
-    *       Whether properties of an item are unchangeable
-    *       Note that:
-    *          - read-only item can be changed anyway if is also persistent
-    *          - being read-only is not saved in database if item is persistent
-    *    [string]:
-    *       Item is private (access to item is permited only to class, which name is given)
-    *       Note that private item can be changed anyway if is also persistent
+    * bool $isReadOnly = false
+    *    Whether properties of an item are unchangeable
+    *    Note that:
+    *       - read-only item can be changed anyway if is also persistent
+    *       - being read-only is not saved in database if item is persistent
     *
     * Throws an exception if:
     * - $name isn't string [nameNotString]
@@ -83,9 +79,9 @@ class Registry
       
       // if $isReadOnly is wrong type
       
-      if(!is_bool($isReadOnly) && !is_string($isReadOnly))
+      if(!is_bool($isReadOnly))
       {
-         throw new WMException('isReadOnly property has to be bool or string!', 'Registry:isReadOnlyWrongType');
+         throw new WMException('isReadOnly property has to be bool!', 'Registry:isReadOnlyWrongType');
       }
       
       // registering
@@ -119,12 +115,11 @@ class Registry
     * Throws an exception if:
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
-    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function get($name)
    {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'wrongPrivateItemClass');
+      self::runThrowers($name, 'nameNotString', 'doesNotExist');
       
       // if item is persistent and not synchronized, first synchronize.
       
@@ -153,12 +148,11 @@ class Registry
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
     * - item is read-only [readOnly]
-    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function set($name, $value)
    {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly', 'wrongPrivateItemClass');
+      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly');
       
       // changing value
       
@@ -185,12 +179,11 @@ class Registry
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
     * - item is read-only [readOnly]
-    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function delete($name)
    {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly', 'wrongPrivateItemClass');
+      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly');
       
       // deleting in database if persistent
       
@@ -217,12 +210,11 @@ class Registry
     * - $name isn't string [nameNotString]
     * - item with given name doesn't exist [doesNotExist]
     * - item is read-only [readOnly]
-    * - item is private, and caller class is wrong [wrongPrivateItemClass]
     */
    
    public static function invalidate($name)
    {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly', 'wrongPrivateItemClass');
+      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly');
       
       // deleting in database if persistent
       
@@ -284,23 +276,6 @@ class Registry
       self::runThrowers($name, 'nameNotString', 'doesNotExist');
 
       return self::$items[$name]->isReadOnly === true;
-   }
-
-   /*
-    * public static bool isPrivate(string $name)
-    *
-    * Returns whether item with given name is private
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    */
-    
-   public static function isPrivate($name)
-   {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist');
-
-      return is_string(self::$items[$name]->isReadOnly);
    }
    
    public function __invoke()
@@ -383,37 +358,6 @@ class Registry
       if(self::$items[$name]->isReadOnly === true)
       {
          throw new WMException('Attempt to access read-only item "' . $name . '" in Registry', 'Registry:readOnly');
-      }
-   }
-   
-   /*
-    * throws an exception if item with given name is private, and class attempting to access an item is not the same class as class specified in isReadOnly property. Don't call it explicitly. Use ::runThrowers() instead.
-    */ 
-   
-   private static function throwIfWrongPrivateItemClass($name)
-   {
-      if(!is_string(self::$items[$name]->isReadOnly)) return;
-      
-      $backtrace = debug_backtrace();
-      
-      // [0] in backtrace is this function, [1] is ::runThrowers(), and [2] is method of this class invoking ::runThrowers()
-      // [3] should be the same class as in isReadOnly
-      // of eval(), in which case, [4] should be the same class as in isReadOnly
-      
-      if($backtrace[3]['function'] == 'eval' && !isset($backtrace[3]['class'])) // very important to check non-existence of class!
-      {
-         $callerClassPos = 4;
-      }
-      else
-      {
-         $callerClassPos = 3;
-      }
-      
-      // checking if class names match
-      
-      if(strtolower(self::$items[$name]->isReadOnly) !== strtolower($backtrace[$callerClassPos]['class']))
-      {
-         throw new WMException('Attempt to access private item "' . $name . '" from other class than specified in isReadOnly property in Registry', 'Registry:wrongPrivateItemClass');
       }
    }
 }

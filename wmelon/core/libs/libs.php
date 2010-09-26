@@ -26,6 +26,7 @@ include 'Loader.php';
 include 'EventCenter.php';
 include 'Cache/Cache.php';
 // include 'Translations/Translations.php';
+include 'PHPTAL/PHPTAL.php';
 
 // testing&development stuff
 

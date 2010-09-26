@@ -16,6 +16,15 @@ class test_Controller extends Controller
       echo '<a href="$/test/translations">Translations tests</a><br>';
       echo '<a href="$/test/dbtest">DB tests</a><br>';
       echo '<a href="$/test/cache">Cache tests</a><br>';
+      echo '<a href="$/test/tal">PHPTAL views</a><br>';
+   }
+   
+   function tal_action()
+   {
+      $view = View('phptal');
+      $view->foo = 'test';
+      $view->bar = array('a','b');
+      $view->display();
    }
    
    function cache_action()

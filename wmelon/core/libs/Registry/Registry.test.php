@@ -43,7 +43,6 @@ class Registry_TestCase extends TestCase
                'get',
                'set' => array('null'),
                'isReadOnly',
-               'isPrivate',
                'isPersistent',
                'exists',
                'delete',
@@ -123,7 +122,6 @@ class Registry_TestCase extends TestCase
                'get',
                'set' => array('null'),
                'isReadOnly',
-               'isPrivate',
                'isPersistent',
                'delete',
                'invalidate',
@@ -194,51 +192,6 @@ class Registry_TestCase extends TestCase
             catch(WMException $e)
             {
                if($e->stringCode() == 'Registry:readOnly')
-                  $catched = true;
-            }
-            
-            assert($catched);
-         }
-      }
-      
-      #####
-      ##### throwIfWrongPrivateItemClass
-      #####
-      
-      {
-         // testing methods that throw an exception if attempting to access private item from other class than specified in isReadOnly property
-         
-         $r->create('__0.2', null, false, '__NonExistingClass');
-         
-         $throwIfWrongTransienceClassMethods = array
-            (
-               'get',
-               'set' => array('null'),
-               'delete',
-               'invalidate',
-            );
-         
-         foreach($throwIfWrongTransienceClassMethods as $key => $value)
-         {
-            list($method, $args) = $this->keyValueToMethodArgs($key, $value);
-
-            $this->nextTest();
-            $catched = false;
-
-            try
-            {
-               if($args)
-               {
-                  eval('$r->' . $method . '("__0.2",' . implode(',', $args) . ');');
-               }
-               else
-               {
-                  $r->{$method}('__0.2');
-               }
-            }
-            catch(WMException $e)
-            {
-               if($e->stringCode() == 'Registry:wrongPrivateItemClass')
                   $catched = true;
             }
             
@@ -471,59 +424,6 @@ class Registry_TestCase extends TestCase
          $this->nextTest();
          
          assert($r->exists('__0') === false);
-      }
-      
-      #####
-      ##### isPrivate(), private items
-      #####
-      
-      {
-         $this->nextTest();
-
-         $r->create('__7.1');
-
-         assert($r->isPrivate('__7.1') === false);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-
-         $r->create('__7.2', null, false, true);
-
-         assert($r->isPrivate('__7.2') === false);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-
-         $r->create('__7.3', null, false, false);
-
-         assert($r->isPrivate('__7.3') === false);
-
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-
-         $r->create('__7.4', null, false, 'foo');
-
-         assert($r->isPrivate('__7.4') === true);
-         
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-
-         $r->create('__7.5', null, false, 'foo');
-
-         assert($r->isReadOnly('__7.5') === false);
-         
-         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-
-         $this->nextTest();
-
-         $r->create('__7.6', null, false, 'registry_testcase');
-         $r->set('__7.6', 'foo');
-
-         assert($r->get('__7.6') === 'foo');
       }
       
       #####
