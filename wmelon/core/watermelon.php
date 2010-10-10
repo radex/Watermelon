@@ -139,8 +139,10 @@ class Watermelon
       
       foreach(self::$config['autoload'] as $extensionName)
       {
-         $extension = Loader::extension($extensionName);
-         $extension->onAutoload();
+         Loader::extension($extensionName);
+         
+         $className = $extensionName . '_Extension';
+         $className::onAutoload();
       }
       
       //--
@@ -289,6 +291,7 @@ class Watermelon
          (
             'test' => array('test', false),
             'test2' => array('test', true),
+            'auth' => array('watermelon', false),
          );
       $modulesList->skins = array
          (
@@ -299,7 +302,7 @@ class Watermelon
       
       // other
       
-      $w['autoload']          = array('test', 'test2');
+      $w['autoload']          = array('test', 'test2', 'auth');
       $w['controllerHandler'] = null;
       $w['defaultController'] = 'test';
       

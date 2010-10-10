@@ -34,12 +34,12 @@ abstract class Extension
    }
    
    /*
-    * public void onAutoload()
+    * public static void onAutoload()
     * 
     * Function, that will be called on plugin autoload
     * 
     * Override it, if you need to do something on extensions auto-loading (but not on normal loading)
     */
    
-   public function onAutoload(){}
+   public static function onAutoload(){}
 }

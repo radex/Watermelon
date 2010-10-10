@@ -18,7 +18,43 @@ class test_Controller extends Controller
       echo '<a href="$/test/cache">Cache tests</a><br>';
       echo '<a href="$/test/tal">PHPTAL views</a><br>';
       echo '<a href="$/test/skinviews">Skin views</a><br>';
+      echo '<a href="$/test/user">Logging in, etc.</a><br>';
    }
+   
+   //--
+   
+   private function logged()
+   {
+      return (Auth::$isLogged ? 'true' : 'false');
+   } 
+   
+   function user_action()
+   {
+      echo 'Logged:' . $this->logged() . '<br>';
+      
+      echo '<a href="$/test/user_login">Log in</a><br>';
+      echo '<a href="$/test/user_logout">Log out</a><br>';
+   }
+   
+   function user_login_action()
+   {
+      echo 'Logged:' . $this->logged() . '<br>';
+      
+      Auth::login('radex', 'qwerty');
+      
+      echo 'Logged:' . $this->logged() . '<br>';
+   }
+   
+   function user_logout_action()
+   {
+      echo 'Logged:' . $this->logged() . '<br>';
+      
+      Auth::logout();
+      
+      echo 'Logged:' . $this->logged() . '<br>';
+   }
+   
+   //--
    
    function skinviews_action()
    {

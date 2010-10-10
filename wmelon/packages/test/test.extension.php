@@ -4,7 +4,7 @@ class Test_Extension extends Extension
 {
    public $foo = 'bar';
    
-   public function onAutoload()
+   public static function onAutoload()
    {
       //echo 'Test!';
    }
