@@ -259,6 +259,84 @@ class Watermelon
    }
    
    /*
+    * Auxiliary method of indexModules() method. Searches for concrete module files in specified path, and adds them to modulesList
+    */
+   
+   private static function modulesInDirectory($path, $packageName, $moduleType, $inDir, $modulesList)
+   {
+      $files = FilesForDirectory($path, false, true);
+      
+      foreach($files as $file)
+      {
+         $ext = '.' . $moduleType . '.php';
+         $extLen = strlen($ext);
+         
+         if(substr($file->getFilename(), -$extLen) != $ext)
+         {
+            continue;
+         }
+         
+         $modulesList->{$moduleType . 's'}[substr($file->getFilename(), 0, -$extLen)] = array($packageName, $inDir);
+      }
+   }
+   
+   /*
+    * searches packages for module files - controllers, models, extensions, etc., in order to create modules list
+    */
+   
+   private static function indexModules()
+   {
+      $modulesList = new stdClass;
+      
+      $modulesList->controllers = array();
+      $modulesList->models      = array();
+      $modulesList->blocksets   = array();
+      $modulesList->extensions  = array();
+      $modulesList->skins       = array();
+      
+      foreach(new DirectoryIterator(WM_Packages) as $dir)
+      {
+         // if not a package, or Installer package
+         
+         if(!$dir->isDir() || $dir->isDot() || $dir->getFilename() == 'installer')
+         {
+            continue;
+         }
+         
+         $packageName = $dir->getFilename();
+         
+         // skins
+         
+         if(file_exists(WM_Packages . $packageName . '/skin.php'))
+         {
+            $modulesList->skins[] = $packageName;
+         }
+         
+         // controllers, models, blocksets and extensions
+         
+         $moduleTypes = array('controller', 'model', 'blockset', 'extension');
+         
+         foreach($moduleTypes as $moduleType)
+         {
+            // module in root of the package
+            
+            self::modulesInDirectory(WM_Packages . $packageName, $packageName, $moduleType, false, $modulesList);
+            
+            // module in [type]s/ directory of the package
+            
+            $subdirPath = WM_Packages . $packageName . '/' . $moduleType . 's/';
+            
+            if(file_exists($subdirPath))
+            {
+               self::modulesInDirectory($subdirPath, $packageName, $moduleType, true, $modulesList);
+            }
+         }
+      }
+      
+      return $modulesList;
+   }
+   
+   /*
     * private static void config()
     * 
     * Loads configuration, sets URL constants, etc
@@ -269,7 +347,7 @@ class Watermelon
       $w = array();      // array with Watermelon configuration
       
       // ModulesList
-      
+      /*
       $modulesList = new stdClass;
       $modulesList->controllers = array
          (
@@ -297,8 +375,9 @@ class Watermelon
          (
             'wcmslay',
          );
+      */
       
-      $w['modulesList'] = $modulesList;
+      $w['modulesList'] = self::indexModules();
       
       // other
       

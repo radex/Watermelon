@@ -57,11 +57,12 @@ function CallMethodQuietly(&$object, $methodName, $args = array())
  * 
  * Returns array with paths for every file in specified directory (if $recursive == true, also including files in subdirectories)
  * 
- * string $dirPath          - path for directory, in which search will be performed
- * bool   $recursive = true - whether returned list will include files in subdirectories
+ * string $dirPath              - path for directory, in which search will be performed
+ * bool   $recursive    = true  - whether returned list will include files in subdirectories
+ * bool   $returnObject = false - whether to return an array of SplFileInfo objects instead of strings
  */
 
-function FilesForDirectory($dirPath, $recursive = true)
+function FilesForDirectory($dirPath, $recursive = true, $returnObject = false)
 {
    $iterator = new DirectoryIterator($dirPath);
    
@@ -71,17 +72,32 @@ function FilesForDirectory($dirPath, $recursive = true)
    {
       if($file->isFile())
       {
-         $files[] = $file->getPathname();
+         if($returnObject)
+         {
+            $files[] = $file->getFileInfo();
+         }
+         else
+         {
+            $files[] = $file->getPathname();
+         }
       }
       elseif($file->isDir() && !$file->isDot() && $recursive === true)
       {
-         $subdirFiles = FilesForDirectory($file->getPathname(), $recursive);
+         $subdirFiles = FilesForDirectory($file->getPathname(), true, $returnObject);
          
          foreach($subdirFiles as $subdirFile)
          {
             $files[] = $subdirFile;
          }
       }
+   }
+   
+   foreach($files as $foo)
+   {
+      /*echo '<hr>!';
+      var_dump($foo->isFile());
+      echo '!<hr>';
+      */
    }
    
    return $files;
