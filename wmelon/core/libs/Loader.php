@@ -65,13 +65,19 @@ class Loader
          $module = Watermelon::$packageName;
       }
       
-      // generating path
+      // checking whether "skin view" exists, and returning proper view object
       
-      $path = WM_Packages . $module . '/views/' . $name . '.view.php';
+      $path      = WM_Packages . $module . '/views/' . $name . '.view.php';
+      $path_skin = WM_SkinPath . 'views/' . $module . '/' . $name . '.view.php';
       
-      // returning view object
-      
-      return new View($path);
+      if(file_exists($path_skin))
+      {
+         return new View($path_skin);
+      }
+      else
+      {
+         return new View($path);
+      }
    }
    
    /*

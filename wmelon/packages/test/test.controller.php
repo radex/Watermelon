@@ -17,6 +17,22 @@ class test_Controller extends Controller
       echo '<a href="$/test/dbtest">DB tests</a><br>';
       echo '<a href="$/test/cache">Cache tests</a><br>';
       echo '<a href="$/test/tal">PHPTAL views</a><br>';
+      echo '<a href="$/test/skinviews">Skin views</a><br>';
+   }
+   
+   function skinviews_action()
+   {
+      echo 'Foo:';
+      
+      View('foo')->display();
+      
+      echo '<hr>Bar:';
+      
+      View('bar')->display();
+      
+      echo '<hr>watermelon/bar/foo:';
+      
+      View('watermelon/bar/foo', true)->display();
    }
    
    function tal_action()
