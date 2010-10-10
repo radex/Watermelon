@@ -65,12 +65,23 @@ class Watermelon
     * public static object $modulesList
     * 
     * List of all kinds of module classes - controllers, models, views, etc.
+    * 
+    * $modulesList->controllers/models/blocksets/extensions =
+    *    array($name => $info)
+    *       $name - module name
+    *       $info = array(string $package, bool $inDir)
+    *          string $package - package, $name module belongs to
+    *          bool   $inDir   - whether module is in root of package directory (false) or in separate directory, e.g. controllers/ (true)
+    * 
+    * $moduleList->skins =
+    *    array(string $package, ...)
+    *       string $package - name of package with a skin
     */
    
-   public static $modulesList;          // TODO: complete documentation when done
+   public static $modulesList;
    
    /*
-    * public static array $config
+    * public static object $config
     * 
     * Watermelon configuration
     * 
@@ -109,7 +120,7 @@ class Watermelon
     */
    
    public static function run()
-   {
+   {   
       self::prepare();
       
       // if installer - skipping configuration etc, just loading controller and generating
@@ -137,7 +148,7 @@ class Watermelon
       
       // auto-loading extensions
       
-      foreach(self::$config['autoload'] as $extensionName)
+      foreach(self::$config->autoload as $extensionName)
       {
          Loader::extension($extensionName);
          
@@ -344,52 +355,20 @@ class Watermelon
    
    private static function config()
    {
-      $w = array();      // array with Watermelon configuration
+      // modules
       
-      // ModulesList
-      /*
-      $modulesList = new stdClass;
-      $modulesList->controllers = array
-         (
-            'e404' => array('watermelon', false),
-            'test' => array('test', false),
-            'cnthnd' => array('test', true),
-         );
-      $modulesList->models = array
-         (
-            'testmodel' => array('test', false),
-            'testmodel2' => array('test', true),
-         );
-      $modulesList->blocksets = array
-         (
-            'test' => array('test', false),
-            'test2' => array('test', true),
-         );
-      $modulesList->extensions = array
-         (
-            'test' => array('test', false),
-            'test2' => array('test', true),
-            'auth' => array('watermelon', false),
-         );
-      $modulesList->skins = array
-         (
-            'wcmslay',
-         );
-      */
-      
-      $w['modulesList'] = self::indexModules();
+      $w->modulesList       = self::indexModules();            // TODO: only in debug
+      $w->autoload          = array('test', 'test2', 'auth');
+      $w->controllerHandler = null;
+      $w->defaultController = 'test';
       
       // other
       
-      $w['autoload']          = array('test', 'test2', 'auth');
-      $w['controllerHandler'] = null;
-      $w['defaultController'] = 'test';
+      $w->siteURL           = 'http://localhost/w/index.php/';
+      $w->systemURL         = 'http://localhost/w/wmelon/';
       
-      $w['siteURL']           = 'http://localhost/w/index.php/';
-      $w['systemURL']         = 'http://localhost/w/wmelon/';
-      
-      $w['skin']              = 'wcmslay';
-      $w['lang']              = 'pl';
+      $w->skin              = 'wcmslay';
+      $w->lang              = 'pl';
       
       // frontend
       
@@ -407,11 +386,11 @@ class Watermelon
             array('Test2::bar2', 'test2', 'bar2', array('foo2', 'bar2')),
          ));
       
-      $w['siteName']   = 'Nazwa strony';
-      $w['siteSlogan'] = 'Slogan strony';
-      $w['footer']     = 'Testowanie <em>stopki</em>…';
-      $w['blockMenus'] = $blockMenus;
-      $w['textMenus']  = $textMenus;
+      $w->siteName   = 'Nazwa strony';
+      $w->siteSlogan = 'Slogan strony';
+      $w->footer     = 'Testowanie <em>stopki</em>…';
+      $w->blockMenus = $blockMenus;
+      $w->textMenus  = $textMenus;
       
       // setting config
       
@@ -422,19 +401,19 @@ class Watermelon
       
       self::$config = &$w;
       
-      self::$modulesList = $w['modulesList']; // change it
+      self::$modulesList = $w->modulesList; // change it
       
       // setting constants
       
-      define('WM_SiteURL',     $w['siteURL']);
-      define('WM_SystemURL',   $w['systemURL']);
+      define('WM_SiteURL',     $w->siteURL);
+      define('WM_SystemURL',   $w->systemURL);
       define('WM_PackagesURL', WM_SystemURL . 'packages/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       
-      define('WM_SkinPath', WM_Packages    . $w['skin'] . '/');
-      define('WM_SkinURL',  WM_PackagesURL . $w['skin'] . '/');
+      define('WM_SkinPath', WM_Packages    . $w->skin . '/');
+      define('WM_SkinURL',  WM_PackagesURL . $w->skin . '/');
       
-      define('WM_Lang', $w['lang']);
+      define('WM_Lang', $w->lang);
    }
    
    /*
@@ -502,8 +481,8 @@ class Watermelon
       
       // controllers configuration
       
-      $controllerHandler = self::$config['controllerHandler'];
-      $defaultController = self::$config['defaultController'];
+      $controllerHandler = self::$config->controllerHandler;
+      $defaultController = self::$config->defaultController;
       
       $useControllerHandler = false;
       $useDefaultController = false;
@@ -648,7 +627,7 @@ class Watermelon
       
       include WM_SkinPath . 'skin.php';
       
-      $className = self::$config['skin'] . '_skin';
+      $className = self::$config->skin . '_skin';
       
       $skin = new $className;
       
@@ -656,11 +635,11 @@ class Watermelon
       $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
       
       $skin->pageTitle  = self::$controllerObject->pageTitle;
-      $skin->siteName   = &self::$config['siteName'];
-      $skin->siteSlogan = &self::$config['siteSlogan'];
-      $skin->footer     = &self::$config['footer'];
-      $skin->blockMenus = &self::$config['blockMenus'];
-      $skin->textMenus  = &self::$config['textMenus'];
+      $skin->siteName   = &self::$config->siteName;
+      $skin->siteSlogan = &self::$config->siteSlogan;
+      $skin->footer     = &self::$config->footer;
+      $skin->blockMenus = &self::$config->blockMenus;
+      $skin->textMenus  = &self::$config->textMenus;
       $skin->additionalData = self::$controllerObject->additionalData;
       
       $skin->display();

@@ -37,7 +37,7 @@ class Installer_Controller extends Controller
       define('WM_SkinPath', WM_Packages    . 'installer/');
       define('WM_SkinURL',  WM_PackagesURL . 'installer/');
       
-      Watermelon::$config['skin'] = 'installer';
+      Watermelon::$config->skin = 'installer';
       
       define('WM_Lang', $_SESSION['lang']);
       
@@ -418,54 +418,22 @@ CONFIG;
       
       //TODO: make it better
       
-      $w = array();      // array with Watermelon configuration
+      $w->modulesList         = new stdClass;
+      $w->autoload          = array('test', 'test2');
+      $w->controllerHandler = null;
+      $w->defaultController = 'test';
       
-      // ModulesList
+      $w->siteURL           = WM_SiteURL;
+      $w->systemURL         = WM_SystemURL;
       
-      $modulesList = new stdClass;
-      $modulesList->controllers = array
-         (
-            'e404' => array('watermelon', false),
-            'test' => array('test', false),
-            'cnthnd' => array('test', true),
-         );
-      $modulesList->models = array
-         (
-            'testmodel' => array('test', false),
-            'testmodel2' => array('test', true),
-         );
-      $modulesList->blocksets = array
-         (
-            'test' => array('test', false),
-            'test2' => array('test', true),
-         );
-      $modulesList->extensions = array
-         (
-            'test' => array('test', false),
-            'test2' => array('test', true),
-         );
-      $modulesList->skins = array
-         (
-            'wcmslay',
-         );
+      $w->skin              = 'wcmslay';
+      $w->lang              = WM_Lang;
       
-      $w['modulesList'] = $modulesList;
-      
-      $w['autoload']          = array('test', 'test2');
-      $w['controllerHandler'] = null;
-      $w['defaultController'] = 'test';
-      
-      $w['siteURL']           = WM_SiteURL;
-      $w['systemURL']         = WM_SystemURL;
-      
-      $w['skin']              = 'wcmslay';
-      $w['lang']              = WM_Lang;
-      
-      $w['siteName']   = $site->siteName;
-      $w['siteSlogan'] = '';
-      $w['footer']     = '';
-      $w['blockMenus'] = array();
-      $w['textMenus']  = array();
+      $w->siteName   = $site->siteName;
+      $w->siteSlogan = '';
+      $w->footer     = '';
+      $w->blockMenus = array();
+      $w->textMenus  = array();
       
       Registry::create('wmelon', $w, true);
       
