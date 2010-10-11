@@ -44,6 +44,33 @@ abstract class Controller
    
    public $additionalData;
    
+   /*
+    * public enum $requestedOutputType
+    * 
+    * Requested representation method of output:
+    *    ::Skinned_OutputType - Typical page
+    *    ::Plain_OutputType   - Only echoed data is outputed, without any skin around
+    *    ::XML_OutputType     - XML created from structure in $output property
+    */
+   
+   public $requestedOutputType = self::Skinned_OutputType;
+   
+   const Skinned_OutputType = 1;
+   const Plain_OutputType   = 2;
+   const XML_OutputType     = 3;
+   
+   /*
+    * public SimpleXMLObject $output = null
+    * 
+    * Data to be outputed
+    * 
+    * Works only for XML output type (and possibly other future output types), for Skinned and Plain output types, just echo what you want
+    * 
+    * Note that it is by default null, so you have to initialize it with SimpleXMLObject for yourself
+    */
+   
+   public $output;
+   
    //--
    
    public function __construct()

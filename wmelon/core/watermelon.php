@@ -62,9 +62,35 @@ class Watermelon
    public static $controllerName = '';
    
    /*
-    * public static object $modulesList
+    * public static object $config
     * 
-    * List of all kinds of module classes - controllers, models, views, etc.
+    * Watermelon configuration
+    * 
+    * DO NOT CHANGE IT!
+    * 
+    * ---
+    * Member variables:
+    * 
+    * modulesList       - list of all kinds of module classes - controllers, models, views, etc. (description of structure later)
+    * autoload          - array of extension names to load automatically
+    * controllerHandler - controller to run if there's no controller with name such as in URI
+    * defaultController - controller to run if no controller name is given in URI
+    * 
+    * siteURL           - base URL for website pages
+    * systemURL         - base URL for wmelon/ contents
+    * 
+    * skin              - website skin name
+    * lang              - website language code
+    * 
+    * siteName          - website name
+    * siteSlogan        - website slogan (some text, usually placed below site name; shown in some skins)
+    * footer            - additional text (HTML) to put in footer
+    * blockMenus        - array of block-based menus (structure described in Skin class)
+    * textMenus         - array of text-based menus ( -||- )
+    * 
+    * ---
+    * ModulesList structure:
+    * 
     * 
     * $modulesList->controllers/models/blocksets/extensions =
     *    array($name => $info)
@@ -76,16 +102,6 @@ class Watermelon
     * $moduleList->skins =
     *    array(string $package, ...)
     *       string $package - name of package with a skin
-    */
-   
-   public static $modulesList;
-   
-   /*
-    * public static object $config
-    * 
-    * Watermelon configuration
-    * 
-    * DO NOT CHANGE IT!
     */
    
    public static $config;
@@ -401,8 +417,6 @@ class Watermelon
       
       self::$config = &$w;
       
-      self::$modulesList = $w->modulesList; // change it
-      
       // setting constants
       
       define('WM_SiteURL',     $w->siteURL);
@@ -597,12 +611,12 @@ class Watermelon
    
    private static function controllerDetails($controllerName)
    {
-      if(!isset(self::$modulesList->controllers[$controllerName]))
+      if(!isset(self::$config->modulesList->controllers[$controllerName]))
       {
          return false;
       }
       
-      $info  = self::$modulesList->controllers[$controllerName];
+      $info  = self::$config->modulesList->controllers[$controllerName];
       $path  = WM_Packages . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
       
       return array($path, $info[0]);
@@ -623,25 +637,41 @@ class Watermelon
       $content = str_replace('href="$/',   'href="'   . WM_SiteURL, $content);
       $content = str_replace('action="$/', 'action="' . WM_SiteURL, $content);
       
-      // running skin
+      // running skin, or outputing data
       
-      include WM_SkinPath . 'skin.php';
+      $controller = self::$controllerObject;
+      $outputType = $controller->requestedOutputType;
       
-      $className = self::$config->skin . '_skin';
-      
-      $skin = new $className;
-      
-      $skin->content    = &$content;
-      $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
-      
-      $skin->pageTitle  = self::$controllerObject->pageTitle;
-      $skin->siteName   = &self::$config->siteName;
-      $skin->siteSlogan = &self::$config->siteSlogan;
-      $skin->footer     = &self::$config->footer;
-      $skin->blockMenus = &self::$config->blockMenus;
-      $skin->textMenus  = &self::$config->textMenus;
-      $skin->additionalData = self::$controllerObject->additionalData;
-      
-      $skin->display();
+      if($outputType == Controller::Plain_OutputType)
+      {
+         echo $content;
+      }
+      elseif($outputType == Controller::XML_OutputType)
+      {
+         header('Content-Type: text/xml');
+         
+         echo $controller->output->asXML();
+      }
+      else
+      {
+         include WM_SkinPath . 'skin.php';
+
+         $className = self::$config->skin . '_skin';
+
+         $skin = new $className;
+
+         $skin->content    = &$content;
+         $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
+
+         $skin->pageTitle  = $controller->pageTitle;
+         $skin->siteName   = &self::$config->siteName;
+         $skin->siteSlogan = &self::$config->siteSlogan;
+         $skin->footer     = &self::$config->footer;
+         $skin->blockMenus = &self::$config->blockMenus;
+         $skin->textMenus  = &self::$config->textMenus;
+         $skin->additionalData = $controller->additionalData;
+
+         $skin->display();
+      }
    }
 }

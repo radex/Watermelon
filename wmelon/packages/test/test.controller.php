@@ -19,6 +19,33 @@ class test_Controller extends Controller
       echo '<a href="$/test/tal">PHPTAL views</a><br>';
       echo '<a href="$/test/skinviews">Skin views</a><br>';
       echo '<a href="$/test/user">Logging in, etc.</a><br>';
+      echo '<a href="$/test/output">Output types</a><br>';
+   }
+   
+   //--
+   
+   function output_action()
+   {
+      echo '<a href="$/test/plain_output">Plain</a><br>';
+      echo '<a href="$/test/xml_output">XML</a><br>';
+   }
+   
+   function plain_output_action()
+   {
+      $this->tal_action();
+      $this->requestedOutputType = self::Plain_OutputType;
+   }
+   
+   function xml_output_action()
+   {
+      $output = new SimpleXMLElement('<xml></xml>');
+      $output->foo = 'bar';
+      $output->addChild('foo');
+      $output->foo[1]['foo'] = 'bar';
+      $output['foo'] = 'bar';
+      
+      $this->output = $output;
+      $this->requestedOutputType = self::XML_OutputType;
    }
    
    //--

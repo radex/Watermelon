@@ -133,7 +133,7 @@ class Loader
       
       // loading
       
-      $pathInfo = Watermelon::$modulesList->{$typeName . 's'}[$name];
+      $pathInfo = Watermelon::$config->modulesList->{$typeName . 's'}[$name];
       
       include WM_Packages . $pathInfo[0] . ($pathInfo[1] ? '/' . $typeName . 's/' : '/') . $name . '.' . $typeName . '.php';
       
