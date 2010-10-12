@@ -22,27 +22,59 @@
  * class DBResult
  * 
  * Class representing database query result
+ * 
+ * You can iterate through its rows using foreach (yay!)
  */
 
-class DBResult
+class DBResult implements Iterator
 {
-   public $res; // query result resource (returned by DB::query)
+   /*
+    * public int $rows
+    * 
+    * Number of rows in result set
+    * 
+    * Note that it is valid only for QUERY statement (and other returning result set), for other types of queries (like INSERT) it is always 0. Use DB::affectedRows() for them instead.
+    */
+   
+   public $rows = 0;
+   
+   /*
+    * public bool $exists
+    * 
+    * Whether number of rows in result set is greater than 0
+    * 
+    * Handy shortcut for ($x->rows > 0)
+    * 
+    * Note that it is valid only for QUERY statement (and other returning result set), for other types of queries (like INSERT) it is always 0
+    */
+   
+   public $exists = false;
+   
+   /*
+    * public mysql_result $res
+    * 
+    * Query result resource (returned by DB::query())
+    */
+   
+   public $res;
+   
+   private $index = 0;
+   
+   private $valid = false;
+   
+   /*
+    * constructor
+    */
    
    public function __construct($res)
    {
       $this->res = $res;
-   }
-   
-   /*
-    * public int rows()
-    * public int $rows
-    * 
-    * Returns number of rows in result
-    */
-   
-   public function rows()
-   {
-      return mysql_num_rows($this->res);
+      
+      if(is_resource($res))
+      {
+         $this->rows = mysql_num_rows($res);
+         $this->exists = ($this->rows > 0);
+      }
    }
    
    /*
@@ -68,27 +100,48 @@ class DBResult
    }
    
    /*
-    * public bool exists()
-    * public bool $exists
-    * 
-    * Returns TRUE if searched record exists (num_rows > 0), or FALSE otherwise
+    * Iterator interface methods
     */
    
-   public function exists()
+   public function current()
    {
-      return (mysql_num_rows($this->res) == 0) ? false : true;
+      $this->moveIndex($this->index);
+      
+      return $this->fetchObject();
    }
    
-   /*
-    * __get magic
-    */
-   
-   public function __get($name)
+   public function key()
    {
-      switch($name)
+      return $this->index;
+   }
+   
+   public function next()
+   {
+      $this->index++;
+      
+      $this->valid = ($this->index < $this->rows);
+   }
+   
+   public function rewind()
+   {
+      $this->index = 0;
+      $this->valid = $this->moveIndex(0);
+   }
+   
+   public function valid()
+   {
+      return $this->valid;
+   }
+   
+   private function moveIndex($index)
+   {
+      if($this->rows == 0)
       {
-         case 'rows':   return $this->rows();
-         case 'exists': return $this->exists();
+         return false;
+      }
+      else
+      {
+         return mysql_data_seek($this->res, $index);
       }
    }
 }

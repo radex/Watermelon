@@ -390,8 +390,8 @@ class Watermelon
       
       $textMenus = array(array
          (
-            array('Foo', '#foo', null),
-            array('Bar', '#bar', 'Bar!!!')
+            array('Blog', 'http://localhost/w/index.php/blog', 'Blooog!!!'),
+            array('Testy', 'http://localhost/w/index.php/test', null),
          ));
       
       $blockMenus = array(array
@@ -473,6 +473,29 @@ class Watermelon
       //--
       
       self::$segments = $segments;
+   }
+   
+   /*
+    * private static array controllerDetails(string $controllerName)
+    * 
+    * Returns controller details - path, and module name it belongs to
+    * 
+    * Returned data is in format: array($path, $packageName)
+    * 
+    * Used by ::loadController()
+    */
+   
+   private static function controllerDetails($controllerName)
+   {
+      if(!isset(self::$config->modulesList->controllers[$controllerName]))
+      {
+         return false;
+      }
+      
+      $info  = self::$config->modulesList->controllers[$controllerName];
+      $path  = WM_Packages . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
+      
+      return array($path, $info[0]);
    }
    
    /*
@@ -597,29 +620,6 @@ class Watermelon
       // if neither action specified in URI, nor action handler exists
       
       self::displayNoPageFoundError();
-   }
-   
-   /*
-    * private static array controllerDetails(string $controllerName)
-    * 
-    * Returns controller details - path, and module name it belongs to
-    * 
-    * Returned data is in format: array($path, $packageName)
-    * 
-    * Used by ::loadController()
-    */
-   
-   private static function controllerDetails($controllerName)
-   {
-      if(!isset(self::$config->modulesList->controllers[$controllerName]))
-      {
-         return false;
-      }
-      
-      $info  = self::$config->modulesList->controllers[$controllerName];
-      $path  = WM_Packages . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
-      
-      return array($path, $info[0]);
    }
    
    /*

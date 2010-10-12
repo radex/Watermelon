@@ -92,14 +92,6 @@ function FilesForDirectory($dirPath, $recursive = true, $returnObject = false)
       }
    }
    
-   foreach($files as $foo)
-   {
-      /*echo '<hr>!';
-      var_dump($foo->isFile());
-      echo '!<hr>';
-      */
-   }
-   
    return $files;
 }
 
@@ -191,9 +183,9 @@ function ToHTMLArgs($struct)
 /*
  * string SiteURI(string $urn)
  * 
- * Makes URI to given subpage
+ * Makes URI to given page of a website
  * 
- * string $urn - subpage, e.g: 'blog/foo/bar', or '' (URN to main page)
+ * string $urn - page, e.g: 'blog/foo/bar', or '' (URN to main page)
  */
 
 function SiteURI($urn)
@@ -216,7 +208,7 @@ function Redirect($uri)
 /*
  * void SiteRedirect(string $urn)
  * 
- * Redirects to $urn subpage
+ * Redirects to $urn page of a website
  * 
  * Equivalent of Redirect(SiteURI($urn))
  */

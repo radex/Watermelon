@@ -97,7 +97,7 @@ abstract class Skin
     * $textMenus = array($menu, $menu, ...)
     *    $menu = array(array($name, $URI, $title), ...)
     *       $name  - name of link
-    *       $URI   - URI links points to
+    *       $URI   - URI links points to                                         //TODO: make it more convenient about links to pages on the same website
     *       $title - description of link, shown when hovered (or NULL if none)
     */
    
