@@ -35,12 +35,20 @@ abstract class Skin
    public $content;
    
    /*
-    * public string $headTags
+    * public string[] $headTags
     * 
-    * Array of tags to put in <head> section
+    * Array of tags to put before actual page content
     */
    
-   public $headTags;
+   public $headTags = array();
+   
+   /*
+    * public string[] $tailTags
+    * 
+    * Array of tags to put after actual page content
+    */
+   
+   public $tailTags = array();
    
    /*
     * public string $pageTitle
@@ -87,7 +95,7 @@ abstract class Skin
     *       $parameters - arguments to be passed to block
     */
    
-   public $blockMenus;
+   public $blockMenus = array();
    
    /*
     * public array $textMenus
@@ -101,17 +109,17 @@ abstract class Skin
     *       $title - description of link, shown when hovered (or NULL if none)
     */
    
-   public $textMenus;
+   public $textMenus = array();
    
    /*
-    * public mixed $additionalData
+    * public array $additionalData
     * 
     * Other data to be passed to skin
     * 
     * Useful in making custom apps
     */
    
-   public $additionalData;
+   public $additionalData = array();
    
    /*
     * protected void drawTextMenu(int $id)
@@ -139,6 +147,20 @@ abstract class Skin
    protected function drawHeadTags()
    {
       foreach($this->headTags as $tag)
+      {
+         echo $tag . "\n";
+      }
+   }
+   
+   /*
+    * protected void drawTailTags()
+    * 
+    * Prints tags from ->tailTags
+    */
+   
+   protected function drawTailTags()
+   {
+      foreach($this->tailTags as $tag)
       {
          echo $tag . "\n";
       }

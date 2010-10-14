@@ -21,7 +21,23 @@
 Watermelon::run();
 
 class Watermelon
-{
+{   
+   /*
+    * public static string[] $headTags
+    * 
+    * Array of tags to put before actual page content
+    */
+   
+   public static $headTags = array();
+   
+   /*
+    * public static string[] $tailTags
+    * 
+    * Array of tags to put after actual page content
+    */
+   
+   public static $tailTags = array();
+   
    /*
     * public static enum $appType
     * 
@@ -171,6 +187,10 @@ class Watermelon
          $className = $extensionName . '_Extension';
          $className::onAutoload();
       }
+      
+      include WM_Core . 'FrontendLibraries/FrontendLibraries.extension.php';
+      
+      FrontendLibraries_Extension::onAutoload();
       
       //--
       
@@ -661,7 +681,8 @@ class Watermelon
          $skin = new $className;
 
          $skin->content    = &$content;
-         $skin->headTags   = array('<foo bar>', '</foo bar>', '<title>test!</title>');
+         $skin->headTags   = &self::$headTags;
+         $skin->tailTags   = &self::$tailTags;
 
          $skin->pageTitle  = $controller->pageTitle;
          $skin->siteName   = &self::$config->siteName;
