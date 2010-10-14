@@ -1,0 +1,52 @@
+/*
+ * Unsemantic Image Aligners
+ */
+
+.imgRight  { float: right; }
+.imgLeft   { float: left; }
+.imgCenter { margin: 0 auto; }
+
+/*
+ * Boxes
+ */
+
+.errorBox
+{
+   border: 1px solid #B65;
+   background: #FA9 url('img/errorIcon.png') no-repeat 10px center;
+}
+
+.warningBox
+{
+   border: 1px solid #B85;
+   background: #FE9 url('img/warningIcon.png') no-repeat 10px center;
+}
+
+.infoBox
+{
+   border: 1px solid #57B;
+   background: #ABF url('img/infoIcon.png') no-repeat 10px center;
+}
+
+.tickBox
+{
+   border: 1px solid #8B5;
+   background: #CFA url('img/tickIcon.png') no-repeat 10px center;
+}
+
+.tipBox
+{
+   border: 1px solid #AAB;
+   background: #f8f8f8 url('img/tipIcon.png') no-repeat 10px center;
+}
+
+.errorBox,
+.warningBox,
+.infoBox,
+.tickBox,
+.tipBox
+{
+   padding: 10px;
+   margin: 10px;
+   padding-left: 36px;
+}

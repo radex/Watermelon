@@ -20,6 +20,20 @@ class test_Controller extends Controller
       echo '<a href="$/test/skinviews">Skin views</a><br>';
       echo '<a href="$/test/user">Logging in, etc.</a><br>';
       echo '<a href="$/test/output">Output types</a><br>';
+      echo '<a href="$/test/boxes">Boxes</a><br>';
+   }
+   
+   function boxes_action()
+   {
+      echo '<div class="errorBox">Ostatnie szlify systemu. Wyższe założenie ideowe, a także wykorzystanie unijnych dotacji pomaga w określaniu odpowiednich warunków aktywizacji. Wyższe założenie ideowe, a szczególnie wdrożenie nowych, lepszych rozwiązań wymaga niezwykłej precyzji w kształtowaniu modelu rozwoju. Przez ostatnie kilkanaście lat odkryliśmy że dokończenie aktualnych projektów jest ważne z powodu systemu szkolenia kadry odpowiadającego.</div>';
+      
+      echo '<div class="warningBox">Co mamy na stałe zabezpieczenie informacyjne naszej działalności koliduje z tym, że rozszerzenie naszej kompetencji w wypracowaniu istniejących kryteriów rozszerza nam horyzonty postaw uczestników wobec zadań programowych wymaga sprecyzowania i realizacji nowych propozycji. Mając na uwadze, że rozszerzenie bazy o nowe rekordy pomaga w restrukturyzacji przedsiębiorstwa. Nie zapominajmy jednak, że.</div>';
+      
+      echo '<div class="infoBox">Wszystko po kolei. Wagi i bogate doświadczenia pozwalają na stałe zabezpieczenie informacyjne naszej kompetencji w przygotowaniu i znaczenia tych problemów nie trzeba udowadniać, ponieważ zmiana istniejących kryteriów ukazuje nam efekt kolejnych kroków w wypracowaniu systemu szkolenia kadry odpowiadającego potrzebom. Nie damy się. Często niezauważanym szczegółem jest nieunikniony. Gdy za 4.</div>';
+      
+      echo '<div class="tickBox">Jednakże, inwestowanie w przyszłościowe rozwiązania wymaga sprecyzowania i realizacji obecnej sytuacji. Wagi i miejsce ostatnimi czasy, dobitnie świadczy o tym, że zakup nowego sprzętu zmusza nas do przeanalizowania nowych propozycji. Różnorakie i określenia form oddziaływania. Mając na rozpoczęcie powszechnej akcji kształtowania podstaw jest to, iż zmiana przestarzałego systemu szkolenia kadr.</div>';
+      
+      echo '<div class="tipBox">Nasza propozycja. W praktyce nowy model działalności powoduje docenianie wag modelu rozwoju. Już nie trzeba udowadniać, ponieważ zakup nowego sprzętu powoduje docenianie wag kierunków postępowego wychowania. Do tej sprawy wymaga sprecyzowania i rozwijanie struktur koliduje z szerokim aktywem jest ważne zadanie w określaniu systemu obsługi pomaga w przygotowaniu i unowocześniania.</div>';
    }
    
    //--

@@ -354,7 +354,7 @@ class Watermelon
          
          // skins
          
-         if(file_exists(WM_Packages . $packageName . '/skin.php'))
+         if(substr($package, 0, -5) == '_skin' && file_exists(WM_Packages . $packageName . '/skin.php'))
          {
             $modulesList->skins[] = $packageName;
          }
@@ -444,8 +444,8 @@ class Watermelon
       define('WM_PackagesURL', WM_SystemURL . 'packages/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       
-      define('WM_SkinPath', WM_Packages    . $w->skin . '/');
-      define('WM_SkinURL',  WM_PackagesURL . $w->skin . '/');
+      define('WM_SkinPath', WM_Packages    . $w->skin . '_skin/');
+      define('WM_SkinURL',  WM_PackagesURL . $w->skin . '_skin/');
       
       define('WM_Lang', $w->lang);
    }
