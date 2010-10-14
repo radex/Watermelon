@@ -1,0 +1,206 @@
+@import url("basic.css");
+
+body
+{
+   background-color: #eee;
+   font-family: Helvetica, Sans, sans-serif;
+   font-size: 14px;
+}
+
+a:link { color: #C83730; }
+
+a:visited { color: #c88432; }
+
+a:hover { border-bottom: 1px dotted #C83730; }
+
+h1, h2, h3
+{
+   color: #000;
+   font-family: Arial;
+}
+
+h1
+{
+   font-size: 22px;
+   margin-bottom: 5px;
+}
+
+h2
+{
+   font-size: 17px;
+   margin-bottom: 2px;
+}
+
+h3
+{
+   font-size: 15px;
+}
+
+h1 a
+{
+   color: #000 !important;
+   border: 0 !important;
+   background: transparent;
+}
+
+h1 a:hover
+{
+   background: #ddd;
+}
+
+code
+{
+   display: inline-block;
+   border: 1px solid #bba;
+   background-color: #ebe7d4;
+   padding: 0 3px;
+}
+
+p
+{
+   line-height: 1.5em;
+   margin-bottom: 1em;
+   text-align: justify;
+}
+
+/*
+ * Frames
+ */
+
+.il
+{
+   float: left;
+   margin: 10px 10px 10px 0;
+}
+
+.ir
+{
+   float: right;
+   margin: 10px 0 10px 10px;
+}
+
+.il img, .ir img
+{
+   border: 1px solid #000;
+}
+
+.il span, .ir span
+{
+   display: block;
+   font-size: 13px;
+   text-align: center;
+}
+
+/*
+ * Header
+ */
+
+header
+{
+   margin: 0 auto;
+   height: 80px;
+   width: 750px;
+   padding-top: 20px;
+   
+   text-align: center;
+}
+
+header > div
+{
+   display: inline-block;
+}
+
+#siteName
+{
+   display: inline-block;
+   padding: 0 10px;
+   
+   text-transform: uppercase;
+   letter-spacing: 0.3em;
+   font-size: 26px;
+   line-height: 1em;
+   
+   color: #444;
+   border-bottom: 1px solid #aaa;
+}
+
+#siteSlogan
+{
+   padding: 2px 15px;
+   text-align: right;
+   font-size: 12px;
+   color: #888;
+}
+
+/*
+ * Footer
+ */
+
+footer
+{
+   margin: 0 auto;
+   width: 750px;
+   padding: 30px 0;
+   
+   text-align: center;
+   color: #888;
+   font-size: 11px;
+}
+
+/*
+ * Container
+ */
+
+#container
+{
+   width: 750px;
+   margin: 0 auto;
+   padding: 15px;
+   
+   background: #fff;
+   border: 1px solid #aaa;
+   border-radius: 5px;
+   box-shadow: 0 5px 10px #ccc;
+   
+   color:#555;
+}
+
+/*
+ * Blog
+ */
+
+.blogPostContainer
+{
+   width: 750px;
+   margin: 0 auto;
+   margin-top: 50px;
+   
+   box-shadow: 0 5px 10px #ccc;
+   border-radius: 5px;
+   color:#555;
+}
+
+.blogPostContainer:first-of-type
+{
+   margin-top: 0;
+}
+
+.blogPostContent
+{
+   padding: 15px;
+   
+   background: #fff;
+   border: 1px solid #aaa;
+   border-bottom: 0;
+   border-radius: 5px 5px 0 0;
+}
+
+
+.blogPostBottombar
+{
+   padding: 10px 15px;
+   
+   background: #ebe7d4;
+   border: 1px solid #bba;
+   border-radius: 0 0 5px 5px;
+}
