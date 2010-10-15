@@ -20,10 +20,10 @@ class test_Controller extends Controller
       echo '<a href="$/test/skinviews">Skin views</a><br>';
       echo '<a href="$/test/user">Logging in, etc.</a><br>';
       echo '<a href="$/test/output">Output types</a><br>';
-      echo '<a href="$/test/boxes">Boxes</a><br>';
+      echo '<a href="$/test/css">Boxes, and more...</a><br>';
    }
    
-   function boxes_action()
+   function css_action()
    {
       echo '<div class="errorBox">Ostatnie szlify systemu. Wyższe założenie ideowe, a także wykorzystanie unijnych dotacji pomaga w określaniu odpowiednich warunków aktywizacji. Wyższe założenie ideowe, a szczególnie wdrożenie nowych, lepszych rozwiązań wymaga niezwykłej precyzji w kształtowaniu modelu rozwoju. Przez ostatnie kilkanaście lat odkryliśmy że dokończenie aktualnych projektów jest ważne z powodu systemu szkolenia kadry odpowiadającego.</div>';
       
@@ -34,6 +34,13 @@ class test_Controller extends Controller
       echo '<div class="tickBox">Jednakże, inwestowanie w przyszłościowe rozwiązania wymaga sprecyzowania i realizacji obecnej sytuacji. Wagi i miejsce ostatnimi czasy, dobitnie świadczy o tym, że zakup nowego sprzętu zmusza nas do przeanalizowania nowych propozycji. Różnorakie i określenia form oddziaływania. Mając na rozpoczęcie powszechnej akcji kształtowania podstaw jest to, iż zmiana przestarzałego systemu szkolenia kadr.</div>';
       
       echo '<div class="tipBox">Nasza propozycja. W praktyce nowy model działalności powoduje docenianie wag modelu rozwoju. Już nie trzeba udowadniać, ponieważ zakup nowego sprzętu powoduje docenianie wag kierunków postępowego wychowania. Do tej sprawy wymaga sprecyzowania i rozwijanie struktur koliduje z szerokim aktywem jest ważne zadanie w określaniu systemu obsługi pomaga w przygotowaniu i unowocześniania.</div>';
+      
+      echo '<h1>Foo</h1>
+      <p>Lorem ipsum dolor sit amet enim. Etiam ullamcorper. Suspendisse a pellentesque dui, non felis. Maecenas malesuada elit lectus felis, malesuada ultricies. Curabitur et ligula. Ut molestie a, ultricies porta urna. Vestibulum commodo volutpat a, convallis ac, laoreet enim. Phasellus fermentum in, dolor. Pellentesque facilisis. Nulla imperdiet sit amet magna. Vestibulum </p>
+      <h2>Foo</h2>
+      <p>dapibus, mauris nec malesuada fames ac turpis velit, rhoncus eu, luctus et interdum adipiscing wisi. Aliquam erat ac ipsum. Integer aliquam purus. Quisque lorem tortor fringilla sed, vestibulum id, eleifend justo vel bibendum sapien massa ac turpis faucibus orci luctus non, consectetuer lobortis quis, varius in, purus</p>
+      <h3>Foo</h2>
+      <p>Integer ultrices posuere cubilia Curae, Nulla ipsum dolor lacus, suscipit adipiscing. Cum sociis natoque penatibus et ultrices volutpat. Nullam wisi ultricies a, gravida vitae, dapibus risus ante sodales lectus blandit eu, tempor diam pede cursus vitae, ultricies eu, faucibus quis, porttitor eros cursus lectus, pellentesque eget, bibendum a, gravida ullamco</p>';
    }
    
    //--

@@ -136,7 +136,7 @@ h1
    color: #333;
    border-bottom: 1px solid #ccc;
    margin-bottom: 20px;
-   text-shadow: 0px 2px 2px #aaa;
+   text-shadow: 0px 1px 0px #aaa;
 }
 
 /* Struktura
@@ -144,53 +144,52 @@ h1
 
 #container
 {
-   width: 981px;
+   width: 950px;
    margin: 50px auto;
    background-color: #fff;
    background-image: url('img/center.png');
+   border:1px solid #000;
+   box-shadow: 0 0 30px #000;
 }
 
 header
 {
-   height: 171px;
+   height: 150px;
    background-image: url('img/top.jpg');
    background-color: #b5ce4c;
+   box-shadow: 0 0 2px #aaa;
 }
 
 #sidebar
 {
-   width: 225px;
+   width: 230px;
    float: right;
-   padding: 5px;
-   padding-left: 10px;
-   padding-right: 20px;
+   padding: 10px;
    overflow: hidden;
    line-height: 1.5em;
+   
+   background-color: #f2ede1;
 }
 
 #content
 {
    float: right;
    overflow: hidden;
-   width: 685px;
+   width: 680px;
    padding: 10px;
-   padding-left: 30px;
    line-height: 1.7em;
-}
-
-#bottom-bg
-{
-   content: '';
-   display:block;
-   height: 29px;
-   background-image: url('img/bottom.png');
-   clear: both;
 }
 
 footer
 {
+   clear: both;
    color: white;
    text-align: center;
+}
+
+#clear
+{
+   clear:both; /* help me delete this! */
 }
 
 
@@ -214,7 +213,7 @@ footer
 
 header ul
 {
-   margin-top: 40px;
+   margin-top: 27px;
 }
 
 header ul li

@@ -18,7 +18,7 @@
       <?= empty($pageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
       <?=$content?>
    </div>
-   <div id="bottom-bg"></div>
+   <div id="clear"></div>
 </div>
 <footer>
    <?=$footer?><br>
