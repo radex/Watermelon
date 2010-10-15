@@ -19,37 +19,59 @@
  //  
 
 /*
- * Blog Model
+ * Pages model
  */
 
-class Blog_Model extends Model
+class Pages_Model extends Model
 {
    /*
-    * public DBResult posts()
+    * public DBResult pages()
     * 
-    * List of posts
+    * List of pages
     */
    
-   public function posts()
+   public function pages()
    {
-      return $this->db->query("SELECT * FROM `__blogposts` ORDER BY `blogpost_id` DESC");
+      return $this->db->query("SELECT * FROM `__pages` ORDER BY `page_id` DESC");
    }
    
    /*
-    * public object postData(int $postID)
+    * public object pageData_id(int $postID)
     * 
-    * Data of a post (or FALSE if doesn't exist)
+    * Data of a page (by ID) (or FALSE if doesn't exist)
     */
    
-   public function postData($id)
+   public function pageData_id($id)
    {
       $id = (int) $id;
       
-      $postData = $this->db->query("SELECT * FROM `__blogposts` WHERE `blogpost_id` = '%1'", $id);
+      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `page_id` = '%1'", $id);
       
-      if($postData->exists)
+      if($pageData->exists)
       {
-         return $postData->fetchObject();
+         return $pageData->fetchObject();
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   /*
+    * public object pageData_name(string $pageName)
+    * 
+    * Data of a page (by name) (or FALSE if doesn't exist)
+    */
+   
+   public function pageData_name($name)
+   {
+      $name = (string) $name;
+      
+      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `page_name` = '%1'", $name);
+      
+      if($pageData->exists)
+      {
+         return $pageData->fetchObject();
       }
       else
       {

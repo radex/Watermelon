@@ -38,4 +38,37 @@ class Blog_Controller extends Controller
       $view->posts = $posts;
       $view->display();
    }
+   
+   /*
+    * post
+    */
+   
+   public function post_action($id)
+   {
+      if(empty($id))
+      {
+         Watermelon::displayNoPageFoundError(); //TODO: improve it, so that I can more concretely write what is not found
+         return;
+      }
+      
+      // getting post data
+      
+      $model = $this->load->model('blog');
+      
+      $postData = $model->postData($id);
+      
+      if(!$postData)
+      {
+         Watermelon::displayNoPageFoundError(); // -||-
+         return;
+      }
+      
+      // displaying (if exists)
+      
+      $this->pageTitle = $postData->blogpost_title;
+      
+      $view = View('post');
+      $view->post = $postData;
+      $view->display();
+   }
 }

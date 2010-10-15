@@ -394,7 +394,7 @@ class Watermelon
       // modules
       
       $w->modulesList       = self::indexModules();            // TODO: only in debug
-      $w->autoload          = array('test', 'test2', 'auth');
+      $w->autoload          = array('test', 'test2');
       $w->controllerHandler = null;
       $w->defaultController = 'test';
       

@@ -7,7 +7,7 @@ body
    font-family: Helvetica, Verdana, Sans, sans-serif;
 }
 
-h1 { font-size: 20px; }
+h1 { font-size: 20px; clear: both; }
 h2 { font-size: 16px; }
 
 a
@@ -260,11 +260,6 @@ header ul li.actual_page a:visited:hover
 
 /***/
 
-.h1
-{
-   font-size: 1.3em;
-}
-
 #sidebar hr
 {
    border: 0;
@@ -272,8 +267,6 @@ header ul li.actual_page a:visited:hover
    width: 60%;
    background: #fefcf2;
 }
-
-/***/
 
 footer a, #footer a:visited
 {
@@ -287,8 +280,6 @@ footer a:hover, #footer a:visited:hover
    color: #fff;
    background: #859e1c;
 }
-
-/***/
 
 #sidebar a
 {
@@ -305,6 +296,17 @@ footer a:hover, #footer a:visited:hover
    border: 0;
 }
 
+
+/***/
+
+.blog-post-databox
+{
+   float: right;
+   padding: 5px 10px;
+   
+   background-color: #f8f8f8;
+   border: 1px solid #ddd;
+}
 
 /***/
 

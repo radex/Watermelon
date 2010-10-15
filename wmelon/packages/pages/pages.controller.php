@@ -19,41 +19,41 @@
  //  
 
 /*
- * Blog Model
+ * Pages controller
  */
 
-class Blog_Model extends Model
+class Pages_Controller extends Controller
 {
    /*
-    * public DBResult posts()
-    * 
-    * List of posts
+    * page
     */
    
-   public function posts()
+   public function index_action($pageName)
    {
-      return $this->db->query("SELECT * FROM `__blogposts` ORDER BY `blogpost_id` DESC");
-   }
-   
-   /*
-    * public object postData(int $postID)
-    * 
-    * Data of a post (or FALSE if doesn't exist)
-    */
-   
-   public function postData($id)
-   {
-      $id = (int) $id;
-      
-      $postData = $this->db->query("SELECT * FROM `__blogposts` WHERE `blogpost_id` = '%1'", $id);
-      
-      if($postData->exists)
+      if(empty($pageName))
       {
-         return $postData->fetchObject();
+         Watermelon::displayNoPageFoundError();
+         return;
       }
-      else
+      
+      // getting post data
+      
+      $model = $this->load->model('pages');
+      
+      $pageData = $model->pageData_name($pageName);
+      
+      if(!$pageData)
       {
-         return false;
+         Watermelon::displayNoPageFoundError();
+         return;
       }
+      
+      // displaying (if exists)
+      
+      $this->pageTitle = $pageData->page_title;
+      
+      $view = View('page');
+      $view->page = $pageData;
+      $view->display();
    }
 }
