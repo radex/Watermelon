@@ -188,10 +188,10 @@ Applying Attributes:
 */
 
 // define these before including this file to override the standard glyphs
-@define('txt_quote_single_open',  '&#8216;');
-@define('txt_quote_single_close', '&#8217;');
-@define('txt_quote_double_open',  '&#8220;');
-@define('txt_quote_double_close', '&#8221;');
+@define('txt_quote_single_open',  '‚');
+@define('txt_quote_single_close', '’');
+@define('txt_quote_double_open',  '„');
+@define('txt_quote_double_close', '”');
 @define('txt_apostrophe',         '&#8217;');
 @define('txt_prime',              '&#8242;');
 @define('txt_prime_double',       '&#8243;');
@@ -203,7 +203,7 @@ Applying Attributes:
 @define('txt_registered',         '&#174;');
 @define('txt_copyright',          '&#169;');
 
-class Textile
+class Textile_Lib
 {
     var $hlgn;
     var $vlgn;
@@ -231,7 +231,7 @@ class Textile
     var $rev = '$Rev: 216 $';
 
 // -------------------------------------------------------------
-    function Textile()
+    function __construct()
     {
         $this->hlgn = "(?:\<(?!>)|(?<!<)\>|\<\>|\=|[()]+(?! ))";
         $this->vlgn = "[\-^~]";

@@ -189,8 +189,10 @@ class Watermelon
       }
       
       include WM_Core . 'FrontendLibraries/FrontendLibraries.extension.php';
-      
       FrontendLibraries_Extension::onAutoload();
+      
+      include WM_Core . 'Textile/textile.extension.php';
+      Textile_Extension::onAutoload();
       
       //--
       

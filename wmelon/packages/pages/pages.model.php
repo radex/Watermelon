@@ -78,21 +78,4 @@ class Pages_Model extends Model
          return false;
       }
    }
-   
-   /*
-    * public DBResult commentsForPage(int $postID)
-    * 
-    * Comments for a page
-    * 
-    * Note that existence of a post isn't checked
-    */
-   
-   public function commentsForPage($id)
-   {
-      $id = (int) $id;
-      
-      $comments = $this->load->model('comments');
-      
-      return $comments->commentsFor($id, 'page');
-   }
 }

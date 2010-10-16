@@ -47,6 +47,20 @@ class Comments_Model extends Model
    }
    
    /*
+    * public int countCommentsFor(int $id, string $type)
+    * 
+    * Number of comments for $id record of $type type of content
+    */
+   
+   public function countCommentsFor($id, $type)
+   {
+      $id   = (int) $id;
+      $type = (string) $type;
+      
+      return $this->db->query("SELECT * FROM `__comments_records` WHERE `commrecord_record` = '%1' AND `commrecord_type` = '%2'", $id, $type)->rows;
+   }
+   
+   /*
     * public void postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $text)
     * 
     * Posts a comment (for $id record of $type type of content)
@@ -60,7 +74,7 @@ class Comments_Model extends Model
       $authorName    = htmlspecialchars($authorName);
       $authorEmail   = htmlspecialchars($authorEmail);
       $authorWebsite = htmlspecialchars($authorWebsite);
-      $text          = htmlspecialchars($text);
+      $text          = $text;
       
       $this->db->query("INSERT INTO `__comments` SET `comment_authorName` = '%1', `comment_authorEmail` = '%2', `comment_authorWebsite` = '%3', `comment_text` = '%4'", $authorName, $authorEmail, $authorWebsite, $text);
       

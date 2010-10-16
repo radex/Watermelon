@@ -32,13 +32,13 @@ class Comments_Extension extends Extension
     * string $backPage - name of page (on the same website) on which comment view will be displayed (URI of page to go back on after posting a comment), e.g.: 'blog/post/1'
     */
    
-   public function commentsView($id, $type, $backPage)
+   public static function commentsView($id, $type, $backPage)
    {
       $id       = (int) $id;
       $type     = (string) $type;
       $backPage = (string) $backPage;
       
-      $model    = $this->load->model('comments');
+      $model    = Loader::model('comments');
       $comments = $model->commentsFor($id, $type);
       
       $view = Loader::view('comments/comments', true);

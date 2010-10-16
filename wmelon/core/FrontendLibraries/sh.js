@@ -10,7 +10,7 @@ function path()
 
    for(var i = 0; i < args.length; i++)
    {
-      result.push(args[i].replace('@', 'SyntaxHighlighter/brushes/'));
+      result.push(args[i].replace('@', 'http://localhost/w/wmelon/core/FrontendLibraries/SyntaxHighlighter/brushes/')); //TODO: fix it
    }
 
    return result

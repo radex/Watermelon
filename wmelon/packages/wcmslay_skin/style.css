@@ -61,6 +61,11 @@ q
    color: #888;
 }
 
+p
+{
+   margin-bottom: 1em;
+}
+
 legend
 {
    font-weight: bold;

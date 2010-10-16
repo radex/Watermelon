@@ -67,6 +67,8 @@ class Blog_Controller extends Controller
       
       $this->pageTitle = $postData->blogpost_title;
       
+      $postData->blogpost_content = Textile_Extension::textile($postData->blogpost_content);
+      
       $view = View('post');
       $view->post = $postData;
       $view->commentsView = Comments_Extension::commentsView($id, 'blogposts', 'blog/post/' . $id);
