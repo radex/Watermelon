@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 <tal:block>
    <div tal:content="foo">
       Contents of foo

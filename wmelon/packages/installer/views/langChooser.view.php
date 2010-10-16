@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 
 <div id="lang-chooser">
    <a href="$/2/${lang/0}" tal:repeat="lang langs">

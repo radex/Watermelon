@@ -61,11 +61,6 @@ q
    color: #888;
 }
 
-input, textarea
-{
-   border: 1px solid #008;
-}
-
 legend
 {
    font-weight: bold;
@@ -336,7 +331,7 @@ body > footer a:hover, #footer a:visited:hover
 .comment header
 {
    float: right;
-   width: 150px;
+   width: 100px;
    border-left: 1px solid #e1e4db;
    padding-left: 5px;
    color: #888;
@@ -351,7 +346,7 @@ body > footer a:hover, #footer a:visited:hover
 {
    font-size: .9em;
    text-align: right;
-   padding-right: 160px;
+   padding-right: 110px;
    color: #888;
 }
 

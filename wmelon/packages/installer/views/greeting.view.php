@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 
 <tal:block>
    (tekst powitania)

@@ -146,6 +146,8 @@ class DB
       
       // establishing connection
       
+      mysql_query("SET NAMES 'utf8'");
+      
       self::$link = @mysql_connect($host, $user, $pass);
       
       self::$prefix = $prefix;

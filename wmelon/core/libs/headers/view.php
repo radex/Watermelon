@@ -32,14 +32,24 @@ class View
    public  $parameters = array(); // [dictionary] parameters to be passed to actual view
    
    /*
-    * public void display()
+    * public void display([$return = false])
     * 
     * Loads actual view
+    * 
+    * If $return is TRUE, output is returned instead of being displayed
     */
    
-   public function display()
+   public function display($return = false)
    {
-      $view = new PHPTAL($this->viewPath);
+      // getting view file contents, and stripping from <?die?\>
+      
+      $viewContent = file_get_contents($this->viewPath);
+      $viewContent = str_replace('<?die?>', '', $viewContent);
+      
+      // PHPTAL configuration
+      
+      $view = new PHPTAL;
+      $view->setSource($viewContent, $this->viewPath);
       
       foreach($this->parameters as $key => $value)
       {
@@ -47,7 +57,32 @@ class View
       }
       
       $view->setOutputMode(PHPTAL::HTML5);
-      echo $view->execute();
+      
+      // returning or displaying
+      
+      if($return)
+      {
+         return $view->execute();
+      }
+      else
+      {
+         echo $view->execute();
+      }
+   }
+   
+   /*
+    * public View set(string $name, mixed $value)
+    * 
+    * Sets $name to $value, and returns the same object, so you can use it in chain, e.g:
+    * 
+    * $this->load->view('test')->set('foo', 'bar')->display();
+    */
+   
+   public function set($name, $value)
+   {
+      $this->parameters[$name] = $value;
+      
+      return $this;
    }
    
    public function __construct($viewPath)

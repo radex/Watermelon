@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 <tal:block>
    <article tal:content="structure page/page_content" />
    <? Comments_Extension::displayComments($ctx->comments) ?>

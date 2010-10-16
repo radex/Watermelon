@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 <div style="border:2px solid green">
    Hello World, from Second Testing View!<br />
    It's <?=time()?><br />

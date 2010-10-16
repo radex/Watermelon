@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 
 <tal:block>
    <tal:block tal:content="structure errors" />

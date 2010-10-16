@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 <div tal:repeat="post posts">
    <a href="blog/post/${post/blogpost_id}"><h1>${post/blogpost_title}</h1></a>
    <p tal:condition="not:post/blogpost_beginning">${post/blogpost_content}</p>

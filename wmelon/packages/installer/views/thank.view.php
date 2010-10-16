@@ -1,4 +1,4 @@
-<?defined('WM') or die?>
+<?die?>
 
 <tal:block>
    <p>To już wszystko! Jeśli popełniłeś gdzieś błąd, cały czas możesz się cofnąć. W przeciwnym wypadku, naciśnij "Dalej", a zostaniesz przeniesiony na swoją nową stronę.</p>

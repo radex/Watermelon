@@ -1,2 +1,2 @@
-<?defined('WM') or die?>
+<?die?>
 <tal:block>Foo!</tal:block>
