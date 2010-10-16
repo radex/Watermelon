@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `wm_blogposts` (
   `blogpost_content` text NOT NULL,
   `blogpost_beginning` text,
   PRIMARY KEY (`blogpost_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `wm_blogposts`
@@ -36,7 +36,53 @@ INSERT INTO `wm_blogposts` (`blogpost_id`, `blogpost_author`, `blogpost_created`
   ('6', '0', '2010-10-11 21:33:52', 'Testowy tytuł (1)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną,', NULL),
   ('7', '0', '2010-10-11 21:34:43', 'Testowy tytuł (2)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną, Że znowu do piersi kryje, odsłaniając ramiona i palestra, i całował. Zaczęła się spory w dalekim mieści kończył tak pan Rejent na niej z nim padnie. Dalej Jasiński, młodzian piękny chart z mnóstwem gości nie ma albo o tańcach, nawet wozy, w rozmowę lecz nie nalewa szklanki, i raptem paniczyki młode z drzew raz zawitała moda i stryjaszkiem jedno i stajennym i chołodziec litewski milcząc żwawo jedli. , choć młodzież teraźniejsza, Że znowu je w wielkiej peruce, którą do kraju. Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.', 'Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.'),
   ('8', '0', '2010-10-11 21:33:52', 'Testowy tytuł (1)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną,', NULL),
-  ('9', '0', '2010-10-11 21:34:43', 'Testowy tytuł (2)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną, Że znowu do piersi kryje, odsłaniając ramiona i palestra, i całował. Zaczęła się spory w dalekim mieści kończył tak pan Rejent na niej z nim padnie. Dalej Jasiński, młodzian piękny chart z mnóstwem gości nie ma albo o tańcach, nawet wozy, w rozmowę lecz nie nalewa szklanki, i raptem paniczyki młode z drzew raz zawitała moda i stryjaszkiem jedno i stajennym i chołodziec litewski milcząc żwawo jedli. , choć młodzież teraźniejsza, Że znowu je w wielkiej peruce, którą do kraju. Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.', 'Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.');
+  ('9', '0', '2010-10-11 21:34:43', 'Testowy tytuł (2)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną, Że znowu do piersi kryje, odsłaniając ramiona i palestra, i całował. Zaczęła się spory w dalekim mieści kończył tak pan Rejent na niej z nim padnie. Dalej Jasiński, młodzian piękny chart z mnóstwem gości nie ma albo o tańcach, nawet wozy, w rozmowę lecz nie nalewa szklanki, i raptem paniczyki młode z drzew raz zawitała moda i stryjaszkiem jedno i stajennym i chołodziec litewski milcząc żwawo jedli. , choć młodzież teraźniejsza, Że znowu je w wielkiej peruce, którą do kraju. Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.', 'Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.'),
+  ('10', '0', '2010-10-16 12:58:04', 'Dodany z Ä…Å›Ä‡Åº Watermelona', 'Litwo! Ojczyzno moja! Ty jesteÅ› jak zdrowie. Ile ciÄ™ straciÅ‚. DziÅ› piÄ™knoÅ›Ä‡ twÄ… w grzecznoÅ›ci. a potem najwyÅ¼szych krajowych urzÄ™dÃ³w przynajmniej tom skorzystaÅ‚, Å¼e przychodziÅ‚ juÅ¼ im hojnie dano wÃ³dkÄ™. jak gdyby na Tadeusz przyglÄ…daÅ‚ siÄ™ stempel na to mÃ³wiÄ…c, Å¼e spod ramion wytknÄ…Å‚ palce\' i stodoÅ‚Ä™ miaÅ‚ i dwie Å‚awy umiaÅ‚a siÄ™ drzwiczki ÅšwieÅ¼o trÄ…cone. blisko siebie czuÅ‚ choroby zarÃ³d. Krzyczano na swym dworze. Nikt go wtenczas wszyscy jÄ… w drukarskich kramarniac lub cicha i z drzewa, lecz juÅ¼ byli z ParyÅ¼a baronem. Gdyby Å¼yÅ‚ dÅ‚uÅ¼ej, moÅ¼e teÅ¼ SokoÅ‚a ci wesele. Jest z Wysogierdem RadziwiÅ‚Å‚ z liczby kopic, co prÄ™dzej w jednym palcem spuszczone u nas reformowaÄ‡ cywilizowaÄ‡', NULL);
+
+-- 
+-- Structure for table `wm_comments`
+-- 
+
+DROP TABLE IF EXISTS `wm_comments`;
+CREATE TABLE IF NOT EXISTS `wm_comments` (
+  `comment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `comment_authorID` int(11) DEFAULT NULL,
+  `comment_authorName` varchar(40) DEFAULT NULL,
+  `comment_authorEmail` varchar(64) DEFAULT NULL,
+  `comment_authorWebsite` varchar(40) DEFAULT NULL,
+  `comment_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `comment_text` text NOT NULL,
+  PRIMARY KEY (`comment_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `wm_comments`
+-- 
+
+INSERT INTO `wm_comments` (`comment_id`, `comment_authorID`, `comment_authorName`, `comment_authorEmail`, `comment_authorWebsite`, `comment_created`, `comment_text`) VALUES
+  ('1', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 'Pierwszy test'),
+  ('2', NULL, NULL, NULL, NULL, '0000-00-00 00:00:00', 'Drugi test');
+
+-- 
+-- Structure for table `wm_comments_records`
+-- 
+
+DROP TABLE IF EXISTS `wm_comments_records`;
+CREATE TABLE IF NOT EXISTS `wm_comments_records` (
+  `commrecord_record` int(11) NOT NULL,
+  `commrecord_comment` int(11) NOT NULL,
+  `commrecord_type` varchar(40) NOT NULL,
+  KEY `blogpostcomm_post` (`commrecord_record`),
+  KEY `commrecord_type` (`commrecord_type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `wm_comments_records`
+-- 
+
+INSERT INTO `wm_comments_records` (`commrecord_record`, `commrecord_comment`, `commrecord_type`) VALUES
+  ('10', '1', 'blogpost'),
+  ('10', '2', 'blogpost');
 
 -- 
 -- Structure for table `wm_pages`
@@ -98,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `wm_registry` (
 -- 
 
 INSERT INTO `wm_registry` (`registry_name`, `registry_value`) VALUES
-  ('wmelon', 'O:8:\"stdClass\":13:{s:11:\"modulesList\";O:8:\"stdClass\":5:{s:11:\"controllers\";a:5:{s:4:\"blog\";a:2:{i:0;s:4:\"blog\";i:1;b:0;}s:5:\"pages\";a:2:{i:0;s:5:\"pages\";i:1;b:0;}s:4:\"test\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:6:\"cnthnd\";a:2:{i:0;s:4:\"test\";i:1;b:1;}s:4:\"e404\";a:2:{i:0;s:10:\"watermelon\";i:1;b:0;}}s:6:\"models\";a:4:{s:4:\"blog\";a:2:{i:0;s:4:\"blog\";i:1;b:0;}s:5:\"pages\";a:2:{i:0;s:5:\"pages\";i:1;b:0;}s:9:\"testmodel\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:10:\"testmodel2\";a:2:{i:0;s:4:\"test\";i:1;b:1;}}s:9:\"blocksets\";a:2:{s:4:\"test\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:5:\"test2\";a:2:{i:0;s:4:\"test\";i:1;b:1;}}s:10:\"extensions\";a:2:{s:4:\"test\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:5:\"test2\";a:2:{i:0;s:4:\"test\";i:1;b:1;}}s:5:\"skins\";a:0:{}}s:8:\"autoload\";a:2:{i:0;s:4:\"test\";i:1;s:5:\"test2\";}s:17:\"controllerHandler\";N;s:17:\"defaultController\";s:4:\"test\";s:7:\"siteURL\";s:29:\"http://localhost/w/index.php/\";s:9:\"systemURL\";s:26:\"http://localhost/w/wmelon/\";s:4:\"skin\";s:7:\"wcmslay\";s:4:\"lang\";s:2:\"pl\";s:8:\"siteName\";s:12:\"Nazwa strony\";s:10:\"siteSlogan\";s:13:\"Slogan strony\";s:6:\"footer\";s:29:\"Testowanie <em>stopki</em>â€¦\";s:10:\"blockMenus\";a:1:{i:0;a:4:{i:0;a:4:{i:0;s:9:\"Test::foo\";i:1;s:4:\"test\";i:2;s:3:\"foo\";i:3;a:0:{}}i:1;a:4:{i:0;s:9:\"Test::bar\";i:1;s:4:\"test\";i:2;s:3:\"bar\";i:3;a:2:{i:0;s:3:\"foo\";i:1;s:3:\"bar\";}}i:2;a:4:{i:0;s:11:\"Test2::foo2\";i:1;s:5:\"test2\";i:2;s:4:\"foo2\";i:3;a:0:{}}i:3;a:4:{i:0;s:11:\"Test2::bar2\";i:1;s:5:\"test2\";i:2;s:4:\"bar2\";i:3;a:2:{i:0;s:4:\"foo2\";i:1;s:4:\"bar2\";}}}}s:9:\"textMenus\";a:1:{i:0;a:2:{i:0;a:3:{i:0;s:4:\"Blog\";i:1;s:33:\"http://localhost/w/index.php/blog\";i:2;s:9:\"Blooog!!!\";}i:1;a:3:{i:0;s:5:\"Testy\";i:1;s:33:\"http://localhost/w/index.php/test\";i:2;N;}}}}');
+  ('wmelon', 'O:8:\"stdClass\":13:{s:11:\"modulesList\";O:8:\"stdClass\":5:{s:11:\"controllers\";a:5:{s:4:\"blog\";a:2:{i:0;s:4:\"blog\";i:1;b:0;}s:5:\"pages\";a:2:{i:0;s:5:\"pages\";i:1;b:0;}s:4:\"test\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:6:\"cnthnd\";a:2:{i:0;s:4:\"test\";i:1;b:1;}s:4:\"e404\";a:2:{i:0;s:10:\"watermelon\";i:1;b:0;}}s:6:\"models\";a:5:{s:4:\"blog\";a:2:{i:0;s:4:\"blog\";i:1;b:0;}s:8:\"comments\";a:2:{i:0;s:8:\"comments\";i:1;b:0;}s:5:\"pages\";a:2:{i:0;s:5:\"pages\";i:1;b:0;}s:9:\"testmodel\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:10:\"testmodel2\";a:2:{i:0;s:4:\"test\";i:1;b:1;}}s:9:\"blocksets\";a:2:{s:4:\"test\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:5:\"test2\";a:2:{i:0;s:4:\"test\";i:1;b:1;}}s:10:\"extensions\";a:3:{s:8:\"comments\";a:2:{i:0;s:8:\"comments\";i:1;b:0;}s:4:\"test\";a:2:{i:0;s:4:\"test\";i:1;b:0;}s:5:\"test2\";a:2:{i:0;s:4:\"test\";i:1;b:1;}}s:5:\"skins\";a:0:{}}s:8:\"autoload\";a:2:{i:0;s:4:\"test\";i:1;s:5:\"test2\";}s:17:\"controllerHandler\";N;s:17:\"defaultController\";s:4:\"test\";s:7:\"siteURL\";s:29:\"http://localhost/w/index.php/\";s:9:\"systemURL\";s:26:\"http://localhost/w/wmelon/\";s:4:\"skin\";s:7:\"wcmslay\";s:4:\"lang\";s:2:\"pl\";s:8:\"siteName\";s:12:\"Nazwa strony\";s:10:\"siteSlogan\";s:13:\"Slogan strony\";s:6:\"footer\";s:29:\"Testowanie <em>stopki</em>â€¦\";s:10:\"blockMenus\";a:1:{i:0;a:4:{i:0;a:4:{i:0;s:9:\"Test::foo\";i:1;s:4:\"test\";i:2;s:3:\"foo\";i:3;a:0:{}}i:1;a:4:{i:0;s:9:\"Test::bar\";i:1;s:4:\"test\";i:2;s:3:\"bar\";i:3;a:2:{i:0;s:3:\"foo\";i:1;s:3:\"bar\";}}i:2;a:4:{i:0;s:11:\"Test2::foo2\";i:1;s:5:\"test2\";i:2;s:4:\"foo2\";i:3;a:0:{}}i:3;a:4:{i:0;s:11:\"Test2::bar2\";i:1;s:5:\"test2\";i:2;s:4:\"bar2\";i:3;a:2:{i:0;s:4:\"foo2\";i:1;s:4:\"bar2\";}}}}s:9:\"textMenus\";a:1:{i:0;a:2:{i:0;a:3:{i:0;s:4:\"Blog\";i:1;s:33:\"http://localhost/w/index.php/blog\";i:2;s:9:\"Blooog!!!\";}i:1;a:3:{i:0;s:5:\"Testy\";i:1;s:33:\"http://localhost/w/index.php/test\";i:2;N;}}}}');
 
 -- 
 -- Structure for table `wm_users`

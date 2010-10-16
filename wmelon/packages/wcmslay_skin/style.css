@@ -152,7 +152,7 @@ h1
    box-shadow: 0 0 30px #000;
 }
 
-header
+#container > header
 {
    height: 150px;
    background-image: url('img/top.jpg');
@@ -180,7 +180,7 @@ header
    line-height: 1.7em;
 }
 
-footer
+body > footer
 {
    clear: both;
    color: white;
@@ -211,12 +211,12 @@ footer
    height: 16px;
 }
 
-header ul
+#container > header ul
 {
    margin-top: 27px;
 }
 
-header ul li
+#container > header ul li
 {
    display: block;
    padding: 5px;
@@ -227,33 +227,33 @@ header ul li
    height: 16px;
 }
 
-header ul li.actual_page
+#container > header ul li.actual_page
 {
    opacity: 1;
    background: #fff;
    font-weight: bold;
 }
 
-header ul li a
+#container > header ul li a
 {
    border: 0;
    background: #000;
    color: #859e1c !important;
 }
 
-header ul li a:hover
+#container > header ul li a:hover
 {
    color: #fff !important;
 }
 
-header ul li.actual_page a
+#container > header ul li.actual_page a
 {
    background: #fff;
    color: #859e1c;
 }
 
-header ul li.actual_page a:hover,
-header ul li.actual_page a:visited:hover
+#container > header ul li.actual_page a:hover,
+#container > header ul li.actual_page a:visited:hover
 {
    color: #a5be2c !important;
 }
@@ -268,14 +268,14 @@ header ul li.actual_page a:visited:hover
    background: #fefcf2;
 }
 
-footer a, #footer a:visited
+body > footer a, #footer a:visited
 {
    color: #d5ee6c;
    text-decoration: none;
    border: 0;
 }
 
-footer a:hover, #footer a:visited:hover
+body > footer a:hover, #footer a:visited:hover
 {
    color: #fff;
    background: #859e1c;
