@@ -24,10 +24,30 @@
 
 class Comments_Extension extends Extension
 {
-   public function displayComments($comments)
+   /*
+    * public string commentsView(int $id, string $type, string $backPage)
+    * 
+    * Returns output of comments view for $id record of $type type of content (blog post, page, etc.)
+    * 
+    * string $backPage - name of page (on the same website) on which comment view will be displayed (URI of page to go back on after posting a comment), e.g.: 'blog/post/1'
+    */
+   
+   public function commentsView($id, $type, $backPage)
    {
+      $id       = (int) $id;
+      $type     = (string) $type;
+      $backPage = (string) $backPage;
+      
+      $model    = $this->load->model('comments');
+      $comments = $model->commentsFor($id, $type);
+      
       $view = Loader::view('comments/comments', true);
+      
       $view->comments = $comments;
-      $view->display();
+      $view->id = $id;
+      $view->type = $type;
+      $view->backPage = $backPage;
+      
+      return $view->display(true);
    }
 }

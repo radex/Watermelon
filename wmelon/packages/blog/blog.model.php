@@ -56,21 +56,4 @@ class Blog_Model extends Model
          return false;
       }
    }
-   
-   /*
-    * public DBResult commentsForPost(int $postID)
-    * 
-    * Comments for a post
-    * 
-    * Note that existence of a post isn't checked
-    */
-   
-   public function commentsForPost($id)
-   {
-      $id = (int) $id;
-      
-      $comments = $this->load->model('comments');
-      
-      return $comments->commentsFor($id, 'blogpost');
-   }
 }

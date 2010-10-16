@@ -56,7 +56,6 @@ class Blog_Controller extends Controller
       $model = $this->load->model('blog');
       
       $postData = $model->postData($id);
-      $comments = $model->commentsForPost($id);
       
       if(!$postData)
       {
@@ -70,7 +69,7 @@ class Blog_Controller extends Controller
       
       $view = View('post');
       $view->post = $postData;
-      $view->comments = $comments;
+      $view->commentsView = Comments_Extension::commentsView($id, 'blogposts', 'blog/post/' . $id);
       $view->display();
    }
 }
