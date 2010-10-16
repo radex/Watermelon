@@ -1,6 +1,5 @@
 <?defined('WM') or die?>
 <tal:block>
-   <tal:block tal:content="structure page/page_content" />
-   <h1>Komentarze</h1>
-   (komentarze)
+   <article tal:content="structure page/page_content" />
+   <? Comments_Extension::displayComments($ctx->comments) ?>
 </tal:block>

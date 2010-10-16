@@ -24,5 +24,10 @@
 
 class Comments_Extension extends Extension
 {
-   
+   public function displayComments($comments)
+   {
+      $view = Loader::view('comments/comments', true);
+      $view->comments = $comments;
+      $view->display();
+   }
 }

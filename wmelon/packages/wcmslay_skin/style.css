@@ -310,7 +310,7 @@ body > footer a:hover, #footer a:visited:hover
 
 /***/
 
-.post
+.comment
 {
    background-color: #f4f7ed;
    padding: 5px;
@@ -333,7 +333,7 @@ body > footer a:hover, #footer a:visited:hover
    height: 100%;
 }
 
-.posterdata
+.comment header
 {
    float: right;
    width: 150px;
@@ -342,38 +342,7 @@ body > footer a:hover, #footer a:visited:hover
    color: #888;
 }
 
-.posterdata cite
-{
-   font-weight: bold;
-   font-style: normal;
-   font-size: 1.1em;
-   color: #870d0d;
-}
-
-.posterdata em
-{
-   font-style: normal;
-   font-size: 0.7em;
-   text-transform: uppercase;
-}
-
-.posterdata cite a
-{
-   color: #870d0d !important;
-}
-
-.posterdata cite a:hover
-{
-   background: transparent !important;
-}
-
-.posterdata strong
-{
-   font-weight: normal;
-   color: #000;
-}
-
-.postcontent
+.comment section
 {
    padding-right: 160px;
 }

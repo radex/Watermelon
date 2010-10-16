@@ -41,6 +41,7 @@ class Pages_Controller extends Controller
       $model = $this->load->model('pages');
       
       $pageData = $model->pageData_name($pageName);
+      $comments = $model->commentsForPage($id);
       
       if(!$pageData)
       {
@@ -54,6 +55,7 @@ class Pages_Controller extends Controller
       
       $view = View('page');
       $view->page = $pageData;
+      $view->comments = $comments;
       $view->display();
    }
 }
