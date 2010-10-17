@@ -183,11 +183,6 @@ Options -MultiViews
 
 
 
-# custom 404 page
-ErrorDocument 404 /404.html
-
-
-
 # use utf-8 encoding for anything served text/plain or text/html
 AddDefaultCharset utf-8
 # force utf-8 for a number of file formats
