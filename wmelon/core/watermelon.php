@@ -62,12 +62,12 @@ class Watermelon
    public static $segments = array();
    
    /*
-    * public static string $packageName
+    * public static string $bundleName
     * 
-    * Name of package currently running controller belongs to
+    * Name of bundle currently running controller belongs to
     */
    
-   public static $packageName = '';
+   public static $bundleName = '';
    
    /*
     * public static string $controllerName
@@ -111,13 +111,13 @@ class Watermelon
     * $modulesList->controllers/models/blocksets/extensions =
     *    array($name => $info)
     *       $name - module name
-    *       $info = array(string $package, bool $inDir)
-    *          string $package - package, $name module belongs to
-    *          bool   $inDir   - whether module is in root of package directory (false) or in separate directory, e.g. controllers/ (true)
+    *       $info = array(string $bundle, bool $inDir)
+    *          string $bundle - bundle, $name module belongs to
+    *          bool   $inDir  - whether module is in root of bundle directory (false) or in separate directory, e.g. controllers/ (true)
     * 
     * $moduleList->skins =
-    *    array(string $package, ...)
-    *       string $package - name of package with a skin
+    *    array(string $bundle, ...)
+    *       string $bundle - name of bundle with a skin
     */
    
    public static $config;
@@ -155,9 +155,9 @@ class Watermelon
    
    public static function displayNoPageFoundError()
    {
-      include WM_Packages . 'watermelon/e404.controller.php';
+      include WM_Bundles . 'watermelon/e404.controller.php';
       
-      self::$packageName = 'watermelon';
+      self::$bundleName = 'watermelon';
       self::$controllerName = 'e404';
       
       $controllerObj = new e404_Controller();
@@ -178,13 +178,13 @@ class Watermelon
       
       if(self::$appType == self::AppType_Installer)
       {
-         include WM_Packages . 'installer/installer.controller.php';
+         include WM_Bundles . 'installer/installer.controller.php';
          
          $installer = new Installer_Controller;
          
          self::$controllerObject = $installer;
          self::$controllerName   = 'installer';
-         self::$packageName      = 'installer';
+         self::$bundleName       = 'installer';
          
          $installer->installer();
          
@@ -274,7 +274,7 @@ class Watermelon
       
       define('WM_BasePath', $basePath);
       define('WM_Core',     WM_BasePath . 'core/');
-      define('WM_Packages', WM_BasePath . 'packages/');
+      define('WM_Bundles', WM_BasePath . 'bundles/');
       define('WM_Uploaded', WM_BasePath . 'uploaded/');
       define('WM_Cache',    WM_BasePath . 'cache/');
       
@@ -335,7 +335,7 @@ class Watermelon
     * Auxiliary method of indexModules() method. Searches for concrete module files in specified path, and adds them to modulesList
     */
    
-   private static function modulesInDirectory($path, $packageName, $moduleType, $inDir, $modulesList)
+   private static function modulesInDirectory($path, $bundleName, $moduleType, $inDir, $modulesList)
    {
       $files = FilesForDirectory($path, false, true);
       
@@ -349,12 +349,12 @@ class Watermelon
             continue;
          }
          
-         $modulesList->{$moduleType . 's'}[substr($file->getFilename(), 0, -$extLen)] = array($packageName, $inDir);
+         $modulesList->{$moduleType . 's'}[substr($file->getFilename(), 0, -$extLen)] = array($bundleName, $inDir);
       }
    }
    
    /*
-    * searches packages for module files - controllers, models, extensions, etc., in order to create modules list
+    * searches bundles for module files - controllers, models, extensions, etc., in order to create modules list
     */
    
    private static function indexModules()
@@ -367,22 +367,22 @@ class Watermelon
       $modulesList->extensions  = array();
       $modulesList->skins       = array();
       
-      foreach(new DirectoryIterator(WM_Packages) as $dir)
+      foreach(new DirectoryIterator(WM_Bundles) as $dir)
       {
-         // if not a package, or Installer package
+         // if not a bundle, or Installer bundle
          
          if(!$dir->isDir() || $dir->isDot() || $dir->getFilename() == 'installer')
          {
             continue;
          }
          
-         $packageName = $dir->getFilename();
+         $bundleName = $dir->getFilename();
          
          // skins
          
-         if(substr($package, 0, -5) == '_skin' && file_exists(WM_Packages . $packageName . '/skin.php'))
+         if(substr($bundle, 0, -5) == '_skin' && file_exists(WM_Bundles . $bundleName . '/skin.php'))
          {
-            $modulesList->skins[] = $packageName;
+            $modulesList->skins[] = $bundleName;
          }
          
          // controllers, models, blocksets and extensions
@@ -391,17 +391,17 @@ class Watermelon
          
          foreach($moduleTypes as $moduleType)
          {
-            // module in root of the package
+            // module in root of the bundle
             
-            self::modulesInDirectory(WM_Packages . $packageName, $packageName, $moduleType, false, $modulesList);
+            self::modulesInDirectory(WM_Bundles . $bundleName, $bundleName, $moduleType, false, $modulesList);
             
-            // module in [type]s/ directory of the package
+            // module in [type]s/ directory of the bundle
             
-            $subdirPath = WM_Packages . $packageName . '/' . $moduleType . 's/';
+            $subdirPath = WM_Bundles . $bundleName . '/' . $moduleType . 's/';
             
             if(file_exists($subdirPath))
             {
-               self::modulesInDirectory($subdirPath, $packageName, $moduleType, true, $modulesList);
+               self::modulesInDirectory($subdirPath, $bundleName, $moduleType, true, $modulesList);
             }
          }
       }
@@ -467,11 +467,11 @@ class Watermelon
       
       define('WM_SiteURL',     $w->siteURL);
       define('WM_SystemURL',   $w->systemURL);
-      define('WM_PackagesURL', WM_SystemURL . 'packages/');
+      define('WM_BundlesURL', WM_SystemURL . 'bundles/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       
-      define('WM_SkinPath', WM_Packages    . $w->skin . '_skin/');
-      define('WM_SkinURL',  WM_PackagesURL . $w->skin . '_skin/');
+      define('WM_SkinPath', WM_Bundles    . $w->skin . '_skin/');
+      define('WM_SkinURL',  WM_BundlesURL . $w->skin . '_skin/');
       
       define('WM_Lang', $w->lang);
    }
@@ -526,7 +526,7 @@ class Watermelon
     * 
     * Returns controller details - path, and module name it belongs to
     * 
-    * Returned data is in format: array($path, $packageName)
+    * Returned data is in format: array($path, $bundleName)
     * 
     * Used by ::loadController()
     */
@@ -539,7 +539,7 @@ class Watermelon
       }
       
       $info  = self::$config->modulesList->controllers[$controllerName];
-      $path  = WM_Packages . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
+      $path  = WM_Bundles . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
       
       return array($path, $info[0]);
    }
@@ -582,7 +582,7 @@ class Watermelon
       {
          // check if controller exists in modules list
          
-         $controllerDetails = list($controllerPath, self::$packageName) = self::controllerDetails($controller);
+         $controllerDetails = list($controllerPath, self::$bundleName) = self::controllerDetails($controller);
          
          if($controllerDetails != false)
          {
@@ -609,7 +609,7 @@ class Watermelon
       
       if($useDefaultController || $useControllerHandler)
       {
-         $controllerDetails = list($controllerPath, self::$packageName) = self::controllerDetails($controller);
+         $controllerDetails = list($controllerPath, self::$bundleName) = self::controllerDetails($controller);
          
          if($controllerDetails == false)
          {

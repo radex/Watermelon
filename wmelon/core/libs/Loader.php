@@ -62,12 +62,12 @@ class Loader
       }
       else
       {
-         $module = Watermelon::$packageName;
+         $module = Watermelon::$bundleName;
       }
       
       // checking whether "skin view" exists, and returning proper view object
       
-      $path      = WM_Packages . $module . '/views/' . $name . '.view.php';
+      $path      = WM_Bundles . $module . '/views/' . $name . '.view.php';
       $path_skin = WM_SkinPath . 'views/' . $module . '/' . $name . '.view.php';
       
       if(file_exists($path_skin))
@@ -112,7 +112,7 @@ class Loader
    {
       $moduleName = strtolower($moduleName);
       
-      Translations::parseTranslationFile(WM_Packages . $moduleName . '/languages/' . $moduleName . '.' . WM_Lang . '.php', $moduleName);
+      Translations::parseTranslationFile(WM_Bundles . $moduleName . '/languages/' . $moduleName . '.' . WM_Lang . '.php', $moduleName);
    }
    */
    /*
@@ -135,7 +135,7 @@ class Loader
       
       $pathInfo = Watermelon::$config->modulesList->{$typeName . 's'}[$name];
       
-      include WM_Packages . $pathInfo[0] . ($pathInfo[1] ? '/' . $typeName . 's/' : '/') . $name . '.' . $typeName . '.php';
+      include WM_Bundles . $pathInfo[0] . ($pathInfo[1] ? '/' . $typeName . 's/' : '/') . $name . '.' . $typeName . '.php';
       
       return new $className;
    }

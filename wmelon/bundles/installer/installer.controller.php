@@ -28,14 +28,16 @@ class Installer_Controller extends Controller
    {
       // TODO: Determine site, and system URL-s by getting URI, and checking whether .htaccess works
       
+      //$this->urls();
+      
       define('WM_SiteURL',     'http://localhost/w/index.php/');
       define('WM_SystemURL',   'http://localhost/w/wmelon/');
       
-      define('WM_PackagesURL', WM_SystemURL . 'packages/');
+      define('WM_BundlesURL', WM_SystemURL . 'bundles/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       
-      define('WM_SkinPath', WM_Packages    . 'installer/');
-      define('WM_SkinURL',  WM_PackagesURL . 'installer/');
+      define('WM_SkinPath', WM_Bundles    . 'installer/');
+      define('WM_SkinURL',  WM_BundlesURL . 'installer/');
       
       Watermelon::$config->skin = 'installer';
       
@@ -122,6 +124,12 @@ class Installer_Controller extends Controller
          case '6': $this->websiteName(); break;
          case '7': $this->thank(); break;
          case '8': $this->save(); break;
+         
+         case 'wmelonInstallerTest':
+            $this->requestedOutputType = self::Plain_OutputType;
+            echo 'It works!';
+         break;
+         
          case 'clear':
             session_destroy();
          break;
@@ -395,7 +403,7 @@ CONFIG;
       
       DB::connect($db->host, $db->name, $db->user, $db->pass, $db->prefix);
       
-      $sql = file_get_contents(WM_Packages . 'installer/watermelon.sql');
+      $sql = file_get_contents(WM_Bundles . 'installer/watermelon.sql');
       $sql = explode(';', $sql);
       
       foreach($sql as $query)

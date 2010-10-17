@@ -1,7 +1,7 @@
 <?defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="<?=WM_PackagesURL?>watermelon/public/basic.css" />
-<link rel="stylesheet" href="<?=WM_PackagesURL?>watermelon/public/watermelon.css" />
+<link rel="stylesheet" href="<?=WM_BundlesURL?>watermelon/public/basic.css" />
+<link rel="stylesheet" href="<?=WM_BundlesURL?>watermelon/public/watermelon.css" />
 <link rel="stylesheet" href="<?=WM_SkinURL?>installer.css" />
 <title>Watermelon CMS</title>
 <header></header>
