@@ -21,6 +21,8 @@ class test_Controller extends Controller
       echo '<a href="$/test/user">Logging in, etc.</a><br>';
       echo '<a href="$/test/output">Output types</a><br>';
       echo '<a href="$/test/css">Boxes, and more...</a><br>';
+      
+      Watermelon::addMessage('tip', 'Foo!');
    }
    
    function css_action()

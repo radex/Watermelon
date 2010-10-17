@@ -103,13 +103,26 @@ abstract class Skin
     * Array of text-based menus
     * 
     * $textMenus = array($menu, $menu, ...)
-    *    $menu = array(array($name, $URI, $title), ...)
-    *       $name  - name of link
-    *       $URI   - URI links points to                                         //TODO: make it more convenient about links to pages on the same website
-    *       $title - description of link, shown when hovered (or NULL if none)
+    *    $menu = array(array(string $name, string $URI, bool $outside, string $title), ...)
+    *       string $name  - name of link
+    *       string $URI   - URI links points to (if $outside == TRUE) or name of the page on the same website (if $outside == FALSE)
+    *       string $title - description of link, shown when hovered (or NULL if none)
     */
    
    public $textMenus = array();
+   
+   /*
+    * public array $messages
+    * 
+    * Array of messages (errors, warnings, etc.) to be shown
+    * 
+    * $messages = array($message, ...)
+    *    $message = array(string $type, string $messageString)
+    *       string $type - type of message (error, warning, info, tip, tick)
+    *       string $messageString - actual message
+    */
+   
+   public $messages = array();
    
    /*
     * public array $additionalData
@@ -131,10 +144,16 @@ abstract class Skin
    {
       foreach($this->textMenus[$id] as $menuItem)
       {
+         list($name, $URI, $outside, $title) = $menuItem;
+         
+         if(!$outside)
+         {
+            $URI = SiteURI($URI);
+         }
+         
          echo '<li>';
-         echo '<a href="' . $menuItem[1] . '"' . (is_string($menuItem[2]) ? ' title="' . $menuItem[2] . '"' : '') . '>';
-         echo $menuItem[0];
-         echo '</a></li>';
+         echo '<a href="' . $URI . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a>';
+         echo '</li>';
       }
    }
    
@@ -167,6 +186,22 @@ abstract class Skin
    }
    
    /*
+    * protected void drawMessages()
+    * 
+    * Prints messages
+    */
+   
+   protected function drawMessages()
+   {
+      foreach($this->messages as $message)
+      {
+         list($type, $messageString) = $message;
+         
+         echo '<div class="' . $type . 'Box">' . $messageString . '</div>';
+      }
+   }
+   
+   /*
     * public void display()
     * 
     * Displays skin
@@ -177,13 +212,10 @@ abstract class Skin
    public function display()
    {   
       $content    = &$this->content;
-      $headTags   = &$this->headTags;
       $pageTitle  = &$this->pageTitle;
       $siteName   = &$this->siteName;
       $siteSlogan = &$this->siteSlogan;
       $footer     = &$this->footer;
-      $blockMenus = &$this->blockMenus;
-      $textMenus  = &$this->textMenus;
       $additionalData = &$this->additionalData;
       
       include WM_SkinPath . 'index.php';

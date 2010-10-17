@@ -17,6 +17,7 @@
    </div>
    <div id="content">
       <?= empty($pageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
+      <?$this->drawMessages() ?>
       <?=$content?>
    </div>
    <div id="clear"></div>

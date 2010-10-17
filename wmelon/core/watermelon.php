@@ -129,6 +129,25 @@ class Watermelon
    private static $controllerObject;
    
    /*
+    * public static void addMessage(string $type, string $message)
+    * 
+    * Adds message to be displayed on next page generation
+    * 
+    * string $type    - type of message (error, warning, info, tip, tick)
+    * string $message - actual message string
+    * 
+    * Note that if you stop the script (by refreshing or redirecting), messages in array will be displayed on the page after refreshing/redirecting
+    */
+   
+   public static function addMessage($type, $message)
+   {
+      $type    = (string) $type;
+      $message = (string) $message;
+      
+      $_SESSION['WM_Messages'][] = array($type, $message);
+   }
+   
+   /*
     * public static void displayNoPageFoundError()
     * 
     * Loads 'e404' controller ("no page found" page)
@@ -228,6 +247,11 @@ class Watermelon
       ob_start();
       
       header('Content-Type: text/html; charset=UTF-8');
+      
+      if(!is_array($_SESSION['WM_Messages']))
+      {
+         $_SESSION['WM_Messages'] = array();
+      }
       
       // fixing "magic" quotes
       
@@ -396,7 +420,7 @@ class Watermelon
       // modules
       
       $w->modulesList       = self::indexModules();            // TODO: only in debug
-      $w->autoload          = array('test', 'test2', 'comments');
+      $w->autoload          = array('comments');
       $w->controllerHandler = null;
       $w->defaultController = 'test';
       
@@ -412,16 +436,14 @@ class Watermelon
       
       $textMenus = array(array
          (
-            array('Blog', 'http://localhost/w/index.php/blog', 'Blooog!!!'),
-            array('Testy', 'http://localhost/w/index.php/test', null),
+            array('Blog', 'blog', false, 'Blooog!!!'),
+            array('Testy', 'test', false, null),
+            array('Outside', 'http://example.com', true, null),
          ));
       
       $blockMenus = array(array
          (
-            array('Test::foo', 'test', 'foo', array()),
-            array('Test::bar', 'test', 'bar', array('foo', 'bar')),
-            array('Test2::foo2', 'test2', 'foo2', array()),
-            array('Test2::bar2', 'test2', 'bar2', array('foo2', 'bar2')),
+            //array('Test::foo', 'test', 'foo', array()),
          ));
       
       $w->siteName   = 'Nazwa strony';
@@ -683,9 +705,13 @@ class Watermelon
          $skin = new $className;
 
          $skin->content    = &$content;
+         
+         $messages = $_SESSION['WM_Messages'];
+         $_SESSION['WM_Messages'] = array();
+         
          $skin->headTags   = &self::$headTags;
          $skin->tailTags   = &self::$tailTags;
-
+         $skin->messages   = &$messages;
          $skin->pageTitle  = $controller->pageTitle;
          $skin->siteName   = &self::$config->siteName;
          $skin->siteSlogan = &self::$config->siteSlogan;
