@@ -31,6 +31,16 @@ abstract class Extension
       $this->db       = new DB();
       $this->load     = new Loader();
       $this->registry = new Registry();
+      
+      // attempting to load model with the same name
+      
+      $className = substr(get_called_class(), 0, -10); // name of class - '_Extension'
+      
+      try
+      {
+         $this->model = Loader::model($className);
+      }
+      catch(WMException $e){}
    }
    
    /*

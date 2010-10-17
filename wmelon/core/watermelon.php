@@ -248,11 +248,6 @@ class Watermelon
       
       header('Content-Type: text/html; charset=UTF-8');
       
-      if(!is_array($_SESSION['WM_Messages']))
-      {
-         $_SESSION['WM_Messages'] = array();
-      }
-      
       // fixing "magic" quotes
       
       if(get_magic_quotes_gpc())
@@ -317,6 +312,14 @@ class Watermelon
             error_reporting(E_ALL);
             define('WM_Debug', '');
          break;
+      }
+      
+      // creating messages array in session
+      
+      
+      if(!is_array($_SESSION['WM_Messages']))
+      {
+         $_SESSION['WM_Messages'] = array();
       }
       
       // loading libraries and helpers
@@ -426,7 +429,7 @@ class Watermelon
       
       // other
       
-      $w->siteURL           = 'http://localhost/w/index.php/';
+      $w->siteURL           = 'http://localhost/w/';
       $w->systemURL         = 'http://localhost/w/wmelon/';
       
       $w->skin              = 'wcmslay';
@@ -686,7 +689,7 @@ class Watermelon
       // running skin, or outputing data
       
       $controller = self::$controllerObject;
-      $outputType = $controller->requestedOutputType;
+      $outputType = $controller->outputType;
       
       if($outputType == Controller::Plain_OutputType)
       {
@@ -708,16 +711,18 @@ class Watermelon
 
          $skin->content    = &$content;
          
-         $messages = $_SESSION['WM_Messages'];
-         $_SESSION['WM_Messages'] = array();
-         
-         $skin->headTags   = &self::$headTags;
-         $skin->tailTags   = &self::$tailTags;
-         $skin->messages   = &$messages;
          $skin->pageTitle  = $controller->pageTitle;
+         $skin->dontShowPageTitle = $controller->dontShowPageTitle;
          $skin->siteName   = &self::$config->siteName;
          $skin->siteSlogan = &self::$config->siteSlogan;
          $skin->footer     = &self::$config->footer;
+         
+         $messages = $_SESSION['WM_Messages'];
+         $_SESSION['WM_Messages'] = array();
+
+         $skin->messages   = &$messages;
+         $skin->headTags   = &self::$headTags;
+         $skin->tailTags   = &self::$tailTags;
          $skin->blockMenus = &self::$config->blockMenus;
          $skin->textMenus  = &self::$config->textMenus;
          $skin->additionalData = $controller->additionalData;

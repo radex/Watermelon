@@ -31,5 +31,15 @@ abstract class BlockSet
       $this->db       = new DB();
       $this->load     = new Loader();
       $this->registry = new Registry();
+      
+      // attempting to load model with the same name
+      
+      $className = substr(get_called_class(), 0, -9); // name of class - '_BlockSet'
+      
+      try
+      {
+         $this->model = Loader::model($className);
+      }
+      catch(WMException $e){}
    }
 }

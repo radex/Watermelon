@@ -1,5 +1,8 @@
 <?die?>
 <tal:block>
-   <article tal:content="structure page/page_content" />
+   <article>
+      <h1>${page/page_title}</h1>
+      ${structure page/page_content}
+   </article>
    ${structure commentsView}
 </tal:block>

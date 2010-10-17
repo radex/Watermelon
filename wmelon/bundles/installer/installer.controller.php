@@ -126,7 +126,7 @@ class Installer_Controller extends Controller
          case '8': $this->save(); break;
          
          case 'wmelonInstallerTest':
-            $this->requestedOutputType = self::Plain_OutputType;
+            $this->outputType = self::Plain_OutputType;
             echo 'It works!';
          break;
          
@@ -403,7 +403,9 @@ CONFIG;
       
       DB::connect($db->host, $db->name, $db->user, $db->pass, $db->prefix);
       
-      $sql = file_get_contents(WM_Bundles . 'installer/watermelon.sql');
+      $structure = file_get_contents(WM_Bundles . 'installer/structure.sql');
+      $data      = file_get_contents(WM_Bundles . 'installer/data.sql');
+      $sql = $structure . "\n\n" . $data;
       $sql = explode(';', $sql);
       
       foreach($sql as $query)

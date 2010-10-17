@@ -38,9 +38,7 @@ class Pages_Controller extends Controller
       
       // getting post data
       
-      $model = $this->load->model('pages');
-      
-      $pageData = $model->pageData_name($pageName);
+      $pageData = $this->model->pageData_name($pageName);
       
       if(!$pageData)
       {
@@ -51,6 +49,7 @@ class Pages_Controller extends Controller
       // displaying (if exists)
       
       $this->pageTitle = $pageData->page_title;
+      $this->dontShowPageTitle = true;
       
       $pageData->page_content = Textile_Extension::textile($pageData->page_content);
       
@@ -58,5 +57,14 @@ class Pages_Controller extends Controller
       $view->page = $pageData;
       $view->commentsView = Comments_Extension::commentsView($pageData->page_id, 'pages', 'pages/index/' . $pageName);
       $view->display();
+   }
+   
+   /*
+    * shortcut for index_action()
+    */
+   
+   public function _actionHandler($pageName)
+   {
+      $this->index_action($pageName);
    }
 }

@@ -27,8 +27,8 @@ class test_Controller extends Controller
    
    function plain_output_action()
    {
-      $this->tal_action();
-      $this->requestedOutputType = self::Plain_OutputType;
+      $this->index_action();
+      $this->outputType = self::Plain_OutputType;
    }
    
    function xml_output_action()
@@ -40,7 +40,7 @@ class test_Controller extends Controller
       $output['foo'] = 'bar';
       
       $this->output = $output;
-      $this->requestedOutputType = self::XML_OutputType;
+      $this->outputType = self::XML_OutputType;
    }
    
    //--

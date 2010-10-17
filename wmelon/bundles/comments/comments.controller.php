@@ -53,13 +53,9 @@ class Comments_Controller extends Controller
          return;
       }
       
-      // posting
+      // posting and redirecting
       
-      $model = $this->load->model('comments');
-      
-      $model->postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $text);
-      
-      // redirecting
+      $this->model->postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $text);
       
       SiteRedirect($backPage);
    }

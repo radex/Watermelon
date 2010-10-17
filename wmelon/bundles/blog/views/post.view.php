@@ -1,5 +1,8 @@
 <?die?>
 <tal:block>
-   <article tal:content="structure post/blogpost_content" />
+   <article>
+      <h1>${post/blogpost_title}</h1>
+      ${structure post/blogpost_content}
+   </article>
    ${structure commentsView}
 </tal:block>

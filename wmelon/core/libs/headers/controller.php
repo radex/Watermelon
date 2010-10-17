@@ -35,17 +35,17 @@ abstract class Controller
    public $pageTitle;
    
    /*
-    * public mixed $additionalData
+    * public array $additionalData
     * 
     * Non-standard data to be passed to skin
     * 
     * Useful in making custom apps
     */
    
-   public $additionalData;
+   public $additionalData = array();
    
    /*
-    * public enum $requestedOutputType
+    * public enum $outputType
     * 
     * Requested representation method of output:
     *    ::Skinned_OutputType - Typical page
@@ -53,7 +53,7 @@ abstract class Controller
     *    ::XML_OutputType     - XML created from structure in $output property
     */
    
-   public $requestedOutputType = self::Skinned_OutputType;
+   public $outputType = self::Skinned_OutputType;
    
    const Skinned_OutputType = 1;
    const Plain_OutputType   = 2;
@@ -71,6 +71,16 @@ abstract class Controller
    
    public $output;
    
+   /*
+    * public bool $dontShowPageTitle = false
+    * 
+    * Whether page title header should not be displayed in skin
+    * 
+    * Option allows to display header in other place to preserve coherence (e.g. when using <article>)
+    */
+   
+   public $dontShowPageTitle = false;
+   
    //--
    
    public function __construct()
@@ -78,5 +88,15 @@ abstract class Controller
       $this->db       = new DB();
       $this->load     = new Loader();
       $this->registry = new Registry();
+      
+      // attempting to load model with the same name
+      
+      $className = substr(get_called_class(), 0, -11); // name of class - '_Controller'
+      
+      try
+      {
+         $this->model = Loader::model($className);
+      }
+      catch(WMException $e){}
    }
 }

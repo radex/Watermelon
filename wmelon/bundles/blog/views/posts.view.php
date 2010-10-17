@@ -2,7 +2,7 @@
 <section tal:repeat="post posts">
    <article>
       <header>
-         <a href="blog/post/${post/blogpost_id}">
+         <a href="$/blog/post/${post/blogpost_id}">
             <h1>${post/blogpost_title}</h1>
          </a>
       </header>
@@ -14,6 +14,6 @@
       </tal:block>
    </article>
    <div class="blog-post-databox">
-      <? echo Model('comments')->countCommentsFor($ctx->post->blogpost_id, 'blogposts') ?> komentarzy | <a href="blog/post/${post/blogpost_id}">Dalej »</a>
+      <? echo Model('comments')->countCommentsFor($ctx->post->blogpost_id, 'blogposts') ?> komentarzy | <a href="$/blog/post/${post/blogpost_id}">Dalej »</a>
    </div>
 </section>

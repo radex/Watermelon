@@ -116,7 +116,7 @@ class Loader
    }
    */
    /*
-    * models, extensions, blocks
+    * models, extensions, blocksets
     */
    
    private static function module($name, $typeName)
@@ -132,6 +132,11 @@ class Loader
       }
       
       // loading
+      
+      if(!isset(Watermelon::$config->modulesList->{$typeName . 's'}[$name]))
+      {
+         throw new WMException('Requested module doesn\'t exist', 'Loader:doesNotExist');
+      }
       
       $pathInfo = Watermelon::$config->modulesList->{$typeName . 's'}[$name];
       

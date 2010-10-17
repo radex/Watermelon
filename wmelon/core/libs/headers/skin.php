@@ -35,22 +35,6 @@ abstract class Skin
    public $content;
    
    /*
-    * public string[] $headTags
-    * 
-    * Array of tags to put before actual page content
-    */
-   
-   public $headTags = array();
-   
-   /*
-    * public string[] $tailTags
-    * 
-    * Array of tags to put after actual page content
-    */
-   
-   public $tailTags = array();
-   
-   /*
     * public string $pageTitle
     * 
     * Title of currently loaded page (page header)
@@ -81,6 +65,32 @@ abstract class Skin
     */
    
    public $footer;
+   
+   /*
+    * public bool $dontShowPageTitle
+    * 
+    * Whether page title header should not be displayed in skin
+    * 
+    * Option allows to display header in other place to preserve coherence (e.g. when using <article>)
+    */
+   
+   public $dontShowPageTitle;
+   
+   /*
+    * public string[] $headTags
+    * 
+    * Array of tags to put before actual page content
+    */
+   
+   public $headTags = array();
+   
+   /*
+    * public string[] $tailTags
+    * 
+    * Array of tags to put after actual page content
+    */
+   
+   public $tailTags = array();
    
    /*
     * public array $blockMenus
@@ -210,12 +220,14 @@ abstract class Skin
     */
    
    public function display()
-   {   
+   {
       $content    = &$this->content;
       $pageTitle  = &$this->pageTitle;
       $siteName   = &$this->siteName;
       $siteSlogan = &$this->siteSlogan;
       $footer     = &$this->footer;
+      $dontShowPageTitle = $this->dontShowPageTitle;
+      
       $additionalData = &$this->additionalData;
       
       include WM_SkinPath . 'index.php';

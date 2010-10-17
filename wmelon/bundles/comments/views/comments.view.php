@@ -19,7 +19,7 @@
    <h1>Napisz komentarz</h1>
    <!-- make *better* form -->
    
-   <form action="${php: SiteURI('')}comments/post/${id}/${type}/${php: base64_encode(backPage)}" method="post">
+   <form action="$/comments/post/${id}/${type}/${php: base64_encode(backPage)}" method="post">
       <label>
          Imię:
          <input name="name" required="required" />

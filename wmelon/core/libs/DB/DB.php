@@ -150,8 +150,6 @@ class DB
       
       self::$prefix = $prefix;
       
-      self::query("SET NAMES 'utf8'");
-      
       // on errors
       
       if(!self::$link)
@@ -163,6 +161,10 @@ class DB
       {
          throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:selectError');
       }
+      
+      // setting proper charset
+      
+      self::query("SET NAMES 'utf8'");
    }
    
    /*

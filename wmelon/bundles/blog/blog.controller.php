@@ -30,9 +30,7 @@ class Blog_Controller extends Controller
    
    public function index_action()
    {
-      $model = $this->load->model('blog');
-      
-      $posts = $model->posts();
+      $posts = $this->model->posts();
       
       $view = View('posts');
       $view->posts = $posts;
@@ -53,9 +51,7 @@ class Blog_Controller extends Controller
       
       // getting post data
       
-      $model = $this->load->model('blog');
-      
-      $postData = $model->postData($id);
+      $postData = $this->model->postData($id);
       
       if(!$postData)
       {
@@ -66,6 +62,7 @@ class Blog_Controller extends Controller
       // displaying (if exists)
       
       $this->pageTitle = $postData->blogpost_title;
+      $this->dontShowPageTitle = true;
       
       $postData->blogpost_content = Textile_Extension::textile($postData->blogpost_content);
       

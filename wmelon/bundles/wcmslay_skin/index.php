@@ -16,7 +16,7 @@
       <?$this->drawBlockMenu(0)?>
    </div>
    <div id="content">
-      <?= empty($pageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
+      <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
       <?$this->drawMessages() ?>
       <?=$content?>
    </div>
