@@ -1,8 +1,6 @@
 <?die?>
 
 <tal:block>
-   <tal:block tal:content="structure errors" />
-
    Podaj nick i hasło, które chcesz mieć dla siebie na swojej stronie.
 
    <form action="$/6" method="post" name="form">

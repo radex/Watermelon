@@ -1,8 +1,6 @@
 <?die?>
 
 <tal:block>
-   <tal:block tal:content="structure errors" />
-
    <form action="$/5" method="post" name="form">
 
       <div>

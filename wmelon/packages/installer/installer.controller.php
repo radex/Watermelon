@@ -90,7 +90,7 @@ class Installer_Controller extends Controller
          
          if(!file_exists(WM_BasePath . $fileName) || !isset($_SESSION['unblocking-filename']))
          {
-            $_SESSION['errors'] = array('Hmm... Nie widzę pliku. Spróbuj jeszcze raz.');
+            Watermelon::addMessage('error', 'Hmm... Nie widzę pliku. Spróbuj jeszcze raz.');
             
             SiteRedirect('3');
          }
@@ -108,8 +108,6 @@ class Installer_Controller extends Controller
       }
       
       $_SESSION['currentStep'] = $step;
-      
-      //TODO: here!
       
       // running proper step action
       
@@ -191,7 +189,6 @@ class Installer_Controller extends Controller
       
       $view = View('blockade');
       $view->fileName = $fileName;
-      $view->errors   = $this->errors();
       $view->display();
    }
    
@@ -227,7 +224,6 @@ class Installer_Controller extends Controller
       //--
       
       $view = View('dbInfo');
-      $view->errors = $this->errors();
       $view->form = $form;
       $view->display();
    }
@@ -263,7 +259,6 @@ class Installer_Controller extends Controller
       }
       
       $view = View('userData');
-      $view->errors = $this->errors();
       $view->form = $form;
       $view->display();
    }
@@ -285,18 +280,22 @@ class Installer_Controller extends Controller
          $pass2 = $_POST['pass2'];
       
          $_SESSION['userdataForm'] = $_POST;
-      
+         
+         $error = false;
+         
          if(empty($user) || empty($pass) || empty($pass2))
          {
-            $_SESSION['errors'][] = 'Wszystkie pola są wymagane';
+            Watermelon::addMessage('error', 'Wszystkie pola są wymagane');
+            $error = true;
          }
          
          if(!empty($pass) && !empty($pass2) && $pass != $pass2)
          {
-            $_SESSION['errors'][] = 'Podane hasła się różnią';
+            Watermelon::addMessage('error', 'Podane hasła się różnią');
+            $error = true;
          }
          
-         if(!empty($_SESSION['errors']))
+         if($error)
          {
             SiteRedirect('5');
          }
@@ -317,7 +316,6 @@ class Installer_Controller extends Controller
       }
       
       $view = View('websiteName');
-      $view->errors = $this->errors();
       $view->form = $form;
       $view->display();
    }
@@ -338,7 +336,7 @@ class Installer_Controller extends Controller
       
          if(empty($siteName))
          {
-            $_SESSION['errors'] = array('Pole jest wymagane');
+            Watermelon::addMessage('error', 'Pole jest wymagane');
          
             SiteRedirect('6');
          }
@@ -418,25 +416,6 @@ CONFIG;
       
       //TODO: make it better
       
-      $w->modulesList         = new stdClass;
-      $w->autoload          = array('test', 'test2');
-      $w->controllerHandler = null;
-      $w->defaultController = 'test';
-      
-      $w->siteURL           = WM_SiteURL;
-      $w->systemURL         = WM_SystemURL;
-      
-      $w->skin              = 'wcmslay';
-      $w->lang              = WM_Lang;
-      
-      $w->siteName   = $site->siteName;
-      $w->siteSlogan = '';
-      $w->footer     = '';
-      $w->blockMenus = array();
-      $w->textMenus  = array();
-      
-      Registry::create('wmelon', $w, true);
-      
       // adding superuser
       
       //TODO: adding superuser
@@ -448,35 +427,6 @@ CONFIG;
       session_destroy();
       
       SiteRedirect('');
-   }
-   
-   /*
-    * errors
-    */
-   
-   private function errors()
-   {
-      if(empty($_SESSION['errors']))
-      {
-         return;
-      }
-      
-      $errors = $_SESSION['errors'];
-      
-      unset($_SESSION['errors']);
-      
-      // composing
-      
-      foreach($errors as $error)
-      {
-         $ret .= '<div class="error-box">';
-         $ret .= $error;
-         $ret .= '</div>';
-      }
-      
-      //--
-      
-      return $ret;
    }
    
    /*
@@ -514,19 +464,21 @@ CONFIG;
          }
       }
       
+      $error = false;
+      
       if(count($emptyFields) >= 2)
       {
-         $errors[] = 'Pola ' . implode(', ', $emptyFields) . ' nie mogą być puste';
+         Watermelon::addMessage('error', 'Pola ' . implode(', ', $emptyFields) . ' nie mogą być puste');
+         $error = true;
       }
       elseif(count($emptyFields) == 1)
       {
-         $errors[] = 'Pole ' . $emptyFields[0] . ' nie może być puste';
+         Watermelon::addMessage('error', 'Pole ' . $emptyFields[0] . ' nie może być puste');
+         $error = true;
       }
       
-      if(!empty($errors))
+      if($error)
       {
-         $_SESSION['errors'] = $errors;
-         
          SiteRedirect('4');
       }
       
@@ -540,13 +492,13 @@ CONFIG;
       {
          if($e->stringCode() == 'DB:connectError')
          {
-            $_SESSION['errors'][0] = 'Nie udało się połączyć z serwerem bazy danych za pomocą podanych danych. Spróbuj jeszcze raz.';
+            Watermelon::addMessage('error', 'Nie udało się połączyć z serwerem bazy danych za pomocą podanych danych. Spróbuj jeszcze raz.');
             
             SiteRedirect('4');
          }
          elseif($e->stringCode() == 'DB:selectError')
          {
-            $_SESSION['errors'][0] = 'Nie udało się wybrać bazy danych "' . $name . '". Spróbuj jeszcze raz.';
+            Watermelon::addMessage('error', 'Nie udało się wybrać bazy danych "' . $name . '". Spróbuj jeszcze raz.');
             
             SiteRedirect('4');
             

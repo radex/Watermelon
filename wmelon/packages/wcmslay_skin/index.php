@@ -1,4 +1,4 @@
-<!doctype html>
+<?defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="<?php echo WM_SkinURL ?>style.css">
 <title>Title</title>
