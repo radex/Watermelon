@@ -129,6 +129,17 @@ CREATE TABLE IF NOT EXISTS `wm_pms` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
+-- Structure for table `wm_privileges`
+-- 
+
+DROP TABLE IF EXISTS `wm_privileges`;
+CREATE TABLE IF NOT EXISTS `wm_privileges` (
+  `privileges_user` int(11) NOT NULL,
+  `privileges_privilege` varchar(64) NOT NULL,
+  KEY `privileges_user` (`privileges_user`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
 -- Structure for table `wm_registry`
 -- 
 
@@ -158,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `wm_users` (
   `user_salt` varchar(16) NOT NULL,
   `user_nick` varchar(40) NOT NULL COMMENT 'displayed user name',
   `user_email` varchar(64) NOT NULL,
-  `user_lastseen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_lastseen` int(10) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_login` (`user_login`),
   UNIQUE KEY `user_email` (`user_email`)
@@ -169,5 +180,5 @@ CREATE TABLE IF NOT EXISTS `wm_users` (
 -- 
 
 INSERT INTO `wm_users` (`user_id`, `user_login`, `user_password`, `user_salt`, `user_nick`, `user_email`, `user_lastseen`) VALUES
-  ('1', 'radex', 'ac2039247f211bd4e69667aade2e25eac3beecaf', '1234567890123456', '', '', '2010-10-13 21:15:41');
+  ('1', 'radex', 'ac2039247f211bd4e69667aade2e25eac3beecaf', '1234567890123456', '', '', '1287316295');
 

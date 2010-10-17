@@ -35,6 +35,16 @@ class Auth_Extension extends Extension
    public static $isLogged = false;
    
    /*
+    * public static object $userData
+    * 
+    * Information about logged user (key names are the same as in DB, but without user_)
+    * 
+    * NULL if not logged in
+    */
+      
+   public static $userData;
+   
+   /*
     * public static void onAutoload()
     * 
     * Sets $isLogged to proper value and if user is logged in, updates 'lastseen' field in database
@@ -46,47 +56,15 @@ class Auth_Extension extends Extension
       
       if(isset($_SESSION['Auth_login']) && isset($_SESSION['Auth_pass']))
       {
-         if(self::isLogged())
+         try
          {
+            self::isLogged();
             self::$isLogged = true;
          }
-         else
+         catch(WMException $e)
          {
             self::$isLogged = false;
          }
-      }
-      
-      // if logged in, updating 'lastseen' field
-      
-      if(self::$isLogged)
-      {
-         DB::query("UPDATE `__users` SET `user_lastseen` = NOW()");
-      }
-   }
-   
-   private static function isLogged()
-   {
-      // getting user data, checking existence
-      
-      $login = $_SESSION['Auth_login'];
-      $pass  = $_SESSION['Auth_pass'];
-      
-      $userdata = DB::query("SELECT * FROM `__users` WHERE `user_login` = '%1'", $login);
-      
-      if(!$userdata->exists)
-      {
-         return false;
-      }
-      
-      // checking password
-      
-      $userdata = $userdata->fetchObject();
-      
-      $pass = sha1($pass . $userdata->user_salt);
-      
-      if($pass == $userdata->user_password)
-      {
-         return true;
       }
    }
    
@@ -105,34 +83,13 @@ class Auth_Extension extends Extension
       $login = trim(strtolower($login));
       $pass  = trim($pass);
       
-      // getting user data, checking existence
-      
-      $userdata = DB::query("SELECT * FROM `__users` WHERE `user_login` = '%1'", $login);
-      
-      if(!$userdata->exists)
-      {
-         throw new WMException('userNotExists', 'auth:userNotExists');
-      }
-      
-      $userdata = $userdata->fetchObject();
-      
-      // checking password
-      
-      $passHash = sha1($pass . $userdata->user_salt);
-      
-      if($passHash != $userdata->user_password)
-      {
-         throw new WMException('wrongPass', 'auth:wrongPass');
-      }
-      
-      // creating session and updating 'lastseen' field
-      
-      DB::query("UPDATE `__users` SET `user_lastseen` = NOW()");
-      
       $_SESSION['Auth_login'] = $login;
       $_SESSION['Auth_pass']  = $pass;
       
-      self::$isLogged = true;
+      if(self::isLogged())
+      {
+         self::$isLogged = true;
+      }
    }
    
    /*
@@ -147,6 +104,49 @@ class Auth_Extension extends Extension
       unset($_SESSION['Auth_pass']);
       
       self::$isLogged = false;
+   }
+   
+   /*
+    * checks whether user is logged in, updates `lastseen` if so, etc.
+    */
+   
+   private static function isLogged()
+   {
+      // getting user data, checking existence
+      
+      $login = $_SESSION['Auth_login'];
+      $pass  = $_SESSION['Auth_pass'];
+      
+      $model = Loader::model('auth');
+      
+      $userData = $model->userData_login($login);
+      
+      if(!$userData)
+      {
+         throw new WMException('userNotExists', 'auth:userNotExists');
+      }
+      
+      // checking password
+      
+      $pass = sha1($pass . $userData->user_salt);
+      
+      if($pass !== $userData->user_password)
+      {
+         throw new WMException('wrongPass', 'auth:wrongPass');
+      }
+      
+      // updating `lastseen` etc.
+      
+      $model->updateLastSeen($userData->user_id);
+      
+      foreach($userData as $key => &$value)
+      {
+         $key = substr($key, 5);
+         
+         self::$userData->$key = $value;
+      }
+      
+      return true;
    }
 }
 

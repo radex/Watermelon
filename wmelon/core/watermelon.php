@@ -420,7 +420,7 @@ class Watermelon
       // modules
       
       $w->modulesList       = self::indexModules();            // TODO: only in debug
-      $w->autoload          = array('comments');
+      $w->autoload          = array('auth', 'comments');
       $w->controllerHandler = null;
       $w->defaultController = 'test';
       
@@ -444,6 +444,7 @@ class Watermelon
       $blockMenus = array(array
          (
             //array('Test::foo', 'test', 'foo', array()),
+            array('Test!', 'user', 'card', array()),
          ));
       
       $w->siteName   = 'Nazwa strony';
