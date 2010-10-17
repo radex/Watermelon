@@ -27,6 +27,8 @@ class User_Blockset extends Blockset
       $view = View('watermelon/userCard', true);
       $view->isLogged = Auth::$isLogged;
       $view->userData = Auth::$userData;
+      $view->userData->lastseen = date('d.m.Y H:i:s', $view->userData->lastseen);
+      $view->privileges = Auth::$privileges;
       $view->display();
    }
 }

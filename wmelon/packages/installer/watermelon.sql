@@ -134,10 +134,17 @@ CREATE TABLE IF NOT EXISTS `wm_pms` (
 
 DROP TABLE IF EXISTS `wm_privileges`;
 CREATE TABLE IF NOT EXISTS `wm_privileges` (
-  `privileges_user` int(11) NOT NULL,
-  `privileges_privilege` varchar(64) NOT NULL,
-  KEY `privileges_user` (`privileges_user`)
+  `privilege_user` int(11) NOT NULL,
+  `privilege_privilege` varchar(64) NOT NULL,
+  KEY `privileges_user` (`privilege_user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `wm_privileges`
+-- 
+
+INSERT INTO `wm_privileges` (`privilege_user`, `privilege_privilege`) VALUES
+  ('1', 'admin');
 
 -- 
 -- Structure for table `wm_registry`

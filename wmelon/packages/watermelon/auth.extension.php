@@ -45,6 +45,16 @@ class Auth_Extension extends Extension
    public static $userData;
    
    /*
+    * public static string[] $privileges
+    * 
+    * Privileges logged user has
+    * 
+    * NULL if not logged in
+    */
+   
+   public static $privileges;
+   
+   /*
     * public static void onAutoload()
     * 
     * Sets $isLogged to proper value and if user is logged in, updates 'lastseen' field in database
@@ -145,6 +155,8 @@ class Auth_Extension extends Extension
          
          self::$userData->$key = $value;
       }
+      
+      self::$privileges = $model->privilegesFor($userData->user_id);
       
       return true;
    }

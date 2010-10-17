@@ -84,4 +84,26 @@ class Auth_Model extends Model
       
       $this->db->query("UPDATE `__users` SET `user_lastseen` = '%2' WHERE `user_id` = '%1'", $uid, time());
    }
+   
+   /*
+    * public object privilegesFor(int $uid)
+    * 
+    * List of privileges, user with $uid ID has
+    */
+   
+   public function privilegesFor($uid)
+   {
+      $uid = (int) $uid;
+      
+      $result = $this->db->query("SELECT * FROM `__privileges` WHERE `privilege_user` = '%1'", $uid);
+      
+      $privileges = array();
+      
+      foreach($result as $privilege)
+      {
+         $privileges[] = $privilege->privilege_privilege;
+      }
+      
+      return $privileges;
+   }
 }
