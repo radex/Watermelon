@@ -100,14 +100,14 @@ class Benchmark
    }
    
    /*
-    * private static string microtime()
+    * public static string microtime()
     * 
     * Returns current time (since 1 January 1970) in microseconds.
     * 
     * Time is presented as 16-char string (10 for Unix timestamp, 6 for microseconds)
     */
    
-   private static function microtime()
+   public static function microtime()
    {
       $microtime = microtime();
       $microtime = explode(' ', $microtime); // splitting seconds and microseconds
@@ -117,5 +117,29 @@ class Benchmark
       $time      = substr($time, 0, -2);     // removing "00" from end of time string
       
       return $time;
+   }
+   
+   /*
+    * public static int executionTime()
+    * 
+    * Returns Watermelon execution time (in microseconds)
+    * 
+    * You can show it (if debug mode) in footer
+    */
+   
+   public static function executionTime()
+   {
+      // start time
+      
+      $microtime = WM_StartTime;
+      $microtime = explode(' ', $microtime);
+      $msec      = substr($microtime[0],2);
+      $sec       = $microtime[1];
+      $time      = $sec . $msec;
+      $time      = substr($time, 0, -2);
+      
+      //--
+      
+      return self::microtime() - $time;
    }
 }

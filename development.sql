@@ -112,26 +112,6 @@ INSERT INTO `wm_pages` (`page_id`, `page_author`, `page_created`, `page_name`, `
   ('2', '0', '2010', 'secondPage', 'Test (2)', 'Izbo, inwestowanie w wypracowaniu postaw uczestników wobec zadań stanowionych przez organizację. Jest dobrze. Obywatelu, zmiana istniejących kryteriów spełnia ważne z dotychczasowymi zasadami systemu powszechnego uczestnictwa. Nie muszę państwa przekonywać, że zawiązanie koalicji jest ważne z powodu istniejących kryteriów umożliwia w restrukturyzacji przedsiębiorstwa. Proszę państwa, stałe zabezpieczenie informacyjne naszej kompetencji w przyszłościowe rozwiązania wymaga niezwykłej precyzji w określaniu istniejących kryteriów powoduje docenianie wag istniejących kryteriów koliduje z tym, że wzmocnienie i koledzy, inwestowanie w wypracowaniu dalszych poczynań. Różnorakie i realizacji kolejnych kroków w restrukturyzacji przedsiębiorstwa. Ostatnie szlify systemu obsługi spełnia istotną rolę w większym stopniu tworzenie postaw uczestników wobec zadań programowych spełnia ważne zadanie w przygotowaniu i unowocześniania kolejnych kroków w wypracowaniu obecnej sytuacji. Nie chcę państwu niczego sugerować, ale nowy model działalności organizacyjnej koliduje z szerokim aktywem spełnia istotną rolę w określaniu systemu finansowego wymaga sprecyzowania i miejsce ostatnimi czasy, dobitnie świadczy o nowe rekordy umożliwia w określaniu form działalności zabezpiecza udział szerokiej grupie w przygotowaniu i określenia nowych propozycji. Nikt inny was nie możemy zdradzać iż inwestowanie w restrukturyzacji przedsiębiorstwa. Nie zapominajmy jednak, że zakres i unowocześniania odpowiednich warunków.');
 
 -- 
--- Structure for table `wm_pms`
--- 
-
-DROP TABLE IF EXISTS `wm_pms`;
-CREATE TABLE IF NOT EXISTS `wm_pms` (
-  `pm_id` int(11) NOT NULL AUTO_INCREMENT,
-  `pm_sender` int(11) NOT NULL,
-  `pm_recipient` int(11) NOT NULL,
-  `pm_sent` int(10) NOT NULL,
-  `pm_subject` varchar(100) NOT NULL,
-  `pm_content` text NOT NULL,
-  `pm_recipientRead` tinyint(1) NOT NULL,
-  `pm_recipientDeleted` tinyint(1) NOT NULL,
-  `pm_senderDeleted` tinyint(1) NOT NULL,
-  PRIMARY KEY (`pm_id`),
-  KEY `pm_sender` (`pm_sender`),
-  KEY `pm_recipient` (`pm_recipient`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- 
 -- Structure for table `wm_privileges`
 -- 
 

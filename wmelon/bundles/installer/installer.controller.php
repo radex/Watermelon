@@ -28,7 +28,6 @@ class Installer_Controller extends Controller
    {
       // TODO: Determine site, and system URL-s by getting URI, and checking whether .htaccess works
       
-      //$this->urls();
       
       define('WM_SiteURL',     'http://localhost/w/index.php/');
       define('WM_SystemURL',   'http://localhost/w/wmelon/');
@@ -63,25 +62,25 @@ class Installer_Controller extends Controller
       
       if($step >= 2)
       {
-         $this->additionalData->progress = (int) (($step - 1) / 6 * 100);
+         $this->additionalData['progress'] = (int) (($step - 1) / 6 * 100);
       }
       
       // previous step (but you can't go back after you unblock the blockade)
       
       if($step == 2 || $step == 3 || $step >= 5)
       {
-         $this->additionalData->previous = $step - 1;
+         $this->additionalData['previous'] = $step - 1;
       }
       else
       {
-         $this->additionalData->previous = null;
+         $this->additionalData['previous'] = null;
       }
       
       // next step
       
       if($step >= 2)
       {
-         $this->additionalData->next = $step + 1;
+         $this->additionalData['next'] = $step + 1;
       }
       
       // checking if blockade is unlocked
@@ -90,7 +89,7 @@ class Installer_Controller extends Controller
       {
          $fileName = $_SESSION['unblocking-filename'];
          
-         if(!file_exists(WM_BasePath . $fileName) || !isset($_SESSION['unblocking-filename']))
+         if(!file_exists(WM_System . $fileName) || !isset($_SESSION['unblocking-filename']))
          {
             Watermelon::addMessage('error', 'Hmm... Nie widzę pliku. Spróbuj jeszcze raz.');
             
@@ -134,6 +133,13 @@ class Installer_Controller extends Controller
             session_destroy();
          break;
       }
+      
+      
+   }
+   
+   public function urls()
+   {
+      var_dump(file_get_contents('http://localhost/w/index.php')); //WTF is this freezing?!
    }
    
    /*
@@ -151,6 +157,8 @@ class Installer_Controller extends Controller
       $view = View('langChooser');
       $view->langs = $langs;
       $view->display();
+      
+      //$this->urls();
    }
    
    /*
@@ -207,7 +215,7 @@ class Installer_Controller extends Controller
    public function dbInfo()
    {
       $this->pageTitle = 'Dane do bazy danych';
-      $this->additionalData->form = '';
+      $this->additionalData['form'] ='';
       
       //--
       
@@ -255,7 +263,7 @@ class Installer_Controller extends Controller
       // rendering
       
       $this->pageTitle = 'Dane admina';
-      $this->additionalData->form = '';
+      $this->additionalData['form'] = '';
       
       if(isset($_SESSION['userdataForm']))
       {
@@ -312,7 +320,7 @@ class Installer_Controller extends Controller
       // rendering
       
       $this->pageTitle = 'Nazwa strony';
-      $this->additionalData->form = '';
+      $this->additionalData['form'] = '';
       
       if(isset($_SESSION['sitenameForm']))
       {
@@ -397,7 +405,7 @@ class Installer_Controller extends Controller
                  // 2 - debug notices, E_ALL error reporting; testing & debugging
 CONFIG;
       
-      file_put_contents(WM_BasePath . 'config.php', $configFile);
+      file_put_contents(WM_System . 'config.php', $configFile);
       
       // installing SQL
       
@@ -405,7 +413,8 @@ CONFIG;
       
       $structure = file_get_contents(WM_Bundles . 'installer/structure.sql');
       $data      = file_get_contents(WM_Bundles . 'installer/data.sql');
-      $sql = $structure . "\n\n" . $data;
+      
+      $sql = $structure . "\n\n" . $data; 
       $sql = explode(';', $sql);
       
       foreach($sql as $query)
@@ -419,7 +428,9 @@ CONFIG;
          
          $query = str_replace('`wm_', '`' . $db->prefix, $query);
          
-         DB::query($query);
+         var_dump($query . ':');
+         
+         DB::query($query, time());
       }
       
       // adding wmelon configuration to Registry

@@ -18,30 +18,14 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-/*
- * Textile [A Humane Web Text Generator] extension
- */
+require_once 'PHPTAL/Php/Attribute/WM/Foo.php';
 
-include 'textile.php';
-
-class Textile_Extension extends Extension
+class PHPTAL_Namespace_WM extends PHPTAL_Namespace_Builtin
 {
-   private static $textile;
-   
-   public static function onAutoload()
+   public function __construct()
    {
-      self::$textile = new Textile_Lib;
-   }
-   
-   public static function textile($text)
-   {
-      return self::$textile->TextileThis($text);
-   }
-   
-   public static function textileRestricted($text)
-   {
-      return self::$textile->TextileRestricted($text);
+      parent::__construct('wm', 'wcms');
+      
+      $this->addAttribute(new PHPTAL_NamespaceAttributeContent('foo', 1));
    }
 }
-
-class Textile extends Textile_Extension{}

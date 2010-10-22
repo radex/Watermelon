@@ -51,3 +51,5 @@ class Comments_Extension extends Extension
       return $view->display(true);
    }
 }
+
+class Comments extends Comments_Extension{}

@@ -8,7 +8,7 @@
          <strong tal:condition="php: !comment.comment_authorWebsite">${comment/comment_authorName}</strong>
       </header>
       <section>
-         <? echo Textile_Extension::textile($ctx->comment->comment_text) ?>
+         <? echo Textile::textile($ctx->comment->comment_text) ?>
       </section>
    </article>
    

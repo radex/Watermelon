@@ -18,7 +18,6 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-//include 'gui.php';
 include 'language.php';
 
 /*
@@ -95,10 +94,22 @@ function FilesForDirectory($dirPath, $recursive = true, $returnObject = false)
    return $files;
 }
 
+/*
+ * array ToObject(object/array $structure)
+ * 
+ * Converts $structure to object (recursively)
+ */
+
 function ToObject($structure)
 {
    return TranslateStructure($structure, 'object');
 }
+
+/*
+ * array ToArray(object/array $structure)
+ * 
+ * Converts $structure to array (recursively)
+ */
 
 function ToArray($structure)
 {
@@ -106,7 +117,11 @@ function ToArray($structure)
 }
 
 /*
- * not done yet
+ * mixed TranslateStructure(object/array $structure, string $toType)
+ * 
+ * Converts $structure to array or object (recursively)
+ * 
+ * string $toType - type of structure to convert $structure to; either 'array' or 'object'
  */
 
 function TranslateStructure($structure, $toType)
@@ -116,9 +131,9 @@ function TranslateStructure($structure, $toType)
       throw new WMException('$structure is neither array nor object', 'wrongType');
    }
    
-   if($toType !== 'object' && $totype !== 'array')
+   if($totype !== 'array' && $toType !== 'object')
    {
-      throw new WMException('$toType is neither "object" nor "array"', 'badArgument');
+      throw new WMException('$toType is neither "array" nor "object"', 'badArgument');
    }
    
    if($toType == 'object')
@@ -155,40 +170,14 @@ function TranslateStructure($structure, $toType)
 }
 
 /*
- * string ToHTMLArgs(array/object $array)
- * 
- * Translates an array or an object into list of HTML/XML properties, e.g:
- * 
- * array('foo1' => 'bar1', 'foo2' => 'bar2')
- * 
- * will be translated into:
- * 
- * 'foo1="bar1" foo2="bar2"'
- */
-
-function ToHTMLArgs($struct)
-{
-   $arguments = '';
-   
-   foreach($struct as $key => $var)
-   {
-      $arguments .= ' ' . $key . '="' . $var . '"';
-   }
-   
-   $arguments = substr($arguments, 1);
-   
-   return $arguments;
-}
-
-/*
  * string SiteURI(string $urn)
  * 
  * Makes URI to given page of a website
  * 
- * string $urn - page, e.g: 'blog/foo/bar', or '' (URN to main page)
+ * string $urn - page, e.g: 'blog/foo/bar', or '' (for main page)
  */
 
-function SiteURI($urn)
+function SiteURI($urn = '')
 {
    return WM_SiteURL . $urn;
 }
@@ -213,7 +202,7 @@ function Redirect($uri)
  * Equivalent of Redirect(SiteURI($urn))
  */
 
-function SiteRedirect($urn)
+function SiteRedirect($urn = '')
 {
    Redirect(SiteURI($urn));
 }
@@ -264,7 +253,7 @@ function ClientIP()
  * Makes hash of $string
  * 
  * Hash is calculated using $algo algorithm.
- * If $algo is not given (which is usually true), default algorithm will be used
+ * If $algo is not given (which is usually true), sha1 will be used
  * 
  * HashString uses $algo() if exists, or hash() otherwise.
  */

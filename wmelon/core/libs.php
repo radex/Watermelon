@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2009-2010 Radosław Pietruszewski.
+ //  Copyright 2010 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-// general libraries
+include 'helpers/helpers.php';
 
 include 'DB/DB.php';
 include 'Registry/Registry.php';

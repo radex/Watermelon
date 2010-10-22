@@ -16,19 +16,19 @@
    <div id="status-bar">
       <?
       
-      if(isset($additionalData->form))
+      if(isset($additionalData['form']))
       {
          echo '<button onclick="document.form.submit()">Dalej</button>';
       }
       else
       {
-         echo '<form action="' . WM_SiteURL . $additionalData->next . '"><button>Dalej</button></form>';
+         echo '<form action="' . WM_SiteURL . $additionalData['next'] . '"><button>Dalej</button></form>';
       }
       
    
-      if($additionalData->previous !== null)
+      if($additionalData['previous'] !== null)
       {
-         echo '<form action="' . WM_SiteURL . $additionalData->previous . '"><button>Wróć</button></form>';
+         echo '<form action="' . WM_SiteURL . $additionalData['previous'] . '"><button>Wróć</button></form>';
       }
       else
       {
@@ -40,7 +40,7 @@
    
       <div id="progress-bar-container">
          <div id="progress-bar">
-            <div id="progress-bar-progress" style="width:<?=$additionalData->progress?>%"></div>
+            <div id="progress-bar-progress" style="width:<?=$additionalData['progress']?>%"></div>
          </div>
          Postęp instalacji
       </div>

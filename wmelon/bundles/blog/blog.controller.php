@@ -64,11 +64,11 @@ class Blog_Controller extends Controller
       $this->pageTitle = $postData->blogpost_title;
       $this->dontShowPageTitle = true;
       
-      $postData->blogpost_content = Textile_Extension::textile($postData->blogpost_content);
+      $postData->blogpost_content = Textile::textile($postData->blogpost_content);
       
       $view = View('post');
       $view->post = $postData;
-      $view->commentsView = Comments_Extension::commentsView($id, 'blogposts', 'blog/post/' . $id);
+      $view->commentsView = Comments::commentsView($id, 'blogpost', 'blog/post/' . $id);
       $view->display();
    }
 }

@@ -15,6 +15,41 @@ class test_Controller extends Controller
       echo '<a href="$/test/translations">Translations tests</a><br>';
       echo '<a href="$/test/cache">Cache tests</a><br>';
       echo '<a href="$/test/output">Output types</a><br>';
+      echo '<a href="$/test/curl">cURL and stuff</a><br>';
+      echo '<a href="$/test/phptal">PHPTAL tests</a><br>';
+   }
+   
+   
+   function phptal_action()
+   {
+      View('phptal')->display();
+   }
+   
+   //--
+   
+   function testtext_action()
+   {
+      $this->outputType = self::Plain_OutputType;
+      
+      echo 'Foo!';
+   }
+   
+   function curl_action()
+   {
+      echo 'cURL:';
+      
+      $ch = curl_init();
+      
+      curl_setopt($ch, CURLOPT_URL, 'http://localhost/w/test/testtext');
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      
+      echo curl_exec($ch);
+      
+      echo '<hr>';
+      
+      echo 'file_get_contents:';
+      
+      echo file_get_contents('http://localhost/w/test/testtext');
    }
    
    //--

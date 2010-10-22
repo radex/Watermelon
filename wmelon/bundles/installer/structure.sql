@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `wm_blogposts` (
   `blogpost_content` text NOT NULL,
   `blogpost_beginning` text,
   PRIMARY KEY (`blogpost_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Structure for table `wm_comments`
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `wm_comments` (
   `comment_created` int(10) NOT NULL,
   `comment_text` text NOT NULL,
   PRIMARY KEY (`comment_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Structure for table `wm_comments_records`
@@ -67,26 +67,6 @@ CREATE TABLE IF NOT EXISTS `wm_pages` (
   `page_content` text NOT NULL,
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `page_name` (`page_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- 
--- Structure for table `wm_pms`
--- 
-
-DROP TABLE IF EXISTS `wm_pms`;
-CREATE TABLE IF NOT EXISTS `wm_pms` (
-  `pm_id` int(11) NOT NULL AUTO_INCREMENT,
-  `pm_sender` int(11) NOT NULL,
-  `pm_recipient` int(11) NOT NULL,
-  `pm_sent` int(10) NOT NULL,
-  `pm_subject` varchar(100) NOT NULL,
-  `pm_content` text NOT NULL,
-  `pm_recipientRead` tinyint(1) NOT NULL,
-  `pm_recipientDeleted` tinyint(1) NOT NULL,
-  `pm_senderDeleted` tinyint(1) NOT NULL,
-  PRIMARY KEY (`pm_id`),
-  KEY `pm_sender` (`pm_sender`),
-  KEY `pm_recipient` (`pm_recipient`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
@@ -127,5 +107,5 @@ CREATE TABLE IF NOT EXISTS `wm_users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_login` (`user_login`),
   UNIQUE KEY `user_email` (`user_email`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

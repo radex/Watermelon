@@ -51,11 +51,11 @@ class Pages_Controller extends Controller
       $this->pageTitle = $pageData->page_title;
       $this->dontShowPageTitle = true;
       
-      $pageData->page_content = Textile_Extension::textile($pageData->page_content);
+      $pageData->page_content = Textile::textile($pageData->page_content);
       
       $view = View('page');
       $view->page = $pageData;
-      $view->commentsView = Comments_Extension::commentsView($pageData->page_id, 'pages', 'pages/index/' . $pageName);
+      $view->commentsView = Comments::commentsView($pageData->page_id, 'page', 'pages/index/' . $pageName);
       $view->display();
    }
    

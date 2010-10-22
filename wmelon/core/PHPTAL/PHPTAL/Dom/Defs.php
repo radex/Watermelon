@@ -19,6 +19,7 @@ require_once 'PHPTAL/Namespace/TAL.php';
 require_once 'PHPTAL/Namespace/METAL.php';
 require_once 'PHPTAL/Namespace/I18N.php';
 require_once 'PHPTAL/Namespace/PHPTAL.php';
+require_once 'PHPTAL/Namespace/WM.php';
 
 /**
  * PHPTAL constants.
@@ -52,6 +53,7 @@ class PHPTAL_Dom_Defs
         $this->registerNamespace(new PHPTAL_Namespace_METAL());
         $this->registerNamespace(new PHPTAL_Namespace_I18N());
         $this->registerNamespace(new PHPTAL_Namespace_PHPTAL());
+        $this->registerNamespace(new PHPTAL_Namespace_WM());
     }
 
     /**

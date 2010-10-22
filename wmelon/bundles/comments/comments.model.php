@@ -76,7 +76,7 @@ class Comments_Model extends Model
       $authorWebsite = htmlspecialchars($authorWebsite);
       $text          = $text;
       
-      $this->db->query("INSERT INTO `__comments` SET `comment_authorName` = '%1', `comment_authorEmail` = '%2', `comment_authorWebsite` = '%3', `comment_text` = '%4'", $authorName, $authorEmail, $authorWebsite, $text);
+      $this->db->query("INSERT INTO `__comments` SET `comment_authorName` = '%1', `comment_authorEmail` = '%2', `comment_authorWebsite` = '%3', `comment_text` = '%4', `comment_created` = '%5'", $authorName, $authorEmail, $authorWebsite, $text, time());
       
       $commentID = DB::insertedID();
       

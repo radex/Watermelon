@@ -29,7 +29,7 @@
    <?php if(defined('WM_Debug')){ ?>
    Zapytań do bazy danych: <?php echo count(DB::$queriesArray) ?><br>
    Zużyto pamięci: <?php echo memory_get_peak_usage() ?> <?php echo memory_get_usage() ?><br>
-   Wygenerowano w: ∞ sekund :><br>
+   Wygenerowano w: <?php echo Benchmark::executionTime() ?> µs<br>
    Wykonane zapytania:<br>
    <?php
    

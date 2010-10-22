@@ -14,6 +14,6 @@
       </tal:block>
    </article>
    <div class="blog-post-databox">
-      <? echo Model('comments')->countCommentsFor($ctx->post->blogpost_id, 'blogposts') ?> komentarzy | <a href="$/blog/post/${post/blogpost_id}">Dalej »</a>
+      <? echo Model('comments')->countCommentsFor($ctx->post->blogpost_id, 'blogpost') ?> komentarzy | <a href="$/blog/post/${post/blogpost_id}">Dalej »</a>
    </div>
 </section>

@@ -335,16 +335,16 @@ body > footer a:hover, #footer a:visited:hover
 
 .comment header
 {
-   float: right;
-   width: 100px;
-   border-left: 1px solid #e1e4db;
-   padding-left: 5px;
+   float: left;
+   width: 80px;
+   border-right: 1px solid #e1e4db;
+   padding-right: 5px;
    color: #888;
 }
 
 .comment section
 {
-   padding-right: 160px;
+   padding-left: 90px;
 }
 
 .posttools

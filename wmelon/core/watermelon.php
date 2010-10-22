@@ -171,7 +171,7 @@ class Watermelon
     */
    
    public static function run()
-   {   
+   {
       self::prepare();
       
       // if installer - skipping configuration etc, just loading controller and generating
@@ -248,6 +248,8 @@ class Watermelon
       
       header('Content-Type: text/html; charset=UTF-8');
       
+      define('WM_StartTime', microtime());
+      
       // fixing "magic" quotes
       
       if(get_magic_quotes_gpc())
@@ -267,14 +269,11 @@ class Watermelon
       
       $basePath = str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . '/';
       
-      define('WM_BasePath', $basePath);
-      define('WM_Core',     WM_BasePath . 'core/');
-      define('WM_Bundles', WM_BasePath . 'bundles/');
-      define('WM_Uploaded', WM_BasePath . 'uploaded/');
-      define('WM_Cache',    WM_BasePath . 'cache/');
-      
-      define('WM_Libs',     WM_Core . 'libs/');
-      define('WM_Helpers',  WM_Core . 'helpers/');
+      define('WM_System',   $basePath);
+      define('WM_Core',     WM_System . 'core/');
+      define('WM_Bundles',  WM_System . 'bundles/');
+      define('WM_Uploaded', WM_System . 'uploaded/');
+      define('WM_Cache',    WM_System . 'cache/');
       
       // loading config file, and setting app type to installer if empty
       
@@ -286,8 +285,7 @@ class Watermelon
          
          error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE); // TODO: delete it later
          
-         include WM_Libs . 'libs.php';
-         include WM_Helpers . 'helpers.php';
+         include 'libs.php';
          
          self::divide();
          
@@ -316,18 +314,14 @@ class Watermelon
       
       // creating messages array in session
       
-      
       if(!is_array($_SESSION['WM_Messages']))
       {
          $_SESSION['WM_Messages'] = array();
       }
       
-      // loading libraries and helpers
+      // libraries etc.
       
-      include WM_Libs . 'libs.php';
-      include WM_Helpers . 'helpers.php';
-      
-      // running DB, and dividing URL
+      include 'libs.php';
       
       DB::connect($dbHost, $dbName, $dbUser, $dbPass, $dbPrefix);
       
@@ -447,7 +441,6 @@ class Watermelon
       
       $blockMenus = array(array
          (
-            //array('Test::foo', 'test', 'foo', array()),
             array('Test!', 'user', 'card', array()),
          ));
       
@@ -470,7 +463,7 @@ class Watermelon
       
       define('WM_SiteURL',     $w->siteURL);
       define('WM_SystemURL',   $w->systemURL);
-      define('WM_BundlesURL', WM_SystemURL . 'bundles/');
+      define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       
       define('WM_SkinPath', WM_Bundles    . $w->skin . '_skin/');
