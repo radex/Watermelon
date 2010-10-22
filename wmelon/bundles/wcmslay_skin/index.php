@@ -4,14 +4,17 @@
 <title>Title</title>
 <?=$this->drawHeadTags()?>
 
+<header>
+   <div>
+      <div id="siteName"><a href="<?=WM_SiteURL?>"><?=$siteName?></a></div>
+      <div id="siteSlogan"><?=$siteSlogan?></div>
+   </div>
+</header>
+
+<ul id="nav">
+   <?=$this->drawTextMenu(0)?>
+</ul>
 <div id="container">
-   <header>
-      <div id="ha"><?=$siteName?></div>
-      <div id="hs"><?=$siteSlogan?></div>
-      <ul>
-         <?=$this->drawTextMenu(0)?>
-      </ul>
-   </header>
    <div id="sidebar">
       <?$this->drawBlockMenu(0)?>
    </div>
@@ -33,7 +36,7 @@
    Wykonane zapytania:<br>
    <?php
    
-   echo '<ul>';
+   echo '<ul style="text-align:left">';
    
    foreach(DB::$queriesArray as $query)
    {
@@ -47,9 +50,10 @@
    
    echo '</ul>';
    
+   
+   /*Błędy testów jednostkowych:
+   UnitTester::printFails();*/
+   }
    ?>
-   Błędy testów jednostkowych:
-   <?php UnitTester::printFails(); ?>
-   <?php } ?>
 </footer>
 <?=$this->drawTailTags()?>
