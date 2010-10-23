@@ -29,7 +29,7 @@ class Comments_Extension extends Extension
     * 
     * Returns output of comments view for $id record of $type type of content (blog post, page, etc.)
     * 
-    * string $backPage - name of page (on the same website) on which comment view will be displayed (URI of page to go back on after posting a comment), e.g.: 'blog/post/1'
+    * string $backPage - name of page (on the same website) on which comment view will be displayed (name of page to go back on after posting a comment), e.g.: 'blog/post/1'
     */
    
    public static function commentsView($id, $type, $backPage)

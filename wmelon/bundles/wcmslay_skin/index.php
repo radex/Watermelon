@@ -1,7 +1,7 @@
 <?defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="<?php echo WM_SkinURL ?>style.css">
-<title>Title</title>
+<title><?= empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName ?></title>
 <?=$this->drawHeadTags()?>
 
 <header>
@@ -27,33 +27,29 @@
 </div>
 <footer>
    <?=$footer?><br>
-   powered by <strong>Watermelon CMS</strong><br>
-   <br>
+   powered by <strong>Watermelon CMS</strong>
    <?php if(defined('WM_Debug')){ ?>
-   Zapytań do bazy danych: <?php echo count(DB::$queriesArray) ?><br>
-   Zużyto pamięci: <?php echo memory_get_peak_usage() ?> <?php echo memory_get_usage() ?><br>
-   Wygenerowano w: <?php echo Benchmark::executionTime() ?> µs<br>
-   Wykonane zapytania:<br>
-   <?php
-   
-   echo '<ul style="text-align:left">';
-   
-   foreach(DB::$queriesArray as $query)
-   {
-      if(strlen($query) > 150)
-      {
-         $query = substr($query, 0, 150) . ' (...)';
-      }
+      <br><br>
+      Wygenerowano w: <?= round(Benchmark::executionTime(), -2) / 1000 ?> ms<br>
+      Peak memory usage: <?= (int) (memory_get_peak_usage() / 1000) ?> KB<br>
+      Current memory usage: <?= (int) (memory_get_usage() / 1000) ?> KB<br>
       
-      echo '<li><pre>' . htmlspecialchars($query) . '</pre></li>';
-   }
+      <br>Zapytania wykonane do bazy danych (<?=count(DB::$queriesArray)?>):<br>
+      
+      <ul style="text-align:left">
+      <?php
    
-   echo '</ul>';
-   
-   
-   /*Błędy testów jednostkowych:
-   UnitTester::printFails();*/
-   }
-   ?>
+      foreach(DB::$queriesArray as $query)
+      {
+         if(strlen($query) > 150)
+         {
+            $query = substr($query, 0, 150) . ' (...)';
+         }
+      
+         echo '<li><pre>' . htmlspecialchars($query) . '</pre></li>';
+      }
+      ?>
+      </ul>
+      <?}?>
 </footer>
 <?=$this->drawTailTags()?>

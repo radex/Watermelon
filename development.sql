@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `wm_blogposts` (
   `blogpost_content` text NOT NULL,
   `blogpost_beginning` text,
   PRIMARY KEY (`blogpost_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `wm_blogposts`
@@ -31,8 +31,7 @@ CREATE TABLE IF NOT EXISTS `wm_blogposts` (
 INSERT INTO `wm_blogposts` (`blogpost_id`, `blogpost_author`, `blogpost_created`, `blogpost_title`, `blogpost_content`, `blogpost_beginning`) VALUES
   ('7', '0', '2010', 'Testowy tytuł (2)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną, Że znowu do piersi kryje, odsłaniając ramiona i palestra, i całował. Zaczęła się spory w dalekim mieści kończył tak pan Rejent na niej z nim padnie. Dalej Jasiński, młodzian piękny chart z mnóstwem gości nie ma albo o tańcach, nawet wozy, w rozmowę lecz nie nalewa szklanki, i raptem paniczyki młode z drzew raz zawitała moda i stryjaszkiem jedno i stajennym i chołodziec litewski milcząc żwawo jedli. , choć młodzież teraźniejsza, Że znowu je w wielkiej peruce, którą do kraju. Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.', 'Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.'),
   ('8', '0', '2010', 'Testowy tytuł (1)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną,', NULL),
-  ('9', '0', '2010', 'Testowy tytuł (2)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną, Że znowu do piersi kryje, odsłaniając ramiona i palestra, i całował. Zaczęła się spory w dalekim mieści kończył tak pan Rejent na niej z nim padnie. Dalej Jasiński, młodzian piękny chart z mnóstwem gości nie ma albo o tańcach, nawet wozy, w rozmowę lecz nie nalewa szklanki, i raptem paniczyki młode z drzew raz zawitała moda i stryjaszkiem jedno i stajennym i chołodziec litewski milcząc żwawo jedli. , choć młodzież teraźniejsza, Że znowu je w wielkiej peruce, którą do kraju. Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.', 'Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.'),
-  ('10', '0', '2010', 'Dodany z ąśćź Watermelona', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś piękność twą w grzeczności. a potem najwyższych krajowych urzędów przynajmniej tom *skorzysta�*�, że przychodził już im hojnie dano wódkę. jak gdyby na Tadeusz przyglądał się stempel na to mówiąc, że spod ramion wytknął palce’ i stodołę miał i dwie ławy umiała się drzwiczki Świeżo trącone. blisko siebie czuł choroby zaród. Krzyczano na swym dworze. Nikt go wtenczas wszyscy ją w drukarskich kramarniac lub cicha i z drzewa, lecz już byli z Paryża baronem. Gdyby żył dłużej, może też Sokoła ci wesele. Jest z Wysogierdem Radziwiłł z liczby kopic, co prędzej w jednym palcem spuszczone u nas reformować cywilizować\r\n\r\nFoo bar\r\n\r\n==<pre class=\"brush: php\">\r\ndefined(\'WM\') or die;\r\n</pre>==', NULL);
+  ('9', '0', '2010', 'Testowy tytuł (2)', 'Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś człowieka nie chciałby do Polski jak zdrowe oblicz gospodarza, w gościnę zaprasza. Właśnie dwukonną bryką wjechał młody ja sam na dachu. Wtem zapadło do łona a młodzież lepsza, ale powiedzieć nie chciałby do włosów, włosy pozwijane w granatowym kontuszu stał w palcach i pan Wojski towarzystwa nam starym serca rosną, Że znowu do piersi kryje, odsłaniając ramiona i palestra, i całował. Zaczęła się spory w dalekim mieści kończył tak pan Rejent na niej z nim padnie. Dalej Jasiński, młodzian piękny chart z mnóstwem gości nie ma albo o tańcach, nawet wozy, w rozmowę lecz nie nalewa szklanki, i raptem paniczyki młode z drzew raz zawitała moda i stryjaszkiem jedno i stajennym i chołodziec litewski milcząc żwawo jedli. , choć młodzież teraźniejsza, Że znowu je w wielkiej peruce, którą do kraju. Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.', 'Mowy starca krążyły we zboże i w naukach mniej zgorszenia. Ach, ja pamiętam czasy, kiedy do folwarku nie miał głos zabierać. Umilkli wszyscy poszli za zającami nie pyta bo tak Suwarów w Piramidy, w miechu. Starzy na naród bo.');
 
 -- 
 -- Structure for table `wm_comments`
@@ -48,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `wm_comments` (
   `comment_created` int(10) NOT NULL,
   `comment_text` text NOT NULL,
   PRIMARY KEY (`comment_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `wm_comments`
@@ -60,7 +59,8 @@ INSERT INTO `wm_comments` (`comment_id`, `comment_authorID`, `comment_authorName
   ('5', NULL, 'RAdex', 'radexpl@gmail.com', '', '2010', 'Foo!'),
   ('6', NULL, 'Radex', 'radexpl@gmail.com', '', '2010', 'sad'),
   ('7', NULL, 'MWL', 'marcin@lenkowski.net', 'http://lenkowski.net', '2010', 'Foo!'),
-  ('12', NULL, 'Textilovsky', 'a@b.c', '', '2010', '^4^ ~2~ He ^2+^');
+  ('14', NULL, 'Foo', 'foo@bar.com', '', '0', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis consectetur ligula, dictum viverra eros ornare a. Pellentesque urna nisi, imperdiet at luctus non, condimentum ac metus. In ullamcorper viverra ligula, sed rhoncus eros adipiscing vel. Maecenas egestas odio in arcu ullamcorper feugiat. Suspendisse ultricies viverra nulla eu tincidunt. In hac habitasse platea dictumst. Suspendisse sed eros sem. Sed malesuada eleifend eros, a ultricies risus venenatis eu. Etiam dapibus viverra luctus. Morbi justo diam, ultricies et ultricies sit amet, luctus nec odio. Duis non augue purus. Fusce congue mi lectus, sit amet feugiat justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam orci nisi, rutrum quis elementum ut, cursus ut nisi. Quisque mollis semper interdum.'),
+  ('15', NULL, 'Foo (2)', 'f@b.c', '', '1287690898', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis consectetur ligula, dictum viverra eros ornare a. Pellentesque urna nisi, imperdiet at luctus non, condimentum ac metus. In ullamcorper viverra ligula, sed rhoncus eros adipiscing vel. Maecenas egestas odio in arcu ullamcorper feugiat. Suspendisse ultricies viverra nulla eu tincidunt. In hac habitasse platea dictumst. Suspendisse sed eros sem. Sed malesuada eleifend eros, a ultricies risus venenatis eu. Etiam dapibus viverra luctus. Morbi justo diam, ultricies et ultricies sit amet, luctus nec odio. Duis non augue purus. Fusce congue mi lectus, sit amet feugiat justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam orci nisi, rutrum quis elementum ut, cursus ut nisi. Quisque mollis semper interdum.');
 
 -- 
 -- Structure for table `wm_comments_records`
@@ -80,12 +80,14 @@ CREATE TABLE IF NOT EXISTS `wm_comments_records` (
 -- 
 
 INSERT INTO `wm_comments_records` (`commrecord_record`, `commrecord_comment`, `commrecord_type`) VALUES
-  ('10', '1', 'blogpost'),
-  ('10', '2', 'blogpost'),
-  ('10', '5', 'blogposts'),
-  ('10', '6', 'blogposts'),
-  ('10', '7', 'blogposts'),
-  ('10', '12', 'blogposts');
+  ('9', '1', 'blogpost'),
+  ('9', '2', 'blogpost'),
+  ('9', '5', 'blogpost'),
+  ('9', '6', 'blogpost'),
+  ('9', '7', 'blogpost'),
+  ('9', '15', 'blogpost'),
+  ('9', '14', 'blogpost'),
+  ('9', '12', 'blogpost');
 
 -- 
 -- Structure for table `wm_pages`
@@ -101,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `wm_pages` (
   `page_content` text NOT NULL,
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `page_name` (`page_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `wm_pages`
@@ -170,5 +172,5 @@ CREATE TABLE IF NOT EXISTS `wm_users` (
 -- 
 
 INSERT INTO `wm_users` (`user_id`, `user_login`, `user_password`, `user_salt`, `user_nick`, `user_email`, `user_lastseen`) VALUES
-  ('1', 'radex', 'ac2039247f211bd4e69667aade2e25eac3beecaf', '1234567890123456', '', '', '1287342814');
+  ('1', 'radex', 'ac2039247f211bd4e69667aade2e25eac3beecaf', '1234567890123456', '', '', '1287839305');
 

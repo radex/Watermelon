@@ -428,8 +428,6 @@ CONFIG;
          
          $query = str_replace('`wm_', '`' . $db->prefix, $query);
          
-         var_dump($query . ':');
-         
          DB::query($query, time());
       }
       
@@ -439,13 +437,17 @@ CONFIG;
       
       // adding superuser
       
-      //TODO: adding superuser
+      $salt = substr(HashString(mt_rand()), 0, 16);
+      $pass = HashString($user->pass . $salt);
+      
+      DB::query("INSERT INTO `__users` (`user_login`, `user_password`, `user_salt`, `user_nick`, `user_lastseen`) VALUES ('%1', '%2', '%3', '%4', '%5')", $user->user, $pass, $salt, $user->user, time());
       
       // removing session and redirecting to home page
       
-      //TODO: auto-logging
+      session_unset();
       
-      session_destroy();
+      $_SESSION['Auth_login'] = $user->user;
+      $_SESSION['Auth_pass']  = $user->pass;
       
       SiteRedirect('');
    }

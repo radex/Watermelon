@@ -53,3 +53,12 @@ INSERT INTO `wm_comments_records` (
 VALUES
 ('1', '1', 'blogpost'),
 ('1', '2', 'page');
+
+-- user privileges (user itself is created in controller)
+
+INSERT INTO `wm_privileges` (
+`privilege_user`,
+`privilege_privilege`
+)
+VALUES
+('1', 'admin');
