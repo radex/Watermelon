@@ -18,14 +18,89 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+/*
+ * Input abstract class
+ */
+
 abstract class FormInput
-{   
+{
+   /*
+    * public string $name
+    * 
+    * Name (identificator, name="") of the input
+    */
+   
    public $name;
-   public $required;
-   public $maxLength;
    
-   public $readonly;
-   public $placeholder;
+   /*
+    * public string $label
+    * 
+    * Description of the input
+    */
    
-   public $trim;
+   public $label;
+   
+   /*
+    * public bool $required = true
+    * 
+    * Whether input is required
+    */
+   
+   public $required = true;
+   
+   /*
+    * public string $value (optional)
+    * 
+    * Default value of the input
+    */
+   
+   /*
+    * public string $maxLength (optional)
+    * 
+    * Maximum length of input value
+    */
+   
+   /*
+    * public bool $trim = true
+    * 
+    * Whether input value should be trim()ed
+    */
+   
+   public $trim = true;
+   
+   /*
+    * public void __construct(string $name, string $label[, bool $required = true[, array $args]])
+    * 
+    * Constructor
+    * 
+    * string $name     - input name (identificator)
+    * string $label    - description of the input
+    * bool   $required - whether input is required
+    * array  $args     - additional parameters of input
+    */
+   
+   public function __construct($name, $label, $required = true, array $args = array())
+   {
+      $this->name     = $name;
+      $this->label    = $label;
+      $this->required = $required;
+      
+      foreach($args as $key => $value)
+      {
+         $this->$key = $value;
+      }
+   }
+   
+   /*
+    * public string generate()
+    * 
+    * Generates actual input HTML
+    * 
+    * Don't call it directly - add input objects to form and generate the form instead
+    */
+   
+   public function generate($inside = '')
+   {
+      return '<label><span>' . $this->label . '</span>' . $inside . '</label>';
+   }
 }

@@ -12,13 +12,45 @@ class test_Controller extends Controller
 {
    function index_action()
    {
+      $this->pageTitle = 'Testy';
+      
       echo '<a href="$/test/translations">Translations tests</a><br>';
       echo '<a href="$/test/cache">Cache tests</a><br>';
       echo '<a href="$/test/output">Output types</a><br>';
       echo '<a href="$/test/curl">cURL and stuff</a><br>';
       echo '<a href="$/test/phptal">PHPTAL tests</a><br>';
+      echo '<a href="$/test/form">Form generator</a><br>';
    }
    
+   function formSubmit_action()
+   {
+      $result = Form::validate();
+      
+      var_dump($result);
+   }
+   
+   function form_action()
+   {
+      $form = new Form('test/formSubmit', 'test/form');
+      
+      $input1 = new TextFormInput('foo', 'Foo:');
+      $input1->value = 'bar';
+      $input1->required = false;
+      
+      $form->addInputObject($input1);
+      
+      $form->addInput('text', 'foo2', 'Foo2:', true, array('value' => 'test', 'maxlength' => 5));
+      
+      $result = $form->generate();
+      
+      var_dump($result);
+      
+      echo '<hr>';
+      
+      echo $result;
+   }
+   
+   //--
    
    function phptal_action()
    {

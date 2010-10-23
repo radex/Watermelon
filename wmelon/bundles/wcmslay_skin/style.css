@@ -76,6 +76,19 @@ legend
    color: #666;
 }
 
+label
+{
+   display: block;
+}
+
+label > span
+{
+   display: inline-block;
+   width: 150px;
+   text-align: right;
+   padding-right: 5px;
+}
+
 code
 {
    font-family: Monaco, monospace;

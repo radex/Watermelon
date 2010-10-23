@@ -23,6 +23,7 @@
  */
 
 include 'FormInput.php';
+include 'TextFormInput.php';
 
 class Form
 {
@@ -59,10 +60,14 @@ class Form
    public $submitTitle;
    
    /*
-    * array of inputs
+    * public FormInput[] $inputs
+    * 
+    * Array of inputs
+    * 
+    * Avoid using it. Use ->addInput or ->addInputObject instead
     */
    
-   private $inputs = array();
+   public $inputs = array();
    
    /*
     * public void __construct(string $action, string $fallbackPage)
@@ -77,23 +82,27 @@ class Form
    
    public function __construct($actionPage, $fallbackPage)
    {
-      //TODO
+      $this->actionPage   = $actionPage;
+      $this->fallbackPage = $fallbackPage;
    }
    
    /*
-    * public void addInput(string $type, string $name[, bool $required = true[, array $args]])
+    * public void addInput(string $type, string $name, string $label[, bool $required = true[, array $args]])
     * 
     * Adds input to form
     * 
-    * string $type - type of input (TODO)
-    * string $name - input name (identificator)
-    * 
-    * TODO
+    * string $type     - type of input
+    * string $name     - input name (identificator)
+    * string $label    - description of the input
+    * bool   $required - whether input is required
+    * array  $args     - additional parameters of input
     */
    
-   public function addInput($type, $name, $required = true, $args = array())
+   public function addInput($type, $name, $label, $required = true, array $args = array())
    {
+      $className = $type . 'FormInput';
       
+      $this->inputs[] = new $className($name, $label, $required, $args);
    }
    
    /*
@@ -104,7 +113,7 @@ class Form
    
    public function addInputObject(FormInput $input)
    {
-      
+      $this->inputs[] = $input;
    }
    
    /*
@@ -115,6 +124,71 @@ class Form
    
    public function generate()
    {
+      // storing form object in session (so that in can be reconstructed on action page)
       
+      $_SESSION['Form_lastForm'] = serialize($this);
+      
+      // generating
+      
+      $r .= '<form action="' . SiteURI($this->actionPage) . '" method="post">' . "\n";
+      
+      foreach($this->inputs as $input)
+      {
+         $r .= $input->generate() . "\n";
+      }
+      
+      $r .= '<label><span></span><input type="submit" value="' . $submitTitle . '"></label>';
+      $r .= '</form>';
+      
+      return $r;
+   }
+   
+   /*
+    * public static array validate()
+    * 
+    * Validates submited form
+    * 
+    * If validation fails, browser will be automatically redirected back to the form
+    * 
+    * Returns: array('inputName' => 'inputValue', ...)
+    */
+   
+   public static function validate()
+   {
+      $form = unserialize($_SESSION['Form_lastForm']);
+      
+      foreach($form->inputs as $input)
+      {
+         // getting value
+         
+         $input->value = $_POST[$input->name];
+         
+         // trimming
+         
+         if($input->trim)
+         {
+            $input->value = trim($input->value);
+         }
+         
+         // required
+         
+         if($input->required && empty($input->value))
+         {
+            // field is required
+         }
+         
+         // max length
+         
+         if(isset($input->maxLength) && strlen($input->value) > $input->maxLength)
+         {
+            // value is too long
+         }
+         
+         // custom validation
+         
+         //$input->validate();
+      }
+      
+      var_dump($form);
    }
 }
