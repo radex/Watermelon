@@ -19,6 +19,7 @@
  //  
 
 include 'language.php';
+include 'Form/Form.php';
 
 /*
  * mixed CallMethodQuietly(object &$object, string $methodName[, array $args])
