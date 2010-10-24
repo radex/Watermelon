@@ -36,26 +36,13 @@ class Comments_Controller extends Controller
          return;
       }
       
-      // data
+      //--
       
-      $authorName    = trim($_POST['name']);
-      $authorEmail   = trim($_POST['email']);   //TODO: check whether email and website are valid
-      $authorWebsite = trim($_POST['website']);
-      $text          = trim($_POST['text']);
-      $backPage      = base64_decode($backPage);
+      $backPage = base64_decode($backPage);
       
-      // checking whether all required data is given
+      $form = Form::validate('wmelon.comments.addComment', $backPage)->getAll();
       
-      if(empty($authorName) || empty($authorEmail) || empty($text))
-      {
-         echo 'Wszystkie pola są wymagane'; //TODO: improve it using messages
-         
-         return;
-      }
-      
-      // posting and redirecting
-      
-      $this->model->postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $text);
+      $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->text);
       
       SiteRedirect($backPage);
    }

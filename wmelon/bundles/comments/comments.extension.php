@@ -41,12 +41,28 @@ class Comments_Extension extends Extension
       $model    = Loader::model('comments');
       $comments = $model->commentsFor($id, $type);
       
+      // form
+      
+      $submitPage = 'comments/post/' . $id . '/' . $type . '/' . base64_encode($backPage) . '#_commentForm';
+      
+      $form = new Form('wmelon.comments.addComment', $submitPage, $backPage);
+      $form->globalMessages = false;
+      $form->submitLabel = 'Zapisz';
+      
+      $form->addInput('text', 'name', 'Imię');
+      $form->addInput('email', 'email', 'Email');
+      $form->addInput('text', 'website', 'Strona (opcjonalnie)', false);
+      $form->addInput('textarea', 'text', 'Treść komentarza');
+      
+      // view
+      
       $view = Loader::view('comments/comments', true);
       
       $view->comments = $comments;
       $view->id = $id;
       $view->type = $type;
       $view->backPage = $backPage;
+      $view->form = $form->generate();
       
       return $view->display(true);
    }

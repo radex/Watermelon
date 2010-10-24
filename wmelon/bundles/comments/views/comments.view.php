@@ -42,4 +42,7 @@
       <br />
       <input type="submit" value="Zapisz" />
    </form>
+   
+   <hr id="_commentForm" />
+   ${structure form}
 </tal:block>

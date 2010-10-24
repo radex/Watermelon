@@ -71,12 +71,14 @@ class Form
    public $submitLabel;
    
    /*
-    * private FormInput[] $inputs
+    * public FormInput[] $inputs
     * 
     * Array of inputs
+    * 
+    * Use it only to access inputs, to add inputs use ->addInput/addInputObject()
     */
    
-   private $inputs = array();
+   public $inputs = array();
    
    /*
     * private array $errors
@@ -159,7 +161,7 @@ class Form
       
       $className = $type . 'FormInput';
       
-      $this->inputs[] = new $className($name, $label, $required, $args);
+      $this->inputs[$name] = new $className($name, $label, $required, $args);
    }
    
    /*
@@ -175,7 +177,7 @@ class Form
          return;
       }
       
-      $this->inputs[] = $input;
+      $this->inputs[$name] = $input;
    }
    
    /*
@@ -225,30 +227,6 @@ class Form
       $r .= '</form>';
       
       return $r;
-   }
-   
-   /*
-    * public void addError(string $errorMessage)
-    * 
-    * Adds error to be displayed
-    */
-   
-   public function addError($errorMessage)
-   {
-      $this->errors[] = $errorMessage;
-   }
-   
-   /*
-    * public void fallBack()
-    * 
-    * Redirects browser back to form to show errors
-    */
-   
-   public function fallBack()
-   {
-      $_SESSION['Form_lastForm'] = serialize($this);
-      
-      SiteRedirect($this->fallbackPage);
    }
    
    /*
@@ -316,5 +294,58 @@ class Form
       unset($_SESSION['Form_lastForm']);
       
       return $form;
+   }
+   
+   /*
+    * public void addError(string $errorMessage)
+    * 
+    * Adds error to be displayed
+    */
+   
+   public function addError($errorMessage)
+   {
+      $this->errors[] = $errorMessage;
+   }
+   
+   /*
+    * public void fallBack()
+    * 
+    * Redirects browser back to form to show errors
+    */
+   
+   public function fallBack()
+   {
+      $_SESSION['Form_lastForm'] = serialize($this);
+      
+      SiteRedirect($this->fallbackPage);
+   }
+   
+   /*
+    * public string get(string $inputName)
+    * 
+    * Returns value of input with given name
+    */
+   
+   public function get($name)
+   {
+      return $this->inputs[$name]->value;
+   }
+   
+   /*
+    * public string[] getAll()
+    * 
+    * Returns values of all inputs in form as object
+    */
+   
+   public function getAll()
+   {
+      $values = new stdClass;
+      
+      foreach($this->inputs as $name => $input)
+      {
+         $values->$name = $input->value;
+      }
+      
+      return $values;
    }
 }
