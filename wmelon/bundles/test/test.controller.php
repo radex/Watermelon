@@ -24,22 +24,18 @@ class test_Controller extends Controller
    
    function formSubmit_action()
    {
-      $result = Form::validate();
+      $form = Form::validate('testForm', 'test/form');
       
-      var_dump($result);
+      var_dump($form);
    }
    
    function form_action()
    {
-      $form = new Form('test/formSubmit', 'test/form');
+      $form = new Form('testForm', 'test/formSubmit', 'test/form');
       
-      $input1 = new TextFormInput('foo', 'Foo:');
-      $input1->value = 'bar';
-      $input1->required = false;
-      
-      $form->addInputObject($input1);
-      
-      $form->addInput('text', 'foo2', 'Foo2:', true, array('value' => 'test', 'maxlength' => 5));
+      $form->addInput('text', 'f1', 'Foo1', true, array('maxLength' => '5'));
+      $form->addInput('text', 'f2', 'Foo2');
+      $form->addInput('password', 'f3', 'Foo3', false, array('maxLength' => '5'));
       
       $result = $form->generate();
       

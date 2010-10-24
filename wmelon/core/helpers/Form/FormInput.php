@@ -101,6 +101,19 @@ abstract class FormInput
    
    public function generate($inside = '')
    {
-      return '<label><span>' . $this->label . '</span>' . $inside . '</label>';
+      return '<label><span>' . $this->label . ':</span>' . $inside . '</label>';
+   }
+   
+   /*
+    * public string[] validate()
+    * 
+    * Validates input
+    * 
+    * Returns array of errors (or empty array when no errors)
+    */
+   
+   public function validate()
+   {
+      return array();
    }
 }

@@ -24,9 +24,21 @@
 
 class TextFormInput extends FormInput
 {
+   /*
+    * public string $inputType
+    * 
+    * type="" of input
+    */
+   
+   public $inputType = 'text';
+   
+   /*
+    * generating
+    */
+   
    public function generate()
    {
-      $code = '<input type="text"';
+      $code = '<input type="' . $this->inputType . '"';
       
       // adding attributes
       
@@ -34,7 +46,7 @@ class TextFormInput extends FormInput
       {
          // some object properties shouldn't be added as HTML attributes
          
-         $dont = array('trim', 'label');
+         $dont = array('trim', 'label', 'required', 'maxLength'); // temporarily turning off HTML checking
          
          if(in_array($key, $dont))
          {

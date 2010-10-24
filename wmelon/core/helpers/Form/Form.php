@@ -24,9 +24,18 @@
 
 include 'FormInput.php';
 include 'TextFormInput.php';
+include 'PasswordFormInput.php';
 
 class Form
 {
+   /*
+    * public string $formID
+    * 
+    * Unique name of the form, preferably in "author.bundle.form" format
+    */
+   
+   public $formID;
+   
    /*
     * public string $actionPage
     * 
@@ -52,38 +61,79 @@ class Form
    public $globalMessages = true;
    
    /*
-    * public string $submitTitle
+    * public string $submitLabel
     * 
-    * Title (value="") of submit button
+    * Label (value="") of submit button
     */
    
-   public $submitTitle;
+   public $submitLabel;
    
    /*
-    * public FormInput[] $inputs
+    * private FormInput[] $inputs
     * 
     * Array of inputs
-    * 
-    * Avoid using it. Use ->addInput or ->addInputObject instead
     */
    
-   public $inputs = array();
+   private $inputs = array();
    
    /*
-    * public void __construct(string $action, string $fallbackPage)
+    * private array $errors
+    * 
+    * Array of errors to display
+    */
+   
+   private $errors = array();
+   
+   /*
+    * private bool $noInputs = false
+    * 
+    * Whether ->addInput/addInputObject() calls should be ignored
+    */
+   
+   private $noInputs = false;
+   
+   /*
+    * public void __construct(string $formID, string $action, string $fallbackPage)
     * 
     * Constructor
     * 
+    * string $formID       - unique name of the form, preferably in "author.bundle.form" format
     * string $actionPage   - page where form validity will be checked
     * string $fallbackPage - page where form will be displayed (where errors will be shown)
     * 
     * Page - name of page on the same website (e.g. foo/bar/)
     */
    
-   public function __construct($actionPage, $fallbackPage)
+   public function __construct($formID, $actionPage, $fallbackPage)
    {
+      $this->formID       = $formID;
       $this->actionPage   = $actionPage;
       $this->fallbackPage = $fallbackPage;
+      
+      // check whether form exists in session
+      
+      if(!isset($_SESSION['Form_lastForm']))
+      {
+         return;
+      }
+      
+      $form = unserialize($_SESSION['Form_lastForm']);
+      
+      // check whether form in session is the same as this one
+      // and if there are any errors
+      
+      if($form->formID != $formID || empty($form->errors))
+      {
+         return;
+      }
+      
+      // set inputs and errors on these from session, and disable adding inputs
+      
+      $this->inputs   = $form->inputs;
+      $this->errors   = $form->errors;
+      $this->noInputs = true;
+      
+      unset($_SESSION['Form_lastForm']);
    }
    
    /*
@@ -100,6 +150,11 @@ class Form
    
    public function addInput($type, $name, $label, $required = true, array $args = array())
    {
+      if($this->noInputs)
+      {
+         return;
+      }
+      
       $className = $type . 'FormInput';
       
       $this->inputs[] = new $className($name, $label, $required, $args);
@@ -113,6 +168,11 @@ class Form
    
    public function addInputObject(FormInput $input)
    {
+      if($this->noInputs)
+      {
+         return;
+      }
+      
       $this->inputs[] = $input;
    }
    
@@ -124,6 +184,22 @@ class Form
    
    public function generate()
    {
+      // displaying errors (if any)
+      
+      foreach($this->errors as $error)
+      {
+         if($this->globalMessages)
+         {
+            Watermelon::addMessage('error', $error);
+         }
+         else
+         {
+            $r .= '<div class="errorBox">' . $error . '</div>';
+         }
+      }
+      
+      $this->errors = array();
+      
       // storing form object in session (so that in can be reconstructed on action page)
       
       $_SESSION['Form_lastForm'] = serialize($this);
@@ -131,31 +207,61 @@ class Form
       // generating
       
       $r .= '<form action="' . SiteURI($this->actionPage) . '" method="post">' . "\n";
+      $r .= '<input type="hidden" name="formID" value="' . $this->formID . '">';
       
       foreach($this->inputs as $input)
       {
          $r .= $input->generate() . "\n";
       }
       
-      $r .= '<label><span></span><input type="submit" value="' . $submitTitle . '"></label>';
+      if(!empty($this->submitLabel))
+      {
+         $submitLabel = ' value="' . $this->submitLabel . '"';
+      }
+      
+      $r .= '<label><span></span><input type="submit"' . $submitLabel . '></label>';
       $r .= '</form>';
       
       return $r;
    }
    
    /*
-    * public static array validate()
+    * public static Form validate(string $formID, string $fallbackPage)
     * 
     * Validates submited form
     * 
     * If validation fails, browser will be automatically redirected back to the form
     * 
-    * Returns: array('inputName' => 'inputValue', ...)
+    * Returns form object
+    * 
+    * string $formID       - identificator of form to be validated
+    * string $fallbackPage - page where form was displayed (in case of errors like form doesn't exist in session)
     */
    
-   public static function validate()
+   public static function validate($formID, $fallbackPage)
    {
+      // checking if form exists
+      
+      if(!isset($_SESSION['Form_lastForm']))
+      {
+         SiteRedirect($fallbackPage);
+         return;
+      }
+      
       $form = unserialize($_SESSION['Form_lastForm']);
+      
+      // checking if form in session is the same form we're supposed to validate
+      
+      if($formID != $form->formID)
+      {
+         unset($_SESSION['Form_lastForm']);
+         SiteRedirect($fallbackPage);
+         return;
+      } 
+      
+      // validating form
+      
+      $errors = array(); // array with errors (labels where certain errors occured, not messages)
       
       foreach($form->inputs as $input)
       {
@@ -174,19 +280,53 @@ class Form
          
          if($input->required && empty($input->value))
          {
-            // field is required
+            $errors['required'][] = $input;
          }
          
          // max length
          
          if(isset($input->maxLength) && strlen($input->value) > $input->maxLength)
          {
-            // value is too long
+            $form->errors[] = 'Pole "' . $input->label . '" może mieć maksymalnie ' . $input->maxLength . ' znaków';
          }
          
          // custom validation
          
-         //$input->validate();
+         $inputErrors = $input->validate();
+         
+         foreach($inputErrors as $error)
+         {
+            $form->errors[] = $error;
+         }
+      }
+      
+      // generating error messages for required inputs
+      
+      if(!empty($errors['required']))
+      {
+         if(count($errors['required']) > 1)
+         {
+            $labels = array();
+            
+            foreach($errors['required'] as $input)
+            {
+               $labels[] = '"' . $input->label . '"';
+            }
+            
+            $form->errors[] = 'Pola ' . implode(', ', $labels) . ' są wymagane';
+         }
+         else
+         {
+            $form->errors[] = 'Pole "' . $errors['required'][0]->label . '" jest wymagane';
+         }
+      }
+      
+      // if errors, get back to form to display them
+      
+      if(!empty($form->errors))
+      {
+         $_SESSION['Form_lastForm'] = serialize($form);
+         SiteRedirect($fallbackPage);
       }
       
       var_dump($form);
