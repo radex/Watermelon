@@ -19,26 +19,14 @@
  //  
 
 /*
- * Text Input class
+ * Textarea Input class
  */
 
-class TextFormInput extends FormInput
+class TextareaFormInput extends FormInput
 {
-   /*
-    * public string $inputType
-    * 
-    * type="" of input
-    */
-   
-   public $inputType = 'text';
-   
-   /*
-    * generating
-    */
-   
    public function generate()
    {
-      $code = '<input type="' . $this->inputType . '"';
+      $code = '<textarea';
       
       // adding attributes
       
@@ -46,18 +34,11 @@ class TextFormInput extends FormInput
       {
          // some object properties shouldn't be added as HTML attributes
          
-         $dont = array('trim', 'label', 'inputType', 'required', 'maxLength'); // temporarily turning off HTML checking
+         $dont = array('value', 'trim', 'label', 'inputType', 'required', 'maxLength'); // temporarily turning off HTML checking
          
          if(in_array($key, $dont))
          {
             continue;
-         }
-         
-         // value
-         
-         if($key == 'value')
-         {
-            $value = htmlspecialchars($value);
          }
          
          // appending attribute
@@ -74,6 +55,10 @@ class TextFormInput extends FormInput
          }
       }
       
-      return parent::generate($code . '>');
+      // value
+      
+      $code .= '>' . htmlspecialchars($this->value) . '</textarea>';
+      
+      return parent::generate($code);
    }
 }

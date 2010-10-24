@@ -26,7 +26,10 @@ class test_Controller extends Controller
    {
       $form = Form::validate('testForm', 'test/form');
       
-      var_dump($form);
+      $form->addError('Buhaha, i tak się nie uda!');
+      $form->addError('Serio, nie próbuj.');
+      
+      $form->fallBack();
    }
    
    function form_action()
@@ -34,8 +37,8 @@ class test_Controller extends Controller
       $form = new Form('testForm', 'test/formSubmit', 'test/form');
       
       $form->addInput('text', 'f1', 'Foo1', true, array('maxLength' => '5'));
-      $form->addInput('text', 'f2', 'Foo2');
-      $form->addInput('password', 'f3', 'Foo3', false, array('maxLength' => '5'));
+      $form->addInput('password', 'f3', 'Foo3', false);
+      $form->addInput('textarea', 'f5', 'Foo5');
       
       $result = $form->generate();
       

@@ -105,15 +105,54 @@ abstract class FormInput
    }
    
    /*
-    * public string[] validate()
+    * public array validate()
     * 
     * Validates input
     * 
-    * Returns array of errors (or empty array when no errors)
+    * Returns: array(bool $continue, string[] $errors)
+    *    bool     $continue - whether to continue validating in child methods
+    *    string[] $errors   - array of error messages (or empty array)
+    * 
+    * Usage when overriding:
+    * 
+    * list($continue, $errors) = parent::validate();
+    * 
+    * if(!$continue) return array(false, $errors);
+    * 
+    * (...)
+    * 
+    * return $errors
     */
    
    public function validate()
    {
-      return array();
+      $errors = array();
+      
+      // trimming
+      
+      if($this->trim)
+      {
+         $this->value = trim($this->value);
+      }
+      
+      // required
+      
+      if($this->required && empty($this->value))
+      {
+         $errors[] = 'Pole "' . $this->label . '" jest wymagane';
+         
+         return array(false, $errors);
+      }
+      
+      // max length
+      
+      if(isset($this->maxLength) && strlen($this->value) > $this->maxLength)
+      {
+         $errors[] = 'Pole "' . $this->label . '" może mieć maksymalnie ' . $this->maxLength . ' znaków';
+      }
+      
+      //--
+      
+      return array(true, $errors);
    }
 }

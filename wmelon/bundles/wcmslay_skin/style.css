@@ -87,6 +87,13 @@ label > span
    width: 150px;
    text-align: right;
    padding-right: 5px;
+   vertical-align: top;
+}
+
+textarea
+{
+   height: 8em;
+   width: 400px;
 }
 
 code

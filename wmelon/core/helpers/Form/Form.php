@@ -25,6 +25,8 @@
 include 'FormInput.php';
 include 'TextFormInput.php';
 include 'PasswordFormInput.php';
+include 'EmailFormInput.php';
+include 'TextareaFormInput.php';
 
 class Form
 {
@@ -226,6 +228,30 @@ class Form
    }
    
    /*
+    * public void addError(string $errorMessage)
+    * 
+    * Adds error to be displayed
+    */
+   
+   public function addError($errorMessage)
+   {
+      $this->errors[] = $errorMessage;
+   }
+   
+   /*
+    * public void fallBack()
+    * 
+    * Redirects browser back to form to show errors
+    */
+   
+   public function fallBack()
+   {
+      $_SESSION['Form_lastForm'] = serialize($this);
+      
+      SiteRedirect($this->fallbackPage);
+   }
+   
+   /*
     * public static Form validate(string $formID, string $fallbackPage)
     * 
     * Validates submited form
@@ -261,63 +287,19 @@ class Form
       
       // validating form
       
-      $errors = array(); // array with errors (labels where certain errors occured, not messages)
-      
       foreach($form->inputs as $input)
       {
          // getting value
          
          $input->value = $_POST[$input->name];
          
-         // trimming
-         
-         if($input->trim)
-         {
-            $input->value = trim($input->value);
-         }
-         
-         // required
-         
-         if($input->required && empty($input->value))
-         {
-            $errors['required'][] = $input;
-         }
-         
-         // max length
-         
-         if(isset($input->maxLength) && strlen($input->value) > $input->maxLength)
-         {
-            $form->errors[] = 'Pole "' . $input->label . '" może mieć maksymalnie ' . $input->maxLength . ' znaków';
-         }
-         
          // custom validation
          
-         $inputErrors = $input->validate();
+         list(,$inputErrors) = $input->validate();
          
          foreach($inputErrors as $error)
          {
             $form->errors[] = $error;
-         }
-      }
-      
-      // generating error messages for required inputs
-      
-      if(!empty($errors['required']))
-      {
-         if(count($errors['required']) > 1)
-         {
-            $labels = array();
-            
-            foreach($errors['required'] as $input)
-            {
-               $labels[] = '"' . $input->label . '"';
-            }
-            
-            $form->errors[] = 'Pola ' . implode(', ', $labels) . ' są wymagane';
-         }
-         else
-         {
-            $form->errors[] = 'Pole "' . $errors['required'][0]->label . '" jest wymagane';
          }
       }
       
@@ -329,6 +311,10 @@ class Form
          SiteRedirect($fallbackPage);
       }
       
-      var_dump($form);
+      // if everything is fine, returning form object
+      
+      unset($_SESSION['Form_lastForm']);
+      
+      return $form;
    }
 }
