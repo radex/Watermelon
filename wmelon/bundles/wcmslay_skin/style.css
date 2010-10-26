@@ -90,6 +90,11 @@ label > span
    vertical-align: top;
 }
 
+label > span > small
+{
+   display: block;
+}
+
 textarea
 {
    height: 8em;

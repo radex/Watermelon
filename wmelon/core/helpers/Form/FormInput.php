@@ -41,6 +41,12 @@ abstract class FormInput
    public $label;
    
    /*
+    * public string $labelNote (optional)
+    * 
+    * Additional description of input to be shown below label
+    */
+   
+   /*
     * public bool $required = true
     * 
     * Whether input is required
@@ -101,7 +107,12 @@ abstract class FormInput
    
    public function generate($inside = '')
    {
-      return '<label><span>' . $this->label . ':</span>' . $inside . '</label>';
+      if(!empty($this->labelNote))
+      {
+         $labelNote = ' <small>' . $this->labelNote . '</small>';
+      }
+      
+      return '<label><span>' . $this->label . ':' . $labelNote . '</span>' . $inside . '</label>';
    }
    
    /*

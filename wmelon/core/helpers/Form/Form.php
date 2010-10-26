@@ -63,6 +63,14 @@ class Form
    public $globalMessages = true;
    
    /*
+    * public bool $displaySubmitButton
+    * 
+    * Whether submit button should be automatically added to the form
+    */
+   
+   public $displaySubmitButton = true;
+   
+   /*
     * public string $submitLabel
     * 
     * Label (value="") of submit button
@@ -71,14 +79,20 @@ class Form
    public $submitLabel;
    
    /*
-    * public FormInput[] $inputs
+    * public array $extraFormAttributes
     * 
-    * Array of inputs
-    * 
-    * Use it only to access inputs, to add inputs use ->addInput/addInputObject()
+    * Non-standard attributes to be added to <form> in 'attribute' => 'value' formatted array
     */
    
-   public $inputs = array();
+   public $extraFormAttributes = array();
+   
+   /*
+    * private array $items
+    * 
+    * Array of items - items (FormInput objects) and HTML (strings)
+    */
+   
+   private $items = array();
    
    /*
     * private array $errors
@@ -89,12 +103,12 @@ class Form
    private $errors = array();
    
    /*
-    * private bool $noInputs = false
+    * private bool $noAdding = false
     * 
-    * Whether ->addInput/addInputObject() calls should be ignored
+    * Whether ->addInput/addInputObject/addHTML() calls should be ignored
     */
    
-   private $noInputs = false;
+   private $noAdding = false;
    
    /*
     * public void __construct(string $formID, string $action, string $fallbackPage)
@@ -131,11 +145,11 @@ class Form
          return;
       }
       
-      // set inputs and errors on these from session, and disable adding inputs
+      // set items and errors on these from session, and disable adding inputs
       
-      $this->inputs   = $form->inputs;
+      $this->items    = $form->items;
       $this->errors   = $form->errors;
-      $this->noInputs = true;
+      $this->noAdding = true;
       
       unset($_SESSION['Form_lastForm']);
    }
@@ -154,14 +168,14 @@ class Form
    
    public function addInput($type, $name, $label, $required = true, array $args = array())
    {
-      if($this->noInputs)
+      if($this->noAdding)
       {
          return;
       }
       
       $className = $type . 'FormInput';
       
-      $this->inputs[$name] = new $className($name, $label, $required, $args);
+      $this->items[$name] = new $className($name, $label, $required, $args);
    }
    
    /*
@@ -172,12 +186,28 @@ class Form
    
    public function addInputObject(FormInput $input)
    {
-      if($this->noInputs)
+      if($this->noAdding)
       {
          return;
       }
       
-      $this->inputs[$name] = $input;
+      $this->items[$name] = $input;
+   }
+   
+   /*
+    * public void addHTML(string $html)
+    * 
+    * Adds $html to the form
+    */
+   
+   public function addHTML($html)
+   {
+      if($this->noAdding)
+      {
+         return;
+      }
+      
+      $this->items[] = $html;
    }
    
    /*
@@ -208,22 +238,48 @@ class Form
       
       $_SESSION['Form_lastForm'] = serialize($this);
       
+      // extra <form> attributes
+      
+      $attributes = '';
+      
+      foreach($this->extraFormAttributes as $attribute => $value)
+      {
+         $attributes .= ' ' . $attribute . '="' . $value . '"';
+      }
+      
       // generating
       
-      $r .= '<form action="' . SiteURI($this->actionPage) . '" method="post">' . "\n";
+      $r .= '<form action="' . SiteURI($this->actionPage) . '" method="post"' . $attributes . ">\n";
       $r .= '<input type="hidden" name="formID" value="' . $this->formID . '">';
       
-      foreach($this->inputs as $input)
+      // items
+      
+      foreach($this->items as $item)
       {
-         $r .= $input->generate() . "\n";
+         if(is_object($item))
+         {
+            $r .= $item->generate() . "\n";
+         }
+         else
+         {
+            $r .= $item;
+         }
       }
       
-      if(!empty($this->submitLabel))
+      // submit button
+      
+      if($this->displaySubmitButton)
       {
-         $submitLabel = ' value="' . $this->submitLabel . '"';
+         if(!empty($this->submitLabel))
+         {
+            $submitLabel = ' value="' . $this->submitLabel . '"';
+         }
+      
+         $r .= '<label><span></span><input type="submit"' . $submitLabel . '></label>';
       }
       
-      $r .= '<label><span></span><input type="submit"' . $submitLabel . '></label>';
+      //--
+      
       $r .= '</form>';
       
       return $r;
@@ -265,8 +321,15 @@ class Form
       
       // validating form
       
-      foreach($form->inputs as $input)
+      foreach($form->items as $input)
       {
+         // strings (HTML) are ignored
+         
+         if(!is_object($input))
+         {
+            continue;
+         }
+         
          // getting value
          
          $input->value = $_POST[$input->name];
@@ -328,11 +391,11 @@ class Form
    
    public function get($name)
    {
-      return $this->inputs[$name]->value;
+      return $this->items[$name]->value;
    }
    
    /*
-    * public string[] getAll()
+    * public object getAll()
     * 
     * Returns values of all inputs in form as object
     */
@@ -341,9 +404,12 @@ class Form
    {
       $values = new stdClass;
       
-      foreach($this->inputs as $name => $input)
+      foreach($this->items as $name => $input)
       {
-         $values->$name = $input->value;
+         if(is_object($input))
+         {
+            $values->$name = $input->value;
+         }
       }
       
       return $values;

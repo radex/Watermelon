@@ -35,11 +35,13 @@ class test_Controller extends Controller
    function form_action()
    {
       $form = new Form('testForm', 'test/formSubmit', 'test/form');
+      $form->extraFormAttributes['style'] = 'border:1px solid red';
       
-      $form->addInput('text', 'f1', 'Foo1', true, array('maxLength' => '5'));
-      $form->addInput('password', 'f3', 'Foo3', false);
-      $form->addInput('textarea', 'f5', 'Foo5');
-      
+      $form->addInput('text', 'foo', 'Foo1', true, array('maxLength' => '5'));
+      $form->addInput('password', 'bar', 'Foo3', false);
+      $form->addHTML('Foo!');
+      $form->addInput('textarea', 'zzz', 'Foo5', true, array('labelNote' => 'Lorem ipsum blah blah foo bar'));
+      $form->addHTML('Bar!');
       $result = $form->generate();
       
       var_dump($result);

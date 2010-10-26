@@ -46,7 +46,7 @@ class TextFormInput extends FormInput
       {
          // some object properties shouldn't be added as HTML attributes
          
-         $dont = array('trim', 'label', 'inputType', 'required', 'maxLength'); // temporarily turning off HTML checking
+         $dont = array('trim', 'inputType', 'label', 'labelNote');
          
          if(in_array($key, $dont))
          {
