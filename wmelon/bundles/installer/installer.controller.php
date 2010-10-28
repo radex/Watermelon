@@ -62,25 +62,25 @@ class Installer_Controller extends Controller
       
       if($step >= 2)
       {
-         $this->additionalData['progress'] = (int) (($step - 1) / 6 * 100);
+         $this->additionalData->progress = (int) (($step - 1) / 6 * 100);
       }
       
       // previous step (but you can't go back after you unblock the blockade)
       
       if($step == 2 || $step == 3 || $step >= 5)
       {
-         $this->additionalData['previous'] = $step - 1;
+         $this->additionalData->previous = $step - 1;
       }
       else
       {
-         $this->additionalData['previous'] = null;
+         $this->additionalData->previous = null;
       }
       
       // next step
       
       if($step >= 2)
       {
-         $this->additionalData['next'] = $step + 1;
+         $this->additionalData->next = $step + 1;
       }
       
       // checking if blockade is unlocked
@@ -195,7 +195,7 @@ class Installer_Controller extends Controller
       
       // establishing name of file unblocking the installer
       
-      $fileName = 'b-' . uniqid() . '.php';
+      $fileName = 'wm-' . uniqid() . '.php';
       
       $_SESSION['unblocking-filename'] = $fileName;
       
@@ -214,18 +214,15 @@ class Installer_Controller extends Controller
    
    public function dbInfo()
    {
-      $this->pageTitle = 'Dane do bazy danych';
-      $this->additionalData['form'] ='';
-      
-      //--
+      // default values
       
       if(isset($_SESSION['dbForm']))
       {
-         $form = ToObject($_SESSION['dbForm']);
+         $data = $_SESSION['dbForm'];
       }
       else
       {
-         $form = array
+         $data = array
             (
                'name' => 'watermelon',
                'user' => '',
@@ -234,106 +231,166 @@ class Installer_Controller extends Controller
                'prefix' => 'wm_'
             );
          
-         $form = ToObject($form);
+         $data = ToObject($data);
       }
       
-      //--
+      // rendering
       
-      $view = View('dbInfo');
-      $view->form = $form;
-      $view->display();
+      $this->pageTitle = 'Dane do bazy danych';
+      $this->additionalData->form = '';
+      
+      $form = new Form('wmelon.installer.dbInfo', '5', '4');
+      $form->displaySubmitButton = false;
+      $form->extraFormAttributes['name'] = 'form';
+      
+      $nameNote   = 'Baza o podanej nazwie musi ustnieć, chyba że podany użytkownik ma uprawnienia do tworzenia baz danych';
+      $hostNote   = 'Prawie zawsze jest to <em>localhost</em>';
+      $prefixNote = 'Zostaw taki jaki jest, chyba że chcesz mieć kilka kopii Watermelona na jednej bazie danych - wtedy obie muszą mieć ustalony inny prefiks';
+      
+      $nameArgs = array('value' => $data->name, 'labelNote' => $nameNote);
+      $userArgs = array('value' => $data->user);
+      $passArgs = array('value' => $data->pass);
+      $hostArgs = array('value' => $data->host, 'labelNote' => $hostNote);
+      $prefixArgs = array('value' => $data->prefix, 'labelNote' => $prefixNote);
+      
+      $form->addInput('text', 'name', 'Nazwa bazy danych', true, $nameArgs);
+      $form->addInput('text', 'user', 'Nazwa użytkownika', true, $userArgs);
+      $form->addInput('text', 'pass', 'Hasło', false, $passArgs);
+      
+      $form->addHTML('<div class="advanced-hr">Zaawansowane<hr /></div>');
+      
+      $form->addInput('text', 'host', 'Serwer', true, $hostArgs);
+      $form->addInput('text', 'prefix', 'Prefiks nazw tabel', false, $prefixArgs);
+      
+      echo $form->generate();
    }
    
    /*
     * fifth step - admin username and password.
     * 
-    * Checking correctness of given DB data,
-    * but not yet importing tables to database (it will be done in last step)
+    * Validating DB info, but not yet importing tables to database (it will be done in last step)
     */
    
    public function userdata()
    {
-      // checking correctness of given DB data
+      // validating DB info
       
       if($_SESSION['previousStep'] == 4)
       {
-         $this->DBvalidate();
+         $form = Form::validate('wmelon.installer.dbInfo', '4');
+         $data = $form->getAll();
+         
+         $_SESSION['dbForm'] = $data;
+         
+         // checking whether it's possible to connect using given data
+
+         try
+         {
+            DB::connect($data->host, $data->name, $data->user, $data->pass, $data->prefix);
+         }
+         catch(WMException $e)
+         {
+            if($e->stringCode() == 'DB:connectError')
+            {
+               $form->addError('Nie udało się połączyć z serwerem bazy danych za pomocą podanych danych. Spróbuj jeszcze raz.');
+               $form->fallback();
+            }
+            elseif($e->stringCode() == 'DB:selectError')
+            {
+               $form->addError('Nie udało się wybrać bazy danych "' . $data->name . '". Spróbuj jeszcze raz.');
+               $form->fallback();
+
+               //TODO: try to create database
+            }
+         }
+      }
+      
+      // default values
+      
+      if(isset($_SESSION['userDataForm']))
+      {
+         $data = $_SESSION['userDataForm'];
+      }
+      else
+      {
+         $data = ToObject(array('user' => '','pass' => '','pass2' => ''));
       }
       
       // rendering
       
       $this->pageTitle = 'Dane admina';
-      $this->additionalData['form'] = '';
+      $this->additionalData->form = '';
       
-      if(isset($_SESSION['userdataForm']))
-      {
-         $form = ToObject($_SESSION['userdataForm']);
-      }
-      else
-      {
-         $form = ToObject(array('user' => '','pass' => '','pass2' => ''));
-      }
+      $form = new Form('wmelon.installer.userData', '6', '5');
+      $form->displaySubmitButton = false;
+      $form->extraFormAttributes['name'] = 'form';
       
-      $view = View('userData');
-      $view->form = $form;
-      $view->display();
+      $pass2Note = 'Aby upewnić się, że nie popełnisz błędu podczas wpisywania';
+      
+      $userArgs  = array('value' => $data->user);
+      $passArgs  = array('value' => $data->pass);
+      $pass2Args = array('value' => $data->pass2, 'labelNote' => $pass2Note);
+      
+      $form->addInput('text', 'user', 'Nazwa użytkownika', true, $userArgs);
+      $form->addInput('password', 'pass', 'Hasło', true, $passArgs);
+      $form->addInput('password', 'pass2', 'Hasło (powtórz)', true, $pass2Args);
+      
+      echo '<p>Podaj nick i hasło, które chcesz mieć dla siebie na swojej stronie.</p>';
+      echo $form->generate();
    }
    
    /*
     * sixth step - website name
     * 
-    * And checking whether username and password is filled
+    * And validating user data form
     */
    
    public function websiteName()
    {
-      // checking whether all required fields are filled
+      // validating userdata form
       
       if($_SESSION['previousStep'] == 5)
       {
-         $user = $_POST['user'];
-         $pass = $_POST['pass'];
-         $pass2 = $_POST['pass2'];
+         $form = Form::validate('wmelon.installer.userData', '5');
+         $data = $form->getAll();
+         
+         $_SESSION['userDataForm'] = $data;
+         
+         // checking whether password match
+         
+         if($data->pass != $data->pass2)
+         {
+            $form->addError('Podane hasła się nie zgadzają');
+            $form->fallback();
+         }
+      }
       
-         $_SESSION['userdataForm'] = $_POST;
-         
-         $error = false;
-         
-         if(empty($user) || empty($pass) || empty($pass2))
-         {
-            Watermelon::addMessage('error', 'Wszystkie pola są wymagane');
-            $error = true;
-         }
-         
-         if(!empty($pass) && !empty($pass2) && $pass != $pass2)
-         {
-            Watermelon::addMessage('error', 'Podane hasła się różnią');
-            $error = true;
-         }
-         
-         if($error)
-         {
-            SiteRedirect('5');
-         }
+      // default values
+      
+      if(isset($_SESSION['siteNameForm']))
+      {
+         $data = $_SESSION['siteNameForm'];
+      }
+      else
+      {
+         $data = ToObject(array('siteName' => ''));
       }
       
       // rendering
       
       $this->pageTitle = 'Nazwa strony';
-      $this->additionalData['form'] = '';
+      $this->additionalData->form = '';
       
-      if(isset($_SESSION['sitenameForm']))
-      {
-         $form = ToObject($_SESSION['sitenameForm']);
-      }
-      else
-      {
-         $form = ToObject(array('siteName' => ''));
-      }
+      $form = new Form('wmelon.installer.siteName', '7', '6');
+      $form->displaySubmitButton = false;
+      $form->extraFormAttributes['name'] = 'form';
       
-      $view = View('websiteName');
-      $view->form = $form;
-      $view->display();
+      $siteNameArgs = array('value' => $data->siteName);
+      
+      $form->addInput('text', 'siteName', 'Nazwa strony', true, $siteNameArgs);
+      
+      echo '<p>Już blisko! Podaj jeszcze tylko nazwę dla Twojej nowej strony.</p>';
+      echo $form->generate();
    }
    
    /*
@@ -346,16 +403,10 @@ class Installer_Controller extends Controller
       
       if($_SESSION['previousStep'] == 6)
       {
-         $siteName = $_POST['siteName'];
-      
-         $_SESSION['sitenameForm'] = $_POST;
-      
-         if(empty($siteName))
-         {
-            Watermelon::addMessage('error', 'Pole jest wymagane');
+         $form = Form::validate('wmelon.installer.siteName', '6');
+         $data = $form->getAll();
          
-            SiteRedirect('6');
-         }
+         $_SESSION['siteNameForm'] = $data;
       }
       
       // rendering
@@ -363,11 +414,11 @@ class Installer_Controller extends Controller
       $this->pageTitle = 'Dzięki!';
       
       $view = View('thank');
-      $view->db   = ToObject($_SESSION['dbForm']);
-      $view->user = ToObject($_SESSION['userdataForm']);
-      $view->site = ToObject($_SESSION['sitenameForm']);
+      $view->db   = clone $_SESSION['dbForm'];
+      $view->user = clone $_SESSION['userDataForm'];
+      $view->site = clone $_SESSION['siteNameForm'];
       
-      $view->db->pass = $this->starPassword($view->db->pass);
+      $view->db->pass   = $this->starPassword($view->db->pass);
       $view->user->pass = $this->starPassword($view->user->pass);
       
       $view->display();
@@ -381,9 +432,9 @@ class Installer_Controller extends Controller
    {
       // configuration
       
-      $db   = ToObject($_SESSION['dbForm']);
-      $user = ToObject($_SESSION['userdataForm']);
-      $site = ToObject($_SESSION['sitenameForm']);
+      $db   = $_SESSION['dbForm'];
+      $user = $_SESSION['userDataForm'];
+      $site = $_SESSION['siteNameForm'];
       
       // saving config.php
       
@@ -450,84 +501,6 @@ CONFIG;
       $_SESSION['Auth_pass']  = $user->pass;
       
       SiteRedirect('');
-   }
-   
-   /*
-    * checking correctness of given DB data
-    */
-   
-   private function DBValidate()
-   {
-      $name = $_POST['name'];
-      $user = $_POST['user'];
-      $pass = $_POST['pass'];
-      $host = $_POST['host'];
-      $prefix = $_POST['prefix'];
-      
-      $_SESSION['dbForm'] = $_POST;
-      
-      $errors = array();
-      
-      $fieldNames = array
-         (
-            'name' => 'nazwa bazy danych',
-            'user' => 'nazwa użytkownika',
-            'host' => 'serwer',
-         );
-      
-      // checking whether all required fields are filled
-      
-      $emptyFields = array();
-      
-      foreach(array('name', 'user', 'host') as $field)
-      {
-         if(empty($$field))
-         {
-            $emptyFields[] = '"' . $fieldNames[$field] . '"';
-         }
-      }
-      
-      $error = false;
-      
-      if(count($emptyFields) >= 2)
-      {
-         Watermelon::addMessage('error', 'Pola ' . implode(', ', $emptyFields) . ' nie mogą być puste');
-         $error = true;
-      }
-      elseif(count($emptyFields) == 1)
-      {
-         Watermelon::addMessage('error', 'Pole ' . $emptyFields[0] . ' nie może być puste');
-         $error = true;
-      }
-      
-      if($error)
-      {
-         SiteRedirect('4');
-      }
-      
-      // checking whether it's possible to connect using given data
-      
-      try
-      {
-         DB::connect($host, $name, $user, $pass, $prefix);
-      }
-      catch(WMException $e)
-      {
-         if($e->stringCode() == 'DB:connectError')
-         {
-            Watermelon::addMessage('error', 'Nie udało się połączyć z serwerem bazy danych za pomocą podanych danych. Spróbuj jeszcze raz.');
-            
-            SiteRedirect('4');
-         }
-         elseif($e->stringCode() == 'DB:selectError')
-         {
-            Watermelon::addMessage('error', 'Nie udało się wybrać bazy danych "' . $name . '". Spróbuj jeszcze raz.');
-            
-            SiteRedirect('4');
-            
-            //TODO: try to create database
-         }
-      }
    }
    
    /*

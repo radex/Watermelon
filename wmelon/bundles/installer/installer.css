@@ -108,12 +108,13 @@ header
 
 /*-=-=-=-=-=-=-*/
 
-form > div
+label
 {
+   display: block;
    padding:5px;
 }
 
-label
+label > span
 {
    display:inline-block;
    width:350px;
@@ -124,7 +125,7 @@ label
    color:#444;
 }
 
-label span
+label > span > small
 {
    display:block;
    
@@ -134,12 +135,14 @@ label span
    line-height:1.3em;
 }
 
-label + input
+input
 {
    width:200px;
    height:13px;
    padding:3px;
    vertical-align:top;
+   
+   font-size: 0.9em;
 }
 
 /*-=-=-=-=-=-=-*/

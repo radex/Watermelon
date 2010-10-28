@@ -35,14 +35,14 @@ abstract class Controller
    public $pageTitle;
    
    /*
-    * public array $additionalData
+    * public object $additionalData
     * 
     * Non-standard data to be passed to skin
     * 
     * Useful in making custom apps
     */
    
-   public $additionalData = array();
+   public $additionalData;
    
    /*
     * public enum $outputType

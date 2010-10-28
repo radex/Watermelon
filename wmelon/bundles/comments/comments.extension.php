@@ -43,9 +43,9 @@ class Comments_Extension extends Extension
       
       // form
       
-      $submitPage = 'comments/post/' . $id . '/' . $type . '/' . base64_encode($backPage) . '#_commentForm';
+      $submitPage = 'comments/post/' . $id . '/' . $type . '/' . base64_encode($backPage);
       
-      $form = new Form('wmelon.comments.addComment', $submitPage, $backPage);
+      $form = new Form('wmelon.comments.addComment', $submitPage, $backPage . '#commentForm-link');
       $form->globalMessages = false;
       $form->submitLabel = 'Zapisz';
       

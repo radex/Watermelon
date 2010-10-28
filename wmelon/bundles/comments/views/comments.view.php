@@ -16,33 +16,6 @@
       Nie ma tutaj komentarzy. Napisz pierwszego!
    </tal:block>
    
-   <h1>Napisz komentarz</h1>
-   <!-- make *better* form -->
-   
-   <form action="$/comments/post/${id}/${type}/${php: base64_encode(backPage)}" method="post">
-      <label>
-         Imię:
-         <input name="name" required="required" />
-      </label>
-      <br />
-      <label>
-         Email:
-         <input type="email" name="email" required="required" />
-      </label>
-      <br />
-      <label>
-         Strona (opcjonalnie):
-         <input type="url" name="website" />
-      </label>
-      <br />
-      <label>
-         Treść komentarza:<br />
-         <textarea name="text" required="required" style="width: 350px; height: 150px" />
-      </label>
-      <br />
-      <input type="submit" value="Zapisz" />
-   </form>
-   
-   <hr id="_commentForm" />
+   <h1 id="commentForm-link">Napisz komentarz</h1>
    ${structure form}
 </tal:block>

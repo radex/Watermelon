@@ -262,7 +262,7 @@ class Form
          }
          else
          {
-            $r .= $item;
+            $r .= $item . "\n";
          }
       }
       

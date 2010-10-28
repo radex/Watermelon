@@ -135,14 +135,14 @@ abstract class Skin
    public $messages = array();
    
    /*
-    * public array $additionalData
+    * public object $additionalData
     * 
     * Other data to be passed to skin
     * 
     * Useful in making custom apps
     */
    
-   public $additionalData = array();
+   public $additionalData;
    
    /*
     * protected void drawTextMenu(int $id)
