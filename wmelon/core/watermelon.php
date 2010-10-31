@@ -162,6 +162,8 @@ class Watermelon
       
       $controllerObj = new e404_Controller();
       $controllerObj->index_action();
+      
+      self::$controllerObject = $controllerObj;
    }
    
    /*
@@ -211,21 +213,22 @@ class Watermelon
       FrontendLibraries_Extension::onAutoload();
       
       include WM_Core . 'Textile/textile.extension.php';
-      Textile_Extension::onAutoload();
+      Textile::onAutoload();
       
-      //--
+      // if ACP - checking if logged in
+      
+      if(self::$appType == self::AppType_Admin)
+      {
+         if(!Auth::adminPrivileges())
+         {
+            echo 'Die!';
+            exit;
+         }
+      }
+      
+      // loading controller and generating
       
       self::loadController();
-      
-      // tests
-      
-      /*
-      include WM_Libs . 'Registry/Registry.test.php';
-      UnitTester::runTest(new Registry_TestCase);
-      */
-      
-      // generating
-      
       self::generate();
    }
    
@@ -444,8 +447,8 @@ class Watermelon
             array('Test!', 'user', 'card', array()),
          ));
       
-      $w->siteName   = 'Nazwa strony';
-      $w->siteSlogan = 'Slogan strony';
+      $w->siteName   = 'Radex\'s Cave';
+      $w->siteSlogan = 'Slogan';
       $w->footer     = 'Testowanie <em>stopki</em>…';
       $w->blockMenus = $blockMenus;
       $w->textMenus  = $textMenus;
@@ -462,12 +465,23 @@ class Watermelon
       // setting constants
       
       define('WM_SiteURL',     $w->siteURL);
+      define('WM_AdminURL',    $w->siteURL . 'admin/');
       define('WM_SystemURL',   $w->systemURL);
       define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       
-      define('WM_SkinPath', WM_Bundles    . $w->skin . '_skin/');
-      define('WM_SkinURL',  WM_BundlesURL . $w->skin . '_skin/');
+      if(self::$appType == self::AppType_Admin)
+      {
+         define('WM_SkinPath', WM_System    . 'core/ACPSkin/');
+         define('WM_SkinURL',  WM_SystemURL . 'core/ACPSkin/');
+         define('WM_CurrURL',  WM_AdminURL);
+      }
+      else
+      {
+         define('WM_SkinPath', WM_Bundles    . $w->skin . '_skin/');
+         define('WM_SkinURL',  WM_BundlesURL . $w->skin . '_skin/');
+         define('WM_CurrURL',  WM_SiteURL);
+      }
       
       define('WM_Lang', $w->lang);
    }
@@ -503,7 +517,7 @@ class Watermelon
          if($segments[0] == 'admin')
          {
             self::$appType = self::AppType_Admin;
-         
+            
             array_shift($segments);
          }
          else
@@ -676,8 +690,16 @@ class Watermelon
       
       // replacing made in simple manner links into HTML
       
-      $content = str_replace('href="$/',   'href="'   . WM_SiteURL, $content);
-      $content = str_replace('action="$/', 'action="' . WM_SiteURL, $content);
+      $currURL = (self::$appType == self::AppType_Admin) ? WM_AdminURL : WM_SiteURL;
+      
+      $content = str_replace('href="#/',   'href="'   . WM_SiteURL, $content);
+      $content = str_replace('action="#/', 'action="' . WM_SiteURL, $content);
+      
+      $content = str_replace('href="$/',   'href="'   . $currURL, $content);
+      $content = str_replace('action="$/', 'action="' . $currURL, $content);
+      
+      $content = str_replace('href="%/',   'href="'   . WM_AdminURL, $content);
+      $content = str_replace('action="%/', 'action="' . WM_AdminURL, $content);
       
       // running skin, or outputing data
       
@@ -697,8 +719,15 @@ class Watermelon
       else
       {
          include WM_SkinPath . 'skin.php';
-
-         $className = self::$config->skin . '_skin';
+         
+         if(self::$appType == self::AppType_Admin)
+         {
+            $className = 'ACPSkin';
+         }
+         else
+         {
+            $className = self::$config->skin . '_skin';
+         }
 
          $skin = new $className;
 

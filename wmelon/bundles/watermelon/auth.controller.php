@@ -38,8 +38,14 @@ class Auth_Controller extends Controller
    function login_action()
    {
       $this->pageTitle = 'Logowanie';
+
+      $form = new Form('wmelon.auth.login', 'auth/loginSubmit', 'auth/login');
+      $form->submitLabel = 'Zaloguj';
       
-      View('login')->display();
+      $form->addInput('text', 'login', 'Login');
+      $form->addInput('password', 'pass', 'Hasło');
+      
+      echo $form->generate();
    }
    
    /*
@@ -48,30 +54,30 @@ class Auth_Controller extends Controller
    
    function loginSubmit_action()
    {
-      $login = $_POST['login'];
-      $pass  = $_POST['pass'];
+      $form = Form::validate('wmelon.auth.login', 'auth/login');
+      $data = $form->getAll();
       
-      // checking whether login and password are given
-      
-      if(empty($login) || empty($pass))
-      {
-         Watermelon::addMessage('error', 'wszystkie pola wymagane');
-         SiteRedirect('auth/login');
-      }
-      
-      // logging in
+      // validating
       
       try
       {
-         Auth::login($login, $pass);
+         Auth::login($data->login, $data->pass);
       }
       catch(WMException $e)
       {
-         Watermelon::addMessage('error', $e->getMessage());
-         SiteRedirect('auth/login');
+         if($e->stringCode() == 'auth:userNotExists')
+         {
+            $form->addError('Podany użytkownik nie istnieje');
+            $form->fallback();
+         }
+         elseif($e->stringCode() == 'auth:wrongPass')
+         {
+            $form->addError('Podano złe hasło');
+            $form->fallback();
+         }
       }
       
-      // if logged in properly
+      // redirecting
       
       SiteRedirect();
    }
@@ -84,6 +90,13 @@ class Auth_Controller extends Controller
    {
       Auth::logout();
       
-      SiteRedirect();
+      if(!empty($_SERVER['HTTP_REFERER']))
+      {
+         Redirect($_SERVER['HTTP_REFERER']);
+      }
+      else
+      {
+         SiteRedirect();
+      }
    }
 }

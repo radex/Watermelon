@@ -1,5 +1,5 @@
-@import url("../../wmelon/bundles/watermelon/public/basic.css");
-@import url("../../wmelon/bundles/watermelon/public/watermelon.css");
+@import url("../../bundles/watermelon/public/basic.css");
+@import url("../../bundles/watermelon/public/watermelon.css");
 
 body
 {
@@ -205,14 +205,26 @@ body > header > div
 #siteName
 {
    display: inline-block;
-   padding: 0 10px;
    
    text-transform: uppercase;
    letter-spacing: 0.3em;
    font-size: 26px;
    line-height: 1em;
+}
+
+#siteName a
+{
+   padding: 0 10px;
    
+   color: #a5be3c;
+   text-decoration: none;
    border-bottom: 1px solid #657e00;
+}
+
+#siteName a:hover
+{
+   text-shadow: 0 0 5px #a5be3c;
+   border-bottom: 1px solid #859e1c;
 }
 
 #siteSlogan
@@ -223,15 +235,15 @@ body > header > div
    color: #83a2c0;
 }
 
-#siteName a
+#siteSlogan a
 {
    color: #a5be3c;
-   text-decoration: none;
+   border-bottom: 1px solid #657e00;
 }
 
-#siteName a:hover
+#siteSlogan a:hover
 {
-   text-shadow: 0 0 5px #a5be3c;
+   border-bottom: 1px solid #859e1c;
 }
 
 /*
@@ -245,6 +257,7 @@ body > header > div
    width: 95%;
    min-width: 950px;
    max-width: 1200px;
+   height: 33px;
    margin: 0 auto;
    margin-bottom: -1px;
 }

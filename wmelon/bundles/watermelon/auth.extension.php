@@ -26,33 +26,9 @@
 
 class Auth_Extension extends Extension
 {
-   /*
-    * public static bool $isLogged = false
-    * 
-    * Whether user session exists
-    */
-   
-   public static $isLogged = false;
-   
-   /*
-    * public static object $userData
-    * 
-    * Information about logged user (key names are the same as in DB, but without user_)
-    * 
-    * NULL if not logged in
-    */
-      
-   public static $userData;
-   
-   /*
-    * public static string[] $privileges
-    * 
-    * Privileges logged user has
-    * 
-    * NULL if not logged in
-    */
-   
-   public static $privileges;
+   private static $isLogged = false; // whether user session exists
+   private static $userData;         // information about logged user (key names are the same as in DB, but without user_)
+   private static $privileges;       // privileges logged user has
    
    /*
     * public static void onAutoload()
@@ -68,7 +44,7 @@ class Auth_Extension extends Extension
       {
          try
          {
-            self::isLogged();
+            self::_isLogged();
             self::$isLogged = true;
          }
          catch(WMException $e)
@@ -96,7 +72,7 @@ class Auth_Extension extends Extension
       $_SESSION['Auth_login'] = $login;
       $_SESSION['Auth_pass']  = $pass;
       
-      if(self::isLogged())
+      if(self::_isLogged())
       {
          self::$isLogged = true;
       }
@@ -117,10 +93,58 @@ class Auth_Extension extends Extension
    }
    
    /*
+    * public static bool isLogged()
+    * 
+    * Whether user session exists
+    */
+   
+   public static function isLogged()
+   {
+      return self::$isLogged;
+   }
+   
+   /*
+    * public static object userData()
+    * 
+    * Information about logged user (key names are the same as in DB, but without user_)
+    * 
+    * NULL if not logged in
+    */
+      
+   public static function userData()
+   {
+      return self::$userData;
+   }
+   
+   /*
+    * public static string[] privileges()
+    * 
+    * Privileges logged user has
+    * 
+    * NULL if not logged in
+    */
+   
+   public static function privileges()
+   {
+      return self::$privileges;
+   }
+   
+   /*
+    * public static bool adminPrivileges()
+    * 
+    * Whether user is logged and has admin privileges
+    */
+   
+   public static function adminPrivileges()
+   {
+      return (self::$isLogged && in_array('admin', self::$privileges));
+   }
+   
+   /*
     * checks whether user is logged in, updates `lastseen` if so, etc.
     */
    
-   private static function isLogged()
+   private static function _isLogged()
    {
       // getting user data, checking existence
       

@@ -26,7 +26,7 @@ class e404_Controller extends Controller
 {
    public function index_action()
    {
-      // TODO: more precise information, page title workaround
+      // TODO: more precise information
       
       $this->pageTitle = 'Nie ma takiej strony';
       

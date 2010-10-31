@@ -171,16 +171,37 @@ function TranslateStructure($structure, $toType)
 }
 
 /*
- * string SiteURI(string $urn)
+ * string SiteURI(string $urn[, enum $type])
  * 
  * Makes URI to given page of a website
  * 
- * string $urn - page, e.g: 'blog/foo/bar', or '' (for main page)
+ * Note that for admin control panel it's URI for ACP, not website itself
+ * 
+ * Specify $type if you specifically want URI for ACP/website itself
+ * 
+ * string $urn  - page, e.g: 'blog/foo/bar', or '' (for main page)
+ * enum   $type = {'site', 'admin'}
+ *    For 'site', function will return URI for website itself
+ *    For 'admin', URI for admin control panel is returned
+ *    For anything else, URI for current app type is used
  */
 
-function SiteURI($urn = '')
+function SiteURI($urn = '', $type = null)
 {
-   return WM_SiteURL . $urn;
+   switch($type)
+   {
+      case 'admin':
+         return WM_AdminURL . $urn;
+      break;
+      
+      case 'site':
+         return WM_SiteURL . $urn;
+      break;
+      
+      default:
+         return WM_CurrURL . $urn;
+      break;
+   }
 }
 
 /*
@@ -196,16 +217,26 @@ function Redirect($uri)
 }
 
 /*
- * void SiteRedirect(string $urn)
+ * void SiteRedirect(string $urn, $type = null)
  * 
  * Redirects to $urn page of a website
  * 
  * Equivalent of Redirect(SiteURI($urn))
+ * 
+ * Note that for admin control panel it's URI for ACP, not website itself
+ * 
+ * Specify $type if you specifically want URI for ACP/website itself
+ * 
+ * string $urn  - page, e.g: 'blog/foo/bar', or '' (for main page)
+ * enum   $type = {'site', 'admin'}
+ *    For 'site', function will return URI for website itself
+ *    For 'admin', URI for admin control panel is returned
+ *    For anything else, URI for current app type is used
  */
 
-function SiteRedirect($urn = '')
+function SiteRedirect($urn = '', $type = null)
 {
-   Redirect(SiteURI($urn));
+   Redirect(SiteURI($urn, $type));
 }
 
 /*

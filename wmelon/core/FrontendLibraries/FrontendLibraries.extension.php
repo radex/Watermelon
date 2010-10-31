@@ -22,10 +22,10 @@ class FrontendLibraries_Extension extends Extension
 {
    public static function onAutoload()
    {
-      Watermelon::$headTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/modernizr.js?v=1.5"></script>';
+      Watermelon::$headTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/modernizr.js?v=1.6"></script>';
       Watermelon::$headTags[] = '<link rel="stylesheet" href="' . WM_SystemURL . 'core/FrontendLibraries/sh.css.php?v=3.0.83">';
       
-      Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/jquery.js?v=1.4.2"></script>';
+      Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/jquery.js?v=1.4.3"></script>';
       Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/sh.js.php?v=3.0.83"></script>';
    }
 }
