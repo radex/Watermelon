@@ -45,24 +45,30 @@ table
    width: 100%;
 }
 
-td, th, caption
+td
 {
-   border: 1px solid #ddd;
+   border: 1px solid #ccc;
+   padding: 3px;
+}
+
+th, caption
+{
+   text-align: center;
+   border: 1px solid #bbb;
    padding: 3px;
 }
 
 th
 {
-   background: #F8F8F8;
+   background: #eee;
 }
 
 caption
 {
-   margin: 2px;
-   margin-bottom: 0;
-   background: #EEE;
-   font-size: 1.2em;
+   background: #ddd;
+   font-size: 14px;
    font-weight: bold;
+   border-bottom: 0;
 }
 
 fieldset
@@ -199,6 +205,7 @@ body > footer
 body > header
 {
    margin: 25px;
+   margin-bottom: 15px;
    text-align: center;
 }
 
@@ -255,12 +262,15 @@ body > header > div
 {
    display: inline-block;
    margin-left: 5px;
+   padding-top: 10px;
+   vertical-align: bottom;
 }
 
-#nav li a
+#nav a
 {
    display: inline-block;
    padding: 5px 7px;
+   height: 13px;
    
    opacity: .7;
    background: #000;
@@ -268,10 +278,20 @@ body > header > div
    color: #859e1c;
 }
 
-#nav li a:hover
+#nav a:hover
 {
    opacity: 1;
    color: #a5be3c;
+}
+
+#nav .currentPage
+{
+   padding-top: 0;
+}
+
+#nav .currentPage a
+{
+   padding: 10px 7px;
 }
 
 /*

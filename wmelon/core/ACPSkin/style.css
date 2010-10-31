@@ -193,6 +193,7 @@ body > footer
 body > header
 {
    margin: 25px;
+   margin-bottom: 15px;
    text-align: center;
 }
 

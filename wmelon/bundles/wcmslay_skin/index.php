@@ -1,6 +1,6 @@
 <?defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="<?php echo WM_SkinURL ?>style.css">
+<link rel="stylesheet" href="<?=WM_SkinURL?>style.css">
 <title><?= empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName ?></title>
 <?=$this->drawHeadTags()?>
 
@@ -11,17 +11,19 @@
    </div>
 </header>
 
-<ul id="nav">
-   <?=$this->drawTextMenu(0)?>
-</ul>
+<nav>
+   <ul id="nav">
+      <?=$this->drawTextMenu(0)?>
+   </ul>
+</nav>
 <div id="container">
    <div id="sidebar">
       <?$this->drawBlockMenu(0)?>
    </div>
    <div id="content">
       <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
-      <?$this->drawMessages() ?>
-      <?=$content?>
+      <?  $this->drawMessages() ?>
+      <?= $content ?>
    </div>
    <div id="clear"></div>
 </div>

@@ -18,23 +18,7 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class WCMSLay_Skin extends Skin
+class ACPSkin extends Skin
 {
-   protected function drawBlockMenu($id)
-   {
-      foreach($this->blockMenus[$id] as $menu)
-      {
-         echo '<section>';
-         
-         list($title, $blockSet, $block, $parameters) = $menu;
-         
-         echo '<h2>' . $title . '</h2>';
-         
-         $blockObj = BlockSet($blockSet);
-         
-         call_user_func_array(array($blockObj, $block), $parameters);
-         
-         echo '</section>';
-      }
-   }
+   
 }
