@@ -35,7 +35,7 @@ class Auth_Controller extends Controller
     * logging in
     */
    
-   function login_action()
+   function login_action($backPage = '')
    {
       $this->pageTitle = 'Logowanie';
 
@@ -44,6 +44,7 @@ class Auth_Controller extends Controller
       
       $form->addInput('text', 'login', 'Login');
       $form->addInput('password', 'pass', 'Hasło');
+      $form->addInput('hidden', 'backPage', $backPage);
       
       echo $form->generate();
    }
@@ -79,7 +80,7 @@ class Auth_Controller extends Controller
       
       // redirecting
       
-      SiteRedirect();
+      SiteRedirect(base64_decode($data->backPage));
    }
    
    /*

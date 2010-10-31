@@ -221,7 +221,7 @@ class Watermelon
       {
          if(!Auth::adminPrivileges())
          {
-            echo 'Die!';
+            SiteRedirect('auth/login/' . base64_encode('admin/' . implode('/', self::$segments)), 'site');
             exit;
          }
       }

@@ -23,10 +23,11 @@
  */
 
 include 'FormInput.php';
-include 'TextFormInput.php';
-include 'PasswordFormInput.php';
-include 'EmailFormInput.php';
-include 'TextareaFormInput.php';
+include 'TextInput.php';
+include 'PasswordInput.php';
+include 'EmailInput.php';
+include 'Textarea.php';
+include 'HiddenInput.php';
 
 class Form
 {
