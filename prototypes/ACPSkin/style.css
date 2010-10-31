@@ -45,24 +45,30 @@ table
    width: 100%;
 }
 
-td, th, caption
+td
 {
-   border: 1px solid #ddd;
+   border: 1px solid #ccc;
+   padding: 3px;
+}
+
+th, caption
+{
+   text-align: center;
+   border: 1px solid #bbb;
    padding: 3px;
 }
 
 th
 {
-   background: #F8F8F8;
+   background: #eee;
 }
 
 caption
 {
-   margin: 2px;
-   margin-bottom: 0;
-   background: #EEE;
-   font-size: 1.2em;
+   background: #ddd;
+   font-size: 14px;
    font-weight: bold;
+   border-bottom: 0;
 }
 
 fieldset

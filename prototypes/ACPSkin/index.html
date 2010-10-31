@@ -3,6 +3,9 @@
 <link rel="stylesheet" href="style.css">
 <title>Panel Admina</title>
 
+<script src="../../wmelon/core/FrontendLibraries/jquery.js"></script>
+<script src="script.js"></script>
+
 <header>
    <div>
       <div id="siteName"><a href="asdasd">Radex's Cave</a></div>
@@ -31,10 +34,50 @@
       <a href="asdfddf">Tagi</a>
    </nav>
    <div id="content">
-      <h1>Lorem ipsum</h1>
-      <p>Woźnemu, że nasi synowie i dworskich ciurów. Żaden za nim stał patrząc, dumając wonnymi powiewami kwiatów oddychając oblicze aż u wniścia alkowy i już pomrok mglisty napełniając wierzchołki i nowych powitań. Gdy nie wyszli witać, ale nigdzie nie zdradzić swego roztargnienia: Prawda - tak pan Rejent się moda odmieniła z córkami. Młodzież poszła do folwarku nie siedzi żadna. To mówiąc spojrzał zyzem, gdzie się zdawał małpą lub ławę przeskoczyć. Zręcznie między wierzycieli. Zamku żaden wziąść nie chciał zamku, właśnie kiedy mamy panien wiele. Stryjaszek myśli wkrótce wielki post - nowe o tym domu i nas reformować cywilizować będzie z nim trzy z rozsądkiem wiedział, czy go czeladka ściskała zanosząc się na kształt śniegu, Ślad wyraźny, lecz każdemu inna. Bo nie był, gdy z daleka pobielane ściany starodawne ogląda czule, jako swe znajome dawne. też nie może. Widać, że zamczysko wzięliśmy w niebytność Wojskiego Woźny pas lity przy niej z kim się z tabakiery waży w ziemstwie, potem cały las i smuci, i Moskalom przez Niemen rzekł: Dziś, nowym zwyczajem my do stodoły. Cieszą się po całym domu ziemię orzę gdy.</p>
-
-      <p>Rejentowi, Że zbyt wykwintny na ziemię ojczystą której już w nędzy. Jak mnie dziecko do zamku nabyliśmy prawa i niewesoły rozbierał myślą wszystkie dzisiejsze łowy. Asesora z łąk, i z urzędu ten zaszczyt należy. Idąc z nim wiedzą, lekce go powitać. Dawno domu i stoi wypisany każdy mimowolnie porządku pilnował. Bo nie uchybił gospodarskiej, ważnej powinności udał się od Nil szła rzecz długa, choć stary stojący zegar kurantowy w pogody lilia jeziór skroń ucałowawszy, uprzejmie pozdrowił. A na naukę młodzież nieraz jego wiernym ludem! Jak Jabłonowski zabiegł, aż do łona a zwierzę nie w grób się wachlowała, to mówiąc, że tytuły przychodzą z Podkomorzyną obok Korsak, towarzysz jego ramiona silne, jego nie zabawia przez okienic szpar i Zabo biegły przed laty, nad uchem. Tadeusz przyglądał się kupiecka ale razem ja sam ku północy, aż cała izba nie rozwity, lecz zewsząd chędogi i każdy mimowolnie porządku pilnował. Bo nie mógł. Jak mnie dziecko do stołu przywoławszy dwie twarze w Tabor w klasztorze. Ciszę przerywał tylko widział krótki, jasnozłoty a potem cały las wiąże w palcach i kiedy reszta świat we łzach.</p>
+      <h1>Jakaś głupia lista</h1>
+      
+      <table>
+         <caption>Tytuł</caption>
+         <thead>
+            <tr>
+               <th>
+               <th>ID
+               <th>Nazwa
+               <th>Treść
+               <th>Opcje
+         <tfoot>
+            <tr>
+               <th>
+               <th>ID
+               <th>Nazwa
+               <th>Treść
+               <th>Opcje
+         <tbody>
+            <tr>
+               <td><input type="checkbox" id="table1-id1">
+               <td>1
+               <td>Foo bar blah blah
+               <td>Woźnemu, że nasi synowie i dworskich ciurów. Żaden za nim stał patrząc, dumając wonnymi powiewami kwiatów oddychając oblicze aż u wniścia alkowy i już pomrok mglisty napełniając wierzchołki i nowych powitań. Gdy nie wyszli witać, ale nigdzie nie zdradzić swego roztargnienia:
+               <td>Foo | Bar
+            <tr>
+               <td><input type="checkbox" id="table1-id3">
+               <td>1
+               <td>Foo bar blah blah
+               <td>Woźnemu, że nasi synowie i dworskich ciurów. Żaden za nim stał patrząc, dumając wonnymi powiewami kwiatów oddychając oblicze aż u wniścia alkowy i już pomrok mglisty napełniając wierzchołki i nowych powitań. Gdy nie wyszli witać, ale nigdzie nie zdradzić swego roztargnienia:
+               <td>Foo | Bar
+            <tr>
+               <td><input type="checkbox" id="table1-id7">
+               <td>1
+               <td>Foo bar blah blah
+               <td>Woźnemu, że nasi synowie i dworskich ciurów. Żaden za nim stał patrząc, dumając wonnymi powiewami kwiatów oddychając oblicze aż u wniścia alkowy i już pomrok mglisty napełniając wierzchołki i nowych powitań. Gdy nie wyszli witać, ale nigdzie nie zdradzić swego roztargnienia:
+               <td>Foo | Bar
+      </table>
+      
+      <menu class="tableMenu" data-table="1">
+         <input type="button" value="Usuń zaznaczone" onclick="return TableDeleteSelected(1, 'http://example.com/')">
+         <input type="button" value="Zaznacz wszystkie" onclick="return TableSelectAll(1)">
+         <input type="button" value="Odznacz wszystkie" onclick="return TableUnselectAll(1)">
+      </menu>
    </div>
 </div>
 <footer>
