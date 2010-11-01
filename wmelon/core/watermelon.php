@@ -108,16 +108,16 @@ class Watermelon
     * ModulesList structure:
     * 
     * 
-    * $modulesList->controllers/models/blocksets/extensions =
-    *    array($name => $info)
+    * $modulesList->controllers/models/blocksets/extensions/acpcontrollers =
+    *    array($name => $info, ...)
     *       $name - module name
     *       $info = array(string $bundle, bool $inDir)
     *          string $bundle - bundle, $name module belongs to
     *          bool   $inDir  - whether module is in root of bundle directory (false) or in separate directory, e.g. controllers/ (true)
     * 
-    * $moduleList->skins =
+    * $moduleList->skins/acpinfofiles =
     *    array(string $bundle, ...)
-    *       string $bundle - name of bundle with a skin
+    *       string $bundle - name of bundle with a skin/acp info file
     */
    
    public static $config;
@@ -332,28 +332,6 @@ class Watermelon
    }
    
    /*
-    * Auxiliary method of indexModules() method. Searches for concrete module files in specified path, and adds them to modulesList
-    */
-   
-   private static function modulesInDirectory($path, $bundleName, $moduleType, $inDir, $modulesList)
-   {
-      $files = FilesForDirectory($path, false, true);
-      
-      foreach($files as $file)
-      {
-         $ext = '.' . $moduleType . '.php';
-         $extLen = strlen($ext);
-         
-         if(substr($file->getFilename(), -$extLen) != $ext)
-         {
-            continue;
-         }
-         
-         $modulesList->{$moduleType . 's'}[substr($file->getFilename(), 0, -$extLen)] = array($bundleName, $inDir);
-      }
-   }
-   
-   /*
     * searches bundles for module files - controllers, models, extensions, etc., in order to create modules list
     */
    
@@ -366,6 +344,8 @@ class Watermelon
       $modulesList->blocksets   = array();
       $modulesList->extensions  = array();
       $modulesList->skins       = array();
+      $modulesList->acpcontrollers = array();
+      $modulesList->acpinfofiles   = array();
       
       foreach(new DirectoryIterator(WM_Bundles) as $dir)
       {
@@ -380,28 +360,59 @@ class Watermelon
          
          // skins
          
-         if(substr($bundle, 0, -5) == '_skin' && file_exists(WM_Bundles . $bundleName . '/skin.php'))
+         if(substr($bundleName, -5) == '_skin' && file_exists(WM_Bundles . $bundleName . '/skin.php'))
          {
             $modulesList->skins[] = $bundleName;
          }
          
-         // controllers, models, blocksets and extensions
+         // acp info files
+         
+         if(file_exists(WM_Bundles . $bundleName . '/' . $bundleName . '.acpinfo.php'))
+         {
+            $modulesList->acpinfofiles[] = $bundleName;
+         }
+         
+         // modules
          
          $moduleTypes = array('controller', 'model', 'blockset', 'extension');
          
-         foreach($moduleTypes as $moduleType)
+         $files = FilesForDirectory(WM_Bundles . $bundleName, false, true);
+
+         foreach($files as $file)
          {
-            // module in root of the bundle
+            // controllers, models, blocksets and extensions
             
-            self::modulesInDirectory(WM_Bundles . $bundleName, $bundleName, $moduleType, false, $modulesList);
-            
-            // module in [type]s/ directory of the bundle
-            
-            $subdirPath = WM_Bundles . $bundleName . '/' . $moduleType . 's/';
-            
-            if(file_exists($subdirPath))
+            foreach($moduleTypes as $moduleType)
             {
-               self::modulesInDirectory($subdirPath, $bundleName, $moduleType, true, $modulesList);
+               $ext = '.' . $moduleType . '.php';
+               $extLen = strlen($ext);
+
+               if(substr($file->getFilename(), -$extLen) == $ext)
+               {
+                  // .acp.controller.php and .controller.php are different module types
+                  
+                  if(substr($file->getFilename(), -($extLen + 4)) == '.acp' . $ext)
+                  {
+                     continue;
+                  }
+                  
+                  // adding
+                  
+                  $moduleName = substr($file->getFilename(), 0, -$extLen);
+                  
+                  $modulesList->{$moduleType . 's'}[$moduleName] = array($bundleName, false);
+               }
+            }
+            
+            // ACP controllers
+            
+            $ext = '.acp.controller.php';
+
+            if(substr($file->getFilename(), -19) == $ext)
+            {
+               $moduleName = substr($file->getFilename(), 0, -19);
+               
+               $modulesList->acpcontrollers[$moduleName] = array($bundleName, false);
             }
          }
       }
