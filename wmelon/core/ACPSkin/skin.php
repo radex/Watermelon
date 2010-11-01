@@ -20,5 +20,30 @@
 
 class ACPSkin extends Skin
 {
+   /*
+    * Left side of primary navigation bar
+    */
    
+   protected function drawLeftNav()
+   {
+      
+   }
+   
+   /*
+    * Right side of primary navigation bar
+    */
+   
+   protected function drawRightNav()
+   {
+      echo '<li><a href="' . SiteURI('auth/logout', 'site') . '">Wyloguj</a>';
+   }
+   
+   /*
+    * Secondary navigation bar
+    */
+   
+   protected function drawSubNav()
+   {
+      
+   }
 }

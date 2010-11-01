@@ -13,12 +13,15 @@
 
 <nav>
    <ul id="navLeft">
+      <?= $this->drawLeftNav() ?>
    </ul>
    <ul id="navRight">
+      <?= $this->drawRightNav() ?>
    </ul>
 </nav>
 <div id="container">
    <nav id="subnav">
+      <?= $this->drawSubNav() ?>
    </nav>
    <div id="content">
       <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>

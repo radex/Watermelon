@@ -109,11 +109,9 @@ class Watermelon
     * 
     * 
     * $modulesList->controllers/models/blocksets/extensions/acpcontrollers =
-    *    array($name => $info, ...)
-    *       $name - module name
-    *       $info = array(string $bundle, bool $inDir)
-    *          string $bundle - bundle, $name module belongs to
-    *          bool   $inDir  - whether module is in root of bundle directory (false) or in separate directory, e.g. controllers/ (true)
+    *    array($name => string $bundle, ...)
+    *       string $name   - module name
+    *       string $bundle - bundle, $name module belongs to
     * 
     * $moduleList->skins/acpinfofiles =
     *    array(string $bundle, ...)
@@ -400,7 +398,7 @@ class Watermelon
                   
                   $moduleName = substr($file->getFilename(), 0, -$extLen);
                   
-                  $modulesList->{$moduleType . 's'}[$moduleName] = array($bundleName, false);
+                  $modulesList->{$moduleType . 's'}[$moduleName] = $bundleName;
                }
             }
             
@@ -412,7 +410,7 @@ class Watermelon
             {
                $moduleName = substr($file->getFilename(), 0, -19);
                
-               $modulesList->acpcontrollers[$moduleName] = array($bundleName, false);
+               $modulesList->acpcontrollers[$moduleName] = $bundleName;
             }
          }
       }
@@ -543,26 +541,46 @@ class Watermelon
    }
    
    /*
-    * private static array controllerDetails(string $controllerName)
+    * private static array controllerDetails(string $controllerName, enum $type)
     * 
     * Returns controller details - path, and module name it belongs to
     * 
     * Returned data is in format: array($path, $bundleName)
     * 
     * Used by ::loadController()
+    * 
+    * enum $type = {self::AppType_Site, self::AppType_Admin}
     */
    
-   private static function controllerDetails($controllerName)
+   private static function controllerDetails($controllerName, $type = self::AppType_Site)
    {
-      if(!isset(self::$config->modulesList->controllers[$controllerName]))
+      // determining file extension and modulesList property name depending on $type
+      
+      if($type == self::AppType_Admin)
+      {
+         $key = 'acpcontrollers';
+         $extension = '.acp.controller.php';
+      }
+      else
+      {
+         $key = 'controllers';
+         $extension = '.controller.php';
+      }
+      
+      // checking existence
+      
+      if(!isset(self::$config->modulesList->{$key}[$controllerName]))
       {
          return false;
       }
       
-      $info  = self::$config->modulesList->controllers[$controllerName];
-      $path  = WM_Bundles . $info[0] . ($info[1] == true ? '/controllers/' : '/') . $controllerName . '.controller.php';
+      // composing data
       
-      return array($path, $info[0]);
+      $bundleName = self::$config->modulesList->{$key}[$controllerName];
+      
+      $path = WM_Bundles . $bundleName . '/' . $controllerName . $extension;
+      
+      return array($path, $bundleName);
    }
    
    /*
@@ -586,10 +604,22 @@ class Watermelon
       // controllers configuration
       
       $controllerHandler = self::$config->controllerHandler;
-      $defaultController = self::$config->defaultController;
       
       $useControllerHandler = false;
       $useDefaultController = false;
+      
+      // default controller
+      
+      $appType = self::$appType;
+      
+      if($appType == self::AppType_Admin)
+      {
+         $defaultController = 'foo';            //TODO: change it
+      }
+      else
+      {
+         $defaultController = self::$config->defaultController;
+      }
       
       // determining controller to load
       
@@ -603,7 +633,7 @@ class Watermelon
       {
          // check if controller exists in modules list
          
-         $controllerDetails = list($controllerPath, self::$bundleName) = self::controllerDetails($controller);
+         $controllerDetails = self::controllerDetails($controller, $appType);
          
          if($controllerDetails != false)
          {
@@ -630,7 +660,7 @@ class Watermelon
       
       if($useDefaultController || $useControllerHandler)
       {
-         $controllerDetails = list($controllerPath, self::$bundleName) = self::controllerDetails($controller);
+         $controllerDetails = self::controllerDetails($controller, $appType);
          
          if($controllerDetails == false)
          {
@@ -639,6 +669,8 @@ class Watermelon
       }
       
       // loading controller
+      
+      list($controllerPath, self::$bundleName) = $controllerDetails;
       
       include $controllerPath;
       

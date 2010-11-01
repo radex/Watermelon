@@ -138,9 +138,9 @@ class Loader
          throw new WMException('Requested module doesn\'t exist', 'Loader:doesNotExist');
       }
       
-      $pathInfo = Watermelon::$config->modulesList->{$typeName . 's'}[$name];
+      $bundleName = Watermelon::$config->modulesList->{$typeName . 's'}[$name];
       
-      include WM_Bundles . $pathInfo[0] . ($pathInfo[1] ? '/' . $typeName . 's/' : '/') . $name . '.' . $typeName . '.php';
+      include WM_Bundles . $bundleName . '/' . $name . '.' . $typeName . '.php';
       
       return new $className;
    }
