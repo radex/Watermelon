@@ -308,38 +308,40 @@ body > header > div
    padding: 10px 7px;
 }
 
-#subnav
+#subNav
 {
    background-color: #f2ede1;
    padding: 7px;
    border-bottom: 1px solid #bba;
 }
 
-#subnav a, #subnav a:visited
+#subNav a,
+#subNav a:visited
 {
    border: 0;
    color: #556e00;
 }
 
-#subnav:hover a
+#subNav:hover a
 {
    color: #859e1c;
    border-bottom: 1px solid #ccc;
 }
 
-#subnav:hover a.currentPage
+#subNav:hover a.currentPage
 {
    border-bottom: 1px solid #95ae2c;
 }
 
-#subnav a:hover, #subnav a:hover:visited
+#subNav a:hover,
+#subNav a:hover:visited
 {
    background-color: #859e1c;
    color: #fff;
    border: 0 !important;
 }
 
-#subnav a.currentPage
+#subNav a.currentPage
 {
    border-bottom: 1px solid #556e00;
 }

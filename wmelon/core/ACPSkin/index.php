@@ -20,9 +20,7 @@
    </ul>
 </nav>
 <div id="container">
-   <nav id="subnav">
-      <?= $this->drawSubNav() ?>
-   </nav>
+   <?= $this->drawSubNav() ?>
    <div id="content">
       <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
       <?  $this->drawMessages() ?>

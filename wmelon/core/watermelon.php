@@ -78,6 +78,14 @@ class Watermelon
    public static $controllerName = '';
    
    /*
+    * public static string $actionName
+    * 
+    * Name of currently running action
+    */
+   
+   public static $actionName = '';
+   
+   /*
     * public static object $config
     * 
     * Watermelon configuration
@@ -594,12 +602,13 @@ class Watermelon
       // URI stuff
       
       self::$controllerName = strtolower(self::$segments[0]);
-      $action               = strtolower(self::$segments[1]);
+      self::$actionName     = strtolower(self::$segments[1]);
       
       // shortcuts
       
       $segments   = &self::$segments;
       $controller = &self::$controllerName;
+      $action     = &self::$actionName;
       
       // controllers configuration
       
