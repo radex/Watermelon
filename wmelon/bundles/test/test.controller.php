@@ -20,7 +20,20 @@ class test_Controller extends Controller
       echo '<a href="$/test/curl">cURL and stuff</a><br>';
       echo '<a href="$/test/phptal">PHPTAL tests</a><br>';
       echo '<a href="$/test/form">Form generator</a><br>';
+      echo '<a href="$/test/uri">URI</a><br>';
    }
+   
+   function uri_action()
+   {
+      var_dump($this->segments);
+      var_dump($this->parameters);
+      var_dump(Watermelon::$resName);
+      var_dump(Watermelon::$bundleName);
+      var_dump(Watermelon::$controllerName);
+      var_dump(Watermelon::$actionName);
+   }
+   
+   //----
    
    function formSubmit_action()
    {

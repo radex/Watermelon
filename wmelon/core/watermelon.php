@@ -56,10 +56,26 @@ class Watermelon
    /*
     * public static string[] $segments
     * 
-    * Array of resource identificator segments, stripped from controller and action name
+    * Array of resource name segments, stripped from controller and action name
     */
    
    public static $segments = array();
+   
+   /*
+    * public static object $parameters
+    * 
+    * Object with parameters passed through URI, e.g. 'foo:bar' is ->foo = 'bar'
+    */
+   
+   public static $parameters;
+   
+   /*
+    * public static string $resName
+    * 
+    * Original resource name from URI (e.g. 'admin/blog/new')
+    */
+   
+   public static $resName = '';
    
    /*
     * public static string $bundleName
@@ -227,7 +243,7 @@ class Watermelon
       {
          if(!Auth::adminPrivileges())
          {
-            SiteRedirect('auth/login/' . base64_encode('admin/' . implode('/', self::$segments)), 'site');
+            SiteRedirect('auth/login/' . base64_encode(self::$resName), 'site');
             exit;
          }
       }
@@ -258,6 +274,7 @@ class Watermelon
       header('Content-Type: text/html; charset=UTF-8');
       
       define('WM_StartTime', microtime());
+      define('WM_StartMemory', memory_get_usage());
       
       // fixing "magic" quotes
       
@@ -506,22 +523,41 @@ class Watermelon
    /*
     * private static void divide()
     * 
-    * Divides resource identificator (part of URI after index.php containing information about module and action to call, and parameters to be sent to that action) to segments; fills ::$appType and ::$segments
+    * Divides resource name (part of URI after index.php containing information about module and action to call, and parameters to be sent to that action) to segments; fills ::$appType, ::$resName, ::$segments and ::$parameters
     */
    
    private static function divide()
    {
-      $resourceIdentificator = $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : '';
+      $resName = $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : '';
+      $resName = substr($resName, 1);
+      
+      self::$resName = $resName;
       
       // dividing
       
-      $segments = array();
+      $segments   = &self::$segments;
+      $parameters = &self::$parameters;
       
-      foreach(explode('/', $resourceIdentificator) as $segment)
+      foreach(explode('/', $resName) as $segment)
       {
          // ignoring empty segments
          
-         if(!empty($segment))
+         if(empty($segment))
+         {
+            continue;
+         }
+         
+         // checking whether it's key:value parameter
+         
+         if(preg_match('/^[[:alpha:]]+:/', $segment, $matches))
+         {
+            $key = strtolower(substr($matches[0], 0, -1));
+            
+            $rest = substr($segment, strlen($key) + 1);
+            
+            $parameters->$key = (string) $rest;
+         }
+         else
          {
             $segments[] = $segment;
          }
@@ -542,10 +578,6 @@ class Watermelon
             self::$appType = self::AppType_Site;
          }
       }
-      
-      //--
-      
-      self::$segments = $segments;
    }
    
    /*

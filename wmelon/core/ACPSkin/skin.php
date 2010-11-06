@@ -135,7 +135,7 @@ class ACPSkin extends Skin
          
          if($this->startsWith($page))
          {
-            $currentPage = ' class="currentPage"';                   // FIXME: if two subitems are starting the same, both will be shown as current
+            $currentPage = ' class="currentPage"';                    // FIXME: if two subitems are starting the same, both will be shown as current
          }
          
          // generating

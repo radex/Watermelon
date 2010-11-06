@@ -45,6 +45,22 @@ abstract class Controller
    public $additionalData;
    
    /*
+    * public string[] $segments
+    * 
+    * Array of resource name segments, stripped from controller and action name
+    */
+   
+   public $segments;
+   
+   /*
+    * public object $parameters
+    * 
+    * Object with parameters passed through URI, e.g. 'foo:bar' is ->foo = 'bar'
+    */
+   
+   public $parameters;
+   
+   /*
     * public enum $outputType
     * 
     * Requested representation method of output:
@@ -98,5 +114,10 @@ abstract class Controller
          $this->model = Loader::model($className);
       }
       catch(WMException $e){}
+      
+      // binding ->segments/parameters to Watermelon::*
+      
+      $this->segments   = &Watermelon::$segments;
+      $this->parameters = &Watermelon::$parameters;
    }
 }

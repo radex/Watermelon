@@ -33,8 +33,8 @@
    <?php if(defined('WM_Debug')){ ?>
       <br><br>
       Wygenerowano w: <?= round(Benchmark::executionTime(), -2) / 1000 ?> ms<br>
-      Peak memory usage: <?= (int) (memory_get_peak_usage() / 1000) ?> KB<br>
-      Current memory usage: <?= (int) (memory_get_usage() / 1000) ?> KB<br>
+      Peak memory usage: <?= (int) ((memory_get_peak_usage() - WM_StartMemory) / 1000) ?> KB<br>
+      Current memory usage: <?= (int) ((memory_get_usage() - WM_StartMemory) / 1000) ?> KB<br>
       
       <br>Zapytania wykonane do bazy danych (<?=count(DB::$queriesArray)?>):<br>
       
