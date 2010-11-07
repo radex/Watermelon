@@ -3,29 +3,22 @@ function TableAction(tableID, link)
    checkboxes = document.getElementsByTagName('input');
    
    items = new Array();
+   
+   regexp = new RegExp("^table([0-9]+)-id([0-9]+)$");
 
-   for(i = 0; i < checkboxes.length; i++)
+   for(i in checkboxes)
    {
-      checkboxRegExp = new RegExp("^table([0-9]+)-id([0-9]+)$");
-
-      checkboxID = checkboxes[i].id;
-
-      checkboxTableID = checkboxID.replace(checkboxRegExp, "$1");
-
-      if(checkboxRegExp.test(checkboxID))
+      id = checkboxes[i].id;
+      
+      if(regexp.test(id) && id.replace(regexp, "$1") == tableID && checkboxes[i].checked == true)
       {
-         if(checkboxTableID == tableID && checkboxes[i].checked == true)
-         {
-            items.push(checkboxID.replace(checkboxRegExp, "$2"));
-         }
+         items.push(id.replace(regexp, "$2"));
       }
    }
 
    if(items.length > 0)
    {
-      itemsString = items.join(',');
-
-      document.location = link + itemsString;
+      document.location = link + items.join(',');
    }
    else
    {
@@ -49,24 +42,22 @@ function TableChangeSelection(tableID, selection)
    // item checkboxes
    
    checkboxes = document.getElementsByTagName('input');
-
-   for(i = 0; i < checkboxes.length; i++)
+   
+   regexp = new RegExp("^table([0-9]+)-id([0-9]+)$");
+   
+   for(i in checkboxes)
    {
-      checkboxRegExp = new RegExp("^table([0-9]+)-id([0-9]+)$");
+      id = checkboxes[i].id;
 
-      checkboxID = checkboxes[i].id;
-
-      checkboxTableID = checkboxID.replace(checkboxRegExp, "$1");
-
-      if(checkboxRegExp.test(checkboxID) && checkboxTableID == tableID)
+      if(regexp.test(id) && id.replace(regexp, "$1") == tableID)
       {
          if(selection)
          {
-            $('#' + checkboxID).attr('checked', 'true');
+            $('#' + id).attr('checked', 'true');
          }
          else
          {
-            $('#' + checkboxID).removeAttr('checked');
+            $('#' + id).removeAttr('checked');
          }
       }
    }
