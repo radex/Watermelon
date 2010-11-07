@@ -56,4 +56,18 @@ class Blog_Model extends Model
          return false;
       }
    }
+   
+   /*
+    * public void postPost(string $title, string $content)
+    * 
+    * Posts a post with given data, as currently logged user and with current time
+    */
+   
+   public function postPost($title, $content)
+   {
+      $title   = (string) $title;
+      $content = (string) $content;
+      
+      $this->db->query("INSERT INTO `__blogposts` (`blogpost_author`, `blogpost_created`, `blogpost_title`, `blogpost_content`) VALUES ('%1', '%2', '%3', '%4')", Auth::userData()->id, time(), $title, $content);
+   }
 }

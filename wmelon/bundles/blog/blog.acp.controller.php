@@ -30,7 +30,7 @@ class Blog_Controller extends Controller
    
    function index_action()
    {
-      $this->pageTitle = 'Lista postów';
+      $this->pageTitle = 'Lista wpisów';
       
       $posts = $this->model->posts();
       
@@ -71,5 +71,38 @@ class Blog_Controller extends Controller
       // displaying
       
       echo $table->generate();
+   }
+   
+   /*
+    * new post
+    */
+   
+   function new_action()
+   {
+      $this->pageTitle = 'Nowy wpis';
+      
+      $form = new Form('wmelon.blog.newPost', 'blog/newSubmit', 'blog/new');
+      $form->submitLabel = 'Zapisz';
+      
+      $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px'));
+      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%'));
+      
+      echo $form->generate();
+   }
+   
+   /*
+    * new post submit
+    */
+   
+   function newSubmit_action()
+   {
+      $form = Form::validate('wmelon.blog.newPost', 'blog/new');
+      $data = $form->getAll();
+      
+      $this->model->postPost($data->title, $data->content);
+      
+      Watermelon::addMessage('tick', 'Dodano wpis!');
+      
+      SiteRedirect('blog');
    }
 }

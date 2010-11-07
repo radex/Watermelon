@@ -22,7 +22,8 @@ class Blog_ACPInfo implements ACPInfo
 {
    public function info()
    {
-      $subitems[] = array('Lista postów', null, 'blog/index');
+      $subitems[] = array('Lista wpisów', null, 'blog/index');
+      $subitems[] = array('Nowy wpis', null, 'blog/new');
       
       $items[] = array('Blog', null, null, 'blog', $subitems);
       

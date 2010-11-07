@@ -112,7 +112,7 @@ class Form
    private $noAdding = false;
    
    /*
-    * public void __construct(string $formID, string $action, string $fallbackPage)
+    * public void __construct(string $formID, string $actionPage, string $fallbackPage)
     * 
     * Constructor
     * 
