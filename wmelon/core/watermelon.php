@@ -347,11 +347,11 @@ class Watermelon
       
       // libraries etc.
       
+      self::divide();
+      
       include 'libs.php';
       
       DB::connect($dbHost, $dbName, $dbUser, $dbPass, $dbPrefix);
-      
-      self::divide();
    }
    
    /*

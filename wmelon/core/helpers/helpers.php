@@ -21,6 +21,11 @@
 include 'language.php';
 include 'Form/Form.php';
 
+if(Watermelon::$appType == Watermelon::AppType_Admin)
+{
+   include 'ACPTable.php';
+}
+
 /*
  * mixed CallMethodQuietly(object &$object, string $methodName[, array $args])
  * 
