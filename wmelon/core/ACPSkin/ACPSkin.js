@@ -1,8 +1,8 @@
-function TableDeleteSelected(tableID, deleteLink)
+function TableAction(tableID, link)
 {
    checkboxes = document.getElementsByTagName('input');
-
-   toDelete = new Array();
+   
+   items = new Array();
 
    for(i = 0; i < checkboxes.length; i++)
    {
@@ -16,20 +16,20 @@ function TableDeleteSelected(tableID, deleteLink)
       {
          if(checkboxTableID == tableID && checkboxes[i].checked == true)
          {
-            toDelete.push(checkboxID.replace(checkboxRegExp, "$2"));
+            items.push(checkboxID.replace(checkboxRegExp, "$2"));
          }
       }
    }
 
-   if(toDelete.length > 0)
+   if(items.length > 0)
    {
-      toDeleteString = toDelete.join(',');
+      itemsString = items.join(',');
 
-      document.location = deleteLink + toDeleteString;
+      document.location = link + itemsString;
    }
    else
    {
-      alert('Nie zaznaczono żadnego elementu do skasowania');
+      alert('Nie zaznaczono żadnego elementu');
    }
 }
 

@@ -8,7 +8,7 @@ class Test_ACPInfo implements ACPInfo
       $fooSubItems[] = array('2', 'Foo hoo hoo', 'foo/index');
       
       $items[] = array('Foo', null, 'Foo!', 'foo', $fooSubItems);
-      $items[] = array('Bar', null, null, 'bar', array());
+      $items[] = array('Testy', null, null, 'test', array());
       
       return $items;
    }

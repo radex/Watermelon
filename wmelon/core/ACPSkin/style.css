@@ -43,6 +43,7 @@ li
 table
 {
    width: 100%;
+   margin: 5px 0;
 }
 
 td
@@ -494,3 +495,12 @@ body > footer a:hover, #footer a:visited:hover
    font-size: 0.9em;
 }
 */
+
+/*
+ * ACP-specific classes
+ */
+
+.acp-tablePages
+{
+   float: right;
+}

@@ -474,6 +474,7 @@ class Watermelon
             array('Testy', 'test', false, null),
             array('Login', 'auth/login', false, null),
             array('Logout', 'auth/logout', false, null),
+            array('ACP', 'admin', false, null),
          ));
       
       $blockMenus = array(array
