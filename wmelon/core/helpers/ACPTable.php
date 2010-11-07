@@ -201,12 +201,9 @@ class ACPTable
       {
          $pb .= '<menu>';
       
-         $pb .= '<input type="button" value="Zaznacz wszystkie" onclick="return TableSelectAll(' . $this->tableID . ')">';
-         $pb .= '<input type="button" value="Odznacz wszystkie" onclick="return TableUnselectAll(' . $this->tableID . ')">';
-      
          if(!empty($this->selectedActions))
          {
-            $pb .= ', Zaznaczone: ';
+            $pb .= 'Zaznaczone: ';
          
             foreach($this->selectedActions as $action)
             {
@@ -214,7 +211,7 @@ class ACPTable
             
                $basePage = SiteURI($basePage);
             
-               $pb .= '<input type="button" value="' . $label . '" onclick="return TableAction(' . $this->tableID . ',\'' . $basePage . '\')"> ';
+               $pb .= '<input type="button" value="' . $label . '" onclick="TableAction(' . $this->tableID . ',\'' . $basePage . '\')"> ';
             }
          }
          
@@ -227,7 +224,7 @@ class ACPTable
       
       if($this->isCheckbox)
       {
-         $h .= '<th></th>';
+         $h .= '<th><input type="checkbox" title="Zaznacz/odznacz wszystkie" onclick="TableChangeSelection(' . $this->tableID . ', true)"></th>';
       }
       
       foreach($this->header as $headerLabel)
@@ -241,7 +238,7 @@ class ACPTable
       
       $t .= $pb;
       
-      $t .= '<table>';
+      $t .= '<table id="acptable-' . $this->tableID . '">';
       
       $t .= '<thead>' . $h . '</thead>';
       $t .= '<tfoot>' . $h . '</tfoot>';
