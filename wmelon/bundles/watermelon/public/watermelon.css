@@ -12,41 +12,68 @@
 
 .errorBox
 {
-   border: 1px solid #B65;
-   background: #FA9 url('img/errorIcon.png') no-repeat 10px center;
+   border: 1px solid #cc7766;
+   background: #ffaa99 url('img/errorIcon.png') no-repeat 10px center;
 }
 
 .warningBox
 {
-   border: 1px solid #B85;
-   background: #FE9 url('img/warningIcon.png') no-repeat 10px center;
+   border: 1px solid #cc99aa;
+   background: #ffee99 url('img/warningIcon.png') no-repeat 10px center;
 }
 
 .infoBox
 {
-   border: 1px solid #57B;
-   background: #ABF url('img/infoIcon.png') no-repeat 10px center;
+   border: 1px solid #8499d9;
+   background: #c8dfff url('img/infoIcon.png') no-repeat 10px center;
 }
 
 .tickBox
 {
-   border: 1px solid #8B5;
-   background: #CFA url('img/tickIcon.png') no-repeat 10px center;
+   border: 1px solid #97c32d;
+   background: #deeba8 url('img/tickIcon.png') no-repeat 10px center;
 }
 
 .tipBox
 {
-   border: 1px solid #AAB;
+   border: 1px solid #bbb;
    background: #f8f8f8 url('img/tipIcon.png') no-repeat 10px center;
+}
+
+.questionBox
+{
+   border: 1px solid #bbd;
+   background: #f0f0ff url('img/questionIcon.png') no-repeat 10px center;
 }
 
 .errorBox,
 .warningBox,
 .infoBox,
 .tickBox,
-.tipBox
+.tipBox,
+.questionBox
 {
    padding: 10px;
    margin: 10px;
-   padding-left: 36px;
+   padding-left: 40px;
+}
+
+.questionBox menu
+{
+   text-align: right;
+}
+
+.questionBox menu
+{
+   height: 24px;
+}
+
+.questionBox form
+{
+   display: inline;
+}
+
+.questionBox form input
+{
+   height: 16px;
 }

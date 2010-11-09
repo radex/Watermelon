@@ -322,3 +322,47 @@ function ValidEmail($email)
 {
    return preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $email) == 1;
 }
+
+/*
+ * int[] IDs(string $idString)
+ * 
+ * Converts ID string (e.g. '3' or '5,6,7') to ID-s array
+ * 
+ * All non-numbers and duplicates are removed
+ */
+
+function IDs($idString)
+{
+   $idString = explode(',', $idString);
+   
+   foreach($idString as $id)
+   {
+      // non-numbers converted to int are equal zero
+      
+      if($id === '0' || (int) $id > 0)
+      {
+         $ids[] = (int) $id;
+      }
+   }
+   
+   return array_unique($ids);
+}
+
+/*
+ * string questionBox(string $message, string $yesPage)
+ * 
+ * Composes and returns question box HTML
+ * 
+ * string $message - question (HTML) to ask
+ * string $yesPage - page (e.g. 'blog/deleteSubmit/') to redirect a browser on, when 'yes' clicked
+ */
+
+function questionBox($message, $yesPage)
+{
+   $h .= '<div class="questionBox">' . $message . '<menu>';
+   $h .= '<input type="button" value="Anuluj" onclick="history.back()" autofocus>';
+   $h .= '<form action="' . SiteURI($yesPage) . '" method="post"><input type="submit" value="Tak"></div>';
+   $h .= '</menu></div>';
+   
+   return $h;
+}
