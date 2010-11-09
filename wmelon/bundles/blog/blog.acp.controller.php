@@ -40,7 +40,6 @@ class Blog_Controller extends Controller
       $table->isPagination = false;
       $table->header = array('Tytuł', 'Treść', 'Utworzono', 'Akcje');
       $table->selectedActions[] = array('Usuń', 'blog/delete/');
-      $table->selectedActions[] = array('Edytuj', 'blog/edit/');
       
       // adding posts
       
@@ -102,6 +101,112 @@ class Blog_Controller extends Controller
       $this->model->postPost($data->title, $data->content);
       
       Watermelon::addMessage('tick', 'Dodano wpis!');
+      
+      SiteRedirect('blog');
+   }
+   
+   /*
+    * edit post
+    */
+   
+   function edit_action($id)
+   {
+      $id = (int) $id;
+      
+      // getting data
+      
+      $data = $this->model->postData($id);
+      
+      if(!$data)
+      {
+         SiteRedirect('blog');
+      }
+      
+      // displaying form
+      
+      $this->pageTitle = 'Edytuj wpis';
+      
+      $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id, 'blog/edit/' . $id);
+      $form->submitLabel = 'Zapisz';
+      
+      $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px', 'value' => $data->blogpost_title));
+      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%', 'value' => $data->blogpost_content));
+      
+      echo $form->generate();
+   }
+   
+   /*
+    * edit post submit
+    */
+   
+   function editSubmit_action($id)
+   {
+      $id = (int) $id;
+      
+      // checking if exists
+      
+      if(!$this->model->postData($id))
+      {
+         SiteRedirect('blog');
+      }
+      
+      // editing
+      
+      $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id);
+      $data = $form->getAll();
+      
+      $this->model->editPost($id, $data->title, $data->content);
+      
+      Watermelon::addMessage('tick', 'Zaktualizowano wpis');
+      
+      SiteRedirect('blog');
+   }
+   
+   /*
+    * delete post
+    */
+   
+   function delete_action($ids)
+   {
+      $ids = IDs($ids);
+      
+      // if empty
+      
+      if(empty($ids))
+      {
+         SiteRedirect('blog');
+      }
+      
+      // showing question
+      
+      echo QuestionBox('Czy na pewno chcesz usunąć ' . count($ids) . ' postów?', 'blog/deleteSubmit/' . implode(',', $ids));
+   }
+   
+   /*
+    * delete post submit
+    */
+   
+   function deleteSubmit_action($ids)
+   {
+      $ids = IDs($ids);
+      
+      // if empty
+      
+      if(empty($ids))
+      {
+         SiteRedirect('blog');
+      }
+      
+      // deleting
+      
+      foreach($ids as $id)
+      {
+         $this->model->deletePost($id);
+      }
+      
+      // redirecting
+      
+      Watermelon::addMessage('tick', 'Usunięto ' . count($ids) . ' postów');
       
       SiteRedirect('blog');
    }

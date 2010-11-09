@@ -443,3 +443,11 @@ body > footer a:hover, #footer a:visited:hover
    font-size: 0.9em;
 }
 */
+
+.adminTools
+{
+   font-size: 12px;
+   font-weight: normal;
+   text-shadow: none;
+   color: #555;
+}

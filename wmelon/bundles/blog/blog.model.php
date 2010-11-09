@@ -70,4 +70,32 @@ class Blog_Model extends Model
       
       $this->db->query("INSERT INTO `__blogposts` (`blogpost_author`, `blogpost_created`, `blogpost_title`, `blogpost_content`) VALUES ('%1', '%2', '%3', '%4')", Auth::userData()->id, time(), $title, $content);
    }
+   
+   /*
+    * public void editPost(int $id, string $title, string $content)
+    * 
+    * Edits $id post, setting given data
+    */
+   
+   public function editPost($id, $title, $content)
+   {
+      $id      = (int)    $id;
+      $title   = (string) $title;
+      $content = (string) $content;
+      
+      $this->db->query("UPDATE `__blogposts` SET `blogpost_title` = '%1', `blogpost_content` = '%2' WHERE `blogpost_id` = '%3'", $title, $content, $id);
+   }
+   
+   /*
+    * public void deletePost(int $id)
+    * 
+    * Deletes a post with given ID
+    */
+   
+   public function deletePost($id)
+   {
+      $id = (int) $id;
+      
+      $this->db->query("DELETE FROM `__blogposts` WHERE `blogpost_id` = '%1'", $id);
+   }
 }

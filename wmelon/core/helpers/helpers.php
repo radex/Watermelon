@@ -349,7 +349,7 @@ function IDs($idString)
 }
 
 /*
- * string questionBox(string $message, string $yesPage)
+ * string QuestionBox(string $message, string $yesPage)
  * 
  * Composes and returns question box HTML
  * 
@@ -357,7 +357,7 @@ function IDs($idString)
  * string $yesPage - page (e.g. 'blog/deleteSubmit/') to redirect a browser on, when 'yes' clicked
  */
 
-function questionBox($message, $yesPage)
+function QuestionBox($message, $yesPage)
 {
    $h .= '<div class="questionBox">' . $message . '<menu>';
    $h .= '<input type="button" value="Anuluj" onclick="history.back()" autofocus>';
