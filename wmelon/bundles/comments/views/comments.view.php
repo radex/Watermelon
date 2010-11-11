@@ -8,6 +8,9 @@
          <strong tal:condition="php: !comment.comment_authorWebsite">${comment/comment_authorName}</strong>
       </header>
       <section>
+         <div class="comment-tools" tal:condition="php: Auth::isLogged()">
+            (linki)
+         </div>
          <? echo Textile::textile($ctx->comment->comment_text) ?>
       </section>
    </article>

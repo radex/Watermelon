@@ -459,7 +459,7 @@ class Watermelon
       $w->modulesList       = self::indexModules();            // TODO: only in debug
       $w->autoload          = array('auth', 'comments');
       $w->controllerHandler = null;
-      $w->defaultController = 'test';
+      $w->defaultController = 'blog';
       
       // other
       
@@ -485,7 +485,7 @@ class Watermelon
             array('Test!', 'user', 'card', array()),
          ));
       
-      $w->siteName   = 'Radex\'s Cave';
+      $w->siteName   = 'Watermelon';
       $w->siteSlogan = 'Slogan';
       $w->footer     = 'Testowanie <em>stopki</em>…';
       $w->blockMenus = $blockMenus;
@@ -659,7 +659,7 @@ class Watermelon
       
       if($appType == self::AppType_Admin)
       {
-         $defaultController = 'foo';            //TODO: change it
+         $defaultController = 'blog';            //TODO: change it
       }
       else
       {

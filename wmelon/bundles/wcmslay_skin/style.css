@@ -373,6 +373,13 @@ body > footer a:hover, #footer a:visited:hover
    padding-left: 90px;
 }
 
+.comment-tools
+{
+   font-size: .9em;
+   text-align: right;
+   color: #888;
+}
+
 /*
 
 .post_quote
@@ -387,33 +394,6 @@ body > footer a:hover, #footer a:visited:hover
    overflow: auto;
    height: 100%;
 }
-
-.posttools
-{
-   font-size: .9em;
-   text-align: right;
-   padding-right: 110px;
-   color: #888;
-}
-
-.posttools_n
-{
-   font-size: .9em;
-   text-align: right;
-   color: #888;
-}
-
-.posttools a
-{
-   color: #888;
-}
-
-.posttools a:hover
-{
-   background: 0;
-   color: #888;
-}
-
 
 .userprofile
 {
