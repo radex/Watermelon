@@ -166,72 +166,30 @@ class Blog_Controller extends Controller
     * delete post
     */
    
-   function delete_action($ids)
+   function delete_action($ids, $backPage)
    {
-      $ids = IDs($ids);
-      
-      // if empty
-      
-      if(empty($ids))
-      {
-         SiteRedirect('blog');
-      }
-      
-      // showing question
-      
-      echo QuestionBox('Czy na pewno chcesz usunąć ' . count($ids) . ' postów?', 'blog/deleteSubmit/' . implode(',', $ids));
-      
-      /*
-      AdminQuick::delete($ids, 'blog',
-         function($ids, &$model)
+      AdminQuick::delete($ids, $backPage, 'blog',
+         function($ids, $cnt)
          {
             return 'Czy na pewno chcesz usunąć ' . count($ids) . ' postów?';
          });
-         
-         idea
-      */
+      
    }
    
    /*
     * delete post submit
     */
    
-   function deleteSubmit_action($ids)
+   function deleteSubmit_action($ids, $backPage)
    {
-      $ids = IDs($ids);
-      
-      // if empty
-      
-      if(empty($ids))
-      {
-         SiteRedirect('blog');
-      }
-      
-      // deleting
-      
-      foreach($ids as $id)
-      {
-         $this->model->deletePost($id);
-      }
-      
-      // redirecting
-      
-      $this->addMessage('tick', 'Usunięto ' . count($ids) . ' postów');
-      
-      SiteRedirect('blog');
-      
-      /*
-      AdminQuick::deleteSubmit($ids, 'blog',
-         function($id, &$model)
+      AdminQuick::deleteSubmit($ids, $backPage, 'blog',
+         function($id, $model)
          {
             $model->deletePost($id);
          },
          function($count)
          {
-            return 'Usunięto ' . count($ids) . ' postów';
+            return 'Usunięto ' . $count . ' postów';
          });
-         
-         idea
-         */
    }
 }

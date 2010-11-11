@@ -24,6 +24,7 @@ include 'Form/Form.php';
 if(Watermelon::$appType == Watermelon::AppType_Admin)
 {
    include 'ACPTable.php';
+   include 'AdminQuick.php';
 }
 
 /*
