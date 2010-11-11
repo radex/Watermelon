@@ -27,6 +27,33 @@ class AdminQuick
    /*
     * public static void delete(string $ids, string $backPage, string $controller, $questionClosure)
     * 
+    * Generates delete page for ACP controllers
+    * 
+    * string $ids        - ID-s string passed by URL
+    * string $backPage   - base64ed page to get back to after deletion, passed by URL
+    * string $controller - name of controller, e.g. 'blog'
+    * 
+    * string $questionClosure(array $ids, Model $model) -
+    *    Closure generating question message
+    *    
+    *    array $ids   - array with ID-s to be deleted
+    *    Model $model - model of currently running controller
+    */
+   
+   /*
+    * Usage:
+   
+   function delete_action($ids, $backPage)
+   {
+      AdminQuick::delete($ids, $backPage, '__controller__',
+         function($ids, $model)
+         {
+            return '__message__';
+         });
+      
+   }
+   
+    *
     */
    
    public static function delete($ids, $backPage, $controller, $questionClosure)
@@ -42,7 +69,7 @@ class AdminQuick
       
       // showing question
       
-      $message = $questionClosure($ids, Watermelon::$controllerObject);
+      $message = $questionClosure($ids, Watermelon::$controllerObject->model);
       
       echo QuestionBox($message, $controller . '/deleteSubmit/' . implode(',', $ids) . '/' . $backPage);
    }
@@ -50,7 +77,42 @@ class AdminQuick
    /*
     * public static void deleteSubmit(string $ids, string $backPage, string $controller, $deletingClosure, $messageClosure)
     * 
+    * Generates delete submit page for ACP controllers
+    * 
+    * string $ids        - ID-s string passed by URL
+    * string $backPage   - base64ed page to get back to after deletion, passed by URL
+    * string $controller - name of controller, e.g. 'blog'
+    * 
+    * void $deletingClosure(int $id, Model $model) -
+    *    Closure deleting $id item
+    *    
+    *    int   $id    - ID of item to be deleted
+    *    Model $model - model of currently running controller
+    * 
+    * string $messageClosure(int $count)
+    *    Closure generating message that items have been deleted
+    *    
+    *    int $count - number of deleted items
     */
+    
+    /*
+     * Usage:
+    
+    function deleteSubmit_action($ids, $backPage)
+    {
+       AdminQuick::deleteSubmit($ids, $backPage, '__controller__',
+          function($id, $model)
+          {
+             $model->__deleteMethod__($id);
+          },
+          function($count)
+          {
+             return '__message__';
+          });
+    }
+    
+     * 
+     */
    
    public static function deleteSubmit($ids, $backPage, $controller, $deletingClosure, $messageClosure)
    {

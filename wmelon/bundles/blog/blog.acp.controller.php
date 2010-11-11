@@ -169,7 +169,7 @@ class Blog_Controller extends Controller
    function delete_action($ids, $backPage)
    {
       AdminQuick::delete($ids, $backPage, 'blog',
-         function($ids, $cnt)
+         function($ids, $model)
          {
             return 'Czy na pewno chcesz usunąć ' . count($ids) . ' postów?';
          });
