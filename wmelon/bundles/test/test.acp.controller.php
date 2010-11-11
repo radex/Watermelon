@@ -12,11 +12,11 @@ class Test_Controller extends Controller
    
    function questions_action()
    {
-      Watermelon::addMessage('error', 'Foo! Bar!');
-      Watermelon::addMessage('warning', 'Foo! Bar!');
-      Watermelon::addMessage('info', 'Foo! Bar!');
-      Watermelon::addMessage('tick', 'Foo! Bar!');
-      Watermelon::addMessage('tip', 'Foo! Bar!');
+      $this->addMessage('error', 'Foo! Bar!');
+      $this->addMessage('warning', 'Foo! Bar!');
+      $this->addMessage('info', 'Foo! Bar!');
+      $this->addMessage('tick', 'Foo! Bar!');
+      $this->addMessage('tip', 'Foo! Bar!');
       
       
       echo '

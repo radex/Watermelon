@@ -91,7 +91,7 @@ class Installer_Controller extends Controller
          
          if(!file_exists(WM_System . $fileName) || !isset($_SESSION['unblocking-filename']))
          {
-            Watermelon::addMessage('error', 'Hmm... Nie widzę pliku. Spróbuj jeszcze raz.');
+            $this->addMessage('error', 'Hmm... Nie widzę pliku. Spróbuj jeszcze raz.');
             
             SiteRedirect('3');
          }

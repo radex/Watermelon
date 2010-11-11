@@ -180,16 +180,16 @@ class ACPTable
          
          if($this->currentPage > 1)
          {
-            $pb .= '<a href="' . SiteURI($this->pageLink . '1') . '">Pierwsza</a> | ';
-            $pb .= '<a href="' . SiteURI($this->pageLink . ($this->currentPage - 1)) . '">Poprzednia</a> | ';
+            $pb .= '<a href="' . SiteURL($this->pageLink . '1') . '">Pierwsza</a> | ';
+            $pb .= '<a href="' . SiteURL($this->pageLink . ($this->currentPage - 1)) . '">Poprzednia</a> | ';
          }
          
          $pb .= $this->currentPage . ' | ';
          
          if($this->currentPage < $this->lastPage)
          {
-            $pb .= '<a href="' . SiteURI($this->pageLink . ($this->currentPage + 1)) . '">Następna</a> | ';
-            $pb .= '<a href="' . SiteURI($this->pageLink . $this->lastPage) . '">Ostatnia</a>';
+            $pb .= '<a href="' . SiteURL($this->pageLink . ($this->currentPage + 1)) . '">Następna</a> | ';
+            $pb .= '<a href="' . SiteURL($this->pageLink . $this->lastPage) . '">Ostatnia</a>';
          }
          
          $pb .= '</div>';
@@ -209,7 +209,7 @@ class ACPTable
             {
                list($label, $basePage) = $action;
             
-               $basePage = SiteURI($basePage);
+               $basePage = SiteURL($basePage);
             
                $pb .= '<input type="button" value="' . $label . '" onclick="TableAction(' . $this->tableID . ',\'' . $basePage . '\')"> ';
             }

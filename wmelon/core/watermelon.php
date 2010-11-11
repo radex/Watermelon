@@ -101,6 +101,15 @@ class Watermelon
    
    public static $actionName = '';
    
+   
+   /*
+    * public static Controller $controllerObject
+    * 
+    * Currently running controller object
+    */
+   
+   public static $controllerObject;
+   
    /*
     * public static object $config
     * 
@@ -143,12 +152,6 @@ class Watermelon
     */
    
    public static $config;
-   
-   /*
-    * controller object
-    */
-   
-   private static $controllerObject;
    
    /*
     * public static void addMessage(string $type, string $message)

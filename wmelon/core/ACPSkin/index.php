@@ -22,8 +22,8 @@
 <div id="container">
    <?= $this->drawSubNav() ?>
    <div id="content">
-      <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
       <?  $this->drawMessages() ?>
+      <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
       <?= $content ?>
    </div>
 </div>

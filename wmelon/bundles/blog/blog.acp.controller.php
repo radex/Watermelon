@@ -47,7 +47,7 @@ class Blog_Controller extends Controller
       {
          // content
          
-         $content = $post->blogpost_content;
+         $content = strip_tags($post->blogpost_content);
          
          if(strlen($content) > 100)
          {
@@ -84,7 +84,7 @@ class Blog_Controller extends Controller
       $form->submitLabel = 'Zapisz';
       
       $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px'));
-      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%'));
+      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em'));
       
       echo $form->generate();
    }
@@ -100,7 +100,7 @@ class Blog_Controller extends Controller
       
       $this->model->postPost($data->title, $data->content);
       
-      Watermelon::addMessage('tick', 'Dodano wpis!');
+      $this->addMessage('tick', 'Dodano wpis!');
       
       SiteRedirect('blog');
    }
@@ -157,7 +157,7 @@ class Blog_Controller extends Controller
       
       $this->model->editPost($id, $data->title, $data->content);
       
-      Watermelon::addMessage('tick', 'Zaktualizowano wpis');
+      $this->addMessage('tick', 'Zaktualizowano wpis');
       
       SiteRedirect('blog');
    }
@@ -180,6 +180,16 @@ class Blog_Controller extends Controller
       // showing question
       
       echo QuestionBox('Czy na pewno chcesz usunąć ' . count($ids) . ' postów?', 'blog/deleteSubmit/' . implode(',', $ids));
+      
+      /*
+      AdminQuick::delete($ids, 'blog',
+         function($ids, &$model)
+         {
+            return 'Czy na pewno chcesz usunąć ' . count($ids) . ' postów?';
+         });
+         
+         idea
+      */
    }
    
    /*
@@ -206,8 +216,22 @@ class Blog_Controller extends Controller
       
       // redirecting
       
-      Watermelon::addMessage('tick', 'Usunięto ' . count($ids) . ' postów');
+      $this->addMessage('tick', 'Usunięto ' . count($ids) . ' postów');
       
       SiteRedirect('blog');
+      
+      /*
+      AdminQuick::deleteSubmit($ids, 'blog',
+         function($id, &$model)
+         {
+            $model->deletePost($id);
+         },
+         function($count)
+         {
+            return 'Usunięto ' . count($ids) . ' postów';
+         });
+         
+         idea
+         */
    }
 }

@@ -97,7 +97,20 @@ abstract class Controller
    
    public $dontShowPageTitle = false;
    
-   //--
+   /*
+    * public void addMessage(string $type, string $message)
+    * 
+    * Alias for Watermelon::addMessage()
+    */
+   
+   public function addMessage($type, $message)
+   {
+      Watermelon::addMessage($type, $message);
+   }
+   
+   /*
+    * Controller
+    */
    
    public function __construct()
    {

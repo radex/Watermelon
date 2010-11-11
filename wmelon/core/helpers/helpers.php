@@ -176,13 +176,15 @@ function TranslateStructure($structure, $toType)
 }
 
 /*
- * string SiteURI(string $urn[, enum $type])
+ * string SiteURL(string $page[, enum $type])
  * 
  * Makes URI to given page of a website
  * 
  * Note that for admin control panel it's URI for ACP, not website itself
  * 
  * Specify $type if you specifically want URI for ACP/website itself
+ * 
+ * Alternative way of specifying type is to precede $page with '#/' (for website) or '%/' (for ACP)
  * 
  * string $urn  - page, e.g: 'blog/foo/bar', or '' (for main page)
  * enum   $type = {'site', 'admin'}
@@ -191,20 +193,38 @@ function TranslateStructure($structure, $toType)
  *    For anything else, URI for current app type is used
  */
 
-function SiteURI($urn = '', $type = null)
+function SiteURL($page = '', $type = null)
 {
+   // site
+   
+   if(substr($page, 0, 2) == '#/')
+   {
+      $type = 'site';
+      $page = substr($page, 2);
+   }
+   
+   // admin
+   
+   if(substr($page, 0, 2) == '%/')
+   {
+      $type = 'admin';
+      $page = substr($page, 2);
+   }
+   
+   // generating
+   
    switch($type)
    {
       case 'admin':
-         return WM_AdminURL . $urn;
+         return WM_AdminURL . $page;
       break;
       
       case 'site':
-         return WM_SiteURL . $urn;
+         return WM_SiteURL . $page;
       break;
       
       default:
-         return WM_CurrURL . $urn;
+         return WM_CurrURL . $page;
       break;
    }
 }
@@ -226,22 +246,14 @@ function Redirect($uri)
  * 
  * Redirects to $urn page of a website
  * 
- * Equivalent of Redirect(SiteURI($urn))
+ * Equivalent of Redirect(SiteURL($urn))
  * 
- * Note that for admin control panel it's URI for ACP, not website itself
- * 
- * Specify $type if you specifically want URI for ACP/website itself
- * 
- * string $urn  - page, e.g: 'blog/foo/bar', or '' (for main page)
- * enum   $type = {'site', 'admin'}
- *    For 'site', function will return URI for website itself
- *    For 'admin', URI for admin control panel is returned
- *    For anything else, URI for current app type is used
+ * Glance at SiteURL() documentation for more details
  */
 
 function SiteRedirect($urn = '', $type = null)
 {
-   Redirect(SiteURI($urn, $type));
+   Redirect(SiteURL($urn, $type));
 }
 
 /*
@@ -361,7 +373,7 @@ function QuestionBox($message, $yesPage)
 {
    $h .= '<div class="questionBox">' . $message . '<menu>';
    $h .= '<input type="button" value="Anuluj" onclick="history.back()" autofocus>';
-   $h .= '<form action="' . SiteURI($yesPage) . '" method="post"><input type="submit" value="Tak"></div>';
+   $h .= '<form action="' . SiteURL($yesPage) . '" method="post"><input type="submit" value="Tak"></div>';
    $h .= '</menu></div>';
    
    return $h;

@@ -250,7 +250,7 @@ class Form
       
       // generating
       
-      $r .= '<form action="' . SiteURI($this->actionPage) . '" method="post"' . $attributes . ">\n";
+      $r .= '<form action="' . SiteURL($this->actionPage) . '" method="post"' . $attributes . ">\n";
       $r .= '<input type="hidden" name="formID" value="' . $this->formID . '">';
       
       // items

@@ -21,8 +21,8 @@
       <?$this->drawBlockMenu(0)?>
    </div>
    <div id="content">
-      <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
       <?  $this->drawMessages() ?>
+      <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
       <?= $content ?>
    </div>
    <div id="clear"></div>

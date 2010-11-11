@@ -158,7 +158,7 @@ abstract class Skin
          
          if(!$outside)
          {
-            $URI = SiteURI($URI);
+            $URI = SiteURL($URI);
          }
          
          echo '<li>';

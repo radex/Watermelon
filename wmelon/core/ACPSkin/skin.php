@@ -77,7 +77,7 @@ class ACPSkin extends Skin
          
          // generating
          
-         echo '<li' . $currentPage . '><a href="' . SiteURI($page) . '"' . $title . '>' . $name . '</a>';
+         echo '<li' . $currentPage . '><a href="' . SiteURL($page) . '"' . $title . '>' . $name . '</a>';
       }
       
       $this->startsWith('asdasd');
@@ -89,7 +89,7 @@ class ACPSkin extends Skin
    
    protected function drawRightNav()
    {
-      echo '<li><a href="' . SiteURI('auth/logout', 'site') . '">Wyloguj</a>';
+      echo '<li><a href="' . SiteURL('auth/logout', 'site') . '">Wyloguj</a>';
    }
    
    /*
@@ -140,7 +140,7 @@ class ACPSkin extends Skin
          
          // generating
          
-         $links[] = '<a href="' . SiteURI($page) . '"' . $title . $currentPage . '>' . $name . '</a>';
+         $links[] = '<a href="' . SiteURL($page) . '"' . $title . $currentPage . '>' . $name . '</a>';
       }
       
       // final generation
