@@ -81,7 +81,6 @@ class Blog_Controller extends Controller
       $this->pageTitle = 'Nowy wpis';
       
       $form = new Form('wmelon.blog.newPost', 'blog/newSubmit', 'blog/new');
-      $form->submitLabel = 'Zapisz';
       
       $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px'));
       $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em'));
@@ -127,10 +126,9 @@ class Blog_Controller extends Controller
       $this->pageTitle = 'Edytuj wpis';
       
       $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id, 'blog/edit/' . $id);
-      $form->submitLabel = 'Zapisz';
       
       $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px', 'value' => $data->blogpost_title));
-      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%', 'value' => $data->blogpost_content));
+      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em', 'value' => $data->blogpost_content));
       
       echo $form->generate();
    }

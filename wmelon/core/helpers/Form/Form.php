@@ -271,7 +271,11 @@ class Form
       
       if($this->displaySubmitButton)
       {
-         if(!empty($this->submitLabel))
+         if(empty($this->submitLabel))
+         {
+            $submitLabel = ' value="Zapisz"';
+         }
+         else
          {
             $submitLabel = ' value="' . $this->submitLabel . '"';
          }

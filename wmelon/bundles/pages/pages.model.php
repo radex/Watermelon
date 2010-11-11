@@ -78,4 +78,48 @@ class Pages_Model extends Model
          return false;
       }
    }
+   
+   /*
+    * public void postPage(string $title, string $name, string $content)
+    * 
+    * Posts a page with given data, as currently logged user and with current time
+    */
+   
+   public function postPage($title, $name, $content)
+   {
+      $title   = (string) $title;
+      $name    = (string) $name;
+      $content = (string) $content;
+      
+      $this->db->query("INSERT INTO `__pages` (`page_author`, `page_created`, `page_title`, `page_name`, `page_content`) VALUES ('%1', '%2', '%3', '%4', '%5')", Auth::userData()->id, time(), $title, $name, $content);
+   }
+   
+   /*
+    * public void editPage(int $id, string $title, string $name, string $content)
+    * 
+    * Edits $id page, setting given data
+    */
+   
+   public function editPage($id, $title, $name, $content)
+   {
+      $id      = (int)    $id;
+      $title   = (string) $title;
+      $name    = (string) $name;
+      $content = (string) $content;
+      
+      $this->db->query("UPDATE `__pages` SET `page_title` = '%1', `page_name` = '%2', `page_content` = '%3' WHERE `page_id` = '%4'", $title, $name, $content, $id);
+   }
+   
+   /*
+    * public void deletePage(int $id)
+    * 
+    * Deletes a page with given ID
+    */
+   
+   public function deletePage($id)
+   {
+      $id = (int) $id;
+      
+      $this->db->query("DELETE FROM `__pages` WHERE `page_id` = '%1'", $id);
+   }
 }
