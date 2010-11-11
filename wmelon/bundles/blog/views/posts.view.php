@@ -7,10 +7,10 @@
          </a>
       </header>
       <tal:block tal:condition="not:post/blogpost_beginning">
-         <? echo Textile_Extension::textile($ctx->post->blogpost_content) ?>
+         <? echo Textile::textile($ctx->post->blogpost_content) ?>
       </tal:block>
       <tal:block tal:condition="post/blogpost_beginning">
-         <? echo Textile_Extension::textile($ctx->post->blogpost_beginning) ?> (...)
+         <? echo Textile::textile($ctx->post->blogpost_beginning) ?> (...)
       </tal:block>
    </article>
    <div class="blog-post-databox">

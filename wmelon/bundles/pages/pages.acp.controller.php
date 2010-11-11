@@ -34,18 +34,28 @@ class Pages_controller extends Controller
       
       $pages = $this->model->pages();
       
+      $commentsModel = Model('comments');
+      
       // table configuration
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Nazwa', 'Treść', 'Utworzono', 'Akcje');
+      $table->header = array('Tytuł', 'Nazwa', 'Treść', 'Utworzono', 'Komentarzy', 'Akcje');
       $table->selectedActions[] = array('Usuń', 'pages/delete/');
       
       // adding pages
       
       foreach($pages as $page)
       {
-         // content
+         $id = $page->page_id;
+         
+         //--
+         
+         $name  = $page->page_name;
+         $title = '<a href="#/pages/' . $name . '">' . $page->page_title . '</a>';
+         $name  = '<a href="#/pages/' . $name . '">' . $name . '</a>';
+         
+         //--
          
          $content = strip_tags($page->page_content);
          
@@ -54,21 +64,23 @@ class Pages_controller extends Controller
             $content = substr($content, 0, 100) . ' (...)';
          }
          
-         // created
+         //--
          
          $created = HumanDate($page->page_created); //TODO: + by [author]
          
          //--
          
+         $comments = $commentsModel->countCommentsFor($id, 'page');
+         
+         //--
+         
          $actions = '';
-         $actions .= '<a href="$/pages/edit/' . $page->page_id . '">Edytuj</a> | ';
-         $actions .= '<a href="$/pages/delete/' . $page->page_id . '">Usuń</a>';
+         $actions .= '<a href="$/pages/edit/' . $id . '">Edytuj</a> | ';
+         $actions .= '<a href="$/pages/delete/' . $id . '">Usuń</a>';
          
-         $name  = $page->page_name;
-         $title = '<a href="#/pages/' . $name . '">' . $page->page_title . '</a>';
-         $name  = '<a href="#/pages/' . $name . '">' . $name . '</a>';
+         //--
          
-         $table->addLine($page->page_id, $title, $name, $content, $created, $actions);
+         $table->addLine($id, $title, $name, $content, $created, $comments, $actions);
       }
       
       // displaying
@@ -115,7 +127,7 @@ class Pages_controller extends Controller
     * edit page
     */
    
-   function edit_action($id)
+   function edit_action($id, $backPage)
    {
       $id = (int) $id;
       
@@ -132,7 +144,7 @@ class Pages_controller extends Controller
       
       $this->pageTitle = 'Edytuj stronę';
       
-      $form = new Form('wmelon.pages.editPage', 'pages/editSubmit/' . $id, 'pages/edit/' . $id);
+      $form = new Form('wmelon.pages.editPage', 'pages/editSubmit/' . $id . '/' . $backPage, 'pages/edit/' . $id . '/' . $backPage);
       
       $titleArgs   = array('style' => 'width: 500px', 'value' => $data->page_title);
       $nameArgs    = array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)', 'value' => $data->page_name);
@@ -149,7 +161,7 @@ class Pages_controller extends Controller
     * edit page submit
     */
    
-   function editSubmit_action($id)
+   function editSubmit_action($id, $backPage)
    {
       $id = (int) $id;
       
@@ -162,14 +174,19 @@ class Pages_controller extends Controller
       
       // editing
       
-      $form = Form::validate('wmelon.pages.editPage', 'pages/edit/' . $id);
+      $form = Form::validate('wmelon.pages.editPage', 'pages/edit/' . $id . '/' . $backPage);
       $data = $form->getAll();
       
       $this->model->editPage($id, $data->title, $data->name, $data->content);
       
+      // redirecting
+      
       $this->addMessage('tick', 'Zaktualizowano stronę');
       
-      SiteRedirect('pages');
+      $backPage = base64_decode($backPage);
+      $backPage = empty($backPage) ? 'pages' : $backPage;
+      
+      SiteRedirect($backPage);
    }
    
    /*

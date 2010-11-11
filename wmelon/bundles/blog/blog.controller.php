@@ -61,14 +61,20 @@ class Blog_Controller extends Controller
       
       // displaying (if exists)
       
-      $this->pageTitle = $postData->blogpost_title;
-      $this->dontShowPageTitle = true;
+      $id = $postData->blogpost_id;
       
       $postData->blogpost_content = Textile::textile($postData->blogpost_content);
+      
+      $this->pageTitle = $postData->blogpost_title;
+      $this->dontShowPageTitle = true;
       
       $view = View('post');
       $view->post = $postData;
       $view->commentsView = Comments::commentsView($id, 'blogpost', 'blog/post/' . $id);
+      
+      $view->editHref = '%/blog/edit/' . $id . '/' . base64_encode('#/blog/post/' . $id);
+      $view->deleteHref = '%/blog/delete/' . $id . '/' . base64_encode('#/blog/');
+      
       $view->display();
    }
 }

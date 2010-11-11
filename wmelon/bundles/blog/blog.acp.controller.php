@@ -34,18 +34,26 @@ class Blog_Controller extends Controller
       
       $posts = $this->model->posts();
       
+      $commentsModel = Model('comments');
+      
       // table configuration
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Treść', 'Utworzono', 'Akcje');
+      $table->header = array('Tytuł', 'Treść', 'Utworzono', 'Komentarzy', 'Akcje');
       $table->selectedActions[] = array('Usuń', 'blog/delete/');
       
       // adding posts
       
       foreach($posts as $post)
       {
-         // content
+         $id = $post->blogpost_id;
+         
+         //--
+         
+         $title = '<a href="#/blog/post/' . $id . '">' . $post->blogpost_title . '</a>';
+         
+         //--
          
          $content = strip_tags($post->blogpost_content);
          
@@ -54,17 +62,23 @@ class Blog_Controller extends Controller
             $content = substr($content, 0, 100) . ' (...)';
          }
          
-         // created
+         //--
          
          $created = HumanDate($post->blogpost_created); //TODO: + by [author]
          
          //--
          
-         $actions = '';
-         $actions .= '<a href="$/blog/edit/' . $post->blogpost_id . '">Edytuj</a> | ';
-         $actions .= '<a href="$/blog/delete/' . $post->blogpost_id . '">Usuń</a>';
+         $comments = $commentsModel->countCommentsFor($id, 'blogpost');
          
-         $table->addLine($post->blogpost_id, $post->blogpost_title, $content, $created, $actions);
+         //--
+         
+         $actions = '';
+         $actions .= '<a href="$/blog/edit/' . $id . '">Edytuj</a> | ';
+         $actions .= '<a href="$/blog/delete/' . $id . '">Usuń</a>';
+         
+         //--
+         
+         $table->addLine($id, $title, $content, $created, $comments, $actions);
       }
       
       // displaying
@@ -108,7 +122,7 @@ class Blog_Controller extends Controller
     * edit post
     */
    
-   function edit_action($id)
+   function edit_action($id, $backPage)
    {
       $id = (int) $id;
       
@@ -125,7 +139,7 @@ class Blog_Controller extends Controller
       
       $this->pageTitle = 'Edytuj wpis';
       
-      $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id, 'blog/edit/' . $id);
+      $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . '/' . $backPage, 'blog/edit/' . $id . '/' . $backPage);
       
       $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px', 'value' => $data->blogpost_title));
       $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em', 'value' => $data->blogpost_content));
@@ -137,7 +151,7 @@ class Blog_Controller extends Controller
     * edit post submit
     */
    
-   function editSubmit_action($id)
+   function editSubmit_action($id, $backPage)
    {
       $id = (int) $id;
       
@@ -150,14 +164,19 @@ class Blog_Controller extends Controller
       
       // editing
       
-      $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id);
+      $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . '/' . $backPage);
       $data = $form->getAll();
       
       $this->model->editPost($id, $data->title, $data->content);
       
+      // redirecting
+      
       $this->addMessage('tick', 'Zaktualizowano wpis');
       
-      SiteRedirect('blog');
+      $backPage = base64_decode($backPage);
+      $backPage = empty($backPage) ? 'blog' : $backPage;
+      
+      SiteRedirect($backPage);
    }
    
    /*

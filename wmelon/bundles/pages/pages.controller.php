@@ -48,14 +48,20 @@ class Pages_Controller extends Controller
       
       // displaying (if exists)
       
-      $this->pageTitle = $pageData->page_title;
-      $this->dontShowPageTitle = true;
+      $id = $pageData->page_id;
       
       $pageData->page_content = Textile::textile($pageData->page_content);
+      
+      $this->pageTitle = $pageData->page_title;
+      $this->dontShowPageTitle = true;
       
       $view = View('page');
       $view->page = $pageData;
       $view->commentsView = Comments::commentsView($pageData->page_id, 'page', 'pages/index/' . $pageName);
+      
+      $view->editHref = '%/pages/edit/' . $id . '/' . base64_encode('#/pages/' . $pageData->page_name); //FIXME: and what if page name is changed?
+      $view->deleteHref = '%/pages/delete/' . $id . '/' . base64_encode('#/');
+      
       $view->display();
    }
    
