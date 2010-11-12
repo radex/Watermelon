@@ -32,7 +32,7 @@ class Blog_Model extends Model
    
    public function posts()
    {
-      return $this->db->query("SELECT * FROM `__blogposts` ORDER BY `blogpost_id` DESC");
+      return $this->db->query("SELECT * FROM `__blogposts` ORDER BY `id` DESC");
    }
    
    /*
@@ -45,7 +45,7 @@ class Blog_Model extends Model
    {
       $id = (int) $id;
       
-      $postData = $this->db->query("SELECT * FROM `__blogposts` WHERE `blogpost_id` = '%1'", $id);
+      $postData = $this->db->query("SELECT * FROM `__blogposts` WHERE `id` = '%1'", $id);
       
       if($postData->exists)
       {
@@ -68,7 +68,7 @@ class Blog_Model extends Model
       $title   = (string) $title;
       $content = (string) $content;
       
-      $this->db->query("INSERT INTO `__blogposts` (`blogpost_author`, `blogpost_created`, `blogpost_title`, `blogpost_content`) VALUES ('%1', '%2', '%3', '%4')", Auth::userData()->id, time(), $title, $content);
+      $this->db->query("INSERT INTO `__blogposts` (`author`, `created`, `title`, `content`) VALUES ('%1', '%2', '%3', '%4')", Auth::userData()->id, time(), $title, $content);
    }
    
    /*
@@ -83,7 +83,7 @@ class Blog_Model extends Model
       $title   = (string) $title;
       $content = (string) $content;
       
-      $this->db->query("UPDATE `__blogposts` SET `blogpost_title` = '%1', `blogpost_content` = '%2' WHERE `blogpost_id` = '%3'", $title, $content, $id);
+      $this->db->query("UPDATE `__blogposts` SET `title` = '%1', `content` = '%2' WHERE `id` = '%3'", $title, $content, $id);
    }
    
    /*
@@ -96,6 +96,6 @@ class Blog_Model extends Model
    {
       $id = (int) $id;
       
-      $this->db->query("DELETE FROM `__blogposts` WHERE `blogpost_id` = '%1'", $id);
+      $this->db->query("DELETE FROM `__blogposts` WHERE `id` = '%1'", $id);
    }
 }

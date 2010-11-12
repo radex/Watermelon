@@ -27,7 +27,7 @@
 class Auth_Extension extends Extension
 {
    private static $isLogged = false; // whether user session exists
-   private static $userData;         // information about logged user (key names are the same as in DB, but without user_)
+   private static $userData;         // information about logged user
    private static $privileges;       // privileges logged user has
    
    /*
@@ -106,7 +106,7 @@ class Auth_Extension extends Extension
    /*
     * public static object userData()
     * 
-    * Information about logged user (key names are the same as in DB, but without user_)
+    * Information about logged user
     * 
     * NULL if not logged in
     */
@@ -162,25 +162,19 @@ class Auth_Extension extends Extension
       
       // checking password
       
-      $pass = sha1($pass . $userData->user_salt);
+      $pass = sha1($pass . $userData->salt);
       
-      if($pass !== $userData->user_password)
+      if($pass !== $userData->password)
       {
          throw new WMException('wrongPass', 'auth:wrongPass');
       }
       
       // updating `lastseen` etc.
       
-      $model->updateLastSeen($userData->user_id);
+      $model->updateLastSeen($userData->id);
       
-      foreach($userData as $key => &$value)
-      {
-         $key = substr($key, 5);
-         
-         self::$userData->$key = $value;
-      }
-      
-      self::$privileges = $model->privilegesFor($userData->user_id);
+      self::$userData   = $userData;
+      self::$privileges = $model->privilegesFor($userData->id);
       
       return true;
    }

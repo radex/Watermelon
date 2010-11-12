@@ -43,7 +43,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      return $this->db->query("SELECT `__comments`.* FROM `__comments_records` JOIN `__comments` ON `commrecord_comment` = `comment_id` WHERE `commrecord_record` = '%1' AND `commrecord_type` = '%2'", $id, $type);
+      return $this->db->query("SELECT `__comments`.* FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments_records`.`record` = '%1' AND `__comments_records`.`type` = '%2'", $id, $type);
    }
    
    /*
@@ -57,7 +57,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      return $this->db->query("SELECT * FROM `__comments_records` WHERE `commrecord_record` = '%1' AND `commrecord_type` = '%2'", $id, $type)->rows;
+      return $this->db->query("SELECT * FROM `__comments_records` WHERE `record` = '%1' AND `type` = '%2'", $id, $type)->rows;
    }
    
    /*
@@ -76,10 +76,10 @@ class Comments_Model extends Model
       $authorWebsite = htmlspecialchars($authorWebsite);
       $text          = $text;
       
-      $this->db->query("INSERT INTO `__comments` SET `comment_authorName` = '%1', `comment_authorEmail` = '%2', `comment_authorWebsite` = '%3', `comment_text` = '%4', `comment_created` = '%5'", $authorName, $authorEmail, $authorWebsite, $text, time());
+      $this->db->query("INSERT INTO `__comments` SET `authorName` = '%1', `authorEmail` = '%2', `authorWebsite` = '%3', `text` = '%4', `created` = '%5'", $authorName, $authorEmail, $authorWebsite, $text, time());
       
       $commentID = DB::insertedID();
       
-      $this->db->query("INSERT INTO `__comments_records` (`commrecord_record`, `commrecord_comment`, `commrecord_type`) VALUES ('%1', '%2', '%3')", $id, $commentID, $type);
+      $this->db->query("INSERT INTO `__comments_records` (`record`, `comment`, `type`) VALUES ('%1', '%2', '%3')", $id, $commentID, $type);
    }
 }

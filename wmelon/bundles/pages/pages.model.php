@@ -32,7 +32,7 @@ class Pages_Model extends Model
    
    public function pages()
    {
-      return $this->db->query("SELECT * FROM `__pages` ORDER BY `page_id` DESC");
+      return $this->db->query("SELECT * FROM `__pages` ORDER BY `id` DESC");
    }
    
    /*
@@ -45,7 +45,7 @@ class Pages_Model extends Model
    {
       $id = (int) $id;
       
-      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `page_id` = '%1'", $id);
+      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `id` = '%1'", $id);
       
       if($pageData->exists)
       {
@@ -67,7 +67,7 @@ class Pages_Model extends Model
    {
       $name = (string) $name;
       
-      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `page_name` = '%1'", $name);
+      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `name` = '%1'", $name);
       
       if($pageData->exists)
       {
@@ -91,7 +91,7 @@ class Pages_Model extends Model
       $name    = (string) $name;
       $content = (string) $content;
       
-      $this->db->query("INSERT INTO `__pages` (`page_author`, `page_created`, `page_title`, `page_name`, `page_content`) VALUES ('%1', '%2', '%3', '%4', '%5')", Auth::userData()->id, time(), $title, $name, $content);
+      $this->db->query("INSERT INTO `__pages` (`author`, `created`, `title`, `name`, `content`) VALUES ('%1', '%2', '%3', '%4', '%5')", Auth::userData()->id, time(), $title, $name, $content);
    }
    
    /*
@@ -107,7 +107,7 @@ class Pages_Model extends Model
       $name    = (string) $name;
       $content = (string) $content;
       
-      $this->db->query("UPDATE `__pages` SET `page_title` = '%1', `page_name` = '%2', `page_content` = '%3' WHERE `page_id` = '%4'", $title, $name, $content, $id);
+      $this->db->query("UPDATE `__pages` SET `title` = '%1', `name` = '%2', `content` = '%3' WHERE `id` = '%4'", $title, $name, $content, $id);
    }
    
    /*
@@ -120,6 +120,6 @@ class Pages_Model extends Model
    {
       $id = (int) $id;
       
-      $this->db->query("DELETE FROM `__pages` WHERE `page_id` = '%1'", $id);
+      $this->db->query("DELETE FROM `__pages` WHERE `id` = '%1'", $id);
    }
 }

@@ -3,15 +3,15 @@
    <h1>Komentarze</h1>
    <article class="comment" tal:repeat="comment comments" tal:condition="php: comments.exists">
       <header>
-         <img src="http://gravatar.com/avatar/<? echo md5($ctx->comment->comment_authorEmail) ?>?s=64&d=mm" /><br />
-         <strong tal:condition="php: comment.comment_authorWebsite"><a href="${comment/comment_authorWebsite}" rel="nofollow">${comment/comment_authorName}</a></strong>
-         <strong tal:condition="php: !comment.comment_authorWebsite">${comment/comment_authorName}</strong>
+         <img src="http://gravatar.com/avatar/<? echo md5($ctx->comment->authorEmail) ?>?s=64&d=mm" /><br />
+         <strong tal:condition="php: comment.authorWebsite"><a href="${comment/authorWebsite}" rel="nofollow">${comment/authorName}</a></strong>
+         <strong tal:condition="php: !comment.authorWebsite">${comment/authorName}</strong>
       </header>
       <section>
          <div class="comment-tools" tal:condition="php: Auth::isLogged()">
             (linki)
          </div>
-         <? echo Textile::textile($ctx->comment->comment_text) ?>
+         <? echo Textile::textile($ctx->comment->text) ?>
       </section>
    </article>
    

@@ -36,7 +36,7 @@ class Auth_Model extends Model
    {
       $login = (string) $login;
       
-      $userData = $this->db->query("SELECT * FROM `__users` WHERE `user_login` = '%1'", $login);
+      $userData = $this->db->query("SELECT * FROM `__users` WHERE `login` = '%1'", $login);
       
       if(!$userData->exists)
       {
@@ -60,7 +60,7 @@ class Auth_Model extends Model
    {
       $uid = (int) $uid;
       
-      $userData = $this->db->query("SELECT * FROM `__users` WHERE `user_id` = '%1'", $uid);
+      $userData = $this->db->query("SELECT * FROM `__users` WHERE `id` = '%1'", $uid);
       
       if(!$userData->exists)
       {
@@ -82,7 +82,7 @@ class Auth_Model extends Model
    {
       $uid = (int) $uid;
       
-      $this->db->query("UPDATE `__users` SET `user_lastseen` = '%2' WHERE `user_id` = '%1'", $uid, time());
+      $this->db->query("UPDATE `__users` SET `lastseen` = '%2' WHERE `id` = '%1'", $uid, time());
    }
    
    /*
@@ -95,13 +95,11 @@ class Auth_Model extends Model
    {
       $uid = (int) $uid;
       
-      $result = $this->db->query("SELECT * FROM `__privileges` WHERE `privilege_user` = '%1'", $uid);
-      
-      $privileges = array();
+      $result = $this->db->query("SELECT * FROM `__privileges` WHERE `user` = '%1'", $uid);
       
       foreach($result as $privilege)
       {
-         $privileges[] = $privilege->privilege_privilege;
+         $privileges[] = $privilege->privilege;
       }
       
       return $privileges;

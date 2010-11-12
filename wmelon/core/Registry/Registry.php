@@ -93,9 +93,9 @@ class Registry
       if($isPersistent)
       {
          // inserts serialized value (for cases where value is not string)
-         // "ON DUPLICATE KEY UPDATE `registry_name`=`registry_name`" does nothing. It's just for not throwing exception if item already exists in database
+         // "ON DUPLICATE KEY UPDATE `name`=`name`" does nothing. It's just for not throwing exception if item already exists in database
          
-         DB::query("INSERT INTO `__registry` SET `registry_name` = '%1', `registry_value` = '%2' ON DUPLICATE KEY UPDATE `registry_name`=`registry_name`", $name, serialize($value));
+         DB::query("INSERT INTO `__registry` SET `name` = '%1', `value` = '%2' ON DUPLICATE KEY UPDATE `name`=`name`", $name, serialize($value));
          
          // if didn't exist and was inserted, sets isSynced to TRUE
          
@@ -125,8 +125,8 @@ class Registry
       
       if(self::$items[$name]->isPersistent && !self::$items[$name]->isSynced)
       {
-         $value = DB::query("SELECT `registry_value` FROM `__registry` WHERE `registry_name` = '%1'", $name);
-         $value = $value->fetchObject()->registry_value;
+         $value = DB::query("SELECT `value` FROM `__registry` WHERE `name` = '%1'", $name);
+         $value = $value->fetchObject()->value;
          $value = unserialize($value); // value saved in database is serialized, so we have to unserialize it
          
          self::$items[$name]->value    = $value;
@@ -162,7 +162,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         DB::query("UPDATE `__registry` SET `registry_value` = '%1' WHERE `registry_name` = '%2'", serialize($value), $name);
+         DB::query("UPDATE `__registry` SET `value` = '%1' WHERE `name` = '%2'", serialize($value), $name);
       }
    }
    
@@ -189,7 +189,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", $name);
+         DB::query("DELETE FROM `__registry` WHERE `name` = '%1'", $name);
       }
       
       // deleting locally
@@ -220,7 +220,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         DB::query("DELETE FROM `__registry` WHERE `registry_name` = '%1'", $name);
+         DB::query("DELETE FROM `__registry` WHERE `name` = '%1'", $name);
       }
       
       // invalidating

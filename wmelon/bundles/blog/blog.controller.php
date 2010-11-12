@@ -61,11 +61,11 @@ class Blog_Controller extends Controller
       
       // displaying (if exists)
       
-      $id = $postData->blogpost_id;
+      $id = $postData->id;
       
-      $postData->blogpost_content = Textile::textile($postData->blogpost_content);
+      $postData->content = Textile::textile($postData->content);
       
-      $this->pageTitle = $postData->blogpost_title;
+      $this->pageTitle = $postData->title;
       $this->dontShowPageTitle = true;
       
       $view = View('post');

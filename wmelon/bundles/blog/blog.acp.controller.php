@@ -47,15 +47,15 @@ class Blog_Controller extends Controller
       
       foreach($posts as $post)
       {
-         $id = $post->blogpost_id;
+         $id = $post->id;
          
          //--
          
-         $title = '<a href="#/blog/post/' . $id . '">' . $post->blogpost_title . '</a>';
+         $title = '<a href="#/blog/post/' . $id . '">' . $post->title . '</a>';
          
          //--
          
-         $content = strip_tags($post->blogpost_content);
+         $content = strip_tags($post->content);
          
          if(strlen($content) > 100)
          {
@@ -64,7 +64,7 @@ class Blog_Controller extends Controller
          
          //--
          
-         $created = HumanDate($post->blogpost_created); //TODO: + by [author]
+         $created = HumanDate($post->created); //TODO: + by [author]
          
          //--
          
@@ -141,8 +141,8 @@ class Blog_Controller extends Controller
       
       $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . '/' . $backPage, 'blog/edit/' . $id . '/' . $backPage);
       
-      $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px', 'value' => $data->blogpost_title));
-      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em', 'value' => $data->blogpost_content));
+      $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px', 'value' => $data->title));
+      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em', 'value' => $data->content));
       
       echo $form->generate();
    }

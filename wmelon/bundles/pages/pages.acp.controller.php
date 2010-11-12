@@ -47,17 +47,17 @@ class Pages_controller extends Controller
       
       foreach($pages as $page)
       {
-         $id = $page->page_id;
+         $id = $page->id;
          
          //--
          
-         $name  = $page->page_name;
-         $title = '<a href="#/pages/' . $name . '">' . $page->page_title . '</a>';
+         $name  = $page->name;
+         $title = '<a href="#/pages/' . $name . '">' . $page->title . '</a>';
          $name  = '<a href="#/pages/' . $name . '">' . $name . '</a>';
          
          //--
          
-         $content = strip_tags($page->page_content);
+         $content = strip_tags($page->content);
          
          if(strlen($content) > 100)
          {
@@ -66,7 +66,7 @@ class Pages_controller extends Controller
          
          //--
          
-         $created = HumanDate($page->page_created); //TODO: + by [author]
+         $created = HumanDate($page->created); //TODO: + by [author]
          
          //--
          
@@ -146,9 +146,9 @@ class Pages_controller extends Controller
       
       $form = new Form('wmelon.pages.editPage', 'pages/editSubmit/' . $id . '/' . $backPage, 'pages/edit/' . $id . '/' . $backPage);
       
-      $titleArgs   = array('style' => 'width: 500px', 'value' => $data->page_title);
-      $nameArgs    = array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)', 'value' => $data->page_name);
-      $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->page_content);
+      $titleArgs   = array('style' => 'width: 500px', 'value' => $data->title);
+      $nameArgs    = array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)', 'value' => $data->name);
+      $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->content);
       
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
       $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
