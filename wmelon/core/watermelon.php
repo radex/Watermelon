@@ -457,7 +457,7 @@ class Watermelon
       // modules
       
       $w->modulesList       = self::indexModules();            // TODO: only in debug
-      $w->autoload          = array('auth', 'comments');
+      $w->autoload          = array('auth', 'comments', 'sblam');
       $w->controllerHandler = null;
       $w->defaultController = 'blog';
       

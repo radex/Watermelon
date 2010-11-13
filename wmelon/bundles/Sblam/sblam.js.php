@@ -1,6 +1,6 @@
 <?php
 
-require_once "sblamtest.php";
+require_once "sblam.php";
 
 function sblamchallange()
 {

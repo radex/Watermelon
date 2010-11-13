@@ -22,9 +22,26 @@
  * Sblam! Extension
  */
 
+include 'sblam.php';
+
 class Sblam_Extension extends Extension
 {
-   public static $apiKey = 'Lnep34ioYivirpcwy4'; //TODO: use Registry, and auto-generate
+   /*
+    * public static string $apiKey
+    * 
+    * API key for Sblam!
+    */
+   
+   public static $apiKey;
+   
+   /*
+    * onAutoload
+    */
+   
+   public static function onAutoload()
+   {
+      self::$apiKey = 'Lnep34ioYivirpcwy4'; //TODO: use Registry, and auto-generate
+   }
    
    /*
     * public static int test(string $text, string $author, string $email, string $website)
@@ -46,7 +63,27 @@ class Sblam_Extension extends Extension
       return sblamtestpost(array($text, $author, $email, $website), self::$apiKey);
    }
    
+   /*
+    * public static string reportLink()
+    * 
+    * Returns link (HTML), where user can report spam filter error
+    */
    
+   public static function reportLink()
+   {
+      return '<a href="' . sblamreporturl() . '">Zgłoś błąd filtru</a>.';
+   }
+   
+   /*
+    * public static string JS()
+    * 
+    * Returns HTML reference to JavaScript you should display after form, where you want to use Sblam!
+    */
+   
+   public static function JS()
+   {
+      return '<script src="' . WM_BundlesURL . 'sblam/sblam.js.php" type="text/javascript"></script>';
+   }
 }
 
 class Sblam extends Sblam_Extension{}

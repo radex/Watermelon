@@ -61,22 +61,23 @@ class Comments_Model extends Model
    }
    
    /*
-    * public void postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $text)
+    * public void postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $text, bool $awaitingModeration)
     * 
     * Posts a comment (for $id record of $type type of content)
     */
    
-   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $text)
+   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $text, $awaitingModeration)
    {
       $id   = (int) $id;
       $type = (string) $type;
+      $awaitingModeration = (int) $awaitingModeration;
       
       $authorName    = htmlspecialchars($authorName);
       $authorEmail   = htmlspecialchars($authorEmail);
       $authorWebsite = htmlspecialchars($authorWebsite);
       $text          = $text;
       
-      $this->db->query("INSERT INTO `__comments` SET `authorName` = '%1', `authorEmail` = '%2', `authorWebsite` = '%3', `text` = '%4', `created` = '%5'", $authorName, $authorEmail, $authorWebsite, $text, time());
+      $this->db->query("INSERT INTO `__comments` SET `authorName` = '%1', `authorEmail` = '%2', `authorWebsite` = '%3', `text` = '%4', `created` = '%5', `awaitingModeration` = '%6'", $authorName, $authorEmail, $authorWebsite, $text, time(), $awaitingModeration);
       
       $commentID = DB::insertedID();
       

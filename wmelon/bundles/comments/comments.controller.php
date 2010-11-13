@@ -42,8 +42,31 @@ class Comments_Controller extends Controller
       
       $form = Form::validate('wmelon.comments.addComment', $backPage)->getAll();
       
-      $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->text);
+      $commentStatus = Sblam::test($form->text, $form->name, $form->email, $form->website);
       
-      SiteRedirect($backPage);
+      // adding comment
+      
+      switch($commentStatus)
+      {
+         case 0:
+         case 1:
+         case -1:
+            $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->text, 1);
+            
+            $this->addMessage('tick', 'Twój komentarz zostanie sprawdzony, zanim zostanie pokazany');
+         break;
+         
+         case -2:
+            $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->text, 0);
+            
+            $this->addMessage('tick', 'Dodano komentarz');
+         break;
+         
+         case 2:
+            $this->addMessage('warning', 'Filtr uznał twój komentarz za spam. ' . Sblam::reportLink());
+         break;
+      }
+      
+      SiteRedirect($backPage); //TODO: redirect to newest comment (if successfully added)
    }
 }
