@@ -25,12 +25,30 @@
 class Comments_Model extends Model
 {
    /*
-    * public DBResult comments([string $type])
+    * public DBResult comments()
     * 
-    * List of comments for $type type of content (blog post, page, etc.) if specified, or all comments otherwise
+    * List of all comments
     */
    
-   public function comments($type = null){}
+   public function comments()
+   {
+      return $this->db->query("SELECT * FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` ORDER BY `__comments`.`id` DESC");
+      
+      //TODO: use improved ->query() when done here
+   }
+   
+   /*
+    * public object commentData(int $id)
+    * 
+    * $id comment data (with ID of record, that comment belongs to)
+    */
+   
+   public function commentData($id)
+   {
+      $id = (int) $id;
+      
+      return $this->db->query("SELECT * FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments`.`id` = '%1'", $id)->fetchObject();
+   }
    
    /*
     * public DBResult commentsFor(int $id, string $type)
@@ -82,5 +100,35 @@ class Comments_Model extends Model
       $commentID = DB::insertedID();
       
       $this->db->query("INSERT INTO `__comments_records` (`record`, `comment`, `type`) VALUES ('%1', '%2', '%3')", $id, $commentID, $type);
+   }
+   
+   /*
+    * public void editComment(int $id, string $content)
+    * 
+    * Edits $id comment, setting given data
+    */
+   
+   public function editComment($id, $content)
+   {
+      $id      = (int)    $id;
+      $content = (string) $content;
+      
+      $this->db->query("UPDATE `__comments` SET `text` = '%1' WHERE `id` = '%2'", $content, $id);
+      
+      //TODO: text  -->  content
+   }
+   
+   /*
+    * public void deleteComment(int $id)
+    * 
+    * Deletes $id comment
+    */
+   
+   public function deleteComment($id)
+   {
+      $id = (int) $id;
+      
+      $this->db->query("DELETE FROM `__comments` WHERE `id` = '%1'", $id);
+      $this->db->query("DELETE FROM `__comments_records` WHERE `comment` = '%1'", $id);
    }
 }
