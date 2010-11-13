@@ -39,7 +39,20 @@ class Comments_Extension extends Extension
       $backPage = (string) $backPage;
       
       $model    = Loader::model('comments');
-      $comments = $model->commentsFor($id, $type);
+      
+      // comments
+      
+      $commentsObj = $model->commentsFor($id, $type);
+      
+      foreach($commentsObj as $comment)
+      {
+         $comment->editHref    = '%/comments/edit/'    . $comment->id . '/' . base64_encode($backPage);
+         $comment->deleteHref  = '%/comments/delete/'  . $comment->id . '/' . base64_encode($backPage);
+         $comment->approveHref = '%/comments/approve/' . $comment->id . '/' . base64_encode($backPage);
+         $comment->rejectHref  = '%/comments/reject/'  . $comment->id . '/' . base64_encode($backPage);
+         
+         $comments[] = $comment;
+      }
       
       // form
       
@@ -59,6 +72,7 @@ class Comments_Extension extends Extension
       $view = Loader::view('comments/comments', true);
       
       $view->comments = $comments;
+      $view->areComments = $commentsObj->exists;
       $view->id = $id;
       $view->type = $type;
       $view->backPage = $backPage;

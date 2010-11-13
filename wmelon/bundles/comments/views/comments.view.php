@@ -1,28 +1,29 @@
 <?die?>
 <tal:block>
    <h1>Komentarze</h1>
-   <tal:block tal:condition="php: comments.exists" tal:repeat="comment comments">
-      
-      <article class="comment" tal:condition="php: !comment.awaitingModeration">
-         
-         <header>
-            <img src="http://gravatar.com/avatar/${php: md5(comment.authorEmail)}?s=64&d=mm" /><br />
-            <strong tal:condition="php: comment.authorWebsite"><a href="${comment/authorWebsite}" rel="nofollow">${comment/authorName}</a></strong>
-            <strong tal:condition="php: !comment.authorWebsite">${comment/authorName}</strong>
-         </header>
-         
-         <section>
-            <div class="comment-tools" tal:condition="php: Auth::isLogged()">
-               (linki)
-            </div>
-            <? echo Textile::textile($ctx->comment->text) ?>
-         </section>
-         
-      </article>
-      
-   </tal:block>
    
-   <tal:block tal:condition="php: !comments.exists">
+   <article class="comment" tal:condition="areComments" tal:repeat="comment comments">
+      <header>
+         <img src="http://gravatar.com/avatar/${php: md5(comment.authorEmail)}?s=64&d=mm" /><br />
+         <strong tal:condition="php: comment.authorWebsite"><a href="${comment/authorWebsite}" rel="nofollow">${comment/authorName}</a></strong>
+         <strong tal:condition="php: !comment.authorWebsite">${comment/authorName}</strong>
+      </header>
+      
+      <section>
+         <div class="comment-tools" tal:condition="php: Auth::isLogged()">
+            <strong tal:condition="comment/awaitingModeration">
+               Niesprawdzony!
+            </strong>
+            <a href="${comment/editHref}">[Edytuj]</a> |
+            <a href="${comment/deleteHref}">[Usuń]</a> |
+            <a href="${comment/approveHref}" tal:condition="comment/awaitingModeration">[Zatwierdź]</a>
+            <a href="${comment/rejectHref}" tal:condition="not: comment/awaitingModeration">[Odrzuć]</a>
+         </div>
+         <? echo Textile::textile($ctx->comment->text) ?>
+      </section>
+   </article>
+   
+   <tal:block tal:condition="not: areComments">
       Nie ma tutaj komentarzy. Napisz pierwszego!
    </tal:block>
    

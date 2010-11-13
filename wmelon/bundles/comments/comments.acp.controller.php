@@ -66,15 +66,26 @@ class Comments_Controller extends Controller
          
          //--
          
-         $status = '';
+         $status = $comment->awaitingModeration ? 'Niesprawdzony' : '';
          
          //TODO: <td> and <tr> attributes in Form
          
          //--
          
          $actions = '';
-         $actions .= '<a href="$/comments/edit/' . $id . '">Edytuj</a> | ';
-         $actions .= '<a href="$/comments/delete/' . $id . '">Usuń</a>';
+         $actions .= '<a href="$/comments/edit/' . $id . '">Edytuj</a>&nbsp;|&nbsp;';
+         $actions .= '<a href="$/comments/delete/' . $id . '">Usuń</a> | ';
+         
+         if($comment->awaitingModeration)
+         {
+            $actions .= '<a href="$/comments/approve/' . $id . '">Zatwierdź</a>';
+         }
+         else
+         {
+            $actions .= '<a href="$/comments/reject/' . $id . '">Odrzuć</a>';
+         }
+         
+         //TODO: mark as spam
          
          //--
          
@@ -87,7 +98,7 @@ class Comments_Controller extends Controller
    }
    
    /*
-    * edit post
+    * edit comment
     */
    
    function edit_action($id, $backPage)
@@ -115,7 +126,7 @@ class Comments_Controller extends Controller
    }
    
    /*
-    * edit post submit
+    * edit comment submit
     */
    
    function editSubmit_action($id, $backPage)
@@ -175,5 +186,33 @@ class Comments_Controller extends Controller
          {
             return 'Usunięto ' . $count . ' komentarzy';
          });
+   }
+   
+   /*
+    * approve comment
+    */
+   
+   function approve_action($id, $backPage)
+   {
+      $this->model->approve($id);
+      
+      $backPage = base64_decode($backPage);
+      $backPage = empty($backPage) ? 'comments' : $backPage;
+      
+      SiteRedirect($backPage);
+   }
+   
+   /*
+    * reject comment
+    */
+   
+   function reject_action($id, $backPage)
+   {
+      $this->model->reject($id);
+      
+      $backPage = base64_decode($backPage);
+      $backPage = empty($backPage) ? 'comments' : $backPage;
+      
+      SiteRedirect($backPage);
    }
 }

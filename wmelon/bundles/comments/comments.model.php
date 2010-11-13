@@ -131,4 +131,30 @@ class Comments_Model extends Model
       $this->db->query("DELETE FROM `__comments` WHERE `id` = '%1'", $id);
       $this->db->query("DELETE FROM `__comments_records` WHERE `comment` = '%1'", $id);
    }
+   
+   /*
+    * public void approve(int $id)
+    * 
+    * Marks $id comment as approved (not awaiting moderation)
+    */
+   
+   public function approve($id)
+   {
+      $id = (int) $id;
+      
+      $this->db->query("UPDATE `__comments` SET `awaitingModeration` = 0 WHERE `id` = '%1'", $id);
+   }
+   
+   /*
+    * public void reject(int $id)
+    * 
+    * Marks $id comment as rejected (awaiting moderation)
+    */
+   
+   public function reject($id)
+   {
+      $id = (int) $id;
+      
+      $this->db->query("UPDATE `__comments` SET `awaitingModeration` = 1 WHERE `id` = '%1'", $id);
+   }
 }
