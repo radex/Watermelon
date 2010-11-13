@@ -48,7 +48,7 @@ class Sblam_Extension extends Extension
     * 
     * Tests given text/comment/post for spam
     * 
-    * string $text, $author, $email, $website - fields to be tested. Leave NULL if a field isn't used
+    * string $text, $author, $email, $website - *names* of $_POST fields to be tested. Leave NULL if a field isn't used
     * 
     * Returns:
     *    2  - certainly a spam

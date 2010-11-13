@@ -42,7 +42,16 @@ class Comments_Controller extends Controller
       
       $form = Form::validate('wmelon.comments.addComment', $backPage)->getAll();
       
-      $commentStatus = Sblam::test($form->text, $form->name, $form->email, $form->website);
+      // testing for spam
+      
+      if(!Auth::isLogged())
+      {
+         $commentStatus = Sblam::test('text', 'name', 'email', 'website');
+      }
+      else
+      {
+         $commentStatus = -2;
+      }
       
       // adding comment
       
