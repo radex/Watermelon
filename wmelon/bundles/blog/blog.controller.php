@@ -70,7 +70,7 @@ class Blog_Controller extends Controller
       
       $view = View('post');
       $view->post = $postData;
-      $view->commentsView = Comments::commentsView($id, 'blogpost', 'blog/post/' . $id);
+      $view->commentsView = Comments::commentsView($id, 'blogpost', '#/blog/post/' . $id);
       
       $view->editHref = '%/blog/edit/' . $id . '/' . base64_encode('#/blog/post/' . $id);
       $view->deleteHref = '%/blog/delete/' . $id . '/' . base64_encode('#/blog/');

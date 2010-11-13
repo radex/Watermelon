@@ -375,9 +375,11 @@ body > footer a:hover, #footer a:visited:hover
 
 .comment-tools
 {
+   padding: 3px 7px;
+   float: right;
+   
    font-size: .9em;
-   text-align: right;
-   color: #888;
+   border: 1px solid #ccc;
 }
 
 /*

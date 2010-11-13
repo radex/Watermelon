@@ -70,7 +70,7 @@ class Pages_controller extends Controller
          
          //--
          
-         $comments = $commentsModel->countCommentsFor($id, 'page');
+         $comments = $commentsModel->countCommentsFor($id, 'page', true);
          
          //--
          

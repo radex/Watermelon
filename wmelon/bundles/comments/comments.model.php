@@ -65,17 +65,25 @@ class Comments_Model extends Model
    }
    
    /*
-    * public int countCommentsFor(int $id, string $type)
+    * public int countCommentsFor(int $id, string $type, bool $all)
     * 
     * Number of comments for $id record of $type type of content
+    * 
+    * bool $all - whether all comments shall be counted (true) or only approved ones (false)
     */
    
-   public function countCommentsFor($id, $type)
+   public function countCommentsFor($id, $type, $all)
    {
       $id   = (int) $id;
       $type = (string) $type;
+      $all  = (bool) $all;
       
-      return $this->db->query("SELECT * FROM `__comments_records` WHERE `record` = '%1' AND `type` = '%2'", $id, $type)->rows;
+      if(!$all)
+      {
+         $notAll = ' AND `__comments`.`awaitingModeration` = 0';
+      }
+      
+      return $this->db->query("SELECT `__comments`.`id` FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments_records`.`record` = '%1' AND `__comments_records`.`type` = '%2'" . $notAll, $id, $type)->rows;
    }
    
    /*

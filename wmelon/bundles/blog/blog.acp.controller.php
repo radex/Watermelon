@@ -68,7 +68,7 @@ class Blog_Controller extends Controller
          
          //--
          
-         $comments = $commentsModel->countCommentsFor($id, 'blogpost');
+         $comments = $commentsModel->countCommentsFor($id, 'blogpost', true);
          
          //--
          
