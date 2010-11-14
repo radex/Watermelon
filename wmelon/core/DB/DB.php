@@ -24,7 +24,9 @@
  * communication with MySQL database
  */
 
-include 'DBResult.php';
+include 'Result.php';
+// include 'Record.php';
+// include 'Query.php';
 
 class DB
 {

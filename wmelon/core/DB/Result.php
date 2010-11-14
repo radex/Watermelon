@@ -21,7 +21,7 @@
 /*
  * class DBResult
  * 
- * Class representing database query result
+ * Representation of database query result set
  * 
  * You can iterate through its rows using foreach (yay!)
  */
