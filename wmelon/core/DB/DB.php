@@ -160,26 +160,56 @@ class DB
     * 
     * public static int insert(string $table, array $fields)
     * 
-    * Adds record to $table
+    * Adds record to $table, and returns its ID
     * 
     * array $fields - array with column names, and field values of record to be added
     * 
     * $fields = array($columnName => $value, ...)
     */
    
+   public static function insert($table)
+   {
+      $args = func_get_args();
+      
+      if(count($args) == 1)
+      {
+         // insert(1)
+         
+         
+      }
+      else
+      {
+         // insert (2)
+         
+         $fields = $args[1];
+         
+         DBQuery::insert()->into($table)->set($fields)->execute();
+         
+         return self::insertedID();
+      }
+   }
+   
    /*
-    * public static DBResult select(string $table)
-    * public static DBResult select(string $table, int[] $ids)
     * public static DBRecord select(string $table, int $id)
     * 
-    * Selects records from $table, and returns object representing them
+    * Selects $id record from $table, and returns object representing it
     * 
-    * For select(string): selects all records
-    * For select(string, int[]): selects records with given ID-s
-    * For select(string, int): selects only record with given ID
-    * 
-    * Note that select(string, int) returns fetched object (DBRecord), and others return result set (DBResult)
+    * If record doesn't exist, FALSE is returned instead
     */
+   
+   public static function select($table, $id)
+   {
+      $result = DBQuery::select()->from($table)->where('id', $id)->execute();
+      
+      if(!$result->exists)
+      {
+         return false;
+      }
+      else
+      {
+         return $result->fetchObject();
+      }
+   }
    
    /*
     * public static void update(string $table, int $id, array $fields)
@@ -191,12 +221,44 @@ class DB
     * $fields = array($columnName => $value, ...)
     */
    
+   public static function update($table, $id, array $fields)
+   {
+      DBQuery::update()->from($table)->set($fields)->where('id', $id)->execute();
+   }
+   
    /*
     * public static void delete(string $table, int $id)
     * public static void delete(string $table, int[] $ids)
     * 
     * Deletes $id / $ids record(s) in $table
     */
+   
+   public static function delete($table, $ids)
+   {
+      // converting to array
+      
+      if(is_int($ids))
+      {
+         $ids = array($ids);
+      }
+      
+      // forming query portion
+      
+      if(count($ids) == 1)
+      {
+         $where = ' = ' . $ids[0];
+      }
+      else
+      {
+         $where = ' IN(' . implode(', ', $ids) . ')';
+      }
+      
+      // performing query
+      
+      $query = 'DELETE FROM ' . self::$prefix . $table . ' WHERE id' . $where;
+      
+      self::query(true, $query);
+   }
    
    /*******************************************************/
    

@@ -26,7 +26,7 @@ class test_Controller extends Controller
    
    function orm_action()
    {
-      
+      var_dump(DB::select('comments', 14));
       
       //--
       
