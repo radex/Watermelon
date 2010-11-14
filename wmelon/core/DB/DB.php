@@ -60,6 +60,8 @@ class DB
    
    public static $prefix;
    
+   /*******************************************************/
+   
    /*
     * public static DBResult query([bool $pure, ]string $query[, string $arg1[, string $arg2[, ...]]])
     * 
@@ -145,6 +147,59 @@ class DB
       throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error(self::$link) . '"', 'DB:queryError');
    }
    
+   /*******************************************************/
+   
+   /*
+    * public static DBRecord insert(string $table)
+    * 
+    * Returns object representing record to be added to $table
+    * 
+    * Note that it doesn't actually insert it
+    * 
+    * ---
+    * 
+    * public static int insert(string $table, array $fields)
+    * 
+    * Adds record to $table
+    * 
+    * array $fields - array with column names, and field values of record to be added
+    * 
+    * $fields = array($columnName => $value, ...)
+    */
+   
+   /*
+    * public static DBResult select(string $table)
+    * public static DBResult select(string $table, int[] $ids)
+    * public static DBRecord select(string $table, int $id)
+    * 
+    * Selects records from $table, and returns object representing them
+    * 
+    * For select(string): selects all records
+    * For select(string, int[]): selects records with given ID-s
+    * For select(string, int): selects only record with given ID
+    * 
+    * Note that select(string, int) returns fetched object (DBRecord), and others return result set (DBResult)
+    */
+   
+   /*
+    * public static void update(string $table, int $id, array $fields)
+    * 
+    * Updates $id record in $table
+    * 
+    * array $fields - array with column names, and values of fields to be updated
+    * 
+    * $fields = array($columnName => $value, ...)
+    */
+   
+   /*
+    * public static void delete(string $table, int $id)
+    * public static void delete(string $table, int[] $ids)
+    * 
+    * Deletes $id / $ids record(s) in $table
+    */
+   
+   /*******************************************************/
+   
    /*
     * public static int insertedID()
     * 
@@ -168,6 +223,8 @@ class DB
    {
       return mysql_affected_rows(self::$link);
    }
+   
+   /*******************************************************/
    
    /*
     * public static void connect()
@@ -205,6 +262,35 @@ class DB
       // setting proper charset
       
       self::query("SET NAMES 'utf8'");
+   }
+   
+   /*******************************************************/
+   
+   /*
+    * public static mixed sqlValue(mixed $value)
+    * 
+    * Returns SQL representation of $value:
+    *    if string:    adds apostrophes before and after escapes string
+    *    if int/float: returns the same
+    *    if bool:      converts to string
+    * 
+    * (method is for use of DB and DBQuery)
+    */
+   
+   public static function sqlValue($value)
+   {
+      if(is_string($value))
+      {
+         return "'" . mysql_real_escape_string($value) . "'";
+      }
+      elseif(is_bool($value))
+      {
+         return $value ? 'true' : 'false';
+      }
+      else
+      {
+         return $value;
+      }
    }
    
    /*

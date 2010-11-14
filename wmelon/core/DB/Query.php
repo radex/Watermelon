@@ -174,6 +174,8 @@ class DBQuery
       return new DBQuery('delete');
    }
    
+   /*******************************************************/
+   
    /*
     * public DBQuery from(string $table)
     * public DBQuery into(string $table)
@@ -332,7 +334,7 @@ class DBQuery
       
       // adding
       
-      $q = ' ' . $field . ' ' . $op . ' ' . $this->sqlValue($value) . ' ';
+      $q = ' ' . $field . ' ' . $op . ' ' . DB::sqlValue($value) . ' ';
       
       if(!$and)
       {
@@ -450,7 +452,7 @@ class DBQuery
             
             foreach($fields as &$field)
             {
-               $field = $this->sqlValue($field);
+               $field = DB::sqlValue($field);
             }
             
             $fields = implode(', ', $fields);
@@ -465,7 +467,7 @@ class DBQuery
             
             foreach($fields as $column => &$value)
             {
-               $value = $column . ' = ' . $this->sqlValue($value);
+               $value = $column . ' = ' . DB::sqlValue($value);
             }
             
             // adding
@@ -494,32 +496,5 @@ class DBQuery
    public function execute()
    {
       return DB::query(true, $this->toSQL());
-   }
-   
-   /*******************************************************/
-   
-   /*
-    * protected mixed sqlValue(mixed $value)
-    * 
-    * Returns SQL representation of $value:
-    *    if string:    adds apostrophes before and after escapes string
-    *    if int/float: returns the same
-    *    if bool:      converts to string
-    */
-   
-   protected function sqlValue($value)
-   {
-      if(is_string($value))
-      {
-         return "'" . mysql_real_escape_string($value) . "'";
-      }
-      elseif(is_bool($value))
-      {
-         return $value ? 'true' : 'false';
-      }
-      else
-      {
-         return $value;
-      }
    }
 }
