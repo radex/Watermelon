@@ -71,7 +71,9 @@ class DBQuery
     * Example: array('name' => 'foo', 'text' => 'bar')
     */
    
-   public $fields = array();
+   public $fields;
+   
+   //TODO: inserting multiple records
    
    /*
     * public string $where
@@ -123,7 +125,54 @@ class DBQuery
    {
       $this->table = $table;
       
-      $return $this;
+      return $this;
+   }
+   
+   /*
+    * public DBQuery set(array $fields)
+    * public DBQuery set(string $column, mixed $value[, $column, $value[, ...]])
+    * 
+    * Adds given fields names and values to ->fields
+    * 
+    * array  $fields - array of field names and values
+    * string $column - field name
+    * string $value  - field value
+    * 
+    * Examples:
+    * 
+    * set(array('x' => 'foo', 'x' => true, 'z' => 5))
+    * set('x', 'foo',
+    *     'x', true,
+    *     'z', 5)
+    * 
+    * Which produces:
+    * 
+    * (x,y,z) VALUES('foo', true, 5)        for INSERT query, or
+    * 
+    * SET x = 'foo', y = true, z = 5        for UPDATE query
+    */
+   
+   public function set()
+   {
+      $args = func_get_args();
+      
+      // adding
+      
+      if(is_array($args[0]))
+      {
+         $this->fields = $args[0];
+      }
+      else
+      {
+         for($i = 0, $j = count($args); $i < $j; $i += 2)
+         {
+            $this->fields[$args[$i]] = $args[$i + 1];
+         }
+      }
+      
+      //--
+      
+      return $this;
    }
    
    /*******************************************************/
@@ -192,7 +241,7 @@ class DBQuery
       
       if($argc == 1 && $and)
       {
-         $this->where .= $args . ' ';
+         $this->where .= $args[0] . ' ';
          
          return;
       }
@@ -248,6 +297,8 @@ class DBQuery
    
    public function andBy($field, $desc = false)
    {
+      $this->orderBy = substr($this->orderBy, 0, -1); // deleting last space char to achieve nice separation with comma
+      
       $desc = ($desc == true) ? ' DESC' : '';
       
       $this->orderBy .= ', ' . $field . $desc . ' ';
@@ -274,6 +325,97 @@ class DBQuery
       {
          $this->limit = 'LIMIT ' . $a . ', ' . $b . ' ';
       }
+      
+      return $this;
+   }
+   
+   /*******************************************************/
+   
+   /*
+    * public string toSQL()
+    * 
+    * Returns SQL representation of DBQuery object
+    */
+   
+   public function toSQL()
+   {
+      // type
+      
+      switch($this->type)
+      {
+         case self::insert:
+            $q .= 'INSERT INTO';
+         break;
+         
+         case self::select:
+         default:
+            $selectedFields = empty($this->selectedFields) ? '*' : $this->selectedFields;
+            $q .= 'SELECT ' . $selectedFields . ' FROM';
+         break;
+         
+         case self::update:
+            $q .= 'UPDATE';
+         break;
+         
+         case self::delete:
+            $q .= 'DELETE FROM';
+         break;
+      }
+      
+      // table
+      
+      $q .= ' ' . $this->table . ' ';
+      
+      // fields
+      
+      $fields = $this->fields;
+      
+      if(!empty($fields))
+      {
+         if($this->type == self::insert)
+         {
+            // column names
+            
+            $columns = array_keys($fields);
+            $columns = implode(', ', $columns);
+            
+            // field values
+            
+            foreach($fields as &$field)
+            {
+               $field = $this->sqlValue($field);
+            }
+            
+            $fields = implode(', ', $fields);
+            
+            // adding
+            
+            $q .= '(' . $columns . ') VALUES(' . $fields . ') ';
+         }
+         elseif($this->type == self::update)
+         {
+            // converting (key => val) to 'key = val'
+            
+            foreach($fields as $column => &$value)
+            {
+               $value = $column . ' = ' . $this->sqlValue($value);
+            }
+            
+            // adding
+            
+            $q .= 'SET ' . implode(', ', $fields) . ' ';
+         }
+      }
+      
+      // WHERE, ORDER BY and LIMIT clauses
+      
+      $q .= $this->where;
+      $q .= $this->orderBy;
+      $q .= $this->limit;
+      
+      // returning
+      
+      return substr($q, 0, -1);
    }
    
    /*******************************************************/
