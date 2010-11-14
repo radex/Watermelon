@@ -26,7 +26,7 @@
 
 include 'Result.php';
 // include 'Record.php';
-// include 'Query.php';
+include 'Query.php';
 
 class DB
 {
@@ -40,15 +40,32 @@ class DB
    
    public static $queriesArray = array();
    
-   //---
+   /*
+    * public static resource $link
+    * 
+    * Connection resource
+    * 
+    * Don't change
+    */
    
-   private static $link;   // resource of database (returned by mysql_connect)
-   private static $prefix; // table names prefix
+   public static $link;
    
    /*
-    * public static DBResult query(string $query[, string $arg1[, string $arg2[, ...]]])
+    * public static string $prefix
+    * 
+    * Table names prefix
+    * 
+    * Don't change
+    */
+   
+   public static $prefix;
+   
+   /*
+    * public static DBResult query([bool $pure, ]string $query[, string $arg1[, string $arg2[, ...]]])
     * 
     * Executes database query, and returns DBResult object as a result
+    * 
+    * bool $pure - if TRUE, args and '__' replacing is not performed- only "pure" query is made
     * 
     * On error: throws an exception, and (in debug mode) saves an error to self::$errorsArray
     * 
@@ -68,23 +85,44 @@ class DB
     * "SELECT `id`, `password` FROM `wcms_users` WHERE `nick` = 'radex' AND `salt` = '86fcf28678ebe8a0'"
     */
    
-   public static function query($query)
+   public static function query()
    {
-      // replacing double underscore prefix in tables' names with tables' prefix
-      
-      $query = str_replace('`__', '`' . self::$prefix, $query);
-      
-      // replacing input data palceholders (%number) with their (filtered by mysql_real_escape_string) values passed in arguments
+      // args
       
       $args = func_get_args();
-      array_shift($args);
       
-      foreach($args as &$arg)
+      if($args[0] === true) // if $pure is specified
       {
-         $arg = mysql_real_escape_string($arg, self::$link);
+         $pure  = true;
+         $query = $args[1];
+         
+         array_shift($args);
+         array_shift($args);
+      }
+      else
+      {
+         $query = $args[0];
+         
+         array_shift($args);
       }
       
-      $query = self::replaceArgs($query, $args);
+      // args and '__' replacing
+      
+      if(!$pure)
+      {
+         // replacing '__' with tables prefix
+
+         $query = str_replace('__', self::$prefix, $query);
+
+         // replacing input data palceholders (%number) with their (escaped) values passed in arguments
+         
+         foreach($args as &$arg)
+         {
+            $arg = mysql_real_escape_string($arg, self::$link);
+         }
+
+         $query = self::replaceArgs($query, $args);
+      }
       
       // saving a query if debug mode is on, and query is not made during unit testing
       

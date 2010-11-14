@@ -36,7 +36,7 @@ class DBQuery
     *    DBQuery::delete - [D]elete
     */
    
-   public $type = 0;
+   public $type = 1;
    
    const insert = 0;
    const select = 1;
@@ -106,6 +106,73 @@ class DBQuery
    public $limit;
    
    /*******************************************************/
+   
+   /*
+    * __construct(enum $type[, string $selectedFields])
+    * 
+    * enum $type = {'insert', 'select', 'update', 'delete'}
+    * 
+    * string $selectedFields - fields to be selected (only for SELECT query)
+    */
+   
+   public function __construct($type, $selectedFields = null)
+   {
+      $type = strtolower($type);
+      
+      switch($type)
+      {
+         case 'insert':
+            $type = self::insert;
+         break;
+         
+         case 'select':
+         default:
+            $type = self::select;
+         break;
+         
+         case 'update':
+            $type = self::update;
+         break;
+         
+         case 'delete':
+            $type = self::delete;
+         break;
+      }
+      
+      $this->type = $type;
+      $this->selectedFields = $selectedFields;
+   }
+   
+   /*
+    * public static DBQuery insert()
+    * public static DBQuery select([string $selectedFields])
+    * public static DBQuery update()
+    * public static DBQuery delete()
+    * 
+    * Returns new object of DBQuery of insert/select/update/delete type
+    * 
+    * string $selectedFields - fields to be selected (only for SELECT query)
+    */
+   
+   public static function insert()
+   {
+      return new DBQuery('insert');
+   }
+   
+   public static function select($selectedFields = null)
+   {
+      return new DBQuery('select', $selectedFields);
+   }
+   
+   public static function update()
+   {
+      return new DBQuery('update');
+   }
+   
+   public static function delete()
+   {
+      return new DBQuery('delete');
+   }
    
    /*
     * public DBQuery from(string $table)
@@ -364,7 +431,7 @@ class DBQuery
       
       // table
       
-      $q .= ' ' . $this->table . ' ';
+      $q .= ' ' . DB::$prefix . $this->table . ' ';
       
       // fields
       
@@ -416,6 +483,17 @@ class DBQuery
       // returning
       
       return substr($q, 0, -1);
+   }
+   
+   /*
+    * public DBResult execute()
+    * 
+    * Executes query, and returns DBResult object
+    */
+   
+   public function execute()
+   {
+      return DB::query(true, $this->toSQL());
    }
    
    /*******************************************************/

@@ -21,7 +21,56 @@ class test_Controller extends Controller
       echo '<a href="$/test/phptal">PHPTAL tests</a><br>';
       echo '<a href="$/test/form">Form generator</a><br>';
       echo '<a href="$/test/uri">URI</a><br>';
+      echo '<a href="$/test/orm">ORM</a><br>';
    }
+   
+   function orm_action()
+   {
+      
+      
+      //--
+      
+      $q = new DBQuery('asd');
+      $q->type = DBQuery::insert;
+      $q->selectedFields = 'a, b, c';
+      
+      $q = $q
+         ->into('pages')
+         ->where('name', "don't")
+         ->andWhere('id', '<', 10)
+         ->andWhere('OR id = 10')
+         ->andWhere('foo', false)
+         ->orderBy('a')
+         ->andBy('b', true)
+         ->andBy('c')
+         ->limit(10, 5)
+         ->set(array('x' => 'foo', 'y' => 5, 'z' => false))
+         ->set('a', 95.5, 'c', false)
+         ;
+      
+      var_dump($q->toSQL());
+      
+      //--
+      
+      $q = DBQuery::select('text, created')
+         ->from('comments')
+         ->where('id', '>', 15)
+         ->orderBy('authorName')
+         ->andBy('id');
+         
+      var_dump($q->toSQL());
+      
+      $q = $q->execute();
+      
+      var_dump($q);
+      
+      foreach($q as $row)
+      {
+         var_dump($row);
+      }
+   }
+   
+   //----
    
    function uri_action()
    {
