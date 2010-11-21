@@ -39,6 +39,9 @@ class Comments_Extension extends Extension
       $backPage = (string) $backPage;
       
       $model    = Loader::model('comments');
+      $auth     = Loader::model('auth');
+      
+      $users = array();
       
       // comments
       
@@ -46,10 +49,28 @@ class Comments_Extension extends Extension
       
       foreach($commentsObj as $comment)
       {
-         $comment->editHref    = '%/comments/edit/'    . $comment->id . '/' . base64_encode($backPage);
-         $comment->deleteHref  = '%/comments/delete/'  . $comment->id . '/' . base64_encode($backPage);
-         $comment->approveHref = '%/comments/approve/' . $comment->id . '/' . base64_encode($backPage);
-         $comment->rejectHref  = '%/comments/reject/'  . $comment->id . '/' . base64_encode($backPage);
+         // tools
+         
+         $linkEnding = $comment->id . '/' . base64_encode($backPage . '#comment-' . $comment->id);
+         
+         $comment->editHref    = '%/comments/edit/'    . $linkEnding;
+         $comment->deleteHref  = '%/comments/delete/'  . $comment->id . '/' . base64_encode($backPage . '#comments-link');
+         $comment->approveHref = '%/comments/approve/' . $linkEnding;
+         $comment->rejectHref  = '%/comments/reject/'  . $linkEnding;
+         
+         // if commented as logged user
+         
+         $authorID = $comment->authorID;
+         
+         if($authorID !== null)
+         {
+            if(empty($users[$authorID]))
+            {
+               $users[$authorID] = $auth->userData_id($authorID);
+            }
+         }
+         
+         //--
          
          $comments[] = $comment;
       }
@@ -62,16 +83,21 @@ class Comments_Extension extends Extension
       $form->globalMessages = false;
       $form->submitLabel = 'Zapisz';
       
-      $form->addInput('text', 'name', 'Imię');
-      $form->addInput('email', 'email', 'Email');
-      $form->addInput('text', 'website', 'Strona', false, array('labelNote' => '(Opcjonalnie)'));
-      $form->addInput('textarea', 'text', 'Treść komentarza');
+      if(!Auth::isLogged())
+      {
+         $form->addInput('text', 'name', 'Imię');
+         $form->addInput('email', 'email', 'Email');
+         $form->addInput('text', 'website', 'Strona', false, array('labelNote' => '(Opcjonalnie)'));
+      }
+      
+      $form->addInput('textarea', 'content', 'Treść komentarza');
       
       // view
       
       $view = Loader::view('comments/comments', true);
       
       $view->comments = $comments;
+      $view->users = $users;
       $view->areComments = $commentsObj->exists;
       $view->id = $id;
       $view->type = $type;

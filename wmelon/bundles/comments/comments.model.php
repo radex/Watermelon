@@ -33,8 +33,6 @@ class Comments_Model extends Model
    public function comments()
    {
       return $this->db->query("SELECT * FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` ORDER BY `__comments`.`id` DESC");
-      
-      //TODO: use improved ->query() when done here
    }
    
    /*
@@ -61,7 +59,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      return $this->db->query("SELECT `__comments`.* FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments_records`.`record` = '%1' AND `__comments_records`.`type` = '%2'", $id, $type);
+      return $this->db->query("SELECT `__comments`.* FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments_records`.`record` = '%1' AND `__comments_records`.`type` = '%2' ORDER BY `__comments`.`id`", $id, $type);
    }
    
    /*
@@ -87,19 +85,19 @@ class Comments_Model extends Model
    }
    
    /*
-    * public void postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $text, bool $awaitingModeration)
+    * public void postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $awaitingModeration)
     * 
     * Posts a comment (for $id record of $type type of content)
     */
    
-   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $text, $awaitingModeration)
+   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $content, $awaitingModeration)
    {
       $commentID = DB::insert('comments', array
          (
             'authorName'    => htmlspecialchars($authorName),
             'authorEmail'   => htmlspecialchars($authorEmail),
             'authorWebsite' => htmlspecialchars($authorWebsite),
-            'text'          => (string) $text,
+            'content'       => (string) $content,
             'created'       => time(),
             'awaitingModeration' => (int) $awaitingModeration
          ));
@@ -110,6 +108,34 @@ class Comments_Model extends Model
             'comment' => $commentID,
             'type'    => (string) $type
          ));
+      
+      return $commentID;
+   }
+   
+   /*
+    * public void postComment(int $id, string $type, string $content)
+    * 
+    * Posts a comment as currently logged user (for $id record of $type type of content)
+    */
+   
+   public function postComment_logged($id, $type, $content)
+   {
+      $commentID = DB::insert('comments', array
+         (
+            'authorID'      => Auth::userData()->id,
+            'content'       => (string) $content,
+            'created'       => time(),
+            'awaitingModeration' => false
+         ));
+      
+      DB::insert('comments_records', array
+         (
+            'record'  => (int) $id,
+            'comment' => $commentID,
+            'type'    => (string) $type
+         ));
+      
+      return $commentID;
    }
    
    /*
@@ -122,10 +148,8 @@ class Comments_Model extends Model
    {
       DB::update('comments', (int) $id, array
          (
-            'text' => $content
+            'content' => $content
          ));
-      
-      //TODO: text  -->  content
    }
    
    /*

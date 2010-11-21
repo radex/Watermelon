@@ -42,38 +42,42 @@ class Comments_Controller extends Controller
       
       $form = Form::validate('wmelon.comments.addComment', $backPage)->getAll();
       
-      // testing for spam
+      // testing for spam and adding
       
-      if(!Auth::isLogged())
+      if(!Auth::isLogged()) // if not logged in
       {
-         $commentStatus = Sblam::test('text', 'name', 'email', 'website');
+         $commentStatus = Sblam::test('content', 'name', 'email', 'website');
+      
+         // adding comment
+      
+         switch($commentStatus)
+         {
+            case 0:
+            case 1:
+            case -1:
+               $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true);
+            
+               $this->addMessage('tick', 'Twój komentarz zostanie sprawdzony, zanim zostanie pokazany');
+            break;
+         
+            case -2:
+               $commentID = $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false);
+            
+               $this->addMessage('tick', 'Dodano komentarz');
+
+               $backPage .= '#comment-' . $commentID;
+            break;
+         
+            case 2:
+               $this->addMessage('warning', 'Filtr uznał twój komentarz za spam. ' . Sblam::reportLink());
+            break;
+         }
       }
       else
       {
-         $commentStatus = -2;
-      }
-      
-      // adding comment
-      
-      switch($commentStatus)
-      {
-         case 0:
-         case 1:
-         case -1:
-            $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->text, 1);
-            
-            $this->addMessage('tick', 'Twój komentarz zostanie sprawdzony, zanim zostanie pokazany');
-         break;
+         $commentID = $this->model->postComment_logged($id, $type, $form->content);
          
-         case -2:
-            $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->text, 0);
-            
-            $this->addMessage('tick', 'Dodano komentarz');
-         break;
-         
-         case 2:
-            $this->addMessage('warning', 'Filtr uznał twój komentarz za spam. ' . Sblam::reportLink());
-         break;
+         $backPage .= '#comment-' . $commentID;
       }
       
       SiteRedirect($backPage); //TODO: redirect to newest comment (if successfully added)

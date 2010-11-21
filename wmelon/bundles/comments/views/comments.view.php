@@ -1,27 +1,41 @@
 <?die?>
 <tal:block>
-   <h1>Komentarze</h1>
+   <h1 id="comments-link">Komentarze</h1>
    
-   <article class="comment" tal:condition="areComments" tal:repeat="comment comments">
-      <header>
-         <img src="http://gravatar.com/avatar/${php: md5(comment.authorEmail)}?s=64&d=mm" /><br />
-         <strong tal:condition="php: comment.authorWebsite"><a href="${comment/authorWebsite}" rel="nofollow">${comment/authorName}</a></strong>
-         <strong tal:condition="php: !comment.authorWebsite">${comment/authorName}</strong>
-      </header>
+   <tal:block tal:condition="areComments" tal:repeat="comment comments">
+      <article class="comment" id="comment-${comment/id}" tal:condition="php: Auth::isLogged() OR !comment.awaitingModeration">
+         
+         <header tal:condition="not: comment/authorID">
+            <img src="http://gravatar.com/avatar/${php: md5(comment.authorEmail)}?s=64&d=mm" />
+            <strong tal:condition="php: comment.authorWebsite"><a href="${comment/authorWebsite}" rel="nofollow">${comment/authorName}</a></strong>
+            <strong tal:condition="php: !comment.authorWebsite">${comment/authorName}</strong>
+         </header>
+         
+         <header tal:condition="comment/authorID">
+            <img src="http://gravatar.com/avatar/<?= md5($ctx->users[$ctx->comment->authorID]->email) ?>?s=64&d=mm" />
+            <strong><?= $ctx->users[$ctx->comment->authorID]->nick ?></strong>
+         </header>
       
-      <section>
-         <div class="comment-tools" tal:condition="php: Auth::isLogged()">
-            <strong tal:condition="comment/awaitingModeration">
-               Niesprawdzony!
-            </strong>
-            <a href="${comment/editHref}">[Edytuj]</a> |
-            <a href="${comment/deleteHref}">[Usuń]</a> |
-            <a href="${comment/approveHref}" tal:condition="comment/awaitingModeration">[Zatwierdź]</a>
-            <a href="${comment/rejectHref}" tal:condition="not: comment/awaitingModeration">[Odrzuć]</a>
-         </div>
-         <? echo Textile::textile($ctx->comment->text) ?>
-      </section>
-   </article>
+         <section>
+            <div class="comment-tools" tal:condition="php: Auth::isLogged()">
+               <strong tal:condition="comment/awaitingModeration">
+                  Niesprawdzony!
+               </strong>
+               <a href="${comment/editHref}">[Edytuj]</a> |
+               <a href="${comment/deleteHref}">[Usuń]</a>
+               
+               <tal:block tal:condition="not: comment/authorID">
+                  |
+                  <a href="${comment/approveHref}" tal:condition="comment/awaitingModeration">[Zatwierdź]</a>
+                  <a href="${comment/rejectHref}" tal:condition="not: comment/awaitingModeration">[Odrzuć]</a>
+               </tal:block>
+               
+            </div>
+            <? echo Textile::textile($ctx->comment->content) ?>
+         </section>
+         
+      </article>
+   </tal:block>
    
    <tal:block tal:condition="not: areComments">
       Nie ma tutaj komentarzy. Napisz pierwszego!

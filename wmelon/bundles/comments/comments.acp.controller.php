@@ -51,7 +51,7 @@ class Comments_Controller extends Controller
          
          //--
          
-         $content = strip_tags($comment->text);
+         $content = strip_tags($comment->content);
          
          if(strlen($content) > 500)
          {
@@ -120,7 +120,7 @@ class Comments_Controller extends Controller
       
       $form = new Form('wmelon.comments.editComment', 'comments/editSubmit/' . $id . '/' . $backPage, 'comments/edit/' . $id . '/' . $backPage);
       
-      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em', 'value' => $data->text));
+      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em', 'value' => $data->content));
       
       echo $form->generate();
    }
