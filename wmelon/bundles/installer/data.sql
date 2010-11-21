@@ -2,63 +2,35 @@
 
 -- sample blog post
 
-INSERT INTO `wm_blogposts` (
-`blogpost_id` ,
-`blogpost_author` ,
-`blogpost_created` ,
-`blogpost_title` ,
-`blogpost_content` ,
-`blogpost_beginning` 
-)
-VALUES (
-NULL , '1', '%1', 'Przykładowy post', 'Jakiś dłuższy tekst z Textile\'owskim markupem', 'Jakiś wstęp'
+INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `beginning`, `content`, `author`, `created`) VALUES
+(
+   NULL, 'welcome', 'Witaj w Watermelonie!', 'Jakiś wstęp', 'Jakiś dłuższy tekst z Textile\'owskim markupem', 1, %
 );
 
 -- sample page
 
-INSERT INTO `wm_pages` (
-`page_id` ,
-`page_author` ,
-`page_created` ,
-`page_name` ,
-`page_title` ,
-`page_content` 
-)
-VALUES (
-NULL , '1', '%1', 'sample', 'Jakiś tytuł', 'Jakaś strona, może z linkami do pomocy, etc.'
+INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`) VALUES
+(
+   NULL, 'sample', 'Jakiś tytuł', 'Jakaś strona, może z linkami do pomocy, etc.', 1, %1
 );
 
 -- sample comment for these
 
-INSERT INTO `wm_comments` (
-`comment_id` ,
-`comment_authorID` ,
-`comment_authorName` ,
-`comment_authorEmail` ,
-`comment_authorWebsite` ,
-`comment_created` ,
-`comment_text` 
-)
+INSERT INTO `wm_comments` (`id`, `authorID`, `authorName`, `authorEmail`, `authorWebsite`, `created`, `content`, `awaitingModeration`)
 VALUES
-(NULL , '1', NULL , NULL , NULL , '%1', 'Jakiś fajny koment'),
-(NULL , '1', NULL , NULL , NULL , '%1', 'Inny fajny koment');
+(NULL, 1, NULL, NULL, NULL, %1, 'Jakiś fajny koment', false),
+(NULL, 1, NULL, NULL, NULL, %1, 'Inny fajny koment', false);
 
 -- and connection between
 
-INSERT INTO `wm_comments_records` (
-`commrecord_record` ,
-`commrecord_comment` ,
-`commrecord_type` 
-)
+INSERT INTO `wm_comments_records` (`record`, `comment`, `type`)
 VALUES
 ('1', '1', 'blogpost'),
 ('1', '2', 'page');
 
 -- user privileges (user itself is created in controller)
 
-INSERT INTO `wm_privileges` (
-`privilege_user`,
-`privilege_privilege`
-)
-VALUES
-('1', 'admin');
+INSERT INTO `wm_privileges` (`user`, `privilege`) VALUES
+(
+   '1', 'admin'
+);

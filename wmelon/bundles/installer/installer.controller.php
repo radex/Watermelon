@@ -491,7 +491,14 @@ CONFIG;
       $salt = substr(HashString(mt_rand()), 0, 16);
       $pass = HashString($user->pass . $salt);
       
-      DB::query("INSERT INTO `__users` (`login`, `password`, `salt`, `nick`, `lastseen`) VALUES ('%1', '%2', '%3', '%4', '%5')", $user->user, $pass, $salt, $user->user, time());
+      DB::insert('users', array
+         (
+            'login'    => $user->user
+            'password' => $pass
+            'salt'     => $salt
+            'nick'     => $user->user
+            'lastseen' => time()
+         ));
       
       // removing session and redirecting to home page
       
