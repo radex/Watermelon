@@ -34,18 +34,7 @@ class Auth_Model extends Model
    
    public function userData_login($login)
    {
-      $login = (string) $login;
-      
-      $userData = $this->db->query("SELECT * FROM `__users` WHERE `login` = '%1'", $login);
-      
-      if(!$userData->exists)
-      {
-         return false;
-      }
-      else
-      {
-         return $userData->fetchObject();
-      }
+      return DBQuery::select('users')->where('login', (string) $login)->execute()->fetchObject();
    }
    
    /*
@@ -58,18 +47,7 @@ class Auth_Model extends Model
    
    public function userData_id($uid)
    {
-      $uid = (int) $uid;
-      
-      $userData = $this->db->query("SELECT * FROM `__users` WHERE `id` = '%1'", $uid);
-      
-      if(!$userData->exists)
-      {
-         return false;
-      }
-      else
-      {
-         return $userData->fetchObject();
-      }
+      return DB::select('users', (int) $uid);
    }
    
    /*
@@ -80,9 +58,7 @@ class Auth_Model extends Model
    
    public function updateLastSeen($uid)
    {
-      $uid = (int) $uid;
-      
-      $this->db->query("UPDATE `__users` SET `lastseen` = '%2' WHERE `id` = '%1'", $uid, time());
+      DBQuery::update('users')->set('lastseen', time())->where('id', (int) $uid)->execute();
    }
    
    /*
@@ -93,9 +69,7 @@ class Auth_Model extends Model
    
    public function privilegesFor($uid)
    {
-      $uid = (int) $uid;
-      
-      $result = $this->db->query("SELECT * FROM `__privileges` WHERE `user` = '%1'", $uid);
+      $result = DBQuery::select('privileges')->where('user', (int) $uid)->execute();
       
       foreach($result as $privilege)
       {

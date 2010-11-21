@@ -32,7 +32,7 @@ class Blog_Model extends Model
    
    public function posts()
    {
-      return $this->db->query("SELECT * FROM `__blogposts` ORDER BY `id` DESC");
+      return DBQuery::select('blogposts')->orderBy('id', true)->execute();
    }
    
    /*
@@ -43,18 +43,7 @@ class Blog_Model extends Model
    
    public function postData($id)
    {
-      $id = (int) $id;
-      
-      $postData = $this->db->query("SELECT * FROM `__blogposts` WHERE `id` = '%1'", $id);
-      
-      if($postData->exists)
-      {
-         return $postData->fetchObject();
-      }
-      else
-      {
-         return false;
-      }
+      return DB::select('blogposts', (int) $id);
    }
    
    /*
@@ -65,10 +54,13 @@ class Blog_Model extends Model
    
    public function postPost($title, $content)
    {
-      $title   = (string) $title;
-      $content = (string) $content;
-      
-      $this->db->query("INSERT INTO `__blogposts` (`author`, `created`, `title`, `content`) VALUES ('%1', '%2', '%3', '%4')", Auth::userData()->id, time(), $title, $content);
+      DB::insert('blogposts', array
+         (
+            'author'  => Auth::userData()->id,
+            'created' => time(),
+            'title'   => (string) $title,
+            'content' => (string) $content
+         ));
    }
    
    /*
@@ -79,11 +71,11 @@ class Blog_Model extends Model
    
    public function editPost($id, $title, $content)
    {
-      $id      = (int)    $id;
-      $title   = (string) $title;
-      $content = (string) $content;
-      
-      $this->db->query("UPDATE `__blogposts` SET `title` = '%1', `content` = '%2' WHERE `id` = '%3'", $title, $content, $id);
+      DB::update('blogposts', (int) $id, array
+         (
+            'title'   => (string) $title,
+            'content' => (string) $content
+         ));
    }
    
    /*
@@ -94,8 +86,6 @@ class Blog_Model extends Model
    
    public function deletePost($id)
    {
-      $id = (int) $id;
-      
-      $this->db->query("DELETE FROM `__blogposts` WHERE `id` = '%1'", $id);
+      DB::delete('blogposts', (int) $id);
    }
 }

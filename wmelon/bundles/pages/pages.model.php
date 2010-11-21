@@ -32,7 +32,7 @@ class Pages_Model extends Model
    
    public function pages()
    {
-      return $this->db->query("SELECT * FROM `__pages` ORDER BY `id` DESC");
+      return DBQuery::select('pages')->orderBy('id', true)->execute();
    }
    
    /*
@@ -43,18 +43,7 @@ class Pages_Model extends Model
    
    public function pageData_id($id)
    {
-      $id = (int) $id;
-      
-      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `id` = '%1'", $id);
-      
-      if($pageData->exists)
-      {
-         return $pageData->fetchObject();
-      }
-      else
-      {
-         return false;
-      }
+      return DB::select('pages', (int) $id);
    }
    
    /*
@@ -65,18 +54,7 @@ class Pages_Model extends Model
    
    public function pageData_name($name)
    {
-      $name = (string) $name;
-      
-      $pageData = $this->db->query("SELECT * FROM `__pages` WHERE `name` = '%1'", $name);
-      
-      if($pageData->exists)
-      {
-         return $pageData->fetchObject();
-      }
-      else
-      {
-         return false;
-      }
+      return DBQuery::select('pages')->where('name', (string) $name)->execute()->fetchObject();
    }
    
    /*
@@ -87,11 +65,14 @@ class Pages_Model extends Model
    
    public function postPage($title, $name, $content)
    {
-      $title   = (string) $title;
-      $name    = (string) $name;
-      $content = (string) $content;
-      
-      $this->db->query("INSERT INTO `__pages` (`author`, `created`, `title`, `name`, `content`) VALUES ('%1', '%2', '%3', '%4', '%5')", Auth::userData()->id, time(), $title, $name, $content);
+      DB::insert('pages', array
+         (
+            'author'  => Auth::userData()->id,
+            'created' => time(),
+            'title'   => (string) $title,
+            'name'    => (string) $name,
+            'content' => (string) $content,
+         ));
    }
    
    /*
@@ -102,12 +83,12 @@ class Pages_Model extends Model
    
    public function editPage($id, $title, $name, $content)
    {
-      $id      = (int)    $id;
-      $title   = (string) $title;
-      $name    = (string) $name;
-      $content = (string) $content;
-      
-      $this->db->query("UPDATE `__pages` SET `title` = '%1', `name` = '%2', `content` = '%3' WHERE `id` = '%4'", $title, $name, $content, $id);
+      DB::update('pages', (int) $id, array
+         (
+            'title'   => (string) $title,
+            'name'    => (string) $name,
+            'content' => (string) $content
+         ));
    }
    
    /*
@@ -118,8 +99,6 @@ class Pages_Model extends Model
    
    public function deletePage($id)
    {
-      $id = (int) $id;
-      
-      $this->db->query("DELETE FROM `__pages` WHERE `id` = '%1'", $id);
+      DB::delete('pages', (int) $id);
    }
 }

@@ -94,20 +94,22 @@ class Comments_Model extends Model
    
    public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $text, $awaitingModeration)
    {
-      $id   = (int) $id;
-      $type = (string) $type;
-      $awaitingModeration = (int) $awaitingModeration;
+      $commentID = DB::insert('comments', array
+         (
+            'authorName'    => htmlspecialchars($authorName),
+            'authorEmail'   => htmlspecialchars($authorEmail),
+            'authorWebsite' => htmlspecialchars($authorWebsite),
+            'text'          => (string) $text,
+            'created'       => time(),
+            'awaitingModeration' => (int) $awaitingModeration
+         ));
       
-      $authorName    = htmlspecialchars($authorName);
-      $authorEmail   = htmlspecialchars($authorEmail);
-      $authorWebsite = htmlspecialchars($authorWebsite);
-      $text          = $text;
-      
-      $this->db->query("INSERT INTO `__comments` SET `authorName` = '%1', `authorEmail` = '%2', `authorWebsite` = '%3', `text` = '%4', `created` = '%5', `awaitingModeration` = '%6'", $authorName, $authorEmail, $authorWebsite, $text, time(), $awaitingModeration);
-      
-      $commentID = DB::insertedID();
-      
-      $this->db->query("INSERT INTO `__comments_records` (`record`, `comment`, `type`) VALUES ('%1', '%2', '%3')", $id, $commentID, $type);
+      DB::insert('comments_records', array
+         (
+            'record'  => (int) $id,
+            'comment' => $commentID,
+            'type'    => (string) $type
+         ));
    }
    
    /*
@@ -118,10 +120,10 @@ class Comments_Model extends Model
    
    public function editComment($id, $content)
    {
-      $id      = (int)    $id;
-      $content = (string) $content;
-      
-      $this->db->query("UPDATE `__comments` SET `text` = '%1' WHERE `id` = '%2'", $content, $id);
+      DB::update('comments', (int) $id, array
+         (
+            'text' => $content
+         ));
       
       //TODO: text  -->  content
    }
@@ -136,8 +138,9 @@ class Comments_Model extends Model
    {
       $id = (int) $id;
       
-      $this->db->query("DELETE FROM `__comments` WHERE `id` = '%1'", $id);
-      $this->db->query("DELETE FROM `__comments_records` WHERE `comment` = '%1'", $id);
+      DB::delete('comments', $id);
+      
+      DBQuery::delete('comments_records')->where('comment', $id)->execute();
    }
    
    /*
@@ -148,9 +151,7 @@ class Comments_Model extends Model
    
    public function approve($id)
    {
-      $id = (int) $id;
-      
-      $this->db->query("UPDATE `__comments` SET `awaitingModeration` = 0 WHERE `id` = '%1'", $id);
+      DBQuery::update('comments')->set('awaitingModeration', false)->where('id', (int) $id)->execute();
    }
    
    /*
@@ -161,8 +162,6 @@ class Comments_Model extends Model
    
    public function reject($id)
    {
-      $id = (int) $id;
-      
-      $this->db->query("UPDATE `__comments` SET `awaitingModeration` = 1 WHERE `id` = '%1'", $id);
+      DBQuery::update('comments')->set('awaitingModeration', true)->where('id', (int) $id)->execute();
    }
 }
