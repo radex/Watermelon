@@ -108,14 +108,15 @@ class DBQuery
    /*******************************************************/
    
    /*
-    * __construct(enum $type[, string $selectedFields])
+    * __construct(enum $type, string $table[, string $selectedFields])
     * 
     * enum $type = {'insert', 'select', 'update', 'delete'}
     * 
+    * string $table          - table name
     * string $selectedFields - fields to be selected (only for SELECT query)
     */
    
-   public function __construct($type, $selectedFields = null)
+   public function __construct($type, $table, $selectedFields = null)
    {
       $type = strtolower($type);
       
@@ -139,73 +140,64 @@ class DBQuery
          break;
       }
       
-      $this->type = $type;
+      $this->type  = $type;
+      $this->table = $table;
       $this->selectedFields = $selectedFields;
    }
    
    /*
-    * public static DBQuery insert()
-    * public static DBQuery select([string $selectedFields])
-    * public static DBQuery update()
-    * public static DBQuery delete()
+    * public static DBQuery insert(string $table)
+    * public static DBQuery select([string $selectedFields,] string $table)
+    * public static DBQuery update(string $table)
+    * public static DBQuery delete(string $table)
     * 
     * Returns new object of DBQuery of insert/select/update/delete type
     * 
     * string $selectedFields - fields to be selected (only for SELECT query)
+    * string $table          - table name
     */
    
-   public static function insert()
+   public static function insert($table)
    {
-      return new DBQuery('insert');
+      return new DBQuery('insert', $table);
    }
    
-   public static function select($selectedFields = null)
+   public static function select($a, $b = null)
    {
-      return new DBQuery('select', $selectedFields);
+      if($b === null)
+      {
+         $table = $a;
+      }
+      else
+      {
+         $table = $b;
+         $selectedFields = $a;
+      }
+      
+      return new DBQuery('select', $table, $selectedFields);
    }
    
-   public static function update()
+   public static function update($table)
    {
-      return new DBQuery('update');
+      return new DBQuery('update', $table);
    }
    
-   public static function delete()
+   public static function delete($table)
    {
-      return new DBQuery('delete');
+      return new DBQuery('delete', $table);
    }
    
    /*******************************************************/
    
    /*
-    * public DBQuery from(string $table)
-    * public DBQuery into(string $table)
-    * 
-    * Sets ->table to $table
-    */
-   
-   public function from($table)
-   {
-      $this->table = $table;
-      
-      return $this;
-   }
-   
-   public function into($table)
-   {
-      $this->table = $table;
-      
-      return $this;
-   }
-   
-   /*
-    * public DBQuery set(array $fields)
+    * public DBQuery set(array/object $fields)
     * public DBQuery set(string $column, mixed $value[, $column, $value[, ...]])
     * 
     * Adds given fields names and values to ->fields
     * 
-    * array  $fields - array of field names and values
-    * string $column - field name
-    * string $value  - field value
+    * array/object $fields - array/object of field names and values
+    * string       $column - field name
+    * string       $value  - field value
     * 
     * Examples:
     * 
@@ -230,6 +222,10 @@ class DBQuery
       if(is_array($args[0]))
       {
          $this->fields = $args[0];
+      }
+      elseif(is_object($args[0]))
+      {
+         $this->fields = (array) $args[0];
       }
       else
       {
@@ -402,6 +398,7 @@ class DBQuery
    
    /*
     * public string toSQL()
+    * public string __toString()
     * 
     * Returns SQL representation of DBQuery object
     */
@@ -487,14 +484,35 @@ class DBQuery
       return substr($q, 0, -1);
    }
    
+   public function __toString()
+   {
+      return $this->toSQL();
+   }
+   
    /*
-    * public DBResult execute()
+    * public mixed execute()
     * 
-    * Executes query, and returns DBResult object
+    * Executes query, and returns:
+    *    DBResult object     - for SELECT
+    *    affected rows (int) - for DELETE and UPDATE
+    *    inserted id   (int) - for INSERT
     */
    
    public function execute()
    {
-      return DB::query(true, $this->toSQL());
+      $result = DB::query(true, $this->toSQL());
+      
+      switch($this->type)
+      {
+         case self::select:
+            return $result;
+         
+         case self::delete:
+         case self::update:
+            return DB::affectedRows();
+         
+         case self::insert:
+            return DB::insertedID();
+      }
    }
 }

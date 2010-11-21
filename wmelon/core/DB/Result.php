@@ -33,7 +33,7 @@ class DBResult implements Iterator
     * 
     * Number of rows in result set
     * 
-    * Note that it is valid only for QUERY statement (and other returning result set), for other types of queries (like INSERT) it is always 0. Use DB::affectedRows() for them instead.
+    * Note that it is valid only for SELECT query (and other returning result set), for other types of queries (like INSERT) it is always 0. Use DB::affectedRows() for them instead.
     */
    
    public $rows = 0;
@@ -45,7 +45,7 @@ class DBResult implements Iterator
     * 
     * Handy shortcut for ($x->rows > 0)
     * 
-    * Note that it is valid only for QUERY statement (and other returning result set), for other types of queries (like INSERT) it is always 0
+    * Note that it is valid only for SELECT query (and other returning result set), for other types of queries (like INSERT) it is always 0
     */
    
    public $exists = false;
@@ -59,8 +59,9 @@ class DBResult implements Iterator
    public $res;
    
    private $index = 0;
-   
    private $valid = false;
+   
+   /*******************************************************/
    
    /*
     * constructor
@@ -78,26 +79,54 @@ class DBResult implements Iterator
    }
    
    /*
-    * public object fetchObject()
+    * public DBRecord fetch()
     * 
-    * Fetches a row as an object
+    * Fetches a row as an DBRecord object
     */
    
    public function fetchObject()
    {
-      return mysql_fetch_object($this->res);
+      return $this->fetchPure(); //TODO: DEPRECATED
+   }
+   
+   public function fetch()
+   {
+      // fetching data
+      
+      $obj = mysql_fetch_object($this->res);
+      
+      if(!$obj)
+      {
+         return false;
+      }
+      
+      // determining table name
+      // TODO: won't work properly for results with joined tables
+      
+      $tableName = mysql_field_table($this->res, 0);
+      $tableName = substr($tableName, strlen(DB::$prefix));
+      
+      // composing DBRecord
+      
+      $record = new DBRecord($tableName);
+      $record->_fields = $obj;
+      $record->_upToDate = true;
+      
+      return $record;
    }
    
    /*
-    * public array fetchArray()
+    * public object fetchPure()
     * 
-    * Fetches a row as an array
+    * Fetches a row as pure object (mysql_fetch_object())
     */
    
-   public function fetchArray()
+   public function fetchPure()
    {
-      return mysql_fetch_array($this->res);
+      return mysql_fetch_object($this->res);
    }
+   
+   /*******************************************************/
    
    /*
     * Iterator interface methods
@@ -107,7 +136,7 @@ class DBResult implements Iterator
    {
       $this->moveIndex($this->index);
       
-      return $this->fetchObject();
+      return $this->fetchPure(); //TODO: fix
    }
    
    public function key()

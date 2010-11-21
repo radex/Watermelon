@@ -25,7 +25,7 @@
  */
 
 include 'Result.php';
-// include 'Record.php';
+include 'Record.php';
 include 'Query.php';
 
 class DB
@@ -150,43 +150,21 @@ class DB
    /*******************************************************/
    
    /*
-    * public static DBRecord insert(string $table)
+    * public static DBRecord record(string $table, int $id)
     * 
-    * Returns object representing record to be added to $table
+    * Returns object representing $id record in $table
     * 
-    * Note that it doesn't actually insert it
+    * Note the difference between ::select() - this method only returns object representing it and doesn't actually select it from database (until __get() or ->update() i called on it)
     * 
-    * ---
-    * 
-    * public static int insert(string $table, array $fields)
-    * 
-    * Adds record to $table, and returns its ID
-    * 
-    * array $fields - array with column names, and field values of record to be added
-    * 
-    * $fields = array($columnName => $value, ...)
+    * Useful when updating a record, and using DBRecord is prefered to ::update()
     */
    
-   public static function insert($table)
+   public static function record($table, $id)
    {
-      $args = func_get_args();
+      $record = new DBRecord($table);
+      $record->id = $id;
       
-      if(count($args) == 1)
-      {
-         // insert(1)
-         
-         
-      }
-      else
-      {
-         // insert (2)
-         
-         $fields = $args[1];
-         
-         DBQuery::insert()->into($table)->set($fields)->execute();
-         
-         return self::insertedID();
-      }
+      return $record;
    }
    
    /*
@@ -195,35 +173,43 @@ class DB
     * Selects $id record from $table, and returns object representing it
     * 
     * If record doesn't exist, FALSE is returned instead
+    * 
+    * Note the difference between ::record(), which only returns object representing it and doesn't actually select it from database (until __get() or ->update() i called on it)
     */
    
    public static function select($table, $id)
    {
-      $result = DBQuery::select()->from($table)->where('id', $id)->execute();
-      
-      if(!$result->exists)
-      {
-         return false;
-      }
-      else
-      {
-         return $result->fetchObject();
-      }
+      return DBQuery::select($table)->where('id', $id)->execute()->fetch();
    }
    
    /*
-    * public static void update(string $table, int $id, array $fields)
+    * public static int insert(string $table, array/object $fields)
     * 
-    * Updates $id record in $table
+    * Adds record to $table, and returns its ID
     * 
-    * array $fields - array with column names, and values of fields to be updated
+    * array/object $fields - array/object with column names, and field values of record to be added
     * 
     * $fields = array($columnName => $value, ...)
     */
    
-   public static function update($table, $id, array $fields)
+   public static function insert($table, $fields)
    {
-      DBQuery::update()->from($table)->set($fields)->where('id', $id)->execute();
+      return DBQuery::insert($table)->set($fields)->execute();
+   }
+   
+   /*
+    * public static void update(string $table, int $id, array/object $fields)
+    * 
+    * Updates $id record in $table
+    * 
+    * array/object $fields - array/object with column names, and values of fields to be updated
+    * 
+    * $fields = array($columnName => $value, ...)
+    */
+   
+   public static function update($table, $id, $fields)
+   {
+      DBQuery::update($table)->set($fields)->where('id', $id)->execute();
    }
    
    /*
@@ -334,7 +320,7 @@ class DB
     * Returns SQL representation of $value:
     *    if string:    adds apostrophes before and after escapes string
     *    if int/float: returns the same
-    *    if bool:      converts to string
+    *    if bool/null: converts to string
     * 
     * (method is for use of DB and DBQuery)
     */
@@ -349,9 +335,13 @@ class DB
       {
          return $value ? 'true' : 'false';
       }
+      elseif($value === null)
+      {
+         return 'null';
+      }
       else
       {
-         return $value;
+         return (string) $value;
       }
    }
    
