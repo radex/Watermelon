@@ -36,43 +36,56 @@ class Blog_Model extends Model
    }
    
    /*
-    * public object postData(int $postID)
+    * public object postData_id(int $postID)
     * 
     * Data of a post (or FALSE if doesn't exist)
     */
    
-   public function postData($id)
+   public function postData_id($id)
    {
       return DB::select('blogposts', (int) $id);
    }
    
    /*
-    * public void postPost(string $title, string $content)
+    * public object postData_name(int $name)
+    * 
+    * Data of a post (or FALSE if doesn't exist)
+    */
+   
+   public function postData_name($name)
+   {
+      return DBQuery::select('blogposts')->where('name', (string) $name)->execute()->fetchObject();
+   }
+   
+   /*
+    * public void postPost(string $title, string $name, string $content)
     * 
     * Posts a post with given data, as currently logged user and with current time
     */
    
-   public function postPost($title, $content)
+   public function postPost($title, $name, $content)
    {
       DB::insert('blogposts', array
          (
-            'author'  => Auth::userData()->id,
-            'created' => time(),
+            'name'    => (string) $name,
             'title'   => (string) $title,
-            'content' => (string) $content
+            'content' => (string) $content,
+            'author'  => Auth::userData()->id,
+            'created' => time()
          ));
    }
    
    /*
-    * public void editPost(int $id, string $title, string $content)
+    * public void editPost(int $id, string $title, string $name, string $content)
     * 
     * Edits $id post, setting given data
     */
    
-   public function editPost($id, $title, $content)
+   public function editPost($id, $title, $name, $content)
    {
       DB::update('blogposts', (int) $id, array
          (
+            'name'    => (string) $name,
             'title'   => (string) $title,
             'content' => (string) $content
          ));

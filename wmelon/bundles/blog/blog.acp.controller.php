@@ -40,7 +40,7 @@ class Blog_Controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Treść', 'Utworzono', 'Komentarzy', 'Akcje');
+      $table->header = array('Tytuł', 'Nazwa', 'Treść', 'Napisana', 'Komentarzy', 'Akcje');
       $table->selectedActions[] = array('Usuń', 'blog/delete/');
       
       // adding posts
@@ -51,7 +51,8 @@ class Blog_Controller extends Controller
          
          //--
          
-         $title = '<a href="#/blog/post/' . $id . '">' . $post->title . '</a>';
+         $title = '<a href="#/blog/' . $post->name . '">' . $post->title . '</a>';
+         $name  = '<a href="#/blog/' . $post->name . '">' . $post->name . '</a>';
          
          //--
          
@@ -78,7 +79,7 @@ class Blog_Controller extends Controller
          
          //--
          
-         $table->addLine($id, $title, $content, $created, $comments, $actions);
+         $table->addLine($id, $title, $name, $content, $created, $comments, $actions);
       }
       
       // displaying
@@ -96,8 +97,16 @@ class Blog_Controller extends Controller
       
       $form = new Form('wmelon.blog.newPost', 'blog/newSubmit', 'blog/new');
       
-      $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px'));
-      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em'));
+      //TODO: JavaScripted autogeneration of name
+      //TODO: make sure not to use already reserved name (preferably using AJAX)
+      
+      $titleArgs   = array('style' => 'width: 500px');
+      $nameArgs    = array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)');
+      $contentArgs = array('style' => 'width: 100%; height:30em');
+      
+      $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
+      $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
+      $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
       
       echo $form->generate();
    }
@@ -111,7 +120,7 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.newPost', 'blog/new');
       $data = $form->getAll();
       
-      $this->model->postPost($data->title, $data->content);
+      $this->model->postPost($data->title, $data->name, $data->content);
       
       $this->addMessage('tick', 'Dodano wpis!');
       
@@ -128,7 +137,7 @@ class Blog_Controller extends Controller
       
       // getting data
       
-      $data = $this->model->postData($id);
+      $data = $this->model->postData_id($id);
       
       if(!$data)
       {
@@ -141,8 +150,13 @@ class Blog_Controller extends Controller
       
       $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . '/' . $backPage, 'blog/edit/' . $id . '/' . $backPage);
       
-      $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px', 'value' => $data->title));
-      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em', 'value' => $data->content));
+      $titleArgs   = array('style' => 'width: 500px', 'value' => $data->title);
+      $nameArgs    = array('style' => 'width: 500px', 'value' => $data->name, 'labelNote' => '(Część URL-u)');
+      $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->content);
+      
+      $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
+      $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
+      $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
       
       echo $form->generate();
    }
@@ -157,7 +171,7 @@ class Blog_Controller extends Controller
       
       // checking if exists
       
-      if(!$this->model->postData($id))
+      if(!$this->model->postData_id($id))
       {
          SiteRedirect('blog');
       }
@@ -167,7 +181,7 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . '/' . $backPage);
       $data = $form->getAll();
       
-      $this->model->editPost($id, $data->title, $data->content);
+      $this->model->editPost($id, $data->title, $data->name, $data->content);
       
       // redirecting
       

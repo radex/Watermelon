@@ -41,9 +41,9 @@ class Blog_Controller extends Controller
     * post
     */
    
-   public function post_action($id)
+   public function _actionHandler($name)
    {
-      if(empty($id))
+      if(empty($name))
       {
          Watermelon::displayNoPageFoundError(); //TODO: improve it, so that I can more concretely write what is not found
          return;
@@ -51,7 +51,7 @@ class Blog_Controller extends Controller
       
       // getting post data
       
-      $postData = $this->model->postData($id);
+      $postData = $this->model->postData_name($name);
       
       if(!$postData)
       {
@@ -70,9 +70,9 @@ class Blog_Controller extends Controller
       
       $view = View('post');
       $view->post = $postData;
-      $view->commentsView = Comments::commentsView($id, 'blogpost', '#/blog/post/' . $id);
+      $view->commentsView = Comments::commentsView($id, 'blogpost', '#/blog/' . $name);
       
-      $view->editHref = '%/blog/edit/' . $id . '/' . base64_encode('#/blog/post/' . $id);
+      $view->editHref = '%/blog/edit/' . $id . '/' . base64_encode('#/blog/' . $name);
       $view->deleteHref = '%/blog/delete/' . $id . '/' . base64_encode('#/blog/');
       
       $view->display();
