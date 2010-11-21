@@ -25,7 +25,6 @@
  */
 
 include 'Result.php';
-include 'Record.php';
 include 'Query.php';
 
 class DB
@@ -150,31 +149,11 @@ class DB
    /*******************************************************/
    
    /*
-    * public static DBRecord record(string $table, int $id)
+    * public static object select(string $table, int $id)
     * 
-    * Returns object representing $id record in $table
-    * 
-    * Note the difference between ::select() - this method only returns object representing it and doesn't actually select it from database (until __get() or ->update() i called on it)
-    * 
-    * Useful when updating a record, and using DBRecord is prefered to ::update()
-    */
-   
-   public static function record($table, $id)
-   {
-      $record = new DBRecord($table);
-      $record->id = $id;
-      
-      return $record;
-   }
-   
-   /*
-    * public static DBRecord select(string $table, int $id)
-    * 
-    * Selects $id record from $table, and returns object representing it
+    * Returns $id record from $table
     * 
     * If record doesn't exist, FALSE is returned instead
-    * 
-    * Note the difference between ::record(), which only returns object representing it and doesn't actually select it from database (until __get() or ->update() i called on it)
     */
    
    public static function select($table, $id)

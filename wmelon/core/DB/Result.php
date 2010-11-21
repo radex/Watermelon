@@ -26,7 +26,7 @@
  * You can iterate through its rows using foreach (yay!)
  */
 
-class DBResult implements Iterator
+class DBResult implements SeekableIterator, Countable
 {
    /*
     * public int $rows
@@ -73,57 +73,25 @@ class DBResult implements Iterator
       
       if(is_resource($res))
       {
-         $this->rows = mysql_num_rows($res);
+         $this->rows   = mysql_num_rows($res);
          $this->exists = ($this->rows > 0);
       }
    }
    
    /*
-    * public DBRecord fetch()
+    * public object fetch()
     * 
-    * Fetches a row as an DBRecord object
+    * Fetches a row as an object
     */
-   
-   public function fetchObject()
-   {
-      return $this->fetchPure(); //TODO: DEPRECATED
-   }
    
    public function fetch()
    {
-      // fetching data
-      
-      $obj = mysql_fetch_object($this->res);
-      
-      if(!$obj)
-      {
-         return false;
-      }
-      
-      // determining table name
-      // TODO: won't work properly for results with joined tables
-      
-      $tableName = mysql_field_table($this->res, 0);
-      $tableName = substr($tableName, strlen(DB::$prefix));
-      
-      // composing DBRecord
-      
-      $record = new DBRecord($tableName);
-      $record->_fields = $obj;
-      $record->_upToDate = true;
-      
-      return $record;
+      return mysql_fetch_object($this->res);
    }
    
-   /*
-    * public object fetchPure()
-    * 
-    * Fetches a row as pure object (mysql_fetch_object())
-    */
-   
-   public function fetchPure()
+   public function fetchObject()
    {
-      return mysql_fetch_object($this->res);
+      return mysql_fetch_object($this->res); //TODO: DEPRECATED
    }
    
    /*******************************************************/
@@ -134,9 +102,9 @@ class DBResult implements Iterator
    
    public function current()
    {
-      $this->moveIndex($this->index);
+      $this->seek($this->index);
       
-      return $this->fetchPure(); //TODO: fix
+      return $this->fetch(); //TODO: fix
    }
    
    public function key()
@@ -154,7 +122,17 @@ class DBResult implements Iterator
    public function rewind()
    {
       $this->index = 0;
-      $this->valid = $this->moveIndex(0);
+      
+      try
+      {
+         $this->seek(0);
+         
+         $this->valid = true;
+      }
+      catch(OutOfBoundsException $e)
+      {
+         $this->valid = false;
+      }
    }
    
    public function valid()
@@ -162,15 +140,23 @@ class DBResult implements Iterator
       return $this->valid;
    }
    
-   private function moveIndex($index)
+   public function seek($index)
    {
       if($this->rows == 0)
       {
-         return false;
+         throw new OutOfBoundsException;
       }
       else
       {
-         return mysql_data_seek($this->res, $index);
+         if(!mysql_data_seek($this->res, $index))
+         {
+            throw new OutOfBoundsException;
+         }
       }
+   }
+   
+   public function count()
+   {
+      return $this->rows;
    }
 }
