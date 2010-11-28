@@ -36,8 +36,8 @@ function TableChangeSelection(tableID, selection)
    revSelectionString = (selection) ? 'false' : 'true';
    onclickStr = 'TableChangeSelection(' + tableID + ',' + revSelectionString + ')';
    
-   $('#acptable-' + tableID + ' thead input').attr('onclick', onclickStr);
-   $('#acptable-' + tableID + ' tfoot input').attr('onclick', onclickStr);
+   $('#acptable-' + tableID + ' thead th:first-of-type').attr('onclick', onclickStr);
+   $('#acptable-' + tableID + ' tfoot th:first-of-type').attr('onclick', onclickStr);
    
    // item checkboxes
    
@@ -60,5 +60,21 @@ function TableChangeSelection(tableID, selection)
             $('#' + id).removeAttr('checked');
          }
       }
+   }
+}
+
+function TableFlip(table, checkbox)
+{
+   id = '#table' + table + '-id' + checkbox;
+   
+   isChecked = $(id).attr('checked');
+   
+   if(isChecked == true)
+   {
+      $(id).removeAttr('checked')
+   }
+   else
+   {
+      $(id).attr('checked', 'true');
    }
 }

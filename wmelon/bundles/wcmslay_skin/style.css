@@ -432,4 +432,6 @@ body > footer a:hover, #footer a:visited:hover
    font-weight: normal;
    text-shadow: none;
    color: #555;
+   
+   float: right;
 }

@@ -34,6 +34,14 @@ class Comments_Controller extends Controller
       
       $comments = $this->model->comments();
       
+      // if no comments
+      
+      if(!$comments->exists)
+      {
+         echo '<p>Brak komentarzy</p>';
+         return;
+      }
+      
       // table configuration
       
       $table = new ACPTable;

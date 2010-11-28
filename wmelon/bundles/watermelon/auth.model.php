@@ -22,6 +22,8 @@
  * Auth model
  */
 
+//TODO: rename to User
+
 class Auth_Model extends Model
 {
    /*

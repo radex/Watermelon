@@ -30,7 +30,18 @@ class Blog_Controller extends Controller
    
    public function index_action()
    {
-      $posts = $this->model->posts();
+      $postsObj = $this->model->posts();
+      $posts    = array();
+      
+      // adding edit/delete links URL information
+      
+      foreach($postsObj as $post)
+      {
+         $post->editHref   = '%/blog/edit/' .   $post->id . '/backTo:site';
+         $post->deleteHref = '%/blog/delete/' . $post->id . '/backTo:site';
+         
+         $posts[] = $post;
+      }
       
       $view = View('posts');
       $view->posts = $posts;
@@ -72,8 +83,8 @@ class Blog_Controller extends Controller
       $view->post = $postData;
       $view->commentsView = Comments::commentsView($id, 'blogpost', '#/blog/' . $name);
       
-      $view->editHref = '%/blog/edit/' . $id . '/' . base64_encode('#/blog/' . $name);
-      $view->deleteHref = '%/blog/delete/' . $id . '/' . base64_encode('#/blog/');
+      $view->editHref = '%/blog/edit/' . $id . '/backTo:site';
+      $view->deleteHref = '%/blog/delete/' . $id . '/backTo:site';
       
       $view->display();
    }

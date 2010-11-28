@@ -36,6 +36,14 @@ class Pages_controller extends Controller
       
       $commentsModel = Model('comments');
       
+      // if no pages
+      
+      if(!$pages->exists)
+      {
+         echo '<p>Brak stron. <a href="$/pages/new">Napisz pierwszą.</a></p>';
+         return;
+      }
+      
       // table configuration
       
       $table = new ACPTable;

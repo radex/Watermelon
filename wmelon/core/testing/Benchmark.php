@@ -67,7 +67,7 @@ class Benchmark
       
       unset(self::$benchmarks[$benchmarkName]);
       
-      $difference = bcsub($now, $then);
+      $difference = (int) bcsub($now, $then);
       
       // saving difference in DB if $saveToDatabase = true
       

@@ -36,6 +36,14 @@ class Blog_Controller extends Controller
       
       $commentsModel = Model('comments');
       
+      // if no blog posts
+      
+      if(!$posts->exists)
+      {
+         echo '<p>Brak wpisów. <a href="$/blog/new">Napisz pierwszy.</a></p>';
+         return;
+      }
+      
       // table configuration
       
       $table = new ACPTable;
@@ -131,9 +139,11 @@ class Blog_Controller extends Controller
     * edit post
     */
    
-   function edit_action($id, $backPage)
+   function edit_action($id)
    {
       $id = (int) $id;
+      
+      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
       
       // getting data
       
@@ -148,7 +158,7 @@ class Blog_Controller extends Controller
       
       $this->pageTitle = 'Edytuj wpis';
       
-      $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . '/' . $backPage, 'blog/edit/' . $id . '/' . $backPage);
+      $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . $backTo, 'blog/edit/' . $id . $backTo);
       
       $titleArgs   = array('style' => 'width: 500px', 'value' => $data->title);
       $nameArgs    = array('style' => 'width: 500px', 'value' => $data->name, 'labelNote' => '(Część URL-u)');
@@ -165,9 +175,11 @@ class Blog_Controller extends Controller
     * edit post submit
     */
    
-   function editSubmit_action($id, $backPage)
+   function editSubmit_action($id)
    {
       $id = (int) $id;
+      
+      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
       
       // checking if exists
       
@@ -178,7 +190,7 @@ class Blog_Controller extends Controller
       
       // editing
       
-      $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . '/' . $backPage);
+      $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . $backTo);
       $data = $form->getAll();
       
       $this->model->editPost($id, $data->title, $data->name, $data->content);
@@ -187,8 +199,7 @@ class Blog_Controller extends Controller
       
       $this->addMessage('tick', 'Zaktualizowano wpis');
       
-      $backPage = base64_decode($backPage);
-      $backPage = empty($backPage) ? 'blog' : $backPage;
+      $backPage = ($backTo == '') ? 'blog' : '#/blog/' . $data->name;
       
       SiteRedirect($backPage);
    }

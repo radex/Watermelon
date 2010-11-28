@@ -39,6 +39,6 @@ class EmailFormInput extends TextFormInput
          $errors[] = 'Wartość pola "' . $this->label . '" nie jest poprawnym adresem email';
       }
       
-      return $errors;
+      return array(true, $errors);
    }
 }

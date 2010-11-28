@@ -224,7 +224,7 @@ class ACPTable
       
       if($this->isCheckbox)
       {
-         $h .= '<th><input type="checkbox" title="Zaznacz/odznacz wszystkie" onclick="TableChangeSelection(' . $this->tableID . ', true)"></th>';
+         $h .= '<th onclick="TableChangeSelection(' . $this->tableID . ', true)"><input type="checkbox" title="Zaznacz/odznacz wszystkie"></th>';
       }
       
       foreach($this->header as $headerLabel)
@@ -238,7 +238,7 @@ class ACPTable
       
       $t .= $pb;
       
-      $t .= '<table id="acptable-' . $this->tableID . '">';
+      $t .= '<table id="acptable-' . $this->tableID . '" class="acptable">';
       
       $t .= '<thead>' . $h . '</thead>';
       $t .= '<tfoot>' . $h . '</tfoot>';
@@ -255,7 +255,8 @@ class ACPTable
             
             array_shift($line); // shifting ID out of an array
             
-            $t .= '<td title="ID: ' . $id . '"><input type="checkbox" id="table' . $this->tableID . '-id' . $id . '"></td>';
+            $t .= '<td title="ID: ' . $id . '" onclick="TableFlip(' . $this->tableID . ', ' . $id . ')">';
+            $t .= '<input type="checkbox" id="table' . $this->tableID . '-id' . $id . '"></td>';
          }
          
          // cells

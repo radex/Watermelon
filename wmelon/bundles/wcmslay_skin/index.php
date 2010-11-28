@@ -38,17 +38,21 @@
       
       <br>Zapytania wykonane do bazy danych (<?=count(DB::$queriesArray)?>):<br>
       
-      <ul style="text-align:left">
+      <ul style="text-align:left; font-size:11px">
       <?php
    
       foreach(DB::$queriesArray as $query)
       {
-         if(strlen($query) > 150)
+         if(strlen($query) > 165)
          {
-            $query = substr($query, 0, 150) . ' (...)';
+            $query = substr($query, 0, 165) . ' (...)';
          }
-      
-         echo '<li><pre>' . htmlspecialchars($query) . '</pre></li>';
+         
+         $query = htmlspecialchars($query);
+         
+         $query = preg_replace('/(`[^`]+`)/', '<em>$1</em>', $query);
+         
+         echo '<li><pre style="padding:5px">' . $query . '</pre></li>';
       }
       ?>
       </ul>
