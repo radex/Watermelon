@@ -8,6 +8,50 @@ class Test_Controller extends Controller
       
       echo '<a href="$/test/tables/">ACP Tables</a><br>';
       echo '<a href="$/test/questions/">Questions</a><br>';
+      echo '<a href="$/test/textile/">Textile</a><br>';
+   }
+   
+   function textile_action()
+   {
+      $textile = <<<TEXTILE
+*foo* _bar_ %{color:red}buhaha%
+
+Just don't
+
+"Foobar"
+
+'foobar'
+
+just don't's
+
+as (TM) asd(C) foo bar (R)
+
+foo-bar -- asd --- hehe... 
+
+1024x768
+
+<notextile>
+   <pre class="brush: php">
+      \$foo = bar('qwerty');
+   </pre>
+</notextile>
+
+<code(php)>
+   \$foo = bar('qwerty');
+   <foo></foo>
+</code>
+
+<exec>
+   return time();
+</exec>
+
+TEXTILE;
+      
+      $textile = Textile::textile($textile);
+      
+      var_dump($textile);
+      
+      echo $textile;
    }
    
    function questions_action()
