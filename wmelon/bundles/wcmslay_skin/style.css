@@ -158,23 +158,27 @@ blockquote
 
 #container
 {
+   overflow: hidden;
+   
    width: 950px;
    margin: 0 auto 50px;
+   
    background-color: #fff;
    background-image: url('img/center.png');
-   border:1px solid #000;
-   box-shadow: 0 0 30px #000;
+   box-shadow: 0 3px 30px #000;
+   border-radius: 3px;
 }
 
 #sidebar
 {
-   width: 230px;
    float: right;
-   padding: 15px 10px;
-   overflow: hidden;
-   line-height: 1.5em;
    
+   width: 230px;
+   padding: 15px 10px;
+   
+   line-height: 1.5em;
    background-color: #f2ede1;
+   border-radius: 0 5px 5px 0;
 }
 
 #content
@@ -204,7 +208,7 @@ body > footer
 
 body > header
 {
-   margin: 25px;v
+   margin: 25px;
    margin-bottom: 15px;
    text-align: center;
 }
@@ -256,15 +260,14 @@ body > header > div
    display: block;
    width: 950px;
    margin: 0 auto;
-   margin-bottom: -1px;
 }
 
 #nav li
 {
    display: inline-block;
+   vertical-align: bottom;
    margin-left: 5px;
    padding-top: 10px;
-   vertical-align: bottom;
 }
 
 #nav a
@@ -277,6 +280,7 @@ body > header > div
    background: #000;
    text-decoration: none;
    color: #859e1c;
+   border-radius: 3px 3px 0 0;
 }
 
 #nav a:hover
