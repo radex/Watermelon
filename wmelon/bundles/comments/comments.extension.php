@@ -47,6 +47,8 @@ class Comments_Extension extends Extension
       
       $commentsObj = $model->commentsFor($id, $type);
       
+      $commentsCount = 0;
+      
       foreach($commentsObj as $comment)
       {
          // tools
@@ -64,10 +66,19 @@ class Comments_Extension extends Extension
          
          if($authorID !== null)
          {
+            // if no user information in array, selecting from database
+            
             if(empty($users[$authorID]))
             {
                $users[$authorID] = $auth->userData_id($authorID);
             }
+         }
+         
+         // comments counter
+         
+         if(!$comment->awaitingModeration)
+         {
+            $commentsCount++;
          }
          
          //--
@@ -97,8 +108,9 @@ class Comments_Extension extends Extension
       $view = Loader::view('comments/comments', true);
       
       $view->comments = $comments;
-      $view->users = $users;
       $view->areComments = $commentsObj->exists;
+      $view->commentsCount = $commentsCount;
+      $view->users = $users;
       $view->id = $id;
       $view->type = $type;
       $view->backPage = $backPage;

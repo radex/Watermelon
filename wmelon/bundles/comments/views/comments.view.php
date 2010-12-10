@@ -1,6 +1,9 @@
 <?die?>
 <tal:block>
-   <h1 id="comments-link">Komentarze</h1>
+   <h1 id="comments-link">
+      Komentarze
+      <span class="h1-comment">${commentsCount} komentarzy</span>
+   </h1>
    
    <tal:block tal:condition="areComments" tal:repeat="comment comments">
       <article class="comment" id="comment-${comment/id}" tal:condition="php: Auth::isLogged() OR !comment.awaitingModeration">
@@ -17,7 +20,7 @@
          </header>
       
          <section>
-            <div class="comment-tools" tal:condition="php: Auth::isLogged()">
+            <div class="adminTools" tal:condition="php: Auth::isLogged()">
                <strong tal:condition="comment/awaitingModeration">
                   Niesprawdzony!
                </strong>
@@ -31,7 +34,7 @@
                </tal:block>
                
             </div>
-            <? echo Textile::textile($ctx->comment->content) ?>
+            <? echo Textile::textileRestricted($ctx->comment->content) ?>
          </section>
          
       </article>
