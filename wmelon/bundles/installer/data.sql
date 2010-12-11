@@ -2,9 +2,9 @@
 
 -- sample blog post
 
-INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `beginning`, `content`, `author`, `created`) VALUES
+INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `content`, `author`, `created`) VALUES
 (
-   NULL, 'welcome', 'Witaj w Watermelonie!', 'Jakiś wstęp', 'Jakiś dłuższy tekst z Textile\'owskim markupem', 1, %
+   NULL, 'welcome', 'Witaj w Watermelonie!', 'Jakiś dłuższy tekst z Textile\'owskim markupem', 1, %1
 );
 
 -- sample page

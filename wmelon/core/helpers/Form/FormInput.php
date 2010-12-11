@@ -112,7 +112,7 @@ abstract class FormInput
          $labelNote = ' <small>' . $this->labelNote . '</small>';
       }
       
-      return '<label><span>' . $this->label . ':' . $labelNote . '</span>' . $inside . '</label>';
+      return "<label>\n<span>" . $this->label . ':' . $labelNote . "</span>\n" . $inside . "</label>\n";
    }
    
    /*

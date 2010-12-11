@@ -6,7 +6,7 @@
 <header>
    <div>
       <div id="siteName"><a href="<?=WM_SiteURL?>"><?=$siteName?></a></div>
-      <div id="siteSlogan"><?=$siteSlogan?></div>
+      <? if(!empty($siteSlogan)): ?><div id="siteSlogan"><?=$siteSlogan?></div><? endif; ?>
    </div>
 </header>
 

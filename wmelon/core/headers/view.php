@@ -45,6 +45,7 @@ class View
       
       $viewContent = file_get_contents($this->viewPath);
       $viewContent = str_replace('<?die?>', '', $viewContent);
+      $viewContent = '<tal:block>' . $viewContent . '</tal:block>';
       
       // PHPTAL configuration
       

@@ -1,3 +1,8 @@
+html
+{
+   overflow: auto;
+}
+
 body
 {
    background-color:#eee;
@@ -50,18 +55,23 @@ header
    
    background:#fff;
    border:1px solid #aaa;
-   box-shadow: 0 0 25px #ccc;
+   border-radius: 3px;
+   box-shadow: 0 3px 25px #aaa;
+   -webkit-box-shadow: 0 3px 25px #aaa;
 }
 
 #status-bar
 {
-   margin:-15px;
+   margin:-16px;
    margin-top:15px;
+   margin-bottom: -20px;
    padding:10px;
    clear:both;
    
    background:#ebe7d4;
+   border: 1px solid #aaa;
    border-top:1px solid #bba;
+   border-radius: 0 0 3px 3px;
 }
 
 #status-bar button, #status-bar input

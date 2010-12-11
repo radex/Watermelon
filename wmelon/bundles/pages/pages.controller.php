@@ -60,7 +60,7 @@ class Pages_Controller extends Controller
       $view->commentsView = Comments::commentsView($pageData->id, 'page', '#/pages/' . $pageName);
       
       $view->editHref = '%/pages/edit/' . $id . '/backTo:site';
-      $view->deleteHref = '%/pages/delete/' . $id . '/backTo:site';
+      $view->deleteHref = '%/pages/delete/' . $id;
       
       $view->display();
    }

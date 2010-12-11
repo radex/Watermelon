@@ -26,13 +26,13 @@ class Installer_Controller extends Controller
    
    public function installer()
    {
-      // TODO: Determine site, and system URL-s by getting URI, and checking whether .htaccess works
+      list($siteURL, $systemURL) = $this->urls();
       
+      define('WM_SiteURL',   $siteURL);
+      define('WM_SystemURL', $systemURL);
+      define('WM_CurrURL',   $siteURL);
       
-      define('WM_SiteURL',     'http://localhost/w/index.php/');
-      define('WM_SystemURL',   'http://localhost/w/wmelon/');
-      
-      define('WM_BundlesURL', WM_SystemURL . 'bundles/');
+      define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       
       define('WM_SkinPath', WM_Bundles    . 'installer/');
@@ -44,30 +44,20 @@ class Installer_Controller extends Controller
       
       // determining step number
       
-      $step = (int) Watermelon::$segments[0];
+      $step = (int) $this->segments[0];
       
       if($step < 1 || $step > 8)
       {
          $step = 1;
       }
       
-      // loading translations
-      /*
-      if($step >= 3)
-      {
-         $this->load->translation('installer');
-      }
-      */
       // progress percent
       
-      if($step >= 2)
-      {
-         $this->additionalData->progress = (int) (($step - 1) / 6 * 100);
-      }
+      $this->additionalData->progress = (int) (($step - 1) / 6 * 100);
       
       // previous step (but you can't go back after you unblock the blockade)
       
-      if($step == 2 || $step == 3 || $step >= 5)
+      if(/*$step == 2 ||*/ $step == 3 || $step >= 5)
       {
          $this->additionalData->previous = $step - 1;
       }
@@ -78,10 +68,7 @@ class Installer_Controller extends Controller
       
       // next step
       
-      if($step >= 2)
-      {
-         $this->additionalData->next = $step + 1;
-      }
+      $this->additionalData->next = $step + 1;
       
       // checking if blockade is unlocked
       
@@ -131,15 +118,79 @@ class Installer_Controller extends Controller
          
          case 'clear':
             session_destroy();
+            SiteRedirect('1');
          break;
       }
-      
-      
    }
    
-   public function urls()
+   /*
+    * private array urls()
+    * 
+    * Determines URL-s to website
+    * 
+    * returns array($siteURL, $systemURL)
+    */
+   
+   private function urls()
    {
-      var_dump(file_get_contents('http://localhost/w/index.php')); //WTF is this freezing?!
+      // determining URL to index.php
+      
+      $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; // full URL
+      
+      $pathInfo = $_SERVER['PATH_INFO'];                                  // everything what is after index.php
+      
+      if(!empty($pathInfo))
+      {
+         $url = substr($url, 0, -strlen($pathInfo));                      // URL to index.php
+      }
+      
+      // deleting '/' from URL if present
+      
+      if(substr($url, -1) == '/')
+      {
+         $url = substr($url, 0, -1);
+      }
+      
+      // deleting 'index.php' from URL if present
+      
+      if(substr($url, -9) == 'index.php')
+      {
+         $url = substr($url, 0, -9);
+      }
+      
+      // appending '/' to URL if absent
+      
+      if(substr($url, -1) != '/')
+      {
+         $url .= '/';
+      }
+      
+      // determining whether .htaccess works - by trying to request special page 'watermelonurltest' (without index.php)
+      
+      $errorReporting = error_reporting();
+      
+      error_reporting(0);
+      
+      $urlTestResponse = file_get_contents($url . 'watermelonurltest');
+      
+      error_reporting($errorReporting);
+      
+      // determining final URLs
+      
+      if($urlTestResponse != 'Works!')
+      {
+         $siteURL = $url . 'index.php/';
+      }
+      else
+      {
+         $siteURL = $url;
+      }
+      
+      $systemURL = $url . 'wmelon/';
+      
+      // returns
+      
+      return array($siteURL, $systemURL);
    }
    
    /*
@@ -148,7 +199,11 @@ class Installer_Controller extends Controller
    
    public function langChooser()
    {
-      $this->additionalData = 'no-container'; // we want to display lang chooser on its own, without typical container
+      SiteRedirect('2'); // won't be needed for now
+      
+      /*
+      
+      $this->additionalData->noContainer = true; // we want to display lang chooser on its own, without typical container
       
       $langs = array();
       
@@ -158,7 +213,7 @@ class Installer_Controller extends Controller
       $view->langs = $langs;
       $view->display();
       
-      //$this->urls();
+      //$this->urls();*/
    }
    
    /*
@@ -180,9 +235,10 @@ class Installer_Controller extends Controller
    
    public function blockadeMessage()
    {
+      /*
       // determining language
       
-      $lang = Watermelon::$segments[1];
+      $lang = $this->segments[1];
       
       if(!in_array($lang, array('pl')))
       {
@@ -191,7 +247,7 @@ class Installer_Controller extends Controller
       
       $_SESSION['lang'] = $lang;
       
-      define('WM_Lang', $lang);
+      define('WM_Lang', $lang);*/
       
       // establishing name of file unblocking the installer
       
@@ -234,28 +290,36 @@ class Installer_Controller extends Controller
          $data = ToObject($data);
       }
       
-      // rendering
+      // rendering options
       
       $this->pageTitle = 'Dane do bazy danych';
-      $this->additionalData->form = '';
+      $this->additionalData->form = true;
+      
+      // form
       
       $form = new Form('wmelon.installer.dbInfo', '5', '4');
       $form->displaySubmitButton = false;
       $form->extraFormAttributes['name'] = 'form';
       
-      $nameNote   = 'Baza o podanej nazwie musi ustnieć, chyba że podany użytkownik ma uprawnienia do tworzenia baz danych';
+      // label note
+      
+      $nameNote   = 'Baza o podanej nazwie musi ustnieć';
       $hostNote   = 'Prawie zawsze jest to <em>localhost</em>';
       $prefixNote = 'Zostaw taki jaki jest, chyba że chcesz mieć kilka kopii Watermelona na jednej bazie danych - wtedy obie muszą mieć ustalony inny prefiks';
       
-      $nameArgs = array('value' => $data->name, 'labelNote' => $nameNote);
-      $userArgs = array('value' => $data->user);
-      $passArgs = array('value' => $data->pass);
-      $hostArgs = array('value' => $data->host, 'labelNote' => $hostNote);
+      // input args
+      
+      $nameArgs   = array('value' => $data->name,   'labelNote' => $nameNote);
+      $userArgs   = array('value' => $data->user);
+      $passArgs   = array('value' => $data->pass);
+      $hostArgs   = array('value' => $data->host,   'labelNote' => $hostNote);
       $prefixArgs = array('value' => $data->prefix, 'labelNote' => $prefixNote);
+      
+      // adding inputs
       
       $form->addInput('text', 'name', 'Nazwa bazy danych', true, $nameArgs);
       $form->addInput('text', 'user', 'Nazwa użytkownika', true, $userArgs);
-      $form->addInput('text', 'pass', 'Hasło', false, $passArgs);
+      $form->addInput('password', 'pass', 'Hasło', false, $passArgs);
       
       $form->addHTML('<div class="advanced-hr">Zaawansowane<hr /></div>');
       
@@ -299,8 +363,6 @@ class Installer_Controller extends Controller
             {
                $form->addError('Nie udało się wybrać bazy danych "' . $data->name . '". Spróbuj jeszcze raz.');
                $form->fallback();
-
-               //TODO: try to create database
             }
          }
       }
@@ -316,24 +378,34 @@ class Installer_Controller extends Controller
          $data = ToObject(array('user' => '','pass' => '','pass2' => ''));
       }
       
-      // rendering
+      // rendering options
       
       $this->pageTitle = 'Dane admina';
-      $this->additionalData->form = '';
+      $this->additionalData->form = true;
+      
+      // form
       
       $form = new Form('wmelon.installer.userData', '6', '5');
       $form->displaySubmitButton = false;
       $form->extraFormAttributes['name'] = 'form';
       
+      // label notes
+      
       $pass2Note = 'Aby upewnić się, że nie popełnisz błędu podczas wpisywania';
+      
+      // input args
       
       $userArgs  = array('value' => $data->user);
       $passArgs  = array('value' => $data->pass);
       $pass2Args = array('value' => $data->pass2, 'labelNote' => $pass2Note);
       
+      // adding args
+      
       $form->addInput('text', 'user', 'Nazwa użytkownika', true, $userArgs);
       $form->addInput('password', 'pass', 'Hasło', true, $passArgs);
       $form->addInput('password', 'pass2', 'Hasło (powtórz)', true, $pass2Args);
+      
+      // rendering
       
       echo '<p>Podaj nick i hasło, które chcesz mieć dla siebie na swojej stronie.</p>';
       echo $form->generate();
@@ -376,10 +448,12 @@ class Installer_Controller extends Controller
          $data = ToObject(array('siteName' => ''));
       }
       
-      // rendering
+      // rendering options
       
       $this->pageTitle = 'Nazwa strony';
-      $this->additionalData->form = '';
+      $this->additionalData->form = true;
+      
+      // form
       
       $form = new Form('wmelon.installer.siteName', '7', '6');
       $form->displaySubmitButton = false;
@@ -483,8 +557,48 @@ CONFIG;
       }
       
       // adding wmelon configuration to Registry
+         
+         Registry::create('wmelon', $w, true);
+         
+         // modules
       
-      //TODO: make it better
+         $w->modulesList       = Watermelon::indexModules();
+         $w->autoload          = array('auth', 'comments', 'sblam');
+         $w->controllerHandler = null;
+         $w->defaultController = 'blog';
+      
+         // other
+      
+         $w->siteURL           = WM_SiteURL;
+         $w->systemURL         = WM_SystemURL;
+      
+         $w->skin              = 'wcmslay';
+      
+         // frontend
+      
+         $textMenus = array(array
+            (
+               array('Blog', 'blog', false, null),
+               array('Testy', 'test', false, null),
+               array('Login', 'auth/login', false, null),
+               array('Logout', 'auth/logout', false, null),
+               array('ACP', 'admin', false, null),
+            ));
+      
+         $blockMenus = array(array
+            (
+               array('Test!', 'user', 'card', array()),
+            ));
+      
+         $w->siteName   = $site->siteName;
+         $w->siteSlogan = null;
+         $w->footer     = null;
+         $w->blockMenus = $blockMenus;
+         $w->textMenus  = $textMenus;
+      
+         // setting config
+      
+         Registry::set('wmelon', $w);
       
       // adding superuser
       
@@ -493,10 +607,10 @@ CONFIG;
       
       DB::insert('users', array
          (
-            'login'    => $user->user
-            'password' => $pass
-            'salt'     => $salt
-            'nick'     => $user->user
+            'login'    => strtolower($user->user),
+            'password' => $pass,
+            'salt'     => $salt,
+            'nick'     => $user->user,
             'lastseen' => time()
          ));
       

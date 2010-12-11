@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="<?=WM_SkinURL?>installer.css" />
 <title>Watermelon CMS</title>
 <header></header>
-<? if($additionalData != 'no-container'): ?>
+<? if(!$additionalData->noContainer): ?>
 <div id="content">
    <h1><?=$pageTitle?></h1>
    

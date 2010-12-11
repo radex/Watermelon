@@ -314,9 +314,18 @@ class Watermelon
          
          error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE); // TODO: delete it later
          
-         include 'libs.php';
+         // creating messages array in session
+
+         if(!is_array($_SESSION['WM_Messages']))
+         {
+            $_SESSION['WM_Messages'] = array();
+         }
+         
+         //--
          
          self::divide();
+         
+         include 'libs.php';
          
          return;
       }
@@ -361,7 +370,7 @@ class Watermelon
     * searches bundles for module files - controllers, models, extensions, etc., in order to create modules list
     */
    
-   private static function indexModules()
+   public static function indexModules()
    {
       $modulesList = new stdClass;
       
@@ -446,13 +455,7 @@ class Watermelon
       return $modulesList;
    }
    
-   /*
-    * private static void config()
-    * 
-    * Loads configuration, sets URL constants, etc
-    */
-   
-   private static function config()
+   private static function development_config()
    {
       // modules
       
@@ -467,7 +470,6 @@ class Watermelon
       $w->systemURL         = 'http://localhost/w/wmelon/';
       
       $w->skin              = 'wcmslay';
-      $w->lang              = 'pl';
       
       // frontend
       
@@ -493,10 +495,22 @@ class Watermelon
       
       // setting config
       
+      Registry::set('wmelon', $w);
+   }
+   
+   /*
+    * private static void config()
+    * 
+    * Loads configuration, sets URL constants, etc
+    */
+   
+   private static function config()
+   {
       Registry::create('wmelon', $w, true);
-      Registry::set('wmelon', $w);           // only for development
       
-      // $w = Registry::get('wmelon'); // after development
+      // self::development_config();
+      
+      $w = Registry::get('wmelon');
       
       self::$config = &$w;
       
@@ -520,8 +534,6 @@ class Watermelon
          define('WM_SkinURL',  WM_BundlesURL . $w->skin . '_skin/');
          define('WM_CurrURL',  WM_SiteURL);
       }
-      
-      define('WM_Lang', $w->lang);
    }
    
    /*
