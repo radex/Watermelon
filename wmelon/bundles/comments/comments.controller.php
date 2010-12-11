@@ -80,6 +80,6 @@ class Comments_Controller extends Controller
          $backPage .= '#comment-' . $commentID;
       }
       
-      SiteRedirect($backPage); //TODO: redirect to newest comment (if successfully added)
+      SiteRedirect($backPage);
    }
 }

@@ -45,10 +45,22 @@ class DBResult implements SeekableIterator, Countable
     * 
     * Handy shortcut for ($x->rows > 0)
     * 
-    * Note that it is valid only for SELECT query (and other returning result set), for other types of queries (like INSERT) it is always 0
+    * Note that it is valid only for SELECT query (and other returning result set), for other types of queries (like INSERT) it is always FALSE
     */
    
    public $exists = false;
+   
+   /*
+    * public bool $empty
+    * 
+    * Whether number of rows in result set is equal 0
+    * 
+    * Handy shortcut for ($x->rows == 0)
+    * 
+    * Note that it is valid only for SELECT query (and other returning result set), for other types of queries (like INSERT) it is always TRUE
+    */
+   
+   public $empty = true;
    
    /*
     * public mysql_result $res
@@ -75,6 +87,7 @@ class DBResult implements SeekableIterator, Countable
       {
          $this->rows   = mysql_num_rows($res);
          $this->exists = ($this->rows > 0);
+         $this->empty  = ($this->rows == 0);
       }
    }
    

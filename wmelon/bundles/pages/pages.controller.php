@@ -59,8 +59,8 @@ class Pages_Controller extends Controller
       $view->page = $pageData;
       $view->commentsView = Comments::commentsView($pageData->id, 'page', '#/pages/' . $pageName);
       
-      $view->editHref = '%/pages/edit/' . $id . '/' . base64_encode('#/pages/' . $pageData->name); //FIXME: and what if page name is changed?
-      $view->deleteHref = '%/pages/delete/' . $id . '/' . base64_encode('#/');
+      $view->editHref = '%/pages/edit/' . $id . '/backTo:site';
+      $view->deleteHref = '%/pages/delete/' . $id . '/backTo:site';
       
       $view->display();
    }

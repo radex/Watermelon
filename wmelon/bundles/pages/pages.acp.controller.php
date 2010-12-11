@@ -135,9 +135,11 @@ class Pages_controller extends Controller
     * edit page
     */
    
-   function edit_action($id, $backPage)
+   function edit_action($id)
    {
       $id = (int) $id;
+      
+      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
       
       // getting data
       
@@ -152,7 +154,7 @@ class Pages_controller extends Controller
       
       $this->pageTitle = 'Edytuj stronę';
       
-      $form = new Form('wmelon.pages.editPage', 'pages/editSubmit/' . $id . '/' . $backPage, 'pages/edit/' . $id . '/' . $backPage);
+      $form = new Form('wmelon.pages.editPage', 'pages/editSubmit/' . $id . $backTo, 'pages/edit/' . $id . $backTo);
       
       $titleArgs   = array('style' => 'width: 500px', 'value' => $data->title);
       $nameArgs    = array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)', 'value' => $data->name);
@@ -173,6 +175,8 @@ class Pages_controller extends Controller
    {
       $id = (int) $id;
       
+      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
+      
       // checking if exists
       
       if(!$this->model->pageData_id($id))
@@ -182,7 +186,7 @@ class Pages_controller extends Controller
       
       // editing
       
-      $form = Form::validate('wmelon.pages.editPage', 'pages/edit/' . $id . '/' . $backPage);
+      $form = Form::validate('wmelon.pages.editPage', 'pages/edit/' . $id . $backTo);
       $data = $form->getAll();
       
       $this->model->editPage($id, $data->title, $data->name, $data->content);
@@ -191,8 +195,7 @@ class Pages_controller extends Controller
       
       $this->addMessage('tick', 'Zaktualizowano stronę');
       
-      $backPage = base64_decode($backPage);
-      $backPage = empty($backPage) ? 'pages' : $backPage;
+      $backPage = ($backTo == '') ? 'pages' : '#/pages/' . $data->name;
       
       SiteRedirect($backPage);
    }
@@ -218,9 +221,9 @@ class Pages_controller extends Controller
    function deleteSubmit_action($ids, $backPage)
    {
       AdminQuick::deleteSubmit($ids, $backPage, 'pages',
-         function($id, $model)
+         function($ids, $model)
          {
-            $model->deletePage($id);
+            $model->deletePages($ids);
          },
          function($count)
          {

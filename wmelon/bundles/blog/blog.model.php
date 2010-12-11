@@ -25,14 +25,29 @@
 class Blog_Model extends Model
 {
    /*
-    * public DBResult posts()
+    * public DBResult allPosts()
     * 
-    * List of posts
+    * List of all posts
     */
    
-   public function posts()
+   public function allPosts()
    {
       return DBQuery::select('blogposts')->orderBy('id', true)->execute();
+   }
+   
+   /*
+    * public DBResult posts(int $page)
+    * 
+    * List of posts (11 posts, starting from $page)
+    * 
+    * There are 10 posts for page, but 11 are selected, so that we know if there's another page
+    */
+   
+   public function posts($page)
+   {
+      $page = (int) $page - 1;
+      
+      return DBQuery::select('blogposts')->orderBy('id', true)->limit($page * 10, 11)->execute();
    }
    
    /*
@@ -92,13 +107,18 @@ class Blog_Model extends Model
    }
    
    /*
-    * public void deletePost(int $id)
+    * public void deletePost(int[] $ids)
     * 
-    * Deletes a post with given ID
+    * Deletes posts with given ID-s
     */
    
-   public function deletePost($id)
+   public function deletePosts(array $ids)
    {
-      DB::delete('blogposts', (int) $id);
+      DB::delete('blogposts', $ids);
+      
+      foreach($ids as $id)
+      {
+         Model('comments')->deleteCommentsFor($id, 'page');
+      }
    }
 }

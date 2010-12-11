@@ -92,13 +92,18 @@ class Pages_Model extends Model
    }
    
    /*
-    * public void deletePage(int $id)
+    * public void deletePages(int[] $ids)
     * 
-    * Deletes a page with given ID
+    * Deletes pages with given ID-s
     */
    
-   public function deletePage($id)
+   public function deletePages(array $ids)
    {
-      DB::delete('pages', (int) $id);
+      DB::delete('pages', $ids);
+      
+      foreach($ids as $id)
+      {
+         Model('comments')->deleteCommentsFor($id, 'page');
+      }
    }
 }

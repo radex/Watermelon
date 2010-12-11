@@ -30,21 +30,55 @@ class Blog_Controller extends Controller
    
    public function index_action()
    {
-      $postsObj = $this->model->posts();
+      $page     = (int) $this->parameters->page; // page number
+      $page     = ($page < 1 ? 1 : $page);       // page=1, if specified page<1
+      $postsObj = $this->model->posts($page);
       $posts    = array();
       
-      // adding edit/delete links URL information
+      // if page is not 1, and there are no posts (page is invalid), redirect to 0 page
       
-      foreach($postsObj as $post)
+      if($page != 1 && $postsObj->empty)
       {
+         SiteRedirect('blog');
+      }
+      
+      // adding data to posts
+      
+      foreach($postsObj as $i => $post)
+      {
+         // omiting 11th post
+         
+         if($i == 10)
+         {
+            continue;
+         }
+         
+         // edit/delete links
+         
          $post->editHref   = '%/blog/edit/' .   $post->id . '/backTo:site';
-         $post->deleteHref = '%/blog/delete/' . $post->id . '/backTo:site';
+         $post->deleteHref = '%/blog/delete/' . $post->id . '/' . base64_encode('#/blog');
+         
+         // post creation human date and comments count
+         
+         $post->created_human = HumanDate($post->created, true, true);
+         
+         $post->comments = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
+         
+         //--
          
          $posts[] = $post;
       }
       
+      // displaying
+      
       $view = View('posts');
       $view->posts = $posts;
+      $view->page  = $page;
+      
+      $view->anotherPage  = ($postsObj->rows == 11);                                // whether there is another page
+      $view->previousPage = ($page == 2 ? '$/blog' : '$/blog/page:' . ($page - 1)); // URL for previous page
+      $view->nextPage     = '$/blog/page:' . ($page + 1);                           // URL for next page
+      
       $view->display();
    }
    
@@ -83,8 +117,8 @@ class Blog_Controller extends Controller
       $view->post = $postData;
       $view->commentsView = Comments::commentsView($id, 'blogpost', '#/blog/' . $name);
       
-      $view->editHref = '%/blog/edit/' . $id . '/backTo:site';
-      $view->deleteHref = '%/blog/delete/' . $id . '/backTo:site';
+      $view->editHref   = '%/blog/edit/' . $id . '/backTo:post';
+      $view->deleteHref = '%/blog/delete/' . $id . '/backTo:post';
       
       $view->display();
    }

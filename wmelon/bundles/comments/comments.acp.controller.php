@@ -186,9 +186,9 @@ class Comments_Controller extends Controller
    function deleteSubmit_action($ids, $backPage)
    {
       AdminQuick::deleteSubmit($ids, $backPage, 'comments',
-         function($id, $model)
+         function($ids, $model)
          {
-            $model->deleteComment($id);
+            $model->deleteComments($ids);
          },
          function($count)
          {

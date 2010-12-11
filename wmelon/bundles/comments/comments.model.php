@@ -85,6 +85,36 @@ class Comments_Model extends Model
    }
    
    /*
+    * public DBResult deleteCommentsFor(int $id, string $type)
+    * 
+    * Deletes comments for $id record of $type type of content
+    */
+   
+   public function deleteCommentsFor($id, $type)
+   {
+      $id   = (int) $id;
+      $type = (string) $type;
+      
+      // selecting comments ids
+      
+      $comments = DBQuery::select('comment', 'comments_records')->where('record', $id)->andWhere('type', $type)->execute();
+      
+      foreach($comments as $comment)
+      {
+         $ids[] = $comment->comment;
+      }
+      
+      // deleting comments
+      
+      DB::delete('comments', $ids);
+      
+      foreach($ids as $comment)
+      {
+         DBQuery::delete('comments_records')->where('comment', $comment)->execute();
+      }
+   }
+   
+   /*
     * public void postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $awaitingModeration)
     * 
     * Posts a comment (for $id record of $type type of content)
@@ -94,9 +124,9 @@ class Comments_Model extends Model
    {
       $commentID = DB::insert('comments', array
          (
-            'authorName'    => htmlspecialchars($authorName),
-            'authorEmail'   => htmlspecialchars($authorEmail),
-            'authorWebsite' => htmlspecialchars($authorWebsite),
+            'authorName'    => (string) $authorName,
+            'authorEmail'   => (string) $authorEmail,
+            'authorWebsite' => (string) $authorWebsite,
             'content'       => (string) $content,
             'created'       => time(),
             'awaitingModeration' => (int) $awaitingModeration
@@ -153,18 +183,19 @@ class Comments_Model extends Model
    }
    
    /*
-    * public void deleteComment(int $id)
+    * public void deleteComments(int[] $ids)
     * 
-    * Deletes $id comment
+    * Deletes comments with given ID-s
     */
    
-   public function deleteComment($id)
+   public function deleteComments(array $ids)
    {
-      $id = (int) $id;
+      DB::delete('comments', $ids);
       
-      DB::delete('comments', $id);
-      
-      DBQuery::delete('comments_records')->where('comment', $id)->execute();
+      foreach($ids as $id)
+      {
+         DBQuery::delete('comments_records')->where('comment', $id)->execute();
+      }
    }
    
    /*

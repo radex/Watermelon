@@ -83,10 +83,10 @@ class AdminQuick
     * string $backPage   - base64ed page to get back to after deletion, passed by URL
     * string $controller - name of controller, e.g. 'blog'
     * 
-    * void $deletingClosure(int $id, Model $model) -
-    *    Closure deleting $id item
+    * void $deletingClosure(int[] $ids, Model $model) -
+    *    Closure deleting $ids items
     *    
-    *    int   $id    - ID of item to be deleted
+    *    int[] $ids[] - array of ID-s of items to be deleted
     *    Model $model - model of currently running controller
     * 
     * string $messageClosure(int $count)
@@ -101,9 +101,9 @@ class AdminQuick
     function deleteSubmit_action($ids, $backPage)
     {
        AdminQuick::deleteSubmit($ids, $backPage, '__controller__',
-          function($id, $model)
+          function($ids, $model)
           {
-             $model->__deleteMethod__($id);
+             $model->__deleteMethod__($ids);
           },
           function($count)
           {
@@ -127,10 +127,7 @@ class AdminQuick
       
       // deleting
       
-      foreach($ids as $id)
-      {
-         $deletingClosure($id, Watermelon::$controllerObject->model);
-      }
+      $deletingClosure($ids, Watermelon::$controllerObject->model);
       
       // redirecting
       

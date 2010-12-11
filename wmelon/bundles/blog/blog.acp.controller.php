@@ -32,13 +32,13 @@ class Blog_Controller extends Controller
    {
       $this->pageTitle = 'Lista wpisów';
       
-      $posts = $this->model->posts();
+      $posts = $this->model->allPosts();
       
       $commentsModel = Model('comments');
       
       // if no blog posts
       
-      if(!$posts->exists)
+      if($posts->empty)
       {
          echo '<p>Brak wpisów. <a href="$/blog/new">Napisz pierwszy.</a></p>';
          return;
@@ -143,7 +143,7 @@ class Blog_Controller extends Controller
    {
       $id = (int) $id;
       
-      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
+      $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
       
       // getting data
       
@@ -179,7 +179,7 @@ class Blog_Controller extends Controller
    {
       $id = (int) $id;
       
-      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
+      $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
       
       // checking if exists
       
@@ -199,7 +199,20 @@ class Blog_Controller extends Controller
       
       $this->addMessage('tick', 'Zaktualizowano wpis');
       
-      $backPage = ($backTo == '') ? 'blog' : '#/blog/' . $data->name;
+      switch($this->parameters->backto)
+      {
+         case 'post':
+            $backPage = '#/blog/' . $data->name;
+         break;
+         
+         case 'site':
+            $backPage = '#/'; // + #id
+         break;
+         
+         default:
+            $backPage = '';
+         break;
+      }
       
       SiteRedirect($backPage);
    }
@@ -214,8 +227,7 @@ class Blog_Controller extends Controller
          function($ids, $model)
          {
             return 'Czy na pewno chcesz usunąć ' . count($ids) . ' postów?';
-         });
-      
+         });  
    }
    
    /*
@@ -225,9 +237,9 @@ class Blog_Controller extends Controller
    function deleteSubmit_action($ids, $backPage)
    {
       AdminQuick::deleteSubmit($ids, $backPage, 'blog',
-         function($id, $model)
+         function($ids, $model)
          {
-            $model->deletePost($id);
+            $model->deletePosts($ids);
          },
          function($count)
          {

@@ -23,7 +23,7 @@
  */
 
 /*
- * string PL_generateFormOf(int $numeral, string $inflection0, string $inflection1, $string $inflection2)
+ * string pl_inflect(int $numeral, string $inflection0, string $inflection1, $string $inflection2)
  * 
  * Tworzy odpowiednią polską odmianę rzeczownika dla danego liczebnika.
  * np. 0 arbuzów
@@ -37,10 +37,10 @@
  * 
  * przykład:
  * 
- * PL_generateFormOf(666, 'arbuzów', 'arbuz', 'arbuzy') -> 'arbuzów'
+ * pl_inflect(666, 'arbuzów', 'arbuz', 'arbuzy') -> 'arbuzów'
  */
 
-function PL_generateFormOf($numeral, $inflection0, $inflection1, $inflection2)
+function pl_inflect($numeral, $inflection0, $inflection1, $inflection2)
 {
    if($numeral == 0) return $inflection0;
    if($numeral == 1) return $inflection1;
@@ -55,7 +55,7 @@ function PL_generateFormOf($numeral, $inflection0, $inflection1, $inflection2)
 }
 
 /*
- * string HumanDate(int $timestamp)
+ * string HumanDate(int $timestamp[, bool $dateOnly = false[, bool $html = false]])
  * 
  * Tworzy prostą do zrozumienia datę z timestampu.
  * 
@@ -66,7 +66,9 @@ function PL_generateFormOf($numeral, $inflection0, $inflection1, $inflection2)
  * Jeżeli $timestamp to data z przedwczoraj zwraca 'przedwczoraj, hh:mm'
  * Jeżeli $timestamp był wcześniej niż przedwczoraj zwraca 'dd.mm.yyyy hh:mm' (PHP date(): d.m.Y H:i)
  * 
- * int $timestamp - Unix timestamp do przekształcenia w datę
+ * int  $timestamp - Unix timestamp do przekształcenia w datę
+ * bool $dateOnly  - Jeśli TRUE, zwraca jedynie datę, bez godziny
+ * bool $html      - Jeśli TRUE, zwraca w formie HTML-u, gdzie w title="" jest pełna data
  */
  
 /*
@@ -76,59 +78,81 @@ TODO here:
 - multilingual
 - future dates
 - sentences like "this monday", "last monday" or "next monday"
-- HTML output where human-readable date is inside <span>, and there's number date (dd.mm.yyyy hh:mm) in its title as an option
-- or other way round as an option
-- date and time or date only (as an option)
 - DMY/MDY/YMD to chose (in ACP)
 
 */
 
-function HumanDate($timestamp)
+function HumanDate($timestamp, $dateOnly = false, $html = false)
 {
-   $timestamp = intval($timestamp);
+   $timestamp = (int) $timestamp;
    
-   // less than a minute ago
+   list($day, $month, $year, $hour, $minute) = explode('.', date('j.n.Y.G.i', $timestamp)); // timestamp
+   list($dayN, $monthN, $yearN) = explode('.', date('d.m.Y', time()));                      // now
    
-   if($timestamp + 60 > time())
+   $date = date('j.n.Y, G:i', $timestamp);
+   
+   // function returning HTML if $html == true, and appending ', hour:minute' if $time == true and $dateOnly == false
+   
+   $humanDate = function($humanDate, $time = false) use ($html, $dateOnly, $date, $hour, $minute)
    {
-      return 'przed chwilą';
-   }
+      // appending hour:minute
+      
+      if($time && !$dateOnly)
+      {
+         $humanDate .= ', ' . $hour . ':' . $minute;
+      }
+      
+      // returning
+      
+      if($html)
+      {
+         return '<span title="' . $date . '">' . $humanDate . '</span>';
+      }
+      else
+      {
+         return $humanDate;
+      }
+   };
    
-   // less than an hour ago
+   // more precise time, but only if $dateOnly == false
    
-   if($timestamp + 3600 > time())
+   if(!$dateOnly)
    {
-      $minutesAgo = (int) ((time() - $timestamp) / 60);
-      return $minutesAgo . ' ' . PL_generateFormOf($minutesAgo, 'minutę', 'minuty', 'minut') . ' temu';
+      // less than a minute ago
+   
+      if($timestamp + 60 > time())
+      {
+         return $humanDate('przed chwilą');
+      }
+   
+      // less than an hour ago
+   
+      if($timestamp + 3600 > time())
+      {
+         $minutesAgo = (int) ((time() - $timestamp) / 60);
+         return $humanDate($minutesAgo . ' ' . pl_inflect($minutesAgo, 'minut', 'minutę', 'minuty') . ' temu');
+      }
    }
-   
-   // data from timestamp
-   
-   list($day, $month, $year, $hour, $minute) = explode('.', date('j.m.Y.H.i', $timestamp));
-   
-   // data from now
-   
-   list($dayN, $monthN, $yearN) = explode('.', date('d.m.Y', time()));
    
    // today, but more than an hour ago
    
    if($day == $dayN && $month == $monthN && $year == $yearN)
    {
-      return 'dziś, ' . $hour . ':' . $minute;
+      return $humanDate('dziś', true);
    }
    
    // yesterday
    
    if($day == $dayN - 1 && $month == $monthN && $year == $yearN)
    {
-      return 'wczoraj, ' . $hour . ':' . $minute;
+      return $humanDate('wczoraj', true);
    }
    
    // day before yesterday
    
    if($day == $dayN - 2 and $month == $monthN and $year == $yearN)
    {
-      return 'przedwczoraj, ' . $hour . ':' . $minute;
+      return $humanDate('przedwczoraj', true);
    }
    
    // more than two days ago
@@ -149,7 +173,14 @@ function HumanDate($timestamp)
       case 12: $month = 'grudnia';      break;
    }
    
-   return $day . ' ' . $month . ' ' . $year . ' ' . $hour . ':' . $minute;
+   // omitting year, if the same
+   
+   if($year == $yearN)
+   {
+      return $humanDate($day . ' ' . $month, true);
+   }
+   else
+   {
+      return $humanDate($day . ' ' . $month . ' ' . $year, true);
+   }
 }
-
-?>

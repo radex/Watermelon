@@ -380,6 +380,55 @@ body > footer a:hover, #footer a:visited:hover
    line-height: 1em;
 }
 
+.blog-pages-top,
+.blog-pages-bottom
+{
+   display: table;
+   margin: -15px;
+   height: 46px;
+   width: 700px;
+}
+
+.blog-pages-top
+{
+   margin-bottom: 15px;
+   border-bottom: 1px solid #ddd;
+}
+
+.blog-pages-bottom
+{
+   margin-top: 15px;
+   border-top: 1px solid #ddd;
+}
+
+.blog-previousPage,
+.blog-nextPage
+{
+   display: table-cell;
+   vertical-align: center;
+   width: 200px;
+   padding: 15px 20px;
+   
+   font-size: 16px;
+   line-height: 1em;
+}
+
+.blog-nextPage
+{
+   text-align: right;
+}
+
+.blog-page
+{
+   display: table-cell;
+   vertical-align: center;
+   
+   line-height: 1em;
+   font-size: 12px;
+   color: #aaa;
+   text-align: center;
+}
+
 .comment
 {
    margin-bottom: 20px;

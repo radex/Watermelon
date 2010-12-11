@@ -18,7 +18,6 @@ class test_Controller extends Controller
       echo '<a href="$/test/cache">Cache tests</a><br>';
       echo '<a href="$/test/curl">cURL and stuff</a><br>';
       echo '<a href="$/test/form">Form generator</a><br>';
-      
    }
    
    //----

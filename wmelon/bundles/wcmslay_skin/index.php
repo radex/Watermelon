@@ -1,7 +1,6 @@
 <?defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="<?=WM_SkinURL?>style.css">
-<title><?= empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName ?></title>
 <?=$this->drawHeadTags()?>
 
 <header>

@@ -28,6 +28,7 @@ include 'PasswordInput.php';
 include 'EmailInput.php';
 include 'Textarea.php';
 include 'HiddenInput.php';
+include 'HiddenData.php';
 
 class Form
 {

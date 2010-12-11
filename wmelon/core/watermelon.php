@@ -806,6 +806,8 @@ class Watermelon
       }
       else
       {
+         // loading skin
+         
          include WM_SkinPath . 'skin.php';
          
          if(self::$appType == self::AppType_Admin)
@@ -818,12 +820,25 @@ class Watermelon
          }
 
          $skin = new $className;
-
+         
+         // head tags
+         
+         $headTags = &self::$headTags;
+         
+         $siteName  = self::$config->siteName;
+         $pageTitle = $controller->pageTitle;
+         $title     = empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName;
+         
+         $headTags[] = '<title>' . $title . '</title>';
+         $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\';</script>';
+         
+         // setting configuration
+         
          $skin->content    = &$content;
          
-         $skin->pageTitle  = $controller->pageTitle;
+         $skin->pageTitle  = $pageTitle;
          $skin->dontShowPageTitle = $controller->dontShowPageTitle;
-         $skin->siteName   = &self::$config->siteName;
+         $skin->siteName   = $siteName;
          $skin->siteSlogan = &self::$config->siteSlogan;
          $skin->footer     = &self::$config->footer;
          
@@ -831,7 +846,7 @@ class Watermelon
          $_SESSION['WM_Messages'] = array();
 
          $skin->messages   = &$messages;
-         $skin->headTags   = &self::$headTags;
+         $skin->headTags   = &$headTags;
          $skin->tailTags   = &self::$tailTags;
          $skin->blockMenus = &self::$config->blockMenus;
          $skin->textMenus  = &self::$config->textMenus;

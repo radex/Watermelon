@@ -200,22 +200,20 @@ class DB
    
    public static function delete($table, $ids)
    {
-      // converting to array
+      // forming WHERE clause
       
-      if(is_int($ids))
+      if(is_array($ids))
       {
-         $ids = array($ids);
-      }
-      
-      // forming query portion
-      
-      if(count($ids) == 1)
-      {
-         $where = ' = ' . $ids[0];
+         foreach($ids as &$id)
+         {
+            $id = (int) $id;
+         }
+         
+         $where = ' IN(' . implode(', ', $ids) . ')';
       }
       else
       {
-         $where = ' IN(' . implode(', ', $ids) . ')';
+         $where = ' = ' . (int) $ids;
       }
       
       // performing query

@@ -256,7 +256,7 @@ class ACPTable
             array_shift($line); // shifting ID out of an array
             
             $t .= '<td title="ID: ' . $id . '" onclick="TableFlip(' . $this->tableID . ', ' . $id . ')">';
-            $t .= '<input type="checkbox" id="table' . $this->tableID . '-id' . $id . '"></td>';
+            $t .= '<input type="checkbox" id="table' . $this->tableID . '-id' . $id . '" onclick="TableFlip(' . $this->tableID . ', ' . $id . ')"></td>';
          }
          
          // cells

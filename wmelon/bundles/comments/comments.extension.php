@@ -98,7 +98,7 @@ class Comments_Extension extends Extension
       {
          $form->addInput('text', 'name', 'Imię');
          $form->addInput('email', 'email', 'Email');
-         $form->addInput('text', 'website', 'Strona', false, array('labelNote' => '(Opcjonalnie)'));
+         // $form->addInput('text', 'website', 'Strona', false, array('labelNote' => '(Opcjonalnie)')); //FIXME!
       }
       
       $form->addInput('textarea', 'content', 'Treść komentarza');
