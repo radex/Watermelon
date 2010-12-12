@@ -26,7 +26,15 @@ class Installer_Controller extends Controller
    
    public function installer()
    {
-      list($siteURL, $systemURL) = $this->urls();
+      if(isset($_SESSION['siteURL']))
+      {
+         $siteURL   = $_SESSION['siteURL'];
+         $systemURL = $_SESSION['systemURL'];
+      }
+      else
+      {
+         list($siteURL, $systemURL) = $this->urls();
+      }
       
       define('WM_SiteURL',   $siteURL);
       define('WM_SystemURL', $systemURL);
@@ -39,8 +47,6 @@ class Installer_Controller extends Controller
       define('WM_SkinURL',  WM_BundlesURL . 'installer/');
       
       Watermelon::$config->skin = 'installer';
-      
-      define('WM_Lang', $_SESSION['lang']);
       
       // determining step number
       
@@ -575,7 +581,7 @@ CONFIG;
          $w->skin              = 'wcmslay';
       
          // frontend
-      
+         
          $textMenus = array(array
             (
                array('Blog', 'blog', false, null),
@@ -585,11 +591,8 @@ CONFIG;
                array('ACP', 'admin', false, null),
             ));
       
-         $blockMenus = array(array
-            (
-               array('Test!', 'user', 'card', array()),
-            ));
-      
+         $blockMenus = array(array());
+         
          $w->siteName   = $site->siteName;
          $w->siteSlogan = null;
          $w->footer     = null;

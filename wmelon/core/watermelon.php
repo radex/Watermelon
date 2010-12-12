@@ -137,6 +137,8 @@ class Watermelon
     * blockMenus        - array of block-based menus (structure described in Skin class)
     * textMenus         - array of text-based menus ( -||- )
     * 
+    * TODO: update
+    * 
     * ---
     * ModulesList structure:
     * 
@@ -482,16 +484,16 @@ class Watermelon
             array('ACP', 'admin', false, null),
          ));
       
-      $blockMenus = array(array
-         (
-            array('Test!', 'user', 'card', array()),
-         ));
+      $blockMenus = array(array());
       
       $w->siteName   = 'Watermelon';
       $w->siteSlogan = 'Slogan';
       $w->footer     = 'Testowanie <em>stopki</em>…';
       $w->blockMenus = $blockMenus;
       $w->textMenus  = $textMenus;
+      
+      $w->headTags   = '';
+      $w->tailTags   = '';
       
       // setting config
       
@@ -511,6 +513,8 @@ class Watermelon
       // self::development_config();
       
       $w = Registry::get('wmelon');
+      
+      $w->modulesList = self::indexModules(); //TODO: only in debug
       
       self::$config = &$w;
       
@@ -558,7 +562,7 @@ class Watermelon
       {
          // ignoring empty segments
          
-         if(empty($segment))
+         if($segment === '')
          {
             continue;
          }
@@ -835,14 +839,28 @@ class Watermelon
          
          // head tags
          
-         $headTags = &self::$headTags;
+         $headTags   = &self::$headTags;
+         $headTags[] = &self::$config->headTags; 
          
          $siteName  = self::$config->siteName;
          $pageTitle = $controller->pageTitle;
-         $title     = empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName;
+         
+         if(self::$appType == self::AppType_Admin)
+         {
+            $title = empty($pageTitle) ? 'Panel Admina - ' . $siteName : $pageTitle . ' - Panel Admina - ' . $siteName;
+         }
+         else
+         {
+            $title = empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName;
+         }
          
          $headTags[] = '<title>' . $title . '</title>';
          $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\';</script>';
+         
+         // tail tags
+         
+         $tailTags   = &self::$tailTags;
+         $tailTags[] = &self::$config->tailTags;
          
          // setting configuration
          
@@ -859,7 +877,7 @@ class Watermelon
 
          $skin->messages   = &$messages;
          $skin->headTags   = &$headTags;
-         $skin->tailTags   = &self::$tailTags;
+         $skin->tailTags   = &$tailTags;
          $skin->blockMenus = &self::$config->blockMenus;
          $skin->textMenus  = &self::$config->textMenus;
          $skin->additionalData = $controller->additionalData;

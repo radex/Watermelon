@@ -22,10 +22,7 @@ class Pages_ACPInfo implements ACPInfo
 {
    public function info()
    {
-      $subitems[] = array('Lista stron', null, 'pages/index');
-      $subitems[] = array('Nowa strona', null, 'pages/new');
-      
-      $items[] = array('Strony', null, null, 'pages', $subitems);
+      $items[] = array('Strony', null, null, 'pages');
       
       return $items;
    }

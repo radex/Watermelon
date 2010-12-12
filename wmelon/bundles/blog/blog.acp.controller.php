@@ -25,6 +25,20 @@
 class Blog_Controller extends Controller
 {
    /*
+    * subnav config
+    */
+   
+   function __construct()
+   {
+      parent::__construct();
+      
+      $subNav[] = array('Lista wpisów', null, 'blog/index');
+      $subNav[] = array('Nowy wpis', null, 'blog/new');
+      
+      $this->subNav = $subNav;
+   }
+   
+   /*
     * blog posts table
     */
    

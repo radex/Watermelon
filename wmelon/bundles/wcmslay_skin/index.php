@@ -16,9 +16,11 @@
    </ul>
 </nav>
 <div id="container">
+   <?/*
    <div id="sidebar">
-      <?$this->drawBlockMenu(0)?>
+      < ?$this->drawBlockMenu(0)? >
    </div>
+   */?>
    <div id="content">
       <?  $this->drawMessages() ?>
       <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>

@@ -40,18 +40,9 @@ interface ACPInfo
     *       enum   $type  - type of item
     *       string $title - (optional, leave null for no title) title displayed when link is hovered
     *       string $page  - base page of controller, e.g. 'comments'
-    *       array  $subitems = array($subitem, ...)
     *    )
     * 
     * enum $type - leave null, types will be later
-    * 
-    * $subitem - secondary item of controller (usually controller actions), displayed in secondary navigation bar
-    *    = array
-    *    (
-    *       string $name  - -||-
-    *       string $title - -||-
-    *       string $page  - base page of action, e.g. 'blog/new'
-    *    )
     */
    
    public function info();

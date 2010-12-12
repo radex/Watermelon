@@ -27,10 +27,10 @@ class ACPSkin extends Skin
    private $leftNavItems = array();
    
    /*
-    * Selected page in primary navigation bar
+    * Is any page selected in primary navigation bar
     */
    
-   private $currentItem;
+   private $isSelected = false;
    
    /*
     * Checks whether current page starts with $page identificator
@@ -72,12 +72,12 @@ class ACPSkin extends Skin
          {
             $currentPage = ' class="currentPage"';
             
-            $this->currentItem = $i;
+            $this->isSelected = true;
          }
          
          // generating
          
-         echo '<li' . $currentPage . '><a href="' . SiteURL($page) . '"' . $title . '>' . $name . '</a>';
+         echo '<li' . $currentPage . '><a href="' . SiteURL($page) . '"' . $title . '>' . $name . "</a>\n";
       }
       
       $this->startsWith('asdasd');
@@ -89,7 +89,18 @@ class ACPSkin extends Skin
    
    protected function drawRightNav()
    {
-      echo '<li><a href="' . SiteURL('auth/logout', 'site') . '">Wyloguj</a>';
+      if($this->startsWith('options'))
+      {
+         echo '<li class="currentPage"><a href="' . SiteURL('options') . '">Ustawienia</a>' . "\n";
+         
+         $this->isSelected = true;
+      }
+      else
+      {
+         echo '<li><a href="' . SiteURL('options') . '">Ustawienia</a>' . "\n";
+      }
+      
+      echo '<li><a href="' . SiteURL('#/auth/logout') . '">Wyloguj</a>' . "\n";
    }
    
    /*
@@ -100,14 +111,14 @@ class ACPSkin extends Skin
    {
       // checking if any item is selected
       
-      if($this->currentItem === null)
+      if(!$this->isSelected)
       {
          return;
       }
       
       // checking if any subitems are given
       
-      $subitems = $this->leftNavItems[$this->currentItem][4];
+      $subitems = Watermelon::$controllerObject->subNav;
       
       if(empty($subitems))
       {

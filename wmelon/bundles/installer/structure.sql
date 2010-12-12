@@ -19,7 +19,8 @@ CREATE TABLE `wm_blogposts` (
   `content` text NOT NULL,
   `author` int(11) NOT NULL,
   `created` int(10) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 -- 

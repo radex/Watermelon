@@ -1,7 +1,6 @@
 <?defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="<?=WM_SkinURL?>style.css">
-<title><?= empty($pageTitle) ? 'Panel Admina - ' . $siteName : $pageTitle . ' - Panel Admina - ' . $siteName ?></title>
 <?=$this->drawHeadTags()?>
 
 <header>

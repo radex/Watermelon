@@ -25,6 +25,20 @@
 class Pages_controller extends Controller
 {
    /*
+    * subnav config
+    */
+   
+   function __construct()
+   {
+      parent::__construct();
+      
+      $subNav[] = array('Lista stron', null, 'pages/index');
+      $subNav[] = array('Nowa strona', null, 'pages/new');
+      
+      $this->subNav = $subNav;
+   }
+   
+   /*
     * pages table
     */
    

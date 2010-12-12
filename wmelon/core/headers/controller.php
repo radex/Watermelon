@@ -98,6 +98,27 @@ abstract class Controller
    public $dontShowPageTitle = false;
    
    /*
+    * public array $acpSubNav
+    * 
+    * Array of links in secondary navigation bar
+    * 
+    * Used only in ACP
+    * 
+    * Note that it is displayed only if controller is marked as selected in primary navigation bar
+    * 
+    * $acpSubNav = array($item, ...)
+    * 
+    * $item = array
+    *    (
+    *       string $name  - name of item (controller), displayed in main navigation bar
+    *       string $title - (optional, leave null for no title) title displayed when link is hovered
+    *       string $page  - base page of action, e.g. 'blog/new'
+    *    )
+    */
+   
+   public $acpSubNav;
+   
+   /*
     * public void addMessage(string $type, string $message)
     * 
     * Alias for Watermelon::addMessage()

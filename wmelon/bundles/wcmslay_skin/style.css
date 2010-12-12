@@ -182,11 +182,12 @@ h1 .adminTools a
 {
    overflow: hidden;
    
-   width: 950px;
+/*   width: 950px;*/
+   width:700px;
    margin: 0 auto 50px;
    
    background-color: #fff;
-   background-image: url('img/center.png');
+/*   background-image: url('img/center.png');*/
    box-shadow: 0 3px 30px #000;
    -webkit-box-shadow: 0 3px 30px #000;
    border-radius: 3px;
@@ -280,7 +281,8 @@ body > header > div
 #nav
 {
    display: block;
-   width: 950px;
+/*   width: 950px;*/
+   width:700px;
    margin: 0 auto;
 }
 

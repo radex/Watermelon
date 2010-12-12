@@ -91,7 +91,7 @@ label
 label > span
 {
    display: inline-block;
-   width: 150px;
+   width: 200px;
    text-align: right;
    padding-right: 5px;
    vertical-align: top;
@@ -100,12 +100,20 @@ label > span
 label > span > small
 {
    display: block;
+   color: #888;
 }
 
 textarea
 {
    height: 8em;
    width: 400px;
+}
+
+input[type=text],
+input[type=email],
+input[type=url]
+{
+   width: 350px;
 }
 
 code
@@ -300,12 +308,14 @@ body > header > div
    color: #a5be3c;
 }
 
-#navLeft .currentPage
+#navLeft .currentPage,
+#navRight .currentPage
 {
    padding-top: 0;
 }
 
-#navLeft .currentPage a
+#navLeft .currentPage a,
+#navRight .currentPage a
 {
    padding: 10px 7px;
 }
