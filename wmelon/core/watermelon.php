@@ -129,15 +129,14 @@ class Watermelon
     * systemURL         - base URL for wmelon/ contents
     * 
     * skin              - website skin name
-    * lang              - website language code
     * 
     * siteName          - website name
     * siteSlogan        - website slogan (some text, usually placed below site name; shown in some skins)
     * footer            - additional text (HTML) to put in footer
     * blockMenus        - array of block-based menus (structure described in Skin class)
     * textMenus         - array of text-based menus ( -||- )
-    * 
-    * TODO: update
+    * headTags          - tags to be added (string) at the beginning of the page
+    * tailTags          - tags to be added (string) at the end of the page
     * 
     * ---
     * ModulesList structure:
@@ -848,6 +847,10 @@ class Watermelon
          if(self::$appType == self::AppType_Admin)
          {
             $title = empty($pageTitle) ? 'Panel Admina - ' . $siteName : $pageTitle . ' - Panel Admina - ' . $siteName;
+         }
+         elseif(self::$appType == self::AppType_Installer)
+         {
+            $title = 'Watermelon CMS';
          }
          else
          {

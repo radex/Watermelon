@@ -36,7 +36,7 @@ class Auth_Model extends Model
    
    public function userData_login($login)
    {
-      return DBQuery::select('users')->where('login', (string) $login)->execute()->fetchObject();
+      return DBQuery::select('users')->where('login', (string) $login)->act()->fetchObject();
    }
    
    /*
@@ -60,7 +60,7 @@ class Auth_Model extends Model
    
    public function updateLastSeen($uid)
    {
-      DBQuery::update('users')->set('lastseen', time())->where('id', (int) $uid)->execute();
+      DBQuery::update('users')->set('lastseen', time())->where('id', (int) $uid)->act();
    }
    
    /*
@@ -71,7 +71,7 @@ class Auth_Model extends Model
    
    public function privilegesFor($uid)
    {
-      $result = DBQuery::select('privileges')->where('user', (int) $uid)->execute();
+      $result = DBQuery::select('privileges')->where('user', (int) $uid)->act();
       
       foreach($result as $privilege)
       {

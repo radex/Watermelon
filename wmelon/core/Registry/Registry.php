@@ -125,7 +125,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent && !self::$items[$name]->isSynced)
       {
-         $value = DBQuery::select('registry')->where('name', $name)->execute();
+         $value = DBQuery::select('registry')->where('name', $name)->act();
          $value = $value->fetchObject()->value;
          $value = unserialize($value); // value saved in database is serialized, so we have to unserialize it
          
@@ -162,7 +162,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         DBQuery::update('registry')->set('value', serialize($value))->where('name', $name)->execute();
+         DBQuery::update('registry')->set('value', serialize($value))->where('name', $name)->act();
       }
    }
    
@@ -189,7 +189,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         DBQuery::delete('registry')->where('name', $name)->execute();
+         DBQuery::delete('registry')->where('name', $name)->act();
       }
       
       // deleting locally
@@ -220,7 +220,7 @@ class Registry
       
       if(self::$items[$name]->isPersistent)
       {
-         DBQuery::delete('registry')->where('name', $name)->execute();
+         DBQuery::delete('registry')->where('name', $name)->act();
       }
       
       // invalidating

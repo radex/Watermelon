@@ -113,9 +113,9 @@ abstract class Skin
     * Array of text-based menus
     * 
     * $textMenus = array($menu, $menu, ...)
-    *    $menu = array(array(string $name, string $URI, bool $outside, string $title), ...)
+    *    $menu = array(array(string $name, string $URL, bool $relative, string $title), ...)
     *       string $name  - name of link
-    *       string $URI   - URI links points to (if $outside == TRUE) or name of the page on the same website (if $outside == FALSE)
+    *       string $URL   - name of the page on the same website (if $relative == TRUE) or absolute URL (if $relative == FALSE)
     *       string $title - description of link, shown when hovered (or NULL if none)
     */
    
@@ -154,15 +154,15 @@ abstract class Skin
    {
       foreach($this->textMenus[$id] as $menuItem)
       {
-         list($name, $URI, $outside, $title) = $menuItem;
+         list($name, $URL, $relative, $title) = $menuItem;
          
-         if(!$outside)
+         if($relative)
          {
-            $URI = SiteURL($URI);
+            $URL = SiteURL($URL);
          }
          
          echo '<li>';
-         echo '<a href="' . $URI . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a>';
+         echo '<a href="' . $URL . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a>';
          echo '</li>';
       }
    }

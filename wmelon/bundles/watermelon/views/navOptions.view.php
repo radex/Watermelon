@@ -30,7 +30,7 @@
          </tr>
       </tfoot>
       <tbody>
-         <tr tal:repeat="menuItem menu" id="navOptions_item${repeat/menuItem/index}">
+         <tr tal:repeat="menuItem menu">
             <td><input name="name_${repeat/menuItem/index}"     type="text"     value="${menuItem/name}" /></td>
             <td><input name="url_${repeat/menuItem/index}"      type="text"     value="${menuItem/url}" /></td>
             <td><input name="relative_${repeat/menuItem/index}" type="checkbox" tal:attributes="checked menuItem/relative" /></td>

@@ -32,7 +32,7 @@ class Pages_Model extends Model
    
    public function pages()
    {
-      return DBQuery::select('pages')->orderBy('id', true)->execute();
+      return DBQuery::select('pages')->orderBy('id', true)->act();
    }
    
    /*
@@ -54,7 +54,7 @@ class Pages_Model extends Model
    
    public function pageData_name($name)
    {
-      return DBQuery::select('pages')->where('name', (string) $name)->execute()->fetchObject();
+      return DBQuery::select('pages')->where('name', (string) $name)->act()->fetchObject();
    }
    
    /*

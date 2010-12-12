@@ -51,6 +51,10 @@ class Textile_Extension extends Extension
       $text = preg_replace_callback('/<code\(([^)]+)\)>(.*?)<\/code>/ms', array(__CLASS__, 'shelveCode'), $text);
       $text = preg_replace_callback('/<exec>(.*?)<\/exec>/ms', array(__CLASS__, 'shelveExec'), $text);
       
+      // replacing youtube tag
+      
+      $text = preg_replace_callback('/youtube\.(.*?)v=([0-9a-zA-Z]+)(.*?)$/s', array(__CLASS__, 'replaceYoutube'), $text);
+      
       // textile
       
       $text = self::$textile->TextileThis($text);
@@ -125,6 +129,17 @@ class Textile_Extension extends Extension
       self::$shelf[$shelvedID] = $evaluated;
       
       return '<wm:shelf(' . $shelvedID . ')>';
+   }
+   
+   /*
+    * replaces 'youtube. [url]' syntax with HTML
+    */
+   
+   private static function replaceYoutube($args)
+   {
+      $videoID = $args[2];
+      
+      return '<iframe style="width:670px;height:450px;border:0;display:block;margin:0 auto" src="http://www.youtube-nocookie.com/embed/' . $videoID . '?rel=0"></iframe>';
    }
 }
 

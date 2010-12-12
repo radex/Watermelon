@@ -32,7 +32,7 @@ class Blog_Model extends Model
    
    public function allPosts()
    {
-      return DBQuery::select('blogposts')->orderBy('id', true)->execute();
+      return DBQuery::select('blogposts')->orderBy('id', true)->act();
    }
    
    /*
@@ -47,7 +47,7 @@ class Blog_Model extends Model
    {
       $page = (int) $page - 1;
       
-      return DBQuery::select('blogposts')->orderBy('id', true)->limit($page * 10, 11)->execute();
+      return DBQuery::select('blogposts')->orderBy('id', true)->limit($page * 10, 11)->act();
    }
    
    /*
@@ -69,7 +69,7 @@ class Blog_Model extends Model
    
    public function postData_name($name)
    {
-      return DBQuery::select('blogposts')->where('name', (string) $name)->execute()->fetchObject();
+      return DBQuery::select('blogposts')->where('name', (string) $name)->act()->fetchObject();
    }
    
    /*

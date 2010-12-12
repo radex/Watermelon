@@ -32,7 +32,7 @@ class Comments_Model extends Model
    
    public function comments()
    {
-      return DBQuery::select('comments')->orderBy('id', true)->execute();
+      return DBQuery::select('comments')->orderBy('id', true)->act();
    }
    
    /*
@@ -57,7 +57,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      return DBQuery::select('comments')->where('record', $id)->andWhere('type', $type)->orderBy('id')->execute();
+      return DBQuery::select('comments')->where('record', $id)->andWhere('type', $type)->orderBy('id')->act();
    }
    
    /*
@@ -81,7 +81,7 @@ class Comments_Model extends Model
          $query = $query->andWhere('awaitingModeration', false);
       }
       
-      return $query->execute()->rows;
+      return $query->act()->rows;
    }
    
    /*
@@ -95,7 +95,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      DBQuery::delete('comments')->where('record', $id)->andWhere('type', $type)->execute();
+      DBQuery::delete('comments')->where('record', $id)->andWhere('type', $type)->act();
    }
    
    /*
@@ -175,7 +175,7 @@ class Comments_Model extends Model
    
    public function approve($id)
    {
-      DBQuery::update('comments')->set('awaitingModeration', false)->where('id', (int) $id)->execute();
+      DBQuery::update('comments')->set('awaitingModeration', false)->where('id', (int) $id)->act();
    }
    
    /*
@@ -186,6 +186,6 @@ class Comments_Model extends Model
    
    public function reject($id)
    {
-      DBQuery::update('comments')->set('awaitingModeration', true)->where('id', (int) $id)->execute();
+      DBQuery::update('comments')->set('awaitingModeration', true)->where('id', (int) $id)->act();
    }
 }

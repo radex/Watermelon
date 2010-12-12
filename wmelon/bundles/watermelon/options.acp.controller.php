@@ -139,10 +139,10 @@ class Options_Controller extends Controller
       {
          $menuItem = new stdClass;
          
-         $menuItem->name       = htmlspecialchars($item[0]);
-         $menuItem->url        = htmlspecialchars($item[1]);
-         $menuItem->relative   = !$item[2];
-         $menuItem->title      = htmlspecialchars($item[3]);
+         $menuItem->name       = $item[0];
+         $menuItem->url        = $item[1];
+         $menuItem->relative   = $item[2];
+         $menuItem->title      = $item[3];
          
          $menu[] = $menuItem;
       }
@@ -308,7 +308,7 @@ class Options_Controller extends Controller
       
       foreach($nav as $item)
       {
-         $textMenu[] = array($item->name, $item->url, !$item->relative, $item->title);
+         $textMenu[] = array($item->name, $item->url, $item->relative, $item->title);
       }
       
       Watermelon::$config->textMenus = array($textMenu);

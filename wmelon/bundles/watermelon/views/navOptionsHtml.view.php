@@ -36,7 +36,7 @@ function navOptions_add()
    
    // appending new row (content is pattern from main view)
    
-   $('#navOptionsForm tbody').append('<tr id="navOptions_item' + newItemID + '">' + navOptions_rowPattern + '</tr>');
+   $('#navOptionsForm tbody').append('<tr>' + navOptions_rowPattern + '</tr>');
    
    $('#top_NEW').attr(   'onclick', 'navOptions_redirect(' + newItemID + ', "top")');
    $('#up_NEW').attr(    'onclick', 'navOptions_redirect(' + newItemID + ', "up")');

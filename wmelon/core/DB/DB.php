@@ -158,7 +158,7 @@ class DB
    
    public static function select($table, $id)
    {
-      return DBQuery::select($table)->where('id', $id)->execute()->fetch();
+      return DBQuery::select($table)->where('id', $id)->act()->fetch();
    }
    
    /*
@@ -173,7 +173,7 @@ class DB
    
    public static function insert($table, $fields)
    {
-      return DBQuery::insert($table)->set($fields)->execute();
+      return DBQuery::insert($table)->set($fields)->act();
    }
    
    /*
@@ -188,7 +188,7 @@ class DB
    
    public static function update($table, $id, $fields)
    {
-      DBQuery::update($table)->set($fields)->where('id', $id)->execute();
+      DBQuery::update($table)->set($fields)->where('id', $id)->act();
    }
    
    /*

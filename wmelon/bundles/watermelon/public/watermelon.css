@@ -13,37 +13,37 @@
 .errorBox
 {
    border: 1px solid #cc7766;
-   background: #ffaa99 url('img/errorIcon.png') no-repeat 10px center;
+   background: #ffaa99 url('img/error.png') no-repeat 10px center;
 }
 
 .warningBox
 {
    border: 1px solid #cc99aa;
-   background: #ffee99 url('img/warningIcon.png') no-repeat 10px center;
+   background: #ffee99 url('img/warning.png') no-repeat 10px center;
 }
 
 .infoBox
 {
    border: 1px solid #8499d9;
-   background: #c8dfff url('img/infoIcon.png') no-repeat 10px center;
+   background: #c8dfff url('img/info.png') no-repeat 10px center;
 }
 
 .tickBox
 {
    border: 1px solid #97c32d;
-   background: #deeba8 url('img/tickIcon.png') no-repeat 10px center;
+   background: #deeba8 url('img/tick.png') no-repeat 10px center;
 }
 
 .tipBox
 {
    border: 1px solid #bbb;
-   background: #f8f8f8 url('img/tipIcon.png') no-repeat 10px center;
+   background: #f8f8f8 url('img/tip.png') no-repeat 10px center;
 }
 
 .questionBox
 {
    border: 1px solid #bbd;
-   background: #f0f0ff url('img/questionIcon.png') no-repeat 10px center;
+   background: #f0f0ff url('img/question.png') no-repeat 10px center;
 }
 
 .errorBox,

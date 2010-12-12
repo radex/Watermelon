@@ -490,7 +490,7 @@ class DBQuery
    }
    
    /*
-    * public mixed execute()
+    * public mixed act()
     * 
     * Executes query, and returns:
     *    DBResult object     - for SELECT
@@ -498,7 +498,7 @@ class DBQuery
     *    inserted id   (int) - for INSERT
     */
    
-   public function execute()
+   public function act()
    {
       $result = DB::query(true, $this->toSQL());
       
