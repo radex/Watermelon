@@ -16,17 +16,10 @@ INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`) V
 
 -- sample comment for these
 
-INSERT INTO `wm_comments` (`id`, `authorID`, `authorName`, `authorEmail`, `authorWebsite`, `created`, `content`, `awaitingModeration`)
+INSERT INTO `wm_comments` (`id`, `record`, `type`, `authorID`, `authorName`, `authorEmail`, `authorWebsite`, `created`, `content`, `awaitingModeration`)
 VALUES
-(NULL, 1, NULL, NULL, NULL, %1, 'Jakiś fajny koment', false),
-(NULL, 1, NULL, NULL, NULL, %1, 'Inny fajny koment', false);
-
--- and connection between
-
-INSERT INTO `wm_comments_records` (`record`, `comment`, `type`)
-VALUES
-('1', '1', 'blogpost'),
-('1', '2', 'page');
+(NULL, 1, 'blogpost', 1, NULL, NULL, NULL, %1, 'Jakiś fajny koment', false),
+(NULL, 1, 'page',     1, NULL, NULL, NULL, %1, 'Inny fajny koment', false);
 
 -- user privileges (user itself is created in controller)
 

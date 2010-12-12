@@ -118,7 +118,7 @@ class Blog_Model extends Model
       
       foreach($ids as $id)
       {
-         Model('comments')->deleteCommentsFor($id, 'page');
+         Model('comments')->deleteCommentsFor($id, 'blogpost');
       }
    }
 }

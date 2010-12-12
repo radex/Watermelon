@@ -28,6 +28,8 @@ CREATE TABLE `wm_blogposts` (
 
 CREATE TABLE `wm_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `record` int(11) NOT NULL COMMENT 'ID of record (blog post, page, etc) it belongs to',
+  `type` varchar(40) NOT NULL COMMENT 'type of record (blog post, page, etc)',
   `authorID` int(11) DEFAULT NULL,
   `authorName` varchar(40) DEFAULT NULL,
   `authorEmail` varchar(64) DEFAULT NULL,
@@ -35,20 +37,10 @@ CREATE TABLE `wm_comments` (
   `created` int(10) NOT NULL,
   `content` text NOT NULL,
   `awaitingModeration` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `record` (`record`),
+  KEY `type` (`type`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-
--- 
--- Structure for table `wm_comments_records`
--- 
-
-CREATE TABLE `wm_comments_records` (
-  `record` int(11) NOT NULL,
-  `comment` int(11) NOT NULL,
-  `type` varchar(40) NOT NULL,
-  KEY `blogpostcomm_post` (`record`),
-  KEY `commrecord_type` (`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Structure for table `wm_pages`

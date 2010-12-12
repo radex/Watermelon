@@ -32,20 +32,18 @@ class Comments_Model extends Model
    
    public function comments()
    {
-      return $this->db->query("SELECT * FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` ORDER BY `__comments`.`id` DESC");
+      return DBQuery::select('comments')->orderBy('id', true)->execute();
    }
    
    /*
     * public object commentData(int $id)
     * 
-    * $id comment data (with ID of record, that comment belongs to)
+    * $id comment data
     */
    
    public function commentData($id)
    {
-      $id = (int) $id;
-      
-      return $this->db->query("SELECT * FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments`.`id` = '%1'", $id)->fetchObject();
+      return DB::select('comments', (int) $id);
    }
    
    /*
@@ -59,7 +57,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      return $this->db->query("SELECT `__comments`.* FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments_records`.`record` = '%1' AND `__comments_records`.`type` = '%2' ORDER BY `__comments`.`id`", $id, $type);
+      return DBQuery::select('comments')->where('record', $id)->andWhere('type', $type)->orderBy('id')->execute();
    }
    
    /*
@@ -76,16 +74,18 @@ class Comments_Model extends Model
       $type = (string) $type;
       $all  = (bool) $all;
       
+      $query = DBQuery::select('id', 'comments')->where('record', $id)->andWhere('type', $type);
+      
       if(!$all)
       {
-         $notAll = ' AND `__comments`.`awaitingModeration` = 0';
+         $query = $query->andWhere('awaitingModeration', false);
       }
       
-      return $this->db->query("SELECT `__comments`.`id` FROM `__comments_records` JOIN `__comments` ON `__comments_records`.`comment` = `__comments`.`id` WHERE `__comments_records`.`record` = '%1' AND `__comments_records`.`type` = '%2'" . $notAll, $id, $type)->rows;
+      return $query->execute()->rows;
    }
    
    /*
-    * public DBResult deleteCommentsFor(int $id, string $type)
+    * public void deleteCommentsFor(int $id, string $type)
     * 
     * Deletes comments for $id record of $type type of content
     */
@@ -95,35 +95,23 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      // selecting comments ids
-      
-      $comments = DBQuery::select('comment', 'comments_records')->where('record', $id)->andWhere('type', $type)->execute();
-      
-      foreach($comments as $comment)
-      {
-         $ids[] = $comment->comment;
-      }
-      
-      // deleting comments
-      
-      DB::delete('comments', $ids);
-      
-      foreach($ids as $comment)
-      {
-         DBQuery::delete('comments_records')->where('comment', $comment)->execute();
-      }
+      DBQuery::delete('comments')->where('record', $id)->andWhere('type', $type)->execute();
    }
    
    /*
-    * public void postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $awaitingModeration)
+    * public int postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $awaitingModeration)
     * 
     * Posts a comment (for $id record of $type type of content)
+    * 
+    * Returns its ID
     */
    
    public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $content, $awaitingModeration)
    {
-      $commentID = DB::insert('comments', array
+      return DB::insert('comments', array
          (
+            'record'        => (int)    $id,
+            'type'          => (string) $type,
             'authorName'    => (string) $authorName,
             'authorEmail'   => (string) $authorEmail,
             'authorWebsite' => (string) $authorWebsite,
@@ -131,41 +119,27 @@ class Comments_Model extends Model
             'created'       => time(),
             'awaitingModeration' => (int) $awaitingModeration
          ));
-      
-      DB::insert('comments_records', array
-         (
-            'record'  => (int) $id,
-            'comment' => $commentID,
-            'type'    => (string) $type
-         ));
-      
-      return $commentID;
    }
    
    /*
-    * public void postComment(int $id, string $type, string $content)
+    * public int postComment(int $id, string $type, string $content)
     * 
     * Posts a comment as currently logged user (for $id record of $type type of content)
+    * 
+    * Returns its ID
     */
    
    public function postComment_logged($id, $type, $content)
    {
-      $commentID = DB::insert('comments', array
+      return DB::insert('comments', array
          (
+            'record'        => (int)    $id,
+            'type'          => (string) $type,
             'authorID'      => Auth::userData()->id,
             'content'       => (string) $content,
             'created'       => time(),
             'awaitingModeration' => false
          ));
-      
-      DB::insert('comments_records', array
-         (
-            'record'  => (int) $id,
-            'comment' => $commentID,
-            'type'    => (string) $type
-         ));
-      
-      return $commentID;
    }
    
    /*
@@ -191,11 +165,6 @@ class Comments_Model extends Model
    public function deleteComments(array $ids)
    {
       DB::delete('comments', $ids);
-      
-      foreach($ids as $id)
-      {
-         DBQuery::delete('comments_records')->where('comment', $id)->execute();
-      }
    }
    
    /*
