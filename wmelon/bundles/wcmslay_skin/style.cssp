@@ -8,6 +8,13 @@
    extraFont: Palatino
    
    green: #859e1c
+   lighterGreen: #b5ce4c
+   blue: #93b2d0
+   sidebar: #f2ede1
+   darkerSidebar: #fefcf2
+   
+   containerWidth: 700px
+   contentWidth: 670px
 
 @import url('../../bundles/watermelon/public/basic.css');
 @import url('../../bundles/watermelon/public/watermelon.css')
@@ -150,7 +157,7 @@ h2
 
 #container
    overflow: hidden
-   width: 700px
+   width: $containerWidth
    margin: 0 auto 50px
    background-color: #fff
    box-shadow: 0 3px 30px #000
@@ -159,7 +166,7 @@ h2
 #content
    float: right
    overflow: hidden
-   width: 670px
+   width: $contentWidth
    padding: 15px
    line-height: 1.7em
 
@@ -182,21 +189,21 @@ body > header
    line-height: 1em
    a
       padding: 0 10px
-      color: #b5ce4c
+      color: $lighterGreen
       text-decoration: none
-      text-shadow: 0 0 3px rgba(230, 258, 115, .5)
+      text-shadow: 0 0 3px rgba(230, 255, 115, .5)
    a:hover
-      text-shadow: 0 0 3px #000A35, 0 0 20px #000A35
+      text-shadow: 0 0 3px #000, 0 0 20px #000
 
 #siteSlogan
    padding: 2px 12px
    text-align: right
    font-size: 12px
-   color: #93b2d0
+   color: $blue
 
 #nav
    display: block
-   width: 700px
+   width: $containerWidth
    margin: 0 auto
    li
       display: inline-block
@@ -214,7 +221,7 @@ body > header
       border-radius: 3px 3px 0 0
    a:hover
       opacity: 1
-      color: #a5be3c
+      color: $lighterGreen
       box-shadow: 0 0 7px rgba(255,255,255,.8)
    .currentPage
       padding-top: 0
@@ -230,13 +237,13 @@ body > header
    width: 230px
    padding: 15px 10px
    line-height: 1.5em
-   background-color: #f2ede1
+   background-color: $sidebar
    border-radius: 0 5px 5px 0
    hr
       border: 0
       height: 3px
       width: 60%
-      background: #fefcf2
+      background: $darkerSidebar
    a
       border: 0
 
@@ -252,18 +259,20 @@ body > header
 
 body > footer
    clear: both
-   color: #93b2d0
+   color: $blue
    text-align: center
-   a,a:visited
-      color: #d5ee6c
+   a
+      color: inherit
+      border-bottom: 1px solid rgba(147,178,208,.3) // $blue with .3 opacity
+      line-height: 1.5em
+   a:hover
       text-decoration: none
-      border: 0
-   a:hover,
-      color: #fff
-      background: $green
+      border-bottom: 1px solid $blue
+   a:visited
+      color: inherit
 
 //
-// Blog & comments
+// Blog
 //
 
 .blog-readMore
@@ -309,6 +318,10 @@ body > footer
    color: #aaa
    text-align: center
 
+//
+// Comments
+//
+
 .comment
    margin-bottom: 20px
    overflow: hidden
@@ -326,7 +339,7 @@ body > footer
       display: table-cell
       width: 90px
       padding: 5px
-      border-right: 1px solid #e1e4db
+      border-right: 1px solid #ddd
       color: #888
       img
          display: block
@@ -342,4 +355,3 @@ body > footer
       font-size: .9em
       border: 1px solid #ddd
       border-radius: 0 5px 0 5px
-
