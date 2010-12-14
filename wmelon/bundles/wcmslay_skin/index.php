@@ -1,6 +1,6 @@
 <?defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="<?=WM_SkinURL?>style.css">
+<link rel="stylesheet" href="<?=WM_SystemURL?>core/turbine/css.php?files=wcmslay_skin/style.cssp">
 <?=$this->drawHeadTags()?>
 
 <header>
