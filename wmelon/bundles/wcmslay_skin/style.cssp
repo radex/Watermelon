@@ -1,12 +1,20 @@
+@turbine
+   plugins: boxshadow
+
 @constants
    imgPath:../../bundles/wcmslay_skin/img
+   
+   standardFont: Helvetica, Verdana, Sans, sans-serif
+   extraFont: Palatino
+   
+   green: #859e1c
 
 @import url('../../bundles/watermelon/public/basic.css');
 @import url('../../bundles/watermelon/public/watermelon.css')
 
 body
    font-size: 13px
-   font-family: Helvetica, Verdana, Sans, sans-serif
+   font-family: $standardFont
    background: #3A5A85 url('$imgPath/bg-noise.png')
 
 q
@@ -76,7 +84,7 @@ blockquote
    border-right: 1px solid #ced0d7
 
 a
-   color: #859e1c
+   color: $green
    text-decoration: none
 
 a:visited
@@ -85,23 +93,23 @@ a:visited
 a:hover
    text-decoration: underline
 
-#container h1
+h1
    clear: both
    margin-bottom: 20px
    border-bottom: 1px solid #ccc !important
 
-#container h1,
-#container h1 > a,
-#container h1 > a:hover,
-#container h1 > a:visited
+h1,
+h1 > a,
+h1 > a:hover,
+h1 > a:visited
    border: 0
    text-decoration: none
    font-size: 23px
    color: #333
-   font-family: Palatino
+   font-family: $extraFont
    text-shadow: 0 1px 0 #ccc
 
-#container h1 > a:hover
+h1 > a:hover
    text-shadow: 0 1px 2px #888
 
 .h1-comment,
@@ -113,10 +121,23 @@ h1 .adminTools a
    font-size: 12px
    font-weight: normal
    text-shadow: none
-   font-family: Helvetica, Verdana, Sans, sans-serif
+   font-family: $standardFont
    color: #888
 
-#container h2
+h1 .adminTools
+   float: right
+   padding: 5px 5px
+   color: #bbb
+   a
+      display: inline
+      padding: 0
+      color: inherit
+
+h1 .adminTools:hover,
+h1 .adminTools:hover a
+   color: #888
+
+h2
    font-size: 18px
 
 #container p
@@ -133,16 +154,7 @@ h1 .adminTools a
    margin: 0 auto 50px
    background-color: #fff
    box-shadow: 0 3px 30px #000
-   -webkit-box-shadow: 0 3px 30px #000
    border-radius: 3px
-
-#sidebar
-   float: right
-   width: 230px
-   padding: 15px 10px
-   line-height: 1.5em
-   background-color: #f2ede1
-   border-radius: 0 5px 5px 0
 
 #content
    float: right
@@ -150,11 +162,6 @@ h1 .adminTools a
    width: 670px
    padding: 15px
    line-height: 1.7em
-
-body > footer
-   clear: both
-   color: #93b2d0
-   text-align: center
 
 //
 // Header & nav
@@ -164,25 +171,22 @@ body > header
    margin: 15px
    margin-bottom: 5px
    text-align: center
-
-body > header > div
-   display: inline-block
+   > div
+      display: inline-block
 
 #siteName
    display: inline-block
-   font-family: Palatino
+   font-family: $extraFont
    letter-spacing: 0.05em
    font-size: 32px
    line-height: 1em
-
-#siteName a
-   padding: 0 10px
-   color: #b5ce4c
-   text-decoration: none
-   text-shadow: 0 0 3px rgba(230, 258, 115, .5)
-
-#siteName a:hover
-   text-shadow: 0 0 3px #000A35, 0 0 20px #000A35
+   a
+      padding: 0 10px
+      color: #b5ce4c
+      text-decoration: none
+      text-shadow: 0 0 3px rgba(230, 258, 115, .5)
+   a:hover
+      text-shadow: 0 0 3px #000A35, 0 0 20px #000A35
 
 #siteSlogan
    padding: 2px 12px
@@ -194,62 +198,69 @@ body > header > div
    display: block
    width: 700px
    margin: 0 auto
-
-#nav li
-   display: inline-block
-   vertical-align: bottom
-   margin-left: 5px
-   padding-top: 10px
-
-#nav a
-   display: inline-block
-   padding: 5px 7px
-   height: 13px
-   opacity: .7
-   background: #000
-   text-decoration: none
-   color: #859e1c
-   border-radius: 3px 3px 0 0
-
-#nav a:hover
-   opacity: 1
-   color: #a5be3c
-   box-shadow: 0 0 7px rgba(255,255,255,.8)
-   -webkit-box-shadow: 0 0 7px rgba(255,255,255,.8)
-
-#nav .currentPage
-   padding-top: 0
-
-#nav .currentPage a
-   padding: 10px 7px
+   li
+      display: inline-block
+      vertical-align: bottom
+      margin-left: 5px
+      padding-top: 10px
+   a
+      display: inline-block
+      padding: 5px 7px
+      height: 13px
+      opacity: .7
+      background: #000
+      text-decoration: none
+      color: $green
+      border-radius: 3px 3px 0 0
+   a:hover
+      opacity: 1
+      color: #a5be3c
+      box-shadow: 0 0 7px rgba(255,255,255,.8)
+   .currentPage
+      padding-top: 0
+      a
+         padding: 10px 7px
 
 //
-// footer & sidebar
+// Sidebar
 //
 
-#sidebar hr
-   border: 0
-   height: 3px
-   width: 60%
-   background: #fefcf2
+#sidebar
+   float: right
+   width: 230px
+   padding: 15px 10px
+   line-height: 1.5em
+   background-color: #f2ede1
+   border-radius: 0 5px 5px 0
+   hr
+      border: 0
+      height: 3px
+      width: 60%
+      background: #fefcf2
+   a
+      border: 0
 
-body > footer a, #footer a:visited
-   color: #d5ee6c
-   text-decoration: none
-   border: 0
+#sidebar:hover
+   a
+      border-bottom: 1px solid #ccc
+   a:hover
+      border: 0
 
-body > footer a:hover, #footer a:visited:hover
-   color: #fff
-   background: #859e1c
+//
+// Footer
+//
 
-#sidebar a
-   border: 0
-
-#sidebar:hover a
-   border-bottom: 1px solid #ccc
-
-#sidebar:hover a:hover
-   border: 0
+body > footer
+   clear: both
+   color: #93b2d0
+   text-align: center
+   a,a:visited
+      color: #d5ee6c
+      text-decoration: none
+      border: 0
+   a:hover,
+      color: #fff
+      background: $green
 
 //
 // Blog & comments
@@ -310,45 +321,25 @@ body > footer a:hover, #footer a:visited:hover
    background-color: #f8f8f8
    border: 1px solid #ddd
 
-.comment header
-   display: table-cell
-   width: 90px
-   padding: 5px
-   border-right: 1px solid #e1e4db
-   color: #888
+.comment
+   header
+      display: table-cell
+      width: 90px
+      padding: 5px
+      border-right: 1px solid #e1e4db
+      color: #888
+      img
+         display: block
+   section
+      display: table-cell
+      vertical-align: top
+      padding: 5px
+      padding-left: 7px
+   .adminTools
+      padding: 3px 7px
+      float: right
+      margin: -6px -6px 5px 5px
+      font-size: .9em
+      border: 1px solid #ddd
+      border-radius: 0 5px 0 5px
 
-.comment header img
-   display: block
-
-.comment section
-   display: table-cell
-   vertical-align: top
-   padding: 5px
-   padding-left: 7px
-
-.comment .adminTools
-   padding: 3px 7px
-   float: right
-   margin: -6px -6px 5px 5px
-   font-size: .9em
-   border: 1px solid #ddd
-   border-radius: 0 5px 0 5px
-
-.comment .adminTools:hover
-   opacity: 1
-
-h1 .adminTools
-   float: right
-   display: inline-block
-   padding: 5px 5px
-   color: #bbb
-
-h1 .adminTools a
-   display: inline
-   padding: 0
-   color: #bbb
-
-h1 .adminTools:hover,
-h1 .adminTools:hover a
-   color: #888
-   text-shadow: none
