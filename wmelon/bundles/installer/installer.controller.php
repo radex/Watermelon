@@ -562,35 +562,39 @@ CONFIG;
          DB::query($query, time());
       }
       
+      // feeds
+      
+      Model('blog')->generateFeed();
+      
+      $atomID = WM_SiteURL . time() . mt_rand();
+      $atomID = sha1($atomID);
+      
       // adding wmelon configuration to Registry
          
          Registry::create('wmelon', $w, true);
          
          // modules
-      
+         
          $w->modulesList       = Watermelon::indexModules();
          $w->autoload          = array('auth', 'comments', 'sblam');
-         $w->controllerHandler = null;
          $w->defaultController = 'blog';
-      
+         
          // other
-      
+         
          $w->siteURL           = WM_SiteURL;
          $w->systemURL         = WM_SystemURL;
-      
+         
          $w->skin              = 'wcmslay';
-      
+         $w->atomID            - $atomID;
+         
          // frontend
          
          $textMenus = array(array
             (
                array('Blog', 'blog', false, null),
-               array('Testy', 'test', false, null),
                array('Login', 'auth/login', false, null),
-               array('Logout', 'auth/logout', false, null),
-               array('ACP', 'admin', false, null),
             ));
-      
+         
          $blockMenus = array(array());
          
          $w->siteName   = $site->siteName;
@@ -598,9 +602,12 @@ CONFIG;
          $w->footer     = null;
          $w->blockMenus = $blockMenus;
          $w->textMenus  = $textMenus;
-      
+         
+         $w->headTags   = '';
+         $w->tailTags   = '';
+         
          // setting config
-      
+         
          Registry::set('wmelon', $w);
       
       // adding superuser

@@ -20,6 +20,8 @@
 
 Watermelon::run();
 
+//TODO: refactor
+
 class Watermelon
 {   
    /*
@@ -479,49 +481,6 @@ class Watermelon
       return $modulesList;
    }
    
-   private static function development_config()
-   {
-      // modules
-      
-      $w->modulesList       = self::indexModules();            // TODO: only in debug
-      $w->autoload          = array('auth', 'comments', 'sblam');
-      $w->controllerHandler = null;
-      $w->defaultController = 'blog';
-      
-      // other
-      
-      $w->siteURL           = 'http://localhost/w/';
-      $w->systemURL         = 'http://localhost/w/wmelon/';
-      
-      $w->skin              = 'wcmslay';
-      
-      // frontend
-      
-      $textMenus = array(array
-         (
-            array('Blog', 'blog', false, 'Blooog!!!'),
-            array('Testy', 'test', false, null),
-            array('Login', 'auth/login', false, null),
-            array('Logout', 'auth/logout', false, null),
-            array('ACP', 'admin', false, null),
-         ));
-      
-      $blockMenus = array(array());
-      
-      $w->siteName   = 'Watermelon';
-      $w->siteSlogan = 'Slogan';
-      $w->footer     = 'Testowanie <em>stopki</em>…';
-      $w->blockMenus = $blockMenus;
-      $w->textMenus  = $textMenus;
-      
-      $w->headTags   = '';
-      $w->tailTags   = '';
-      
-      // setting config
-      
-      Registry::set('wmelon', $w);
-   }
-   
    /*
     * private static void config()
     * 
@@ -533,8 +492,6 @@ class Watermelon
       // getting main configuration array from Registry
       
       Registry::create('wmelon', $w, true);
-      
-      // self::development_config();
       
       $w = Registry::get('wmelon');
       

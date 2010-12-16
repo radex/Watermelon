@@ -7,8 +7,13 @@ class Test_Controller extends Controller
       $this->pageTitle = 'Testy';
       
       echo '<a href="$/test/tables/">ACP Tables</a><br>';
-      echo '<a href="$/test/questions/">Questions</a><br>';
       echo '<a href="$/test/textile/">Textile</a><br>';
+      echo '<a href="$/test/config/">Watermelon config</a><br>';
+   }
+   
+   function config_action()
+   {
+      var_dump(Watermelon::$config);
    }
    
    function textile_action()
@@ -52,34 +57,6 @@ TEXTILE;
       var_dump($textile);
       
       echo $textile;
-   }
-   
-   function questions_action()
-   {
-      $this->addMessage('error', 'Foo! Bar!');
-      $this->addMessage('warning', 'Foo! Bar!');
-      $this->addMessage('info', 'Foo! Bar!');
-      $this->addMessage('tick', 'Foo! Bar!');
-      $this->addMessage('tip', 'Foo! Bar!');
-      
-      
-      echo '
-      
-      <div class="questionBox">
-         <strong>Czy na pewno chcesz usunąć 15 artykułów o tytułach:</strong>
-         <ul>
-         <li>Blah blah foo bar lorem ipsum
-         <li> oiac uias iocu aiucoauscoiu
-         </ul>
-         <menu>
-            <input type="button" value="Anuluj" onclick="history.back()" autofocus>
-            <input type="button" value="Tak">
-         </menu>
-      </div>
-      
-      ';
-      
-      echo questionBox('Foo!', 'bar');
    }
    
    function tables_action()
