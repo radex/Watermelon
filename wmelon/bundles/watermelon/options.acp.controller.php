@@ -60,7 +60,7 @@ class Options_Controller extends Controller
       // label notes
       
       $siteSlogan_label     = 'W kilku słowach opisz o czym jest ta strona';
-      $footer_label         = 'Możesz używać HTML';
+      $footer_label         = 'Możesz używać HTML<br>oraz <em>$/</em> dla linków na stronie';
       $head_label           = '"sekcja &lt;head&gt;"; skrypty, arkusze stylów itp.';
       $tail_label           = 'Skrypty, dodane na końcu strony';
       
@@ -133,9 +133,19 @@ class Options_Controller extends Controller
       
       // getting menu data
       
-      $menuObj = Watermelon::$config->textMenus[0];
+      $menu_orig = Watermelon::$config->textMenus[0];
       
-      foreach($menuObj as $i => $item)
+      // if no menu items
+      
+      if(empty($menu_orig))
+      {
+         View('noNavItems')->display();
+         return;
+      }
+      
+      // recomposing array
+      
+      foreach($menu_orig as $i => $item)
       {
          $menuItem = new stdClass;
          
@@ -176,18 +186,9 @@ class Options_Controller extends Controller
       
       // validating action
       
-      switch($action)
+      if(!in_array($action, array('top', 'up', 'down', 'bottom', 'delete')))
       {
-         case 'top':
-         case 'up':
-         case 'down':
-         case 'bottom':
-         case 'delete':
-         break;
-         
-         default:
-            $action = false;
-         break;
+         $action = false;
       }
       
       // composing $nav
@@ -196,12 +197,12 @@ class Options_Controller extends Controller
       {
          list($key, $i) = explode('_', $key);
          
-         $nav[$i]->$key = $value;
+         $nav_post[$i]->$key = $value;
       }
       
       // filtering $nav
       
-      foreach($nav as $item)
+      foreach($nav_post as $item)
       {
          $item->name     = trim($item->name);
          $item->url      = trim($item->url);
@@ -213,19 +214,14 @@ class Options_Controller extends Controller
             $item->title = null;
          }
          
-         $nav2[] = $item;
+         $nav[] = $item;
       }
-      
-      $nav = $nav2; //TODO: fix
-      unset($nav2);
       
       // performing action if necessary
       
-      //TODO: simplify code
-      
-      if($action == 'top' || ($action == 'up' && $id == 1))
+      if($action == 'top' || $action == 'bottom')
       {
-         $nav2[] = $nav[$id];
+         // recreating array, omiting given item
          
          foreach($nav as $i => $item)
          {
@@ -235,64 +231,41 @@ class Options_Controller extends Controller
             }
          }
          
-         $nav = $nav2;
-      }
-      elseif($action == 'bottom' || ($action == 'down' && $id == count($nav) - 2))
-      {
-         foreach($nav as $i => $item)
-         {
-            if($i != $id)
-            {
-               $nav2[] = $item;
-            }
-         }
+         // adding given item on top or bottom
          
-         $nav2[] = $nav[$id];
+         if($action == 'top')
+         {
+            array_unshift($nav2, $nav[$id]);
+         }
+         else
+         {
+            array_push($nav2, $nav[$id]);
+         }
          
          $nav = $nav2;
       }
       elseif($action == 'up')
       {
-         foreach($nav as $i => $item)
-         {
-            if($i == ($id - 1))
-            {
-               $nav2[] = $nav[$id];
-            }
-            elseif($i == $id)
-            {
-               $nav2[] = $nav[$id - 1];
-            }
-            else
-            {
-               $nav2[] = $item;
-            }
-         }
+         // swapping items
          
-         $nav = $nav2;
+         $item = $nav[$id];
+         
+         $nav[$id]     = $nav[$id - 1];
+         $nav[$id - 1] = $item;
       }
       elseif($action == 'down')
       {
-         foreach($nav as $i => $item)
-         {
-            if($i == ($id + 1))
-            {
-               $nav2[] = $nav[$id];
-            }
-            elseif($i == $id)
-            {
-               $nav2[] = $nav[$id + 1];
-            }
-            else
-            {
-               $nav2[] = $item;
-            }
-         }
+         // swapping items
          
-         $nav = $nav2;
+         $item = $nav[$id];
+         
+         $nav[$id]     = $nav[$id + 1];
+         $nav[$id + 1] = $item;
       }
       elseif($action == 'delete')
       {
+         // recreating array, omiting given item
+         
          foreach($nav as $i => $item)
          {
             if($i != $id)
@@ -312,6 +285,19 @@ class Options_Controller extends Controller
       }
       
       Watermelon::$config->textMenus = array($textMenu);
+      
+      $this->registry->set('wmelon', Watermelon::$config);
+      
+      SiteRedirect('options/nav');
+   }
+   
+   /*
+    * Navigation - adding first item
+    */
+   
+   function nav_addFirst_action()
+   {
+      Watermelon::$config->textMenus = array(array(array()));
       
       $this->registry->set('wmelon', Watermelon::$config);
       

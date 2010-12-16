@@ -13,8 +13,8 @@
    sidebar: #f2ede1
    darkerSidebar: #fefcf2
    
-   containerWidth: 700px
-   contentWidth: 670px
+   containerWidth: 750px
+   contentWidth: 720px
 
 @import url('../../bundles/watermelon/public/basic.css');
 @import url('../../bundles/watermelon/public/watermelon.css')

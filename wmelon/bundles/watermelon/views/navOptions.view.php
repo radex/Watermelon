@@ -67,7 +67,7 @@
    </table>
    
    <input type="submit" value="Zapisz zmiany" /> &larr; nie zapomnij zapisać zmian<br/>
-   <input type="button" value="Dodaj nowy link" onclick="navOptions_add()" />
+   <input type="button" value="Dodaj następny link" onclick="navOptions_add()" />
 </form>
 
 <script>

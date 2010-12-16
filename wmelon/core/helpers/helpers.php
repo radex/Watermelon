@@ -379,3 +379,26 @@ function QuestionBox($message, $yesPage)
    
    return $h;
 }
+
+/*
+ * string SiteLinks(string $html)
+ * 
+ * Replaces made in simple manner links in HTML (in href="" and action="") to absolute URL-s:
+ *    #/ for website base URL
+ *    $/ for either site or ACP URL (depending on which is currently active)
+ *    %/ for ACP base URL
+ */
+
+function SiteLinks($html)
+{
+   $html = str_replace('href="#/',   'href="'   . WM_SiteURL, $html);
+   $html = str_replace('action="#/', 'action="' . WM_SiteURL, $html);
+   
+   $html = str_replace('href="$/',   'href="'   . WM_CurrURL, $html);
+   $html = str_replace('action="$/', 'action="' . WM_CurrURL, $html);
+   
+   $html = str_replace('href="%/',   'href="'   . WM_AdminURL, $html);
+   $html = str_replace('action="%/', 'action="' . WM_AdminURL, $html);
+   
+   return $html;
+}

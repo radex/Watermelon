@@ -161,9 +161,7 @@ abstract class Skin
             $URL = SiteURL($URL);
          }
          
-         echo '<li>';
-         echo '<a href="' . $URL . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a>';
-         echo '</li>';
+         echo '<li><a href="' . $URL . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a></li>';
       }
    }
    
@@ -222,10 +220,10 @@ abstract class Skin
    public function display()
    {
       $content    = &$this->content;
-      $pageTitle  = &$this->pageTitle;
-      $siteName   = &$this->siteName;
-      $siteSlogan = &$this->siteSlogan;
-      $footer     = &$this->footer;
+      $pageTitle  = $this->pageTitle;
+      $siteName   = $this->siteName;
+      $siteSlogan = $this->siteSlogan;
+      $footer     = SiteLinks($this->footer);
       $dontShowPageTitle = $this->dontShowPageTitle;
       
       $additionalData = &$this->additionalData;

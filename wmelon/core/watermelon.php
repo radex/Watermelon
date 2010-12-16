@@ -241,6 +241,22 @@ class Watermelon
       include WM_Core . 'Textile/textile.extension.php';
       Textile::onAutoload();
       
+      // indexing modules (if debug or admin logged)
+      
+      if(defined('WM_Debug') || Auth::isLogged())
+      {
+         $modules = self::indexModules();
+         
+         // updating Registry if modules index has changed
+         
+         if(serialize($modules) != serialize(self::$config->modulesList))
+         {
+            self::$config->modulesList = $modules;
+            
+            Registry::set('wmelon', self::$config);
+         }
+      }
+      
       // if ACP - checking if logged in
       
       if(self::$appType == self::AppType_Admin)
@@ -507,13 +523,13 @@ class Watermelon
    
    private static function config()
    {
+      // getting main configuration array from Registry
+      
       Registry::create('wmelon', $w, true);
       
       // self::development_config();
       
       $w = Registry::get('wmelon');
-      
-      $w->modulesList = self::indexModules(); //TODO: only in debug
       
       self::$config = &$w;
       
@@ -791,18 +807,7 @@ class Watermelon
    {
       $content = ob_get_clean();
       
-      // replacing made in simple manner links into HTML
-      
-      $currURL = (self::$appType == self::AppType_Admin) ? WM_AdminURL : WM_SiteURL;
-      
-      $content = str_replace('href="#/',   'href="'   . WM_SiteURL, $content);
-      $content = str_replace('action="#/', 'action="' . WM_SiteURL, $content);
-      
-      $content = str_replace('href="$/',   'href="'   . $currURL, $content);
-      $content = str_replace('action="$/', 'action="' . $currURL, $content);
-      
-      $content = str_replace('href="%/',   'href="'   . WM_AdminURL, $content);
-      $content = str_replace('action="%/', 'action="' . WM_AdminURL, $content);
+      $content = SiteLinks($content);
       
       // running skin, or outputing data
       

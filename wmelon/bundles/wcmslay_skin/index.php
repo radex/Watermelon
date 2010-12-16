@@ -12,7 +12,17 @@
 
 <nav>
    <ul id="nav">
-      <?=$this->drawTextMenu(0)?>
+      <?
+      
+      echo $this->drawTextMenu(0);
+      
+      if(Auth::isLogged())
+      {   
+         echo '<li style="float:right; padding-right:5px"><a href="' . SiteURL('%/') . '">Panel Admina</a></li>';
+         echo '<li style="float:right"><a href="' . SiteURL('auth/logout') . '">Wyloguj</a></li>';
+      }
+      
+      ?>
    </ul>
 </nav>
 <div id="container">
@@ -50,7 +60,7 @@
          
          $query = htmlspecialchars($query);
          
-         $query = preg_replace('/(`[^`]+`)/', '<em>$1</em>', $query);
+         $query = preg_replace('/([A-Z]+)/', '<em>$1</em>', $query);
          
          echo '<li><pre style="padding:5px">' . $query . '</pre></li>';
       }
