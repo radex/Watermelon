@@ -10,7 +10,7 @@
    <div class="blog-nextPage" tal:condition="not: anotherPage" />
 </div>
 
-<article tal:repeat="post posts">
+<article tal:repeat="post posts" id="blogpost-${post/id}">
    <header>
       <h1>
          <a href="$/blog/${post/name}">${post/title}</a>

@@ -9,9 +9,9 @@ INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `content`, `author`, `created
 
 -- sample page
 
-INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`) VALUES
+INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`, `updated`) VALUES
 (
-   NULL, 'sample', 'Jakiś tytuł', 'Jakaś strona, może z linkami do pomocy, etc.', 1, %1
+   NULL, 'sample', 'Jakiś tytuł', 'Jakaś strona, może z linkami do pomocy, etc.', 1, %1, %1
 );
 
 -- sample comment for these

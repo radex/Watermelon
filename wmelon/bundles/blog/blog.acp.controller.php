@@ -120,10 +120,9 @@ class Blog_Controller extends Controller
       
       //TODO: give option (for advanced users) to type name for themselves
       
-      $titleArgs   = array('style' => 'width: 500px');
       $contentArgs = array('style' => 'width: 100%; height:30em');
       
-      $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
+      $form->addInput('text', 'title', 'Tytuł', true);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
       
       echo $form->generate();
@@ -170,7 +169,7 @@ class Blog_Controller extends Controller
       
       $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . $backTo, 'blog/edit/' . $id . $backTo);
       
-      $titleArgs   = array('style' => 'width: 500px', 'value' => $data->title);
+      $titleArgs   = array('value' => $data->title);
       $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->content);
       
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
@@ -216,7 +215,7 @@ class Blog_Controller extends Controller
          break;
          
          case 'site':
-            $backPage = '#/'; //TODO: + #id
+            $backPage = '#/#blogpost-' . $postData->id;
          break;
          
          default:

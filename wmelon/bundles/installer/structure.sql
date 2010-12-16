@@ -56,6 +56,7 @@ CREATE TABLE `wm_pages` (
   `content` text NOT NULL,
   `author` int(11) NOT NULL,
   `created` int(10) NOT NULL,
+  `updated` int(10) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `page_name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

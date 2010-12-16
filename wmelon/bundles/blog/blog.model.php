@@ -201,33 +201,33 @@ class Blog_Model extends Model
    
    private function generateName($title)
    {
-      $title = (string) $title;
+      $name = (string) $title;
       
       // deletes all necessary characters
       
-      $title = str_replace(array('?', '/', '#', '&'), '', $title);
-      $title = str_replace(':', '-', $title);
-      $title = str_replace(' ', '_', $title);
+      $name = str_replace(array('?', '/', '#', '&'), '', $name);
+      $name = str_replace(':', '-', $name);
+      $name = str_replace(' ', '_', $name);
       
       // if already exists, generating unique
       
-      if(DBQuery::select('blogposts')->where('name', $title)->act()->exists)
+      if(DBQuery::select('blogposts')->where('name', $name)->act()->exists)
       {
          $i = 2;
          
          do
          {
-            $title2 = $title . '_(' . $i . ')';
+            $name2 = $name . '_(' . $i . ')';
             
             $i++;
          }
-         while(DBQuery::select('blogposts')->where('name', $title2)->act()->exists);
+         while(DBQuery::select('blogposts')->where('name', $name2)->act()->exists);
          
-         $title = $title2;
+         $name = $name2;
       }
       
       //--
       
-      return $title;
+      return $name;
    }
 }

@@ -61,17 +61,25 @@ class Pages_Model extends Model
     * public void postPage(string $title, string $name, string $content)
     * 
     * Posts a page with given data, as currently logged user and with current time
+    * 
+    * If $name is not given, automatic will be generated from title
     */
    
    public function postPage($title, $name, $content)
    {
+      if(empty($name))
+      {
+         $name = $this->generateName($title);
+      }
+      
       DB::insert('pages', array
          (
+            'name'    => (string) $name,
+            'title'   => (string) $title,
+            'content' => (string) $content,
             'author'  => Auth::userData()->id,
             'created' => time(),
-            'title'   => (string) $title,
-            'name'    => (string) $name,
-            'content' => (string) $content,
+            'updated' => time(),
          ));
    }
    
@@ -87,7 +95,8 @@ class Pages_Model extends Model
          (
             'title'   => (string) $title,
             'name'    => (string) $name,
-            'content' => (string) $content
+            'content' => (string) $content,
+            'updated' => time(),
          ));
    }
    
@@ -105,5 +114,43 @@ class Pages_Model extends Model
       {
          Model('comments')->deleteCommentsFor($id, 'page');
       }
+   }
+   
+   /*
+    * private string generateName(string $title)
+    * 
+    * Generates page name (part of URL) from its title
+    */
+   
+   private function generateName($title)
+   {
+      $name = (string) $title;
+      
+      // deletes all necessary characters
+      
+      $name = str_replace(array('?', '/', '#', '&'), '', $name);
+      $name = str_replace(':', '-', $name);
+      $name = str_replace(' ', '_', $name);
+      
+      // if already exists, generating unique
+      
+      if(DBQuery::select('pages')->where('name', $name)->act()->exists)
+      {
+         $i = 2;
+         
+         do
+         {
+            $name2 = $name . '_(' . $i . ')';
+            
+            $i++;
+         }
+         while(DBQuery::select('pages')->where('name', $name2)->act()->exists);
+         
+         $name = $name2;
+      }
+      
+      //--
+      
+      return $name;
    }
 }

@@ -62,7 +62,7 @@ class Pages_controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Nazwa', 'Treść', 'Utworzono', 'Komentarzy', 'Akcje');
+      $table->header = array('Tytuł', 'Treść', '<small>Napisany (uaktualniony)</small>', 'Komentarzy', 'Akcje');
       $table->selectedActions[] = array('Usuń', 'pages/delete/');
       
       // adding pages
@@ -75,7 +75,6 @@ class Pages_controller extends Controller
          
          $name  = $page->name;
          $title = '<a href="#/pages/' . $name . '">' . $page->title . '</a>';
-         $name  = '<a href="#/pages/' . $name . '">' . $name . '</a>';
          
          //--
          
@@ -88,7 +87,8 @@ class Pages_controller extends Controller
          
          //--
          
-         $created = HumanDate($page->created); //TODO: + by [author]
+         $dates  = '<small>' . HumanDate($page->created, true, true);
+         $dates .= ' (' . HumanDate($page->updated, true, true) . ')</small>'; //TODO: + by [author]
          
          //--
          
@@ -102,7 +102,7 @@ class Pages_controller extends Controller
          
          //--
          
-         $table->addLine($id, $title, $name, $content, $created, $comments, $actions);
+         $table->addLine($id, $title, $content, $dates, $comments, $actions);
       }
       
       // displaying
@@ -120,9 +120,9 @@ class Pages_controller extends Controller
       
       $form = new Form('wmelon.pages.newPage', 'pages/newSubmit', 'pages/new');
       
-      $form->addInput('text', 'title', 'Tytuł', true, array('style' => 'width: 500px'));
-      $form->addInput('text', 'name', 'Nazwa', true,  array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)'));
+      $form->addInput('text', 'title', 'Tytuł', true);
       $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em'));
+      $form->addInput('text', 'name', 'Nazwa', false,  array('labelNote' => 'Opcjonalnie - jeśli nie podasz, to zostanie wygenerowana automatycznie'));
       
       echo $form->generate();
    }
@@ -135,8 +135,6 @@ class Pages_controller extends Controller
    {
       $form = Form::validate('wmelon.pages.newPage', 'pages/new');
       $data = $form->getAll();
-      
-      //TODO: check whether name already exists, propose alternative if so, preferably also via AJAX
       
       $this->model->postPage($data->title, $data->name, $data->content);
       
@@ -170,13 +168,13 @@ class Pages_controller extends Controller
       
       $form = new Form('wmelon.pages.editPage', 'pages/editSubmit/' . $id . $backTo, 'pages/edit/' . $id . $backTo);
       
-      $titleArgs   = array('style' => 'width: 500px', 'value' => $data->title);
-      $nameArgs    = array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)', 'value' => $data->name);
+      $titleArgs   = array('value' => $data->title);
       $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->content);
+      $nameArgs    = array('labelNote' => 'Nie zmieniaj, jeśli <em>naprawdę</em> nie wiesz co robisz', 'value' => $data->name);
       
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
-      $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
+      $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
       
       echo $form->generate();
    }

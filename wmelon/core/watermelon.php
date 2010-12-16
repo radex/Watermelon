@@ -547,6 +547,7 @@ class Watermelon
       define('WM_SystemURL',   $w->systemURL);
       define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
+      define('WM_CacheURL',    WM_SystemURL . 'cache/');
       
       if(self::$appType == self::AppType_Admin)
       {
@@ -883,8 +884,8 @@ class Watermelon
          
          $skin->pageTitle  = $pageTitle;
          $skin->dontShowPageTitle = $controller->dontShowPageTitle;
-         $skin->siteName   = $siteName;
-         $skin->siteSlogan = &self::$config->siteSlogan;
+         $skin->siteName   = htmlspecialchars($siteName);
+         $skin->siteSlogan = htmlspecialchars(self::$config->siteSlogan);
          $skin->footer     = &self::$config->footer;
          
          $messages = $_SESSION['WM_Messages'];
