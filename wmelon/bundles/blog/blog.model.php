@@ -73,37 +73,46 @@ class Blog_Model extends Model
    }
    
    /*
-    * public void postPost(string $title, string $name, string $content)
+    * public void postPost(string $title, string $content)
     * 
     * Posts a post with given data, as currently logged user and with current time
     */
    
-   public function postPost($title, $name, $content)
+   public function postPost($title, $content)
    {
+      $atomID = Watermelon::$config->atomID . $name . time() . mt_rand();
+      $atomID = sha1($atomID);
+      
       DB::insert('blogposts', array
          (
-            'name'    => (string) $name,
+            'name'    => $this->generateName($title),
             'title'   => (string) $title,
             'content' => (string) $content,
             'author'  => Auth::userData()->id,
-            'created' => time()
+            'created' => time(),
+            'updated' => time(),
+            'atomID'  => $atomID
          ));
+      
+      $this->generateFeed();
    }
    
    /*
-    * public void editPost(int $id, string $title, string $name, string $content)
+    * public void editPost(int $id, string $title, string $content)
     * 
     * Edits $id post, setting given data
     */
    
-   public function editPost($id, $title, $name, $content)
+   public function editPost($id, $title, $content)
    {
       DB::update('blogposts', (int) $id, array
          (
-            'name'    => (string) $name,
             'title'   => (string) $title,
-            'content' => (string) $content
+            'content' => (string) $content,
+            'updated' => time()
          ));
+      
+      $this->generateFeed();
    }
    
    /*
@@ -120,5 +129,105 @@ class Blog_Model extends Model
       {
          Model('comments')->deleteCommentsFor($id, 'blogpost');
       }
+      
+      $this->generateFeed();
+   }
+   
+   /*
+    * public void generateFeed()
+    * 
+    * Generates Atom feed from 20 last blog posts, and saves it to cache file
+    */
+   
+   public function generateFeed()
+   {
+      $wmelon = Watermelon::$config;
+      
+      // composing <feed>
+      
+      $feed = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"/>');
+      
+      $feed->id      = $wmelon->atomID;
+      $feed->updated = date(DATE_ATOM);
+      $feed->title   = strip_tags($wmelon->siteName);
+      
+      if(!empty($wmelon->siteSlogan))
+      {
+         $feed->subtitle = strip_tags($wmelon->siteSlogan);
+      }
+      
+      $feed->author->name = Auth::userData()->nick;
+      $feed->author->uri  = WM_SiteURL;
+      
+      $feed->link['rel'] = 'self';
+      $feed->link['href'] = WM_SiteURL . 'feed.atom';
+      
+      // $feed->rights
+      
+      $feed->generator = 'Watermelon CMS';
+      
+      // adding blog posts
+      
+      $posts = DBQuery::select('blogposts')->orderBy('id', true)->limit(0, 20)->act();
+      
+      foreach($posts as $post)
+      {
+         $postElement = $feed->addChild('entry');
+         
+         $postElement->title     = $post->title;
+         $postElement->id        = $post->atomID;
+         $postElement->published = date(DATE_ATOM, $post->created);
+         $postElement->updated   = date(DATE_ATOM, $post->updated);
+         
+         $postElement->link['rel']  = 'alternate';
+         $postElement->link['href'] = WM_SiteURL . 'blog/' . $post->name; //TODO: change it later
+         
+         $postElement->content['type'] = 'html';
+         $postElement->content = Textile::textile($post->content);
+         
+         //$postElement->summary, category
+      }
+      
+      // save to file
+      
+      file_put_contents(WM_Cache . 'feed.atom', $feed->asXML());
+   }
+   
+   /*
+    * private string generateName(string $title)
+    * 
+    * Generates blog post name (part of URL) from its title
+    */
+   
+   private function generateName($title)
+   {
+      $title = (string) $title;
+      
+      // deletes all necessary characters
+      
+      $title = str_replace(array('?', '/', '#', '&'), '', $title);
+      $title = str_replace(':', '-', $title);
+      $title = str_replace(' ', '_', $title);
+      
+      // if already exists, generating unique
+      
+      if(DBQuery::select('blogposts')->where('name', $title)->act()->exists)
+      {
+         $i = 2;
+         
+         do
+         {
+            $title2 = $title . '_(' . $i . ')';
+            
+            $i++;
+         }
+         while(DBQuery::select('blogposts')->where('name', $title2)->act()->exists);
+         
+         $title = $title2;
+      }
+      
+      //--
+      
+      return $title;
    }
 }

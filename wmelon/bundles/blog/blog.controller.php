@@ -122,4 +122,17 @@ class Blog_Controller extends Controller
       
       $view->display();
    }
+   
+   /*
+    * feed generator (accessible through '/feed.atom' URL)
+    */
+   
+   public function feed_action()
+   {
+      header('Content-Type: application/atom+xml; charset=UTF-8');
+      
+      $this->outputType = self::Plain_OutputType;
+      
+      echo file_get_contents(WM_Cache . 'feed.atom');
+   }
 }

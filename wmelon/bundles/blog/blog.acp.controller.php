@@ -62,7 +62,7 @@ class Blog_Controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Nazwa', 'Treść', 'Napisana', 'Komentarzy', 'Akcje');
+      $table->header = array('Tytuł', 'Treść', '<small>Napisany (uaktualniony)</small>', 'Komentarzy', 'Akcje');
       $table->selectedActions[] = array('Usuń', 'blog/delete/');
       
       // adding posts
@@ -74,7 +74,6 @@ class Blog_Controller extends Controller
          //--
          
          $title = '<a href="#/blog/' . $post->name . '">' . $post->title . '</a>';
-         $name  = '<a href="#/blog/' . $post->name . '">' . $post->name . '</a>';
          
          //--
          
@@ -87,7 +86,7 @@ class Blog_Controller extends Controller
          
          //--
          
-         $created = HumanDate($post->created); //TODO: + by [author]
+         $dates = '<small>' . HumanDate($post->created, true, true) . ' (' . HumanDate($post->updated, true, true) . ')</small>'; //TODO: + by [author]
          
          //--
          
@@ -101,7 +100,7 @@ class Blog_Controller extends Controller
          
          //--
          
-         $table->addLine($id, $title, $name, $content, $created, $comments, $actions);
+         $table->addLine($id, $title, $content, $dates, $comments, $actions);
       }
       
       // displaying
@@ -119,15 +118,12 @@ class Blog_Controller extends Controller
       
       $form = new Form('wmelon.blog.newPost', 'blog/newSubmit', 'blog/new');
       
-      //TODO: JavaScripted autogeneration of name
-      //TODO: make sure not to use already reserved name (preferably using AJAX)
+      //TODO: give option (for advanced users) to type name for themselves
       
       $titleArgs   = array('style' => 'width: 500px');
-      $nameArgs    = array('style' => 'width: 500px', 'labelNote' => '(Część URL-u)');
       $contentArgs = array('style' => 'width: 100%; height:30em');
       
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
-      $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
       
       echo $form->generate();
@@ -142,7 +138,7 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.newPost', 'blog/new');
       $data = $form->getAll();
       
-      $this->model->postPost($data->title, $data->name, $data->content);
+      $this->model->postPost($data->title, $data->content);
       
       $this->addMessage('tick', 'Dodano wpis!');
       
@@ -175,11 +171,9 @@ class Blog_Controller extends Controller
       $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . $backTo, 'blog/edit/' . $id . $backTo);
       
       $titleArgs   = array('style' => 'width: 500px', 'value' => $data->title);
-      $nameArgs    = array('style' => 'width: 500px', 'value' => $data->name, 'labelNote' => '(Część URL-u)');
       $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->content);
       
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
-      $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
       
       echo $form->generate();
@@ -197,7 +191,9 @@ class Blog_Controller extends Controller
       
       // checking if exists
       
-      if(!$this->model->postData_id($id))
+      $postData = $this->model->postData_id($id);
+      
+      if(!$postData)
       {
          SiteRedirect('blog');
       }
@@ -207,7 +203,7 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . $backTo);
       $data = $form->getAll();
       
-      $this->model->editPost($id, $data->title, $data->name, $data->content);
+      $this->model->editPost($id, $data->title, $data->content);
       
       // redirecting
       
@@ -216,11 +212,11 @@ class Blog_Controller extends Controller
       switch($this->parameters->backto)
       {
          case 'post':
-            $backPage = '#/blog/' . $data->name;
+            $backPage = '#/blog/' . $postData->name;
          break;
          
          case 'site':
-            $backPage = '#/'; // + #id
+            $backPage = '#/'; //TODO: + #id
          break;
          
          default:

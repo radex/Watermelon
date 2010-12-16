@@ -268,6 +268,13 @@ class Watermelon
          }
       }
       
+      // Atom feed
+      
+      if(self::$segments == array('feed.atom'))
+      {
+         self::$segments = array('blog', 'feed');
+      }
+      
       // loading controller and generating
       
       self::loadController();
