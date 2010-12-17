@@ -24,7 +24,7 @@ class FrontendLibraries_Extension extends Extension
    {
       Watermelon::$headTags[] = '<link rel="stylesheet" href="' . WM_SystemURL . 'core/FrontendLibraries/sh.css.php?v=3.0.83">';
       
-      Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/jquery.js?v=1.4.3"></script>';
+      Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/jquery.js?v=1.4.4"></script>';
       Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/sh.js.php?v=3.0.83"></script>';
    }
 }

@@ -101,19 +101,20 @@ label > span > small
 {
    display: block;
    color: #888;
+   line-height: 1.1em;
 }
 
 textarea
 {
    height: 8em;
-   width: 400px;
+   width: 76%;
 }
 
 input[type=text],
 input[type=email],
 input[type=url]
 {
-   width: 350px;
+   width: 500px;
 }
 
 code

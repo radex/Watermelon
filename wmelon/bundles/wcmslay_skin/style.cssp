@@ -261,6 +261,7 @@ body > footer
    clear: both
    color: $blue
    text-align: center
+   margin-bottom: 50px
    a
       color: inherit
       border-bottom: 1px solid rgba(147,178,208,.3) // $blue with .3 opacity
