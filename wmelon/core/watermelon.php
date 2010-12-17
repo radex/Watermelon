@@ -270,11 +270,20 @@ class Watermelon
          }
       }
       
-      // Atom feed
+      // Atom feed shortut
       
       if(self::$segments == array('feed.atom'))
       {
          self::$segments = array('blog', 'feed');
+      }
+      
+      // blog posts shortcut
+      
+      if(count(self::$segments) >= 3 &&      // year/month/name
+         is_numeric(self::$segments[0]) &&   // year
+         is_numeric(self::$segments[1]))     // month
+      {
+         self::$segments = array('blog', '_post', self::$segments[2]);
       }
       
       // loading controller and generating
@@ -644,7 +653,7 @@ class Watermelon
       
       // controllers configuration
       
-      $controllerHandler = self::$config->controllerHandler;
+      $controllerHandler = 'pages';
       
       $useControllerHandler = false;
       $useDefaultController = false;
@@ -655,7 +664,7 @@ class Watermelon
       
       if($appType == self::AppType_Admin)
       {
-         $defaultController = 'blog';            //TODO: change it
+         $defaultController = 'blog';
       }
       else
       {
@@ -724,7 +733,7 @@ class Watermelon
       
       if($useControllerHandler)
       {
-         $controllerObj->_controllerHandler(self::$segments);
+         CallMethodQuietly($controllerObj, '_controllerHandler', $segments);
          return;
       }
       

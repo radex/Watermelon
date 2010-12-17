@@ -24,11 +24,16 @@
 
 class Pages_Controller extends Controller
 {
+   function index_action()
+   {
+      Watermelon::displayNoPageFoundError();
+   }
+   
    /*
     * page
     */
    
-   public function index_action($pageName)
+   function _controllerHandler($pageName)
    {
       if(empty($pageName))
       {
@@ -57,20 +62,11 @@ class Pages_Controller extends Controller
       
       $view = View('page');
       $view->page = $pageData;
-      $view->commentsView = Comments::commentsView($pageData->id, 'page', '#/pages/' . $pageName);
+      $view->commentsView = Comments::commentsView($pageData->id, 'page', '#/' . $pageName);
       
       $view->editHref = '%/pages/edit/' . $id . '/backTo:site';
       $view->deleteHref = '%/pages/delete/' . $id;
       
       $view->display();
-   }
-   
-   /*
-    * shortcut for index_action()
-    */
-   
-   public function _actionHandler($pageName)
-   {
-      $this->index_action($pageName);
    }
 }

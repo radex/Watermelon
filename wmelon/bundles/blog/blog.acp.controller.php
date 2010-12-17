@@ -73,7 +73,7 @@ class Blog_Controller extends Controller
          
          //--
          
-         $title = '<a href="#/blog/' . $post->name . '">' . $post->title . '</a>';
+         $title = '<a href="#/' . date('Y/m', $post->created) . '/' . $post->name . '">' . $post->title . '</a>';
          
          //--
          
@@ -227,7 +227,7 @@ class Blog_Controller extends Controller
       switch($this->parameters->backto)
       {
          case 'post':
-            $backPage = '#/blog/' . $postData->name;
+            $backPage = '#/' . date('Y/m', $postData->created) . '/' . $postData->name;
          break;
          
          case 'site':

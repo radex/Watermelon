@@ -74,7 +74,7 @@ class Pages_controller extends Controller
          //--
          
          $name  = $page->name;
-         $title = '<a href="#/pages/' . $name . '">' . $page->title . '</a>';
+         $title = '<a href="#/' . $name . '">' . $page->title . '</a>';
          
          //--
          
@@ -207,7 +207,7 @@ class Pages_controller extends Controller
       
       $this->addMessage('tick', 'Zaktualizowano stronę');
       
-      $backPage = ($backTo == '') ? 'pages' : '#/pages/' . $data->name;
+      $backPage = ($backTo == '') ? 'pages' : '#/' . $data->name;
       
       SiteRedirect($backPage);
    }

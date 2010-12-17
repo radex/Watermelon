@@ -129,7 +129,7 @@ class Pages_Model extends Model
       // deletes all necessary characters
       
       $name = str_replace(array('?', '/', '#', '&'), '', $name);
-      $name = str_replace(':', '-', $name);
+      $name = str_replace(':', ' -', $name);
       $name = str_replace(' ', '_', $name);
       
       // if already exists, generating unique

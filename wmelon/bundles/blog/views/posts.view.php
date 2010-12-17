@@ -13,7 +13,7 @@
 <article tal:repeat="post posts" id="blogpost-${post/id}">
    <header>
       <h1>
-         <a href="$/blog/${post/name}">${post/title}</a>
+         <a href="${post/url}">${post/title}</a>
          <span class="h1-comment">
             ${structure post/created_human}, ${post/comments} ${php:pl_inflect(post.comments, 'komentarzy', 'komentarz', 'komentarze')}
          </span>
@@ -28,7 +28,7 @@
    <article tal:condition="post/summary">
       <?= Textile::textile($ctx->post->summary . ' <em>[...]</em>') ?>
    </article>
-   <a class="blog-readMore" href="$/blog/${post/name}">Czytaj dalej »</a>
+   <a class="blog-readMore" href="${post/url}">Czytaj dalej »</a>
 </article>
 
 <div class="blog-pages-bottom" tal:condition="php: page > 1 || anotherPage">

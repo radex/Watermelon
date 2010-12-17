@@ -56,7 +56,11 @@ class Blog_Controller extends Controller
          // edit/delete links
          
          $post->editHref   = '%/blog/edit/' .   $post->id . '/backTo:site';
-         $post->deleteHref = '%/blog/delete/' . $post->id . '/' . base64_encode('#/blog');
+         $post->deleteHref = '%/blog/delete/' . $post->id . '/' . base64_encode('#/');
+         
+         // URL to post
+         
+         $post->url = '$/' . date('Y/m', $post->created) . '/' . $post->name;
          
          // post creation human date and comments count
          
@@ -86,11 +90,11 @@ class Blog_Controller extends Controller
     * post
     */
    
-   public function _actionHandler($name)
+   public function _post_action($name)
    {
       if(empty($name))
       {
-         Watermelon::displayNoPageFoundError(); //TODO: improve it, so that I can more concretely write what is not found
+         Watermelon::displayNoPageFoundError();
          return;
       }
       
@@ -100,7 +104,7 @@ class Blog_Controller extends Controller
       
       if(!$postData)
       {
-         Watermelon::displayNoPageFoundError(); // -||-
+         Watermelon::displayNoPageFoundError();
          return;
       }
       
@@ -115,7 +119,7 @@ class Blog_Controller extends Controller
       
       $view = View('post');
       $view->post = $postData;
-      $view->commentsView = Comments::commentsView($id, 'blogpost', '#/blog/' . $name);
+      $view->commentsView = Comments::commentsView($id, 'blogpost', '#/' . date('Y/m', $postData->created) . '/' . $name);
       
       $view->editHref   = '%/blog/edit/' . $id . '/backTo:post';
       $view->deleteHref = '%/blog/delete/' . $id . '/' . base64_encode('#/blog');
