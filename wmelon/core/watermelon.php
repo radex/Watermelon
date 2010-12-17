@@ -829,6 +829,7 @@ class Watermelon
          
          $headTags[] = '<title>' . $title . '</title>';
          $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\';</script>';
+         $headTags[] = '<link rel="alternate" type="application/atom+xml" href="' . WM_SiteURL . 'feed.atom"/>';
          
          // tail tags
          

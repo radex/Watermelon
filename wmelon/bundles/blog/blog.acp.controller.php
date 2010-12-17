@@ -114,16 +114,24 @@ class Blog_Controller extends Controller
    
    function new_action()
    {
+      //TODO: give option (for advanced users) to type name for themselves
+      
+      // options
+      
       $this->pageTitle = 'Nowy wpis';
       
       $form = new Form('wmelon.blog.newPost', 'blog/newSubmit', 'blog/new');
       
-      //TODO: give option (for advanced users) to type name for themselves
+      // input args
       
       $contentArgs = array('style' => 'width: 100%; height:30em');
+      $summaryArgs = array('labelNote' => 'Jeśli chcesz, napisz krótko wstęp lub streszczenie wpisu - zostanie ono pokazane na stronie głównej i w czytnikach kanałów');
+      
+      // adding inputs
       
       $form->addInput('text', 'title', 'Tytuł', true);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
+      $form->addInput('textarea', 'summary', 'Streszczenie', false, $summaryArgs);
       
       echo $form->generate();
    }
@@ -137,7 +145,7 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.newPost', 'blog/new');
       $data = $form->getAll();
       
-      $this->model->postPost($data->title, $data->content);
+      $this->model->postPost($data->title, $data->content, $data->summary);
       
       $this->addMessage('tick', 'Dodano wpis!');
       
@@ -163,17 +171,25 @@ class Blog_Controller extends Controller
          SiteRedirect('blog');
       }
       
-      // displaying form
+      // form options
       
       $this->pageTitle = 'Edytuj wpis';
       
       $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . $backTo, 'blog/edit/' . $id . $backTo);
       
+      // input args
+      
+      $sumarryLabel = 'Jeśli chcesz, napisz krótko wstęp lub streszczenie wpisu - zostanie ono pokazane na stronie głównej i w czytnikach kanałów';
+      
       $titleArgs   = array('value' => $data->title);
-      $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->content);
+      $contentArgs = array('value' => $data->content, 'style' => 'width: 100%; height:30em');
+      $summaryArgs = array('value' => $data->summary, 'labelNote' => $sumarryLabel);
+      
+      // adding inputs
       
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
+      $form->addInput('textarea', 'summary', 'Streszczenie', false, $summaryArgs);
       
       echo $form->generate();
    }
@@ -202,7 +218,7 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . $backTo);
       $data = $form->getAll();
       
-      $this->model->editPost($id, $data->title, $data->content);
+      $this->model->editPost($id, $data->title, $data->content, $data->summary);
       
       // redirecting
       

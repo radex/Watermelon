@@ -22,7 +22,12 @@
          </span>
       </h1>
    </header>
-   <?= Textile::textile($ctx->post->content) ?>
+   <article tal:condition="not: post/summary">
+      <?= Textile::textile($ctx->post->content) ?>
+   </article>
+   <article tal:condition="post/summary">
+      <?= Textile::textile($ctx->post->summary . ' <em>[...]</em>') ?>
+   </article>
    <a class="blog-readMore" href="$/blog/${post/name}">Czytaj dalej »</a>
 </article>
 

@@ -73,21 +73,35 @@ class Blog_Model extends Model
    }
    
    /*
-    * public void postPost(string $title, string $content)
+    * public void postPost(string $title, string $content[, string $summary])
     * 
     * Posts a post with given data, as currently logged user and with current time
     */
    
-   public function postPost($title, $content)
+   public function postPost($title, $content, $summary)
    {
+      // summary
+      
+      $summary = (string) $summary;
+      
+      if(empty($summary))
+      {
+         $summary = null;
+      }
+      
+      // generating Atom ID
+      
       $atomID = Watermelon::$config->atomID . $name . time() . mt_rand();
       $atomID = sha1($atomID);
+      
+      // inserting
       
       DB::insert('blogposts', array
          (
             'name'    => $this->generateName($title),
             'title'   => (string) $title,
             'content' => (string) $content,
+            'summary' => $summary,
             'author'  => Auth::userData()->id,
             'created' => time(),
             'updated' => time(),
@@ -98,18 +112,30 @@ class Blog_Model extends Model
    }
    
    /*
-    * public void editPost(int $id, string $title, string $content)
+    * public void editPost(int $id, string $title, string $content[, string $summary])
     * 
     * Edits $id post, setting given data
     */
    
-   public function editPost($id, $title, $content)
+   public function editPost($id, $title, $content, $summary)
    {
+      // summary
+      
+      $summary = (string) $summary;
+      
+      if(empty($summary))
+      {
+         $summary = null;
+      }
+      
+      // updating
+      
       DB::update('blogposts', (int) $id, array
          (
             'title'   => (string) $title,
             'content' => (string) $content,
-            'updated' => time()
+            'summary' => $summary,
+            'updated' => time(),
          ));
       
       $this->generateFeed();
@@ -185,7 +211,11 @@ class Blog_Model extends Model
          $postElement->content['type'] = 'html';
          $postElement->content = Textile::textile($post->content);
          
-         //$postElement->summary, category
+         if(!empty($post->summary))
+         {
+            $postElement->summary['type'] = 'html';
+            $postElement->summary = Textile::textile($post->summary);
+         }
       }
       
       // save to file
