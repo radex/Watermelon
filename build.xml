@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Watermelon CMS" default="build">
+   
+   <!-- building - making .zip package -->
+   
+   <target name="build">
+      
+      <!-- shortcuts -->
+      
+      <property name="buildDir" value="build/watermelon/"/>
+      <property name="codeDir" value="build/watermelon/code/"/>
+      
+      <!-- making directories -->
+      
+      <mkdir dir="build/watermelon/code"/>
+      
+      <!-- copying code -->
+      
+      <copy todir="${codeDir}wmelon/">
+         <fileset dir="wmelon"/>
+      </copy>
+      <copy file="index.php" todir="${codeDir}"/>
+      <copy file=".htaccess" tofile="${codeDir}/dot.htaccess"/>
+      
+      <!-- copying other files -->
+      
+      <copy todir="${buildDir}/docs/">
+         <fileset dir="docs"/>
+      </copy>
+      <copy file="docs/README.txt" todir="${buildDir}"/>
+      
+      <!-- clearing cache -->
+      
+      <delete file="${codeDir}wmelon/cache/feed.atom"/>
+      <touch  file="${codeDir}wmelon/cache/feed.atom"/>
+      
+      <delete>
+         <fileset file="${codeDir}wmelon/cache/textile/*.php"/>
+         <fileset file="${codeDir}wmelon/cache/textile_restricted/*.php"/>
+      </delete>
+      
+      <!-- clearing other files -->
+      
+      <delete file="${codeDir}wmelon/config.php"/>
+      <touch  file="${codeDir}wmelon/config.php"/>
+      
+      <!-- TODO: Turbine config -->
+      
+      <!-- zipping & cleaning -->
+      
+      <delete file="build/Watermelon.zip"/>
+      
+      <zip basedir="${buildDir}" destFile="build/Watermelon.zip"/>
+      
+      <delete dir="${buildDir}"/>
+      
+   </target>
+   
+   <!-- cleaning build directory -->
+   
+   <target name="clean">
+      <delete dir="build"/>
+   </target>
+</project>

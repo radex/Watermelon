@@ -26,6 +26,15 @@ class Installer_Controller extends Controller
    
    public function installer()
    {
+      // .htaccess
+      
+      if(file_exists(WM_System . 'dot.htaccess')
+      {
+         rename(WM_System . 'dot.htaccess', WM_System . '.htaccess');
+      }
+      
+      // URL-s
+      
       if(isset($_SESSION['siteURL']))
       {
          $siteURL   = $_SESSION['siteURL'];
@@ -35,6 +44,8 @@ class Installer_Controller extends Controller
       {
          list($siteURL, $systemURL) = $this->urls();
       }
+      
+      // constants
       
       define('WM_SiteURL',   $siteURL);
       define('WM_SystemURL', $systemURL);
