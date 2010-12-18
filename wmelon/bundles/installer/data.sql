@@ -1,17 +1,20 @@
--- todo!
-
 -- sample blog post
 
-INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `content`, `author`, `created`, `updated`, `atomID`) VALUES
+INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `content`, `summary`, `author`, `created`, `updated`, `atomID`) VALUES
 (
-   NULL, 'welcome', 'Witaj w Watermelonie!', 'Jakiś dłuższy tekst z Textile\'owskim markupem', 1, %1, %1, 'ba09226058bc1ea3711e035f932d1b7c66996625'
+   NULL,
+   'Witaj_w_Watermelonie!',
+   'Witaj w Watermelonie!',
+   'Jakiś dłuższy tekst z Textile\'owskim markupem',
+   'Krótki wstęp do wpisu na blogu',
+   1, %1, %1, 'ba09226058bc1ea3711e035f932d1b7c66996625'
 );
 
 -- sample page
 
 INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`, `updated`) VALUES
 (
-   NULL, 'sample', 'Jakiś tytuł', 'Jakaś strona, może z linkami do pomocy, etc.', 1, %1, %1
+   NULL, 'Jakiś_tytuł', 'Jakiś tytuł', 'Jakaś strona, może z linkami do pomocy, etc.', 1, %1, %1
 );
 
 -- sample comment for these

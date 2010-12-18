@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Watermelon CMS" default="build">
    
-   <!-- building - making .zip package -->
+   <!-- shortcuts -->
    
-   <target name="build">
+   <property name="buildDir" value="build/watermelon/"/>
+   <property name="codeDir" value="build/watermelon/code/"/>
+   
+   <!-- building .zipped package -->
+   
+   <target name="build" depends="createPackage">
       
-      <!-- shortcuts -->
+      <delete file="build/Watermelon.zip"/>
       
-      <property name="buildDir" value="build/watermelon/"/>
-      <property name="codeDir" value="build/watermelon/code/"/>
+      <zip basedir="${buildDir}" destFile="build/Watermelon.zip"/>
+      
+      <delete dir="${buildDir}"/>
+      
+   </target>
+   
+   <!-- making package of "clear" Watermelon, without development code -->
+   
+   <target name="createPackage">
       
       <!-- making directories -->
       
@@ -44,15 +56,15 @@
       <delete file="${codeDir}wmelon/config.php"/>
       <touch  file="${codeDir}wmelon/config.php"/>
       
-      <!-- TODO: Turbine config -->
+      <!-- swapping Turbine config -->
       
-      <!-- zipping & cleaning -->
+      <delete file="${codeDir}wmelon/core/Turbine/config.php"/>
+      <move   file="${codeDir}wmelon/core/Turbine/config_production.php"
+            tofile="${codeDir}wmelon/core/Turbine/config.php"/>
       
-      <delete file="build/Watermelon.zip"/>
+      <!-- deleting test controllers -->
       
-      <zip basedir="${buildDir}" destFile="build/Watermelon.zip"/>
-      
-      <delete dir="${buildDir}"/>
+      <delete dir="${codeDir}wmelon/bundles/test/"/>
       
    </target>
    
@@ -60,5 +72,25 @@
    
    <target name="clean">
       <delete dir="build"/>
+   </target>
+   
+   <!-- installs to ../wcms -->
+   
+   <target name="install" depends="createPackage">
+      
+      <!-- clearing install dir -->
+      
+      <delete dir="../wcms/"/>
+      
+      <mkdir dir="../wcms/"/>
+      
+      <!-- copying files -->
+      
+      <copy todir="../wcms/">
+         <fileset dir="${codeDir}"/>
+      </copy>
+      
+      <delete dir="${buildDir}"/>
+      
    </target>
 </project>

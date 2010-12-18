@@ -17,6 +17,7 @@ CREATE TABLE `wm_blogposts` (
   `name` varchar(256) NOT NULL COMMENT 'Part of URL',
   `title` varchar(256) NOT NULL,
   `content` text NOT NULL,
+  `summary` text,
   `author` int(11) NOT NULL,
   `created` int(10) NOT NULL,
   `updated` int(10) NOT NULL,

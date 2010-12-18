@@ -28,9 +28,9 @@ class Installer_Controller extends Controller
    {
       // .htaccess
       
-      if(file_exists(WM_System . 'dot.htaccess')
+      if(file_exists(WM_System . '../dot.htaccess'))
       {
-         rename(WM_System . 'dot.htaccess', WM_System . '.htaccess');
+         rename(WM_System . '../dot.htaccess', WM_System . '../.htaccess');
       }
       
       // URL-s
@@ -575,8 +575,6 @@ CONFIG;
       
       // feeds
       
-      Model('blog')->generateFeed();
-      
       $atomID = WM_SiteURL . time() . mt_rand();
       $atomID = sha1($atomID);
       
@@ -602,15 +600,15 @@ CONFIG;
          
          $textMenus = array(array
             (
-               array('Blog', 'blog', false, null),
-               array('Login', 'auth/login', false, null),
+               array('Blog', 'blog', true, null),
+               array('Login', 'auth/login', true, null),
             ));
          
          $blockMenus = array(array());
          
          $w->siteName   = $site->siteName;
          $w->siteSlogan = null;
-         $w->footer     = null;
+         $w->footer     = '<small><a href="%/">Panel Admina</a></small>';
          $w->blockMenus = $blockMenus;
          $w->textMenus  = $textMenus;
          
@@ -620,6 +618,18 @@ CONFIG;
          // setting config
          
          Registry::set('wmelon', $w);
+         
+         Watermelon::$config = $w;
+      
+      // generating feed
+      
+      include WM_Core . 'Textile/textile.extension.php';
+      Textile::onAutoload();
+      
+      Loader::extension('Auth');
+      Auth::onAutoload();
+      
+      Model('blog')->generateFeed();
       
       // adding superuser
       
@@ -634,6 +644,10 @@ CONFIG;
             'nick'     => $user->user,
             'lastseen' => time()
          ));
+      
+      // removing unblocking file
+      
+      unlink(WM_System . $_SESSION['unblocking-filename']);
       
       // removing session and redirecting to home page
       
