@@ -120,9 +120,16 @@ class Pages_controller extends Controller
       
       $form = new Form('wmelon.pages.newPage', 'pages/newSubmit', 'pages/new');
       
+      // inputs args
+      
+      $contentArgs = array('style' => 'width: 100%; height:30em');
+      $nameArgs    = array('labelNote' => 'Opcjonalnie - jeśli nie podasz, to zostanie wygenerowana automatycznie');
+      
+      // adding inputs
+      
       $form->addInput('text', 'title', 'Tytuł', true);
-      $form->addInput('textarea', 'content', 'Treść', true, array('style' => 'width: 100%; height:30em'));
-      $form->addInput('text', 'name', 'Nazwa', false,  array('labelNote' => 'Opcjonalnie - jeśli nie podasz, to zostanie wygenerowana automatycznie'));
+      $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
+      $form->addInput('text', 'name', 'Nazwa', false, $nameArgs);
       
       echo $form->generate();
    }
@@ -151,8 +158,6 @@ class Pages_controller extends Controller
    {
       $id = (int) $id;
       
-      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
-      
       // getting data
       
       $data = $this->model->pageData_id($id);
@@ -162,19 +167,44 @@ class Pages_controller extends Controller
          SiteRedirect('pages');
       }
       
-      // displaying form
+      // back to link
+      
+      if($this->parameters->backto == 'site')
+      {
+         $backTo = '/backTo:site';
+         
+         $backToLabel = ' lub <a href="#/' . $data->name . '">powróć do strony</a>';
+      }
+      else
+      {
+         $backToLabel = ' lub <a href="$/pages/">powróć do listy stron</a>';
+      }
+      
+      // form options
       
       $this->pageTitle = 'Edytuj stronę';
       
       $form = new Form('wmelon.pages.editPage', 'pages/editSubmit/' . $id . $backTo, 'pages/edit/' . $id . $backTo);
       
+      $form->displaySubmitButton = false;
+      
+      // inputs labels
+      
+      $nameLabel = 'Nie zmieniaj, jeśli <em>naprawdę</em> nie wiesz co robisz';
+      
+      // inputs args
+      
       $titleArgs   = array('value' => $data->title);
-      $contentArgs = array('style' => 'width: 100%; height:30em', 'value' => $data->content);
-      $nameArgs    = array('labelNote' => 'Nie zmieniaj, jeśli <em>naprawdę</em> nie wiesz co robisz', 'value' => $data->name);
+      $contentArgs = array('value' => $data->content, 'style' => 'width: 100%; height:30em');
+      $nameArgs    = array('value' => $data->name, 'labelNote' => $nameLabel);
+      
+      // adding inputs
       
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
       $form->addInput('text', 'name',  'Nazwa', true, $nameArgs);
+      
+      $form->addHTML('<label><span></span><input type="submit" value="Zapisz">' . $backToLabel . '</label>');
       
       echo $form->generate();
    }
@@ -207,9 +237,7 @@ class Pages_controller extends Controller
       
       $this->addMessage('tick', 'Zaktualizowano stronę');
       
-      $backPage = ($backTo == '') ? 'pages' : '#/' . $data->name;
-      
-      SiteRedirect($backPage);
+      SiteRedirect('pages/edit/' . $id . $backTo);
    }
    
    /*

@@ -160,8 +160,6 @@ class Blog_Controller extends Controller
    {
       $id = (int) $id;
       
-      $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
-      
       // getting data
       
       $data = $this->model->postData_id($id);
@@ -171,15 +169,40 @@ class Blog_Controller extends Controller
          SiteRedirect('blog');
       }
       
+      // back to link
+      
+      $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
+      
+      switch($this->parameters->backto)
+      {
+         case 'post':
+            $backToLabel = ' lub <a href="#/' . date('Y/m', $data->created) . '/' . $data->name . '">powróć do wpisu</a>';
+         break;
+          
+         case 'site':
+            $backToLabel = ' lub <a href="#/#blogpost-' . $data->id . '">powróć do strony</a>';
+            
+            // TODO: and what if the post is not on first page?
+         break;
+          
+         default:
+            $backToLabel = ' lub <a href="$/blog/">powróć do listy wpisów</a>';
+         break;
+      }
+      
       // form options
       
       $this->pageTitle = 'Edytuj wpis';
       
       $form = new Form('wmelon.blog.editPost', 'blog/editSubmit/' . $id . $backTo, 'blog/edit/' . $id . $backTo);
       
-      // input args
+      $form->displaySubmitButton = false;
+      
+      // inputs labels
       
       $sumarryLabel = 'Jeśli chcesz, napisz krótko wstęp lub streszczenie wpisu - zostanie ono pokazane na stronie głównej i w czytnikach kanałów';
+      
+      // inputs args
       
       $titleArgs   = array('value' => $data->title);
       $contentArgs = array('value' => $data->content, 'style' => 'width: 100%; height:30em');
@@ -190,6 +213,8 @@ class Blog_Controller extends Controller
       $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
       $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
       $form->addInput('textarea', 'summary', 'Streszczenie', false, $summaryArgs);
+      
+      $form->addHTML('<label><span></span><input type="submit" value="Zapisz">' . $backToLabel . '</label>');
       
       echo $form->generate();
    }
@@ -224,22 +249,7 @@ class Blog_Controller extends Controller
       
       $this->addMessage('tick', 'Zaktualizowano wpis');
       
-      switch($this->parameters->backto)
-      {
-         case 'post':
-            $backPage = '#/' . date('Y/m', $postData->created) . '/' . $postData->name;
-         break;
-         
-         case 'site':
-            $backPage = '#/#blogpost-' . $postData->id;
-         break;
-         
-         default:
-            $backPage = '';
-         break;
-      }
-      
-      SiteRedirect($backPage);
+      SiteRedirect('blog/edit/' . $id . $backTo);
    }
    
    /*
