@@ -734,7 +734,10 @@ class Watermelon
       
       if($useControllerHandler)
       {
-         CallMethodQuietly($controllerObj, '_controllerHandler', $segments);
+         // note that currently controller handler is hardcoded - pages controller
+         // in future probably it will be somehow changed
+         
+         CallMethodQuietly($controllerObj, '_controllerHandler', array(implode('/', $segments)));
          return;
       }
       
