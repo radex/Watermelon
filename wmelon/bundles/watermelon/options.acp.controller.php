@@ -186,7 +186,7 @@ class Options_Controller extends Controller
       
       // validating action
       
-      if(!in_array($action, array('top', 'up', 'down', 'bottom', 'delete')))
+      if(!in_array($action, array('top', 'up', 'down', 'bottom', 'delete', 'add')))
       {
          $action = false;
       }
@@ -276,6 +276,17 @@ class Options_Controller extends Controller
          
          $nav = $nav2;
       }
+      elseif($action == 'add')
+      {
+         $item = new stdClass;
+         
+         $item->name     = '';
+         $item->url      = '';
+         $item->relative = true;
+         $item->title    = '';
+         
+         $nav[] = $item;
+      }
       
       // saving and redirecting
       
@@ -285,19 +296,6 @@ class Options_Controller extends Controller
       }
       
       Watermelon::$config->textMenus = array($textMenu);
-      
-      $this->registry->set('wmelon', Watermelon::$config);
-      
-      SiteRedirect('options/nav');
-   }
-   
-   /*
-    * Navigation - adding first item
-    */
-   
-   function nav_addFirst_action()
-   {
-      Watermelon::$config->textMenus = array(array(array()));
       
       $this->registry->set('wmelon', Watermelon::$config);
       

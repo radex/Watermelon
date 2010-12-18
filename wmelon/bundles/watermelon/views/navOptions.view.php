@@ -67,39 +67,8 @@
    </table>
    
    <input type="submit" value="Zapisz zmiany" /> &larr; nie zapomnij zapisać zmian<br/>
-   <input type="button" value="Dodaj następny link" onclick="navOptions_add()" />
+   <input type="button" value="Dodaj następny link" onclick="navOptions_redirect(0, 'add')" />
 </form>
-
-<script>
-
-navOptions_rowPattern = '\
-<td><input id="name_NEW"     type="text"     value="" /></td>\
-<td><input id="url_NEW"      type="text"     value="" /></td>\
-<td><input id="relative_NEW" type="checkbox" checked="checked" /></td>\
-<td><input id="title_NEW"    type="text"     value="" /></td>\
-<td>\
-   <a href="#" id="top_NEW" title="Na początek">\
-      <img alt="Na początek" src="${topIcon}" />\
-   </a>\
-   <a href="#" id="up_NEW" title="Do góry">\
-      <img alt="Do góry" src="${upIcon}" />\
-   </a>\
-   \
-   <div style="display:inline-block;width:36px;height:16px" id="navOptions_bottomPlaceholder" />\
-   \
-   &nbsp;&nbsp;\
-   <a href="#" id="delete_NEW" title="Usuń"><img src="${deleteIcon}" /></a>\
-</td>';
-
-navOptions_optionsPattern = '\
-<a href="#" id="down_NEW" title="Na dół">\
-   <img alt="Na dół" src="${downIcon}" />\
-</a>\
-<a href="#" id="bottom_NEW" title="Na koniec">\
-   <img alt="Na koniec" src="${bottomIcon}" />\
-</a>';
-
-</script>
 
 <br/><br/>
 
