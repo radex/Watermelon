@@ -9,7 +9,7 @@
       <article class="comment" id="comment-${comment/id}" tal:condition="php: Auth::isLogged() OR !comment.awaitingModeration">
          
          <header tal:condition="not: comment/authorID">
-            <img src="http://gravatar.com/avatar/${php: md5(comment.authorEmail)}?s=64&d=mm" />
+            <img src="${comment/gravatarURL}" alt="" />
             <tal:block tal:condition="php: false">
                <strong tal:condition="php: comment.authorWebsite"><a href="${comment/authorWebsite}" rel="nofollow">${comment/authorName}</a></strong>
                <strong tal:condition="php: !comment.authorWebsite">${comment/authorName}</strong>
@@ -20,7 +20,7 @@
          </header>
          
          <header tal:condition="comment/authorID">
-            <img src="http://gravatar.com/avatar/<?= md5($ctx->users[$ctx->comment->authorID]->email) ?>?s=64&d=mm" />
+            <img src="${comment/gravatarURL}" alt="" />
             <strong><?= $ctx->users[$ctx->comment->authorID]->nick ?></strong>
          </header>
       

@@ -605,7 +605,7 @@ CONFIG;
          
          $w->siteName   = $site->siteName;
          $w->siteSlogan = null;
-         $w->footer     = '<small><a href="%/">Panel Admina</a></small>';
+         $w->footer     = '<small><a href="$/auth/login">Panel Admina</a></small>';
          $w->blockMenus = array(array());
          $w->textMenus  = $textMenus;
          

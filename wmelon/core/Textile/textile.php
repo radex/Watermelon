@@ -432,7 +432,7 @@ class Textile_lib
 			txt_quote_single_open,                 // single opening
 			'$1'.txt_quote_double_close,           // double closing
 			txt_quote_double_open,                 // double opening
-			'<acronym title="$2">$1</acronym>',     // 3+ uppercase acronym
+			'<abbr title="$2">$1</abbr>',     // 3+ uppercase acronym
 			'<span class="caps">glyph:$1</span>$2', // 3+ uppercase
 			'$1'.txt_ellipsis,                     // ellipsis
 			'$1'.txt_emdash.'$2',                  // em dash

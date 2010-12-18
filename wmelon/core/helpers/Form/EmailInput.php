@@ -34,7 +34,7 @@ class EmailFormInput extends TextFormInput
       
       // validating email address
       
-      if(!ValidEmail($this->value))
+      if(!ValidEmail($this->value) && $this->required)
       {
          $errors[] = 'Wartość pola "' . $this->label . '" nie jest poprawnym adresem email';
       }

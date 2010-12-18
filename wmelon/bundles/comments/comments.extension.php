@@ -74,6 +74,19 @@ class Comments_Extension extends Extension
             }
          }
          
+         // gravatar url
+         
+         $gravatarEnding = '?s=64&d=' . urlencode(WM_BundlesURL) . 'watermelon/public/img/blank.png';
+         
+         if($authorID === null)
+         {
+            $comment->gravatarURL = 'http://gravatar.com/avatar/' . md5($comment->authorEmail) . $gravatarEnding;
+         }
+         else
+         {
+            $comment->gravatarURL = 'http://gravatar.com/avatar/' . md5($users[$authorID]->email) . $gravatarEnding;
+         }
+         
          // comments counter
          
          if(!$comment->awaitingModeration)

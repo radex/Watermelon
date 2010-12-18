@@ -57,13 +57,6 @@ class Options_Controller extends Controller
       
       $form = new Form('wmelon.options.general', 'options/general_save', 'options/general');
       
-      // label notes
-      
-      $siteSlogan_label     = 'W kilku słowach opisz o czym jest ta strona';
-      $footer_label         = 'Możesz używać HTML<br>oraz <em>$/</em> dla linków na stronie';
-      $head_label           = '"sekcja &lt;head&gt;"; skrypty, arkusze stylów itp.';
-      $tail_label           = 'Skrypty, dodane na końcu strony';
-      
       // input values
       
       $config = Watermelon::$config;
@@ -73,14 +66,31 @@ class Options_Controller extends Controller
       $footer         = $config->footer;
       $head           = $config->headTags;
       $tail           = $config->tailTags;
+      $email          = Auth::userData()->email;
+      
+      // label notes
+      
+      $siteSlogan_label     = 'W kilku słowach opisz o czym jest ta strona';
+      $footer_label         = 'Możesz używać HTML<br>oraz <em>$/</em> dla linków na stronie';
+      $head_label           = '"sekcja &lt;head&gt;"; skrypty, arkusze stylów itp.';
+      $tail_label           = 'Skrypty, dodane na końcu strony';
+      $email_label          = 'Zostanie użyty obok Twoich komentarzy do pokazania <a href="http://gravatar.com/" target="_blank">gravatara</a>';
+      
+      if(!empty($email))
+      {
+         $email_label .= '<br>Podgląd: ';
+         
+         $email_label .= '<img src="http://gravatar.com/avatar/' . md5($email) . '?s=64&amp;d=mm" style="vertical-align:middle" />';
+      }
       
       // input args
       
       $siteName       = array('value' => $siteName);
-      $siteSlogan     = array('value' => $siteSlogan, 'labelNote' => $siteSlogan_label);
-      $footer         = array('value' => $footer, 'style' => 'width: 70%',   'labelNote' => $footer_label);
-      $head           = array('value' => $head, 'style' => 'width: 70%',   'labelNote' => $head_label);
-      $tail           = array('value' => $tail, 'style' => 'width: 70%',   'labelNote' => $tail_label);
+      $siteSlogan     = array('value' => $siteSlogan,     'labelNote' => $siteSlogan_label);
+      $footer         = array('value' => $footer,         'labelNote' => $footer_label);
+      $head           = array('value' => $head,           'labelNote' => $head_label);
+      $tail           = array('value' => $tail,           'labelNote' => $tail_label);
+      $email          = array('value' => $email,          'labelNote' => $email_label);
       
       // adding inputs
       
@@ -89,6 +99,7 @@ class Options_Controller extends Controller
       $form->addInput('textarea', 'footer',         'Stopka',                         false, $footer);
       $form->addInput('textarea', 'head',           'Własne tagi na początek strony', false, $head);
       $form->addInput('textarea', 'tail',           'Własne tagi na koniec strony',   false, $tail);
+      $form->addInput('email',    'email',          'Twój email',                     false, $email);
       
       // rendering
       
@@ -104,7 +115,7 @@ class Options_Controller extends Controller
       $form = Form::validate('wmelon.options.general', 'options/general');
       $data = $form->getAll();
       
-      // saving data
+      // saving data - wmelon config
       
       $config = Watermelon::$config;
       
@@ -115,6 +126,13 @@ class Options_Controller extends Controller
       $config->tailTags       = $data->tail;
       
       $this->registry->set('wmelon', $config);
+      
+      // saving data - userdata
+      
+      DB::update('users', 1, array
+         (
+            'email' => $data->email,
+         ));
       
       // redirecting
       
