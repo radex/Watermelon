@@ -347,7 +347,8 @@ class Watermelon
       {
          self::$appType = self::AppType_Installer;
          
-         error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE); // TODO: delete it later
+         //error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
+         error_reporting(0);
          
          // creating messages array in session
 

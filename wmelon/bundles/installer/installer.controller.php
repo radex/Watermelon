@@ -600,16 +600,13 @@ CONFIG;
          
          $textMenus = array(array
             (
-               array('Blog', 'blog', true, null),
-               array('Login', 'auth/login', true, null),
+               array('Blog', '', true, null),
             ));
-         
-         $blockMenus = array(array());
          
          $w->siteName   = $site->siteName;
          $w->siteSlogan = null;
          $w->footer     = '<small><a href="%/">Panel Admina</a></small>';
-         $w->blockMenus = $blockMenus;
+         $w->blockMenus = array(array());
          $w->textMenus  = $textMenus;
          
          $w->headTags   = '';

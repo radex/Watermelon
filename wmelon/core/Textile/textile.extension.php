@@ -258,6 +258,10 @@ class Textile_Extension extends Extension
       {
          return $href;
       }
+      elseif(substr($url, 0, 8) == 'https://')
+      {
+         return $href;
+      }
       else
       {
          return 'href="' . WM_SiteURL . $url . '"';

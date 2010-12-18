@@ -18,32 +18,32 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-include 'helpers/helpers.php';
+include WM_Core . 'helpers/helpers.php';
 
-include 'DB/DB.php';
-include 'Registry/Registry.php';
-include 'Loader.php';
-include 'EventCenter.php';
+include WM_Core . 'DB/DB.php';
+include WM_Core . 'Registry/Registry.php';
+include WM_Core . 'Loader.php';
+include WM_Core . 'EventCenter.php';
 // include 'Cache/Cache.php';
 // include 'Translations/Translations.php';
-include 'PHPTAL/PHPTAL.php';
+include WM_Core . 'PHPTAL/PHPTAL.php';
 
 // testing&development stuff
 
 if(defined('WM_Debug'))
 {
-   include 'testing/UnitTester.php';
+   include WM_Core . 'testing/UnitTester.php';
 }
 
-include 'testing/Exception.php';
-include 'testing/Benchmark.php';
+include WM_Core . 'testing/Exception.php';
+include WM_Core . 'testing/Benchmark.php';
 
 // module types headers
 
-include 'headers/ACPInfo.php';
-include 'headers/Blockset.php';
-include 'headers/Controller.php';
-include 'headers/Extension.php';
-include 'headers/Model.php';
-include 'headers/Skin.php';
-include 'headers/View.php';
+include WM_Core . 'headers/ACPInfo.php';
+include WM_Core . 'headers/Blockset.php';
+include WM_Core . 'headers/Controller.php';
+include WM_Core . 'headers/Extension.php';
+include WM_Core . 'headers/Model.php';
+include WM_Core . 'headers/Skin.php';
+include WM_Core . 'headers/View.php';
