@@ -1,3 +1,3 @@
-<?die?>
+<?php die?>
 
 (tekst powitania)

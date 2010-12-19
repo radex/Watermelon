@@ -44,7 +44,7 @@ class View
       // getting view file contents, and stripping from <?die?\>
       
       $viewContent = file_get_contents($this->viewPath);
-      $viewContent = str_replace('<?die?>', '', $viewContent);
+      $viewContent = str_replace('<?php die?>', '', $viewContent);
       $viewContent = '<tal:block>' . $viewContent . '</tal:block>';
       
       // PHPTAL configuration
@@ -58,6 +58,7 @@ class View
       }
       
       $view->setOutputMode(PHPTAL::HTML5);
+      $view->addPreFilter(new ViewPreFilter);
       
       // returning or displaying
       

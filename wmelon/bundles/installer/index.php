@@ -1,19 +1,19 @@
-<?defined('WM') or die?><!doctype html>
+<?php defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="<?=WM_BundlesURL?>watermelon/public/basic.css">
-<link rel="stylesheet" href="<?=WM_BundlesURL?>watermelon/public/watermelon.css">
-<link rel="stylesheet" href="<?=WM_SkinURL?>installer.css">
+<link rel="stylesheet" href="<?php echo WM_BundlesURL?>watermelon/public/basic.css">
+<link rel="stylesheet" href="<?php echo WM_BundlesURL?>watermelon/public/watermelon.css">
+<link rel="stylesheet" href="<?php echo WM_SkinURL?>installer.css">
 <header></header>
-<? if(!$additionalData->noContainer): ?>
+<?php  if(!$additionalData->noContainer): ?>
 <div id="content">
-   <h1><?=$pageTitle?></h1>
+   <h1><?php echo $pageTitle?></h1>
    
-   <? $this->drawMessages() ?>
+   <?php  $this->drawMessages() ?>
    
-   <?=$content?>
+   <?php echo $content?>
 
    <div id="status-bar">
-      <?
+      <?php 
       
       if(isset($additionalData->form))
       {
@@ -39,12 +39,12 @@
    
       <div id="progress-bar-container">
          <div id="progress-bar">
-            <div id="progress-bar-progress" style="width:<?=$additionalData->progress?>%"></div>
+            <div id="progress-bar-progress" style="width:<?php echo $additionalData->progress?>%"></div>
          </div>
          Postęp instalacji
       </div>
    </div>
 </div>
-<? else: ?>
-<?=$content?>
-<? endif; ?>
+<?php  else: ?>
+<?php echo $content?>
+<?php  endif; ?>

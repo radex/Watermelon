@@ -1,4 +1,4 @@
-<?die?>
+<?php die?>
 
 <div class="blog-pages-top" tal:condition="php: page > 1">
    <a href="${previousPage}" class="blog-previousPage" tal:condition="php: page > 1">« Nowsze wpisy</a>

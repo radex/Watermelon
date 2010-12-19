@@ -1,4 +1,4 @@
-<?die?>
+<?php die?>
 
 <p>Ustawienia głównego menu strony</p>
 

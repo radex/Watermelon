@@ -1,4 +1,4 @@
-<?die?>
+<?php die?>
 <tal:block>
    <article>
       <h1>

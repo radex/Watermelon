@@ -1,40 +1,40 @@
-<?defined('WM') or die?><!doctype html>
+<?php defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="<?=WM_SkinURL?>style.css">
-<?=$this->drawHeadTags()?>
+<link rel="stylesheet" href="<?php echo WM_SkinURL?>style.css">
+<?php echo $this->drawHeadTags()?>
 
 <header>
    <div>
-      <div id="siteName"><a href="<?=WM_AdminURL?>"><?=$siteName?></a></div>
-      <div id="siteSlogan">Panel admina (<a href="<?=WM_SiteURL?>">przejdź do strony →</a>)</div>
+      <div id="siteName"><a href="<?php echo WM_AdminURL?>"><?php echo $siteName?></a></div>
+      <div id="siteSlogan">Panel admina (<a href="<?php echo WM_SiteURL?>">przejdź do strony →</a>)</div>
    </div>
 </header>
 
 <nav>
    <ul id="navLeft">
-      <?= $this->drawLeftNav() ?>
+      <?php echo  $this->drawLeftNav() ?>
    </ul>
    <ul id="navRight">
-      <?= $this->drawRightNav() ?>
+      <?php echo  $this->drawRightNav() ?>
    </ul>
 </nav>
 <div id="container">
-   <?= $this->drawSubNav() ?>
+   <?php echo  $this->drawSubNav() ?>
    <div id="content">
-      <?  $this->drawMessages() ?>
-      <?= (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
-      <?= $content ?>
+      <?php   $this->drawMessages() ?>
+      <?php echo  (empty($pageTitle) || $dontShowPageTitle) ? '' : '<h1>' . $pageTitle . '</h1>' ?>
+      <?php echo  $content ?>
    </div>
 </div>
 <footer>
    powered by <strong>Watermelon CMS</strong>
    <?php if(defined('WM_Debug')){ ?>
       <br><br>
-      Wygenerowano w: <?= round(Benchmark::executionTime(), -2) / 1000 ?> ms<br>
-      Peak memory usage: <?= (int) ((memory_get_peak_usage() - WM_StartMemory) / 1000) ?> KB<br>
-      Current memory usage: <?= (int) ((memory_get_usage() - WM_StartMemory) / 1000) ?> KB<br>
+      Wygenerowano w: <?php echo  round(Benchmark::executionTime(), -2) / 1000 ?> ms<br>
+      Peak memory usage: <?php echo  (int) ((memory_get_peak_usage() - WM_StartMemory) / 1000) ?> KB<br>
+      Current memory usage: <?php echo  (int) ((memory_get_usage() - WM_StartMemory) / 1000) ?> KB<br>
       
-      <br>Zapytania wykonane do bazy danych (<?=count(DB::$queriesArray)?>):<br>
+      <br>Zapytania wykonane do bazy danych (<?php echo count(DB::$queriesArray)?>):<br>
       
       <ul style="text-align:left">
       <?php
@@ -50,8 +50,8 @@
       }
       ?>
       </ul>
-      <?}?>
+      <?php }?>
 </footer>
 
-<?=$this->drawTailTags()?>
-<script src="<?=WM_SkinURL?>ACPSkin.js"></script>
+<?php echo $this->drawTailTags()?>
+<script src="<?php echo WM_SkinURL?>ACPSkin.js"></script>

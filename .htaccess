@@ -2,12 +2,13 @@
 # Watermelon CMS Nice URL-s
 #
 
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php/$1 [L,QSA]
-RewriteRule watermelonurltest wmelon/core/works.html
-
+<IfModule mod_rewrite.c>
+   RewriteEngine On
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+   RewriteRule watermelonurltest wmelon/core/works.html
+</IfModule>
 
 # Apache configuration file
 # httpd.apache.org/docs/2.2/mod/quickreference.html

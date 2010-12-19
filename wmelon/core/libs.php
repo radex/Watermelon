@@ -27,6 +27,7 @@ include WM_Core . 'EventCenter.php';
 // include 'Cache/Cache.php';
 // include 'Translations/Translations.php';
 include WM_Core . 'PHPTAL/PHPTAL.php';
+include WM_Core . 'viewPreFilter.php';
 
 // testing&development stuff
 

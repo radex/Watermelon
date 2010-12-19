@@ -1,4 +1,4 @@
-<?die?><style>
+<?php die?><style>
 #navOptionsForm input[type=text],
 #navOptionsForm input[type=checkbox]
 {

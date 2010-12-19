@@ -60,7 +60,7 @@ class Textile_Extension extends Extension
          
          // array --> string to be cached
          
-         $cacheString = "<?\ndefined('WM') or die;\n"; // so that direct access is not possible
+         $cacheString = "<?php\ndefined('WM') or die;\n"; // so that direct access is not possible
          
          $cacheString .= '$textiled = ' . var_export($textiled, true) . ';';
          
@@ -126,7 +126,7 @@ class Textile_Extension extends Extension
          
          if(!defined('WM_Debug'))
          {
-            file_put_contents($path, '<?die?>' . $textiled); // so that direct access is not possible
+            file_put_contents($path, '<?php die?>' . $textiled); // so that direct access is not possible
          }
          
          return $textiled;

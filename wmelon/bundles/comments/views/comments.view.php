@@ -1,4 +1,4 @@
-<?die?>
+<?php die?>
 <tal:block>
    <h1 id="comments-link">
       Komentarze
