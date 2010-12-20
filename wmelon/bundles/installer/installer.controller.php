@@ -35,18 +35,13 @@ class Installer_Controller extends Controller
       
       // URL-s
       
-      if(isset($_SESSION['siteURL']))
-      {
-         $siteURL   = $_SESSION['siteURL'];
-         $systemURL = $_SESSION['systemURL'];
-      }
-      else
-      {
-         list($siteURL, $systemURL) = $this->urls();
-      }
+      $baseURL = $this->baseURL();
+      $siteURL = $baseURL . 'index.php/';
+      $systemURL = $baseURL . 'wmelon/';
       
       // constants
       
+      define('WM_BaseURL',   $baseURL);
       define('WM_SiteURL',   $siteURL);
       define('WM_SystemURL', $systemURL);
       define('WM_CurrURL',   $siteURL);
@@ -63,14 +58,14 @@ class Installer_Controller extends Controller
       
       $step = (int) $this->segments[0];
       
-      if($step < 1 || $step > 8)
+      if($step < 1 || $step > 9)
       {
          $step = 1;
       }
       
       // progress percent
       
-      $this->additionalData->progress = (int) (($step - 1) / 6 * 100);
+      $this->additionalData->progress = (int) (($step - 1) / 7 * 100);
       
       // previous step (but you can't go back after you unblock the blockade)
       
@@ -122,11 +117,12 @@ class Installer_Controller extends Controller
          default: $this->langChooser(); break;
          case '2': $this->greeting(); break;
          case '3': $this->blockadeMessage(); break;
-         case '4': $this->dbInfo(); break;
-         case '5': $this->userdata(); break;
-         case '6': $this->websiteName(); break;
-         case '7': $this->thank(); break;
-         case '8': $this->save(); break;
+         case '4': $this->paths(); break;
+         case '5': $this->dbInfo(); break;
+         case '6': $this->userdata(); break;
+         case '7': $this->websiteName(); break;
+         case '8': $this->thank(); break;
+         case '9': $this->save(); break;
          
          case 'wmelonInstallerTest':
             $this->outputType = self::Plain_OutputType;
@@ -141,14 +137,12 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * private array urls()
+    * private string baseURL()
     * 
-    * Determines URL-s to website
-    * 
-    * returns array($siteURL, $systemURL)
+    * Determines base URL of website
     */
    
-   private function urls()
+   private function baseURL()
    {
       // determining URL to index.php
       
@@ -181,6 +175,16 @@ class Installer_Controller extends Controller
       {
          $url .= '/';
       }
+      
+      // returns
+      
+      return $url;
+      
+      //******
+      
+      //FIXME: it freezes on some servers
+      
+      //******
       
       // determining whether .htaccess works - by trying to request special page 'watermelonurltest' (without index.php)
       
@@ -282,11 +286,88 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * fourth step - DB info
+    * fourth step - paths
+    * 
+    * (TODO: automate it, again)
+    */
+   
+   public function paths()
+   {
+      // default values
+      
+      if(isset($_SESSION['pathsForm']))
+      {
+         $data = $_SESSION['pathsForm'];
+         
+         if($data)
+         {
+            $works = ' checked';
+         }
+         else
+         {
+            $doesNotWork = ' checked';
+         }
+      }
+      
+      // form
+      
+      $form = new Form('wmelon.installer.paths', '5', '4');
+      $form->displaySubmitButton = false;
+      $form->extraFormAttributes['name'] = 'form';
+      
+      // adding inputs
+      
+      $form->addHTML('<label><input type="radio" name="rewriteWorks" value="true"' . $works . '>Działa <small>(pokazuje się <em>Works!</em>)</small></label>');
+      $form->addHTML('<label><input type="radio" name="rewriteWorks" value="false"' . $doesNotWork . '>Nie działa</label>');
+      
+      // displaying
+      
+      $this->pageTitle = 'Ścieżki';
+      $this->additionalData->form = true;
+      
+      $view = View('paths');
+      $view->testSite = WM_BaseURL . 'watermelonurltest';
+      $view->form = $form->generate();
+      $view->display();
+   }
+   
+   /*
+    * fifth step - DB info
     */
    
    public function dbInfo()
    {
+      // validating paths
+      
+      if($_SESSION['previousStep'] == 4)
+      {
+         $form = Form::validate('wmelon.installer.paths', '4');
+         
+         $data = $_POST['rewriteWorks'];
+         
+         // validating
+         
+         switch($data)
+         {
+            case 'true':
+               $data = true;
+            break;
+            
+            case 'false':
+               $data = false;
+            break;
+            
+            default:
+               $form->addError('Wybierz odpowiedź na pytanie');
+               $form->fallback();
+            break;
+         }
+         
+         // saving in session
+         
+         $_SESSION['pathsForm'] = $data;
+      }
+      
       // default values
       
       if(isset($_SESSION['dbForm']))
@@ -314,7 +395,7 @@ class Installer_Controller extends Controller
       
       // form
       
-      $form = new Form('wmelon.installer.dbInfo', '5', '4');
+      $form = new Form('wmelon.installer.dbInfo', '6', '5');
       $form->displaySubmitButton = false;
       $form->extraFormAttributes['name'] = 'form';
       
@@ -347,7 +428,7 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * fifth step - admin username and password.
+    * sixth step - admin username and password.
     * 
     * Validating DB info, but not yet importing tables to database (it will be done in last step)
     */
@@ -356,9 +437,9 @@ class Installer_Controller extends Controller
    {
       // validating DB info
       
-      if($_SESSION['previousStep'] == 4)
+      if($_SESSION['previousStep'] == 5)
       {
-         $form = Form::validate('wmelon.installer.dbInfo', '4');
+         $form = Form::validate('wmelon.installer.dbInfo', '5');
          $data = $form->getAll();
          
          $_SESSION['dbForm'] = $data;
@@ -402,7 +483,7 @@ class Installer_Controller extends Controller
       
       // form
       
-      $form = new Form('wmelon.installer.userData', '6', '5');
+      $form = new Form('wmelon.installer.userData', '7', '6');
       $form->displaySubmitButton = false;
       $form->extraFormAttributes['name'] = 'form';
       
@@ -429,7 +510,7 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * sixth step - website name
+    * seventh step - website name
     * 
     * And validating user data form
     */
@@ -438,9 +519,9 @@ class Installer_Controller extends Controller
    {
       // validating userdata form
       
-      if($_SESSION['previousStep'] == 5)
+      if($_SESSION['previousStep'] == 6)
       {
-         $form = Form::validate('wmelon.installer.userData', '5');
+         $form = Form::validate('wmelon.installer.userData', '6');
          $data = $form->getAll();
          
          $_SESSION['userDataForm'] = $data;
@@ -472,7 +553,7 @@ class Installer_Controller extends Controller
       
       // form
       
-      $form = new Form('wmelon.installer.siteName', '7', '6');
+      $form = new Form('wmelon.installer.siteName', '8', '7');
       $form->displaySubmitButton = false;
       $form->extraFormAttributes['name'] = 'form';
       
@@ -485,16 +566,16 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * seventh step - thank
+    * eighth step - thank
     */
    
    public function thank()
    {
       // checking whether all required fields are filled
       
-      if($_SESSION['previousStep'] == 6)
+      if($_SESSION['previousStep'] == 7)
       {
-         $form = Form::validate('wmelon.installer.siteName', '6');
+         $form = Form::validate('wmelon.installer.siteName', '7');
          $data = $form->getAll();
          
          $_SESSION['siteNameForm'] = $data;
@@ -505,27 +586,38 @@ class Installer_Controller extends Controller
       $this->pageTitle = 'Dzięki!';
       
       $view = View('thank');
-      $view->db   = clone $_SESSION['dbForm'];
-      $view->user = clone $_SESSION['userDataForm'];
-      $view->site = clone $_SESSION['siteNameForm'];
+      $view->db    = clone $_SESSION['dbForm'];
+      $view->user  = clone $_SESSION['userDataForm'];
+      $view->site  = clone $_SESSION['siteNameForm'];
+      $view->paths = $_SESSION['pathsForm'];
       
       $view->db->pass   = $this->starPassword($view->db->pass);
       $view->user->pass = $this->starPassword($view->user->pass);
+      
+      if($view->paths)
+      {
+         $view->paths = 'Działają';
+      }
+      else
+      {
+         $view->paths = 'Nie działają';
+      }
       
       $view->display();
    }
    
    /*
-    * eighth step - saving configuration
+    * ninth step - saving configuration
     */
    
    public function save()
    {
       // configuration
       
-      $db   = $_SESSION['dbForm'];
-      $user = $_SESSION['userDataForm'];
-      $site = $_SESSION['siteNameForm'];
+      $db    = $_SESSION['dbForm'];
+      $user  = $_SESSION['userDataForm'];
+      $site  = $_SESSION['siteNameForm'];
+      $paths = $_SESSION['pathsForm'];
       
       // saving config.php
       
@@ -542,10 +634,12 @@ class Installer_Controller extends Controller
 
 /*   Advanced   */
 
-\$debugLevel = 0; // 0 - no debug notices, no error reporting; real world applications
+\$debugLevel = 1; // 0 - no debug notices, no error reporting; real world applications
                  // 1 - debug notices, E_ALL ^ E_NOTICE error reporting; programming
                  // 2 - debug notices, E_ALL error reporting; testing & debugging
 CONFIG;
+      
+      //TODO: change debugLevel to 0, with option to 1, when building beta packages
       
       file_put_contents(WM_System . 'config.php', $configFile);
       
@@ -578,6 +672,17 @@ CONFIG;
       $atomID = WM_SiteURL . time() . mt_rand();
       $atomID = sha1($atomID);
       
+      // siteURL
+      
+      if($paths)
+      {
+         $siteURL = WM_BaseURL;
+      }
+      else
+      {
+         $siteURL = WM_BaseURL . 'index.php/';
+      }
+      
       // adding wmelon configuration to Registry
          
          Registry::create('wmelon', $w, true);
@@ -590,7 +695,7 @@ CONFIG;
          
          // other
          
-         $w->siteURL           = WM_SiteURL;
+         $w->siteURL           = $siteURL;
          $w->systemURL         = WM_SystemURL;
          
          $w->skin              = 'wcmslay';

@@ -223,10 +223,6 @@ class Watermelon
          return;
       }
       
-      //--
-      
-      self::config();
-      
       // auto-loading extensions
       
       foreach(self::$config->autoload as $extensionName)
@@ -297,7 +293,7 @@ class Watermelon
     * 
     * Prepares Watermelon to run a controller and generate a page
     * 
-    * It does stuff like turning sessions and output buffering on, fixing magic quotes, loading libraries and helpers etc.
+    * It does stuff like turning sessions and output buffering on, fixing magic quotes, loading libraries and helpers, loading configuration, setting constants etc.
     */
    
    private static function prepare()
@@ -339,51 +335,42 @@ class Watermelon
       define('WM_Uploaded', WM_System . 'uploaded/');
       define('WM_Cache',    WM_System . 'cache/');
       
-      // loading config file, and setting app type to installer if empty
+      // loading config file
       
       include $basePath . 'config.php';
+      
+      // checking if installer
       
       if(!isset($dbHost))
       {
          self::$appType = self::AppType_Installer;
          
-         //error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
-         error_reporting(0);
+         $installer = true;
          
-         // creating messages array in session
-
-         if(!is_array($_SESSION['WM_Messages']))
-         {
-            $_SESSION['WM_Messages'] = array();
-         }
-         
-         //--
-         
-         self::divide();
-         
-         include 'libs.php';
-         
-         return;
+         error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE); //TODO: swap comments
+         //error_reporting(0);
       }
-      
-      // setting proper error reporting mode and debug constant
-      
-      switch($debugLevel)
+      else
       {
-         case 0:
-         default:
-            error_reporting(0);
-         break;
-         
-         case 1:
-            error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
-            define('WM_Debug', '');
-         break;
-         
-         case 2:
-            error_reporting(E_ALL);
-            define('WM_Debug', '');
-         break;
+         // setting proper error reporting mode and debug constant
+      
+         switch($debugLevel)
+         {
+            case 0:
+            default:
+               error_reporting(0);
+            break;
+      
+            case 1:
+               error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
+               define('WM_Debug', '');
+            break;
+      
+            case 2:
+               error_reporting(E_ALL);
+               define('WM_Debug', '');
+            break;
+         }
       }
       
       // creating messages array in session
@@ -399,7 +386,46 @@ class Watermelon
       
       include 'libs.php';
       
+      // and that's it for the installer
+      
+      if($installer)
+      {
+         return;
+      }
+      
+      // MySQL connection
+      
       DB::connect($dbHost, $dbName, $dbUser, $dbPass, $dbPrefix);
+      
+      // getting main configuration array from Registry
+      
+      Registry::create('wmelon', $w, true);
+      
+      $w = Registry::get('wmelon');
+      
+      self::$config = &$w;
+      
+      // setting constants
+      
+      define('WM_SiteURL',     $w->siteURL);
+      define('WM_AdminURL',    $w->siteURL . 'admin/');
+      define('WM_SystemURL',   $w->systemURL);
+      define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
+      define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
+      define('WM_CacheURL',    WM_SystemURL . 'cache/');
+      
+      if(self::$appType == self::AppType_Admin)
+      {
+         define('WM_SkinPath', WM_System    . 'core/ACPSkin/');
+         define('WM_SkinURL',  WM_SystemURL . 'core/ACPSkin/');
+         define('WM_CurrURL',  WM_AdminURL);
+      }
+      else
+      {
+         define('WM_SkinPath', WM_Bundles    . $w->skin . '_skin/');
+         define('WM_SkinURL',  WM_BundlesURL . $w->skin . '_skin/');
+         define('WM_CurrURL',  WM_SiteURL);
+      }
    }
    
    /*
@@ -489,45 +515,6 @@ class Watermelon
       }
       
       return $modulesList;
-   }
-   
-   /*
-    * private static void config()
-    * 
-    * Loads configuration, sets URL constants, etc
-    */
-   
-   private static function config()
-   {
-      // getting main configuration array from Registry
-      
-      Registry::create('wmelon', $w, true);
-      
-      $w = Registry::get('wmelon');
-      
-      self::$config = &$w;
-      
-      // setting constants
-      
-      define('WM_SiteURL',     $w->siteURL);
-      define('WM_AdminURL',    $w->siteURL . 'admin/');
-      define('WM_SystemURL',   $w->systemURL);
-      define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
-      define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
-      define('WM_CacheURL',    WM_SystemURL . 'cache/');
-      
-      if(self::$appType == self::AppType_Admin)
-      {
-         define('WM_SkinPath', WM_System    . 'core/ACPSkin/');
-         define('WM_SkinURL',  WM_SystemURL . 'core/ACPSkin/');
-         define('WM_CurrURL',  WM_AdminURL);
-      }
-      else
-      {
-         define('WM_SkinPath', WM_Bundles    . $w->skin . '_skin/');
-         define('WM_SkinURL',  WM_BundlesURL . $w->skin . '_skin/');
-         define('WM_CurrURL',  WM_SiteURL);
-      }
    }
    
    /*

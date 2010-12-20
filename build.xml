@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Watermelon CMS" default="build">
+<project name="Watermelon CMS" default="zip">
    
    <!-- shortcuts -->
    
@@ -8,7 +8,7 @@
    
    <!-- building .zipped package -->
    
-   <target name="build" depends="createPackage">
+   <target name="zip" depends="build">
       
       <delete file="build/Watermelon.zip"/>
       
@@ -20,7 +20,7 @@
    
    <!-- making package of "clear" Watermelon, without development code -->
    
-   <target name="createPackage">
+   <target name="build">
       
       <!-- making directories -->
       
@@ -57,11 +57,11 @@
       <touch  file="${codeDir}wmelon/config.php"/>
       
       <!-- swapping Turbine config -->
-      
+      <!--
       <delete file="${codeDir}wmelon/core/Turbine/config.php"/>
       <move   file="${codeDir}wmelon/core/Turbine/config_production.php"
             tofile="${codeDir}wmelon/core/Turbine/config.php"/>
-      
+      -->
       <!-- deleting test controllers -->
       
       <delete dir="${codeDir}wmelon/bundles/test/"/>
@@ -76,7 +76,7 @@
    
    <!-- installs to ../wcms -->
    
-   <target name="install" depends="createPackage">
+   <target name="install" depends="build">
       
       <!-- clearing install dir -->
       

@@ -6,6 +6,11 @@
 
 <table>
    <tr>
+      <th><em>Ładne URL-e</em></th>
+      <td>${paths}</td>
+   </tr>
+   
+   <tr>
       <th>Nazwa bazy danych:</th>
       <td>${db/name}</td>
    </tr>
