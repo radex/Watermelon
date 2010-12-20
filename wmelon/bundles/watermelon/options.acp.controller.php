@@ -66,7 +66,12 @@ class Options_Controller extends Controller
       $footer         = $config->footer;
       $head           = $config->headTags;
       $tail           = $config->tailTags;
-      $email          = Auth::userData()->email;
+      
+      $userData = Auth::userData();
+      
+      $login          = $userData->login;
+      $nick           = $userData->nick;
+      $email          = $userData->email;
       
       // label notes
       
@@ -74,6 +79,9 @@ class Options_Controller extends Controller
       $footer_label         = 'Możesz używać HTML<br>oraz <em>$/</em> dla linków na stronie';
       $head_label           = '"sekcja &lt;head&gt;"; skrypty, arkusze stylów itp.';
       $tail_label           = 'Skrypty, dodane na końcu strony';
+      
+      $login_label          = 'Nazwa użyta podczas logowania. Uważaj, żeby przypadkiem nie zmienić.';
+      $nick_label           = 'Nazwa pokazywana przy Twoich komentarzach itp.';
       $email_label          = 'Zostanie użyty obok Twoich komentarzy do pokazania <a href="http://gravatar.com/" target="_blank">gravatara</a>';
       
       if(!empty($email))
@@ -90,16 +98,26 @@ class Options_Controller extends Controller
       $footer         = array('value' => $footer,         'labelNote' => $footer_label);
       $head           = array('value' => $head,           'labelNote' => $head_label);
       $tail           = array('value' => $tail,           'labelNote' => $tail_label);
+      
+      $login          = array('value' => $login,          'labelNote' => $login_label);
+      $nick           = array('value' => $nick,           'labelNote' => $nick_label);
       $email          = array('value' => $email,          'labelNote' => $email_label);
       
       // adding inputs
       
+      $form->addHTML('<fieldset><legend>Strona</legend>');
       $form->addInput('text',     'siteName',       'Nazwa strony',                   true,  $siteName);
       $form->addInput('text',     'siteSlogan',     'Slogan strony',                  false, $siteSlogan);
       $form->addInput('textarea', 'footer',         'Stopka',                         false, $footer);
       $form->addInput('textarea', 'head',           'Własne tagi na początek strony', false, $head);
       $form->addInput('textarea', 'tail',           'Własne tagi na koniec strony',   false, $tail);
+      $form->addHTML('</fieldset>');
+      
+      $form->addHTML('<fieldset><legend>Ty</legend>');
+      $form->addInput('text',     'login',          'Twój login',                     false, $login);
+      $form->addInput('text',     'nick',           'Twój nick',                      false, $nick);
       $form->addInput('email',    'email',          'Twój email',                     false, $email);
+      $form->addHTML('</fieldset>');
       
       // rendering
       
@@ -131,8 +149,12 @@ class Options_Controller extends Controller
       
       DB::update('users', 1, array
          (
+            'login' => $data->login,
+            'nick'  => $data->nick,
             'email' => $data->email,
          ));
+      
+      $_SESSION['Auth_login'] = $data->login;
       
       // redirecting
       

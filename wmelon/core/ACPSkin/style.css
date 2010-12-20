@@ -74,13 +74,19 @@ caption
 
 fieldset
 {
-   border: 1px solid #bbb;
+   margin: 10px;
+   padding: 15px;
+   border: 1px solid #aaa;
+   border-radius: 5px;
+   background: #f8f8f8;
 }
 
 legend
 {
+   font-size: 16px;
    font-weight: normal;
    color: #666;
+   padding: 2px 5px;
 }
 
 label
