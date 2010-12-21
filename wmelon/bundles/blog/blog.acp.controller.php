@@ -145,11 +145,11 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.newPost', 'blog/new');
       $data = $form->getAll();
       
-      $this->model->postPost($data->title, $data->content, $data->summary);
+      $id = $this->model->postPost($data->title, $data->content, $data->summary);
       
       $this->addMessage('tick', 'Dodano wpis!');
       
-      SiteRedirect('blog');
+      SiteRedirect('blog/edit/' . $id);
    }
    
    /*
@@ -173,10 +173,12 @@ class Blog_Controller extends Controller
       
       $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
       
+      $postURL = '#/' . date('Y/m', $data->created) . '/' . $data->name;
+      
       switch($this->parameters->backto)
       {
          case 'post':
-            $backToLabel = ' lub <a href="#/' . date('Y/m', $data->created) . '/' . $data->name . '">powróć do wpisu</a>';
+            $backToLabel = ' lub <a href="' . $postURL . '">powróć do wpisu</a>';
          break;
           
          case 'site':
@@ -186,7 +188,7 @@ class Blog_Controller extends Controller
          break;
           
          default:
-            $backToLabel = ' lub <a href="$/blog/">powróć do listy wpisów</a>';
+            $backToLabel = ', <a href="$/blog/">powróć do listy wpisów</a> albo <a href="' . $postURL . '">obejrzyj wpis</a>';
          break;
       }
       

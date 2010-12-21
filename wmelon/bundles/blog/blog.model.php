@@ -73,9 +73,11 @@ class Blog_Model extends Model
    }
    
    /*
-    * public void postPost(string $title, string $content[, string $summary])
+    * public int postPost(string $title, string $content[, string $summary])
     * 
     * Posts a post with given data, as currently logged user and with current time
+    * 
+    * Returns its ID
     */
    
    public function postPost($title, $content, $summary)
@@ -96,7 +98,7 @@ class Blog_Model extends Model
       
       // inserting
       
-      DB::insert('blogposts', array
+      $id = DB::insert('blogposts', array
          (
             'name'    => $this->generateName($title),
             'title'   => (string) $title,
@@ -108,7 +110,13 @@ class Blog_Model extends Model
             'atomID'  => $atomID
          ));
       
+      // updating feed
+      
       $this->generateFeed();
+      
+      // returning post ID
+      
+      return $id;
    }
    
    /*

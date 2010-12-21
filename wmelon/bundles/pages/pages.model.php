@@ -58,15 +58,19 @@ class Pages_Model extends Model
    }
    
    /*
-    * public void postPage(string $title, string $name, string $content)
+    * public int postPage(string $title, string $name, string $content)
     * 
     * Posts a page with given data, as currently logged user and with current time
     * 
     * If $name is not given, automatic will be generated from title
+    * 
+    * Returns its ID
     */
    
    public function postPage($title, $name, $content)
    {
+      // name
+      
       if(empty($name))
       {
          $name = $this->generateName($title);
@@ -76,7 +80,9 @@ class Pages_Model extends Model
          $name = $this->filterName($name);
       }
       
-      DB::insert('pages', array
+      // inserting
+      
+      return DB::insert('pages', array
          (
             'name'    => (string) $name,
             'title'   => (string) $title,

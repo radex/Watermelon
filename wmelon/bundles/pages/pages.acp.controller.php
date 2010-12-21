@@ -143,11 +143,11 @@ class Pages_controller extends Controller
       $form = Form::validate('wmelon.pages.newPage', 'pages/new');
       $data = $form->getAll();
       
-      $this->model->postPage($data->title, $data->name, $data->content);
+      $id = $this->model->postPage($data->title, $data->name, $data->content);
       
       $this->addMessage('tick', 'Dodano stronę!');
       
-      SiteRedirect('pages');
+      SiteRedirect('pages/edit/' . $id);
    }
    
    /*
@@ -177,7 +177,7 @@ class Pages_controller extends Controller
       }
       else
       {
-         $backToLabel = ' lub <a href="$/pages/">powróć do listy stron</a>';
+         $backToLabel = ', <a href="$/pages/">powróć do listy stron</a> lub <a href="#/' . $data->name . '">obejrzyj stronę</a>';
       }
       
       // form options
