@@ -32,16 +32,16 @@ if(Watermelon::$appType == Watermelon::AppType_Admin)
  * 
  * Calls method $methodName on $object object with arguments from $args array without triggering warnings about insufficient number of arguments, and returns result returned by called method
  * 
- * object &$object     - object to call method on
- * string  $methodName - name of method to call
- * array   $args       - list of parameters to be passed to specified method
+ * object $object     - object to call method on
+ * string $methodName - name of method to call
+ * array  $args       - list of parameters to be passed to specified method
  * 
  * Note that this function passes NULL for all required, but not given in $args parameters
  */
 
-function CallMethodQuietly(&$object, $methodName, $args = array())
+function CallMethodQuietly($object, $methodName, $args = array())
 {
-   $reflection       = new ReflectionMethod(&$object, $methodName);
+   $reflection       = new ReflectionMethod($object, $methodName);
    $methodArgsNumber = $reflection->getNumberOfRequiredParameters();
    $args             = (is_array($args)) ? $args : array();
    

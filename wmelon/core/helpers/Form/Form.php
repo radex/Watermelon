@@ -89,28 +89,28 @@ class Form
    public $extraFormAttributes = array();
    
    /*
-    * private array $items
+    * protected array $items
     * 
     * Array of items - items (FormInput objects) and HTML (strings)
     */
    
-   private $items = array();
+   protected $items = array();
    
    /*
-    * private array $errors
+    * protected array $errors
     * 
     * Array of errors to display
     */
    
-   private $errors = array();
+   protected $errors = array();
    
    /*
-    * private bool $noAdding = false
+    * protected bool $noAdding = false
     * 
     * Whether ->addInput/addInputObject/addHTML() calls should be ignored
     */
    
-   private $noAdding = false;
+   protected $noAdding = false;
    
    /*
     * public void __construct(string $formID, string $actionPage, string $fallbackPage)

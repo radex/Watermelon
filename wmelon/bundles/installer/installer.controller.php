@@ -18,6 +18,12 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+include 'InstallerForm.php';
+
+/*
+ * Watermelon Installer
+ */
+
 class Installer_Controller extends Controller
 {
    /*
@@ -58,18 +64,18 @@ class Installer_Controller extends Controller
       
       $step = (int) $this->segments[0];
       
-      if($step < 1 || $step > 9)
+      if($step < 1 || $step > 8)
       {
          $step = 1;
       }
       
       // progress percent
       
-      $this->additionalData->progress = (int) (($step - 1) / 7 * 100);
+      $this->additionalData->progress = (int) (($step - 2) / 5 * 100);
       
       // previous step (but you can't go back after you unblock the blockade)
       
-      if(/*$step == 2 ||*/ $step == 3 || $step >= 5)
+      if($step >= 3)
       {
          $this->additionalData->previous = $step - 1;
       }
@@ -81,20 +87,6 @@ class Installer_Controller extends Controller
       // next step
       
       $this->additionalData->next = $step + 1;
-      
-      // checking if blockade is unlocked
-      
-      if($step > 3)
-      {
-         $fileName = $_SESSION['unblocking-filename'];
-         
-         if(!file_exists(WM_System . $fileName) || !isset($_SESSION['unblocking-filename']))
-         {
-            $this->addMessage('error', 'Hmm... Nie widzę pliku. Spróbuj jeszcze raz.');
-            
-            SiteRedirect('3');
-         }
-      }
       
       // previous step number
       
@@ -116,13 +108,12 @@ class Installer_Controller extends Controller
          case '1':
          default: $this->langChooser(); break;
          case '2': $this->greeting(); break;
-         case '3': $this->blockadeMessage(); break;
-         case '4': $this->paths(); break;
-         case '5': $this->dbInfo(); break;
-         case '6': $this->userdata(); break;
-         case '7': $this->websiteName(); break;
-         case '8': $this->thank(); break;
-         case '9': $this->save(); break;
+         case '3': $this->paths(); break;
+         case '4': $this->dbInfo(); break;
+         case '5': $this->userdata(); break;
+         case '6': $this->websiteName(); break;
+         case '7': $this->thank(); break;
+         case '8': $this->save(); break;
          
          case 'wmelonInstallerTest':
             $this->outputType = self::Plain_OutputType;
@@ -243,50 +234,20 @@ class Installer_Controller extends Controller
    
    public function greeting()
    {
+      // mock form
+      
+      $form = new InstallerForm('wmelon.installer.greeting');
+      echo $form->generate();
+      
+      // displaying
+      
       $this->pageTitle = 'Witaj';
       
       View('greeting')->display();
    }
    
    /*
-    * Third step - message saying to create file with requested name
-    * 
-    * (it's a protection against someone else installing it)
-    */
-   
-   public function blockadeMessage()
-   {
-      /*
-      // determining language
-      
-      $lang = $this->segments[1];
-      
-      if(!in_array($lang, array('pl')))
-      {
-         $lang = 'pl';
-      }
-      
-      $_SESSION['lang'] = $lang;
-      
-      define('WM_Lang', $lang);*/
-      
-      // establishing name of file unblocking the installer
-      
-      $fileName = 'wm-' . uniqid() . '.php';
-      
-      $_SESSION['unblocking-filename'] = $fileName;
-      
-      // displaying
-      
-      $this->pageTitle = 'Blokada';
-      
-      $view = View('blockade');
-      $view->fileName = $fileName;
-      $view->display();
-   }
-   
-   /*
-    * fourth step - paths
+    * Third step - paths
     * 
     * (TODO: automate it, again)
     */
@@ -311,9 +272,7 @@ class Installer_Controller extends Controller
       
       // form
       
-      $form = new Form('wmelon.installer.paths', '5', '4');
-      $form->displaySubmitButton = false;
-      $form->extraFormAttributes['name'] = 'form';
+      $form = new InstallerForm('wmelon.installer.paths');
       
       // adding inputs
       
@@ -323,7 +282,6 @@ class Installer_Controller extends Controller
       // displaying
       
       $this->pageTitle = 'Ścieżki';
-      $this->additionalData->form = true;
       
       $view = View('paths');
       $view->testSite = WM_BaseURL . 'watermelonurltest';
@@ -332,16 +290,16 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * fifth step - DB info
+    * Fourth step - DB info
     */
    
    public function dbInfo()
    {
       // validating paths
       
-      if($_SESSION['previousStep'] == 4)
+      if($_SESSION['previousStep'] == 3)
       {
-         $form = Form::validate('wmelon.installer.paths', '4');
+         $form = Form::validate('wmelon.installer.paths', '3');
          
          $data = $_POST['rewriteWorks'];
          
@@ -388,20 +346,15 @@ class Installer_Controller extends Controller
          $data = ToObject($data);
       }
       
-      // rendering options
+      // form & page title
       
       $this->pageTitle = 'Dane do bazy danych';
-      $this->additionalData->form = true;
       
-      // form
-      
-      $form = new Form('wmelon.installer.dbInfo', '6', '5');
-      $form->displaySubmitButton = false;
-      $form->extraFormAttributes['name'] = 'form';
+      $form = new InstallerForm('wmelon.installer.dbInfo');
       
       // label note
       
-      $nameNote   = 'Baza o podanej nazwie musi ustnieć';
+      $nameNote   = 'Jeśli baza danych o podanej nazwie nie istnieje, musisz samemu ją stworzyć';
       $hostNote   = 'Prawie zawsze jest to <em>localhost</em>';
       $prefixNote = 'Zostaw taki jaki jest, chyba że chcesz mieć kilka kopii Watermelona na jednej bazie danych - wtedy obie muszą mieć ustalony inny prefiks';
       
@@ -415,20 +368,20 @@ class Installer_Controller extends Controller
       
       // adding inputs
       
-      $form->addInput('text', 'name', 'Nazwa bazy danych', true, $nameArgs);
-      $form->addInput('text', 'user', 'Nazwa użytkownika', true, $userArgs);
-      $form->addInput('password', 'pass', 'Hasło', false, $passArgs);
+      $form->addInput('text',     'name',    'Nazwa bazy danych',  true,  $nameArgs);
+      $form->addInput('text',     'user',    'Nazwa użytkownika',  true,  $userArgs);
+      $form->addInput('password', 'pass',    'Hasło',              false, $passArgs);
       
       $form->addHTML('<div class="advanced-hr">Zaawansowane<hr /></div>');
       
-      $form->addInput('text', 'host', 'Serwer', true, $hostArgs);
-      $form->addInput('text', 'prefix', 'Prefiks nazw tabel', false, $prefixArgs);
+      $form->addInput('text',     'host',    'Serwer',             true,  $hostArgs);
+      $form->addInput('text',     'prefix',  'Prefiks nazw tabel', false, $prefixArgs);
       
       echo $form->generate();
    }
    
    /*
-    * sixth step - admin username and password.
+    * Fifth step - admin username and password.
     * 
     * Validating DB info, but not yet importing tables to database (it will be done in last step)
     */
@@ -437,9 +390,9 @@ class Installer_Controller extends Controller
    {
       // validating DB info
       
-      if($_SESSION['previousStep'] == 5)
+      if($_SESSION['previousStep'] == 4)
       {
-         $form = Form::validate('wmelon.installer.dbInfo', '5');
+         $form = Form::validate('wmelon.installer.dbInfo', '4');
          $data = $form->getAll();
          
          $_SESSION['dbForm'] = $data;
@@ -461,6 +414,8 @@ class Installer_Controller extends Controller
             {
                $form->addError('Nie udało się wybrać bazy danych "' . $data->name . '". Spróbuj jeszcze raz.');
                $form->fallback();
+               
+                     //TODO: try to create the database if doesn't exist
             }
          }
       }
@@ -476,16 +431,11 @@ class Installer_Controller extends Controller
          $data = ToObject(array('user' => '','pass' => '','pass2' => ''));
       }
       
-      // rendering options
+      // form & page title
       
       $this->pageTitle = 'Dane admina';
-      $this->additionalData->form = true;
       
-      // form
-      
-      $form = new Form('wmelon.installer.userData', '7', '6');
-      $form->displaySubmitButton = false;
-      $form->extraFormAttributes['name'] = 'form';
+      $form = new InstallerForm('wmelon.installer.userData');
       
       // label notes
       
@@ -499,9 +449,9 @@ class Installer_Controller extends Controller
       
       // adding args
       
-      $form->addInput('text', 'user', 'Nazwa użytkownika', true, $userArgs);
-      $form->addInput('password', 'pass', 'Hasło', true, $passArgs);
-      $form->addInput('password', 'pass2', 'Hasło (powtórz)', true, $pass2Args);
+      $form->addInput('text',     'user',  'Nazwa użytkownika',   true, $userArgs);
+      $form->addInput('password', 'pass',  'Hasło',               true, $passArgs);
+      $form->addInput('password', 'pass2', 'Hasło (powtórz)',     true, $pass2Args);
       
       // rendering
       
@@ -510,7 +460,7 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * seventh step - website name
+    * Sixth step - website name
     * 
     * And validating user data form
     */
@@ -519,9 +469,9 @@ class Installer_Controller extends Controller
    {
       // validating userdata form
       
-      if($_SESSION['previousStep'] == 6)
+      if($_SESSION['previousStep'] == 5)
       {
-         $form = Form::validate('wmelon.installer.userData', '6');
+         $form = Form::validate('wmelon.installer.userData', '5');
          $data = $form->getAll();
          
          $_SESSION['userDataForm'] = $data;
@@ -546,44 +496,41 @@ class Installer_Controller extends Controller
          $data = ToObject(array('siteName' => ''));
       }
       
-      // rendering options
+      // form & page title
       
       $this->pageTitle = 'Nazwa strony';
-      $this->additionalData->form = true;
       
-      // form
+      $form = new InstallerForm('wmelon.installer.siteName');
       
-      $form = new Form('wmelon.installer.siteName', '8', '7');
-      $form->displaySubmitButton = false;
-      $form->extraFormAttributes['name'] = 'form';
+      // adding inputs
       
       $siteNameArgs = array('value' => $data->siteName);
       
       $form->addInput('text', 'siteName', 'Nazwa strony', true, $siteNameArgs);
+      
+      // rendering
       
       echo '<p>Już blisko! Podaj jeszcze tylko nazwę dla Twojej nowej strony.</p>';
       echo $form->generate();
    }
    
    /*
-    * eighth step - thank
+    * Seventh step - thank
     */
    
    public function thank()
    {
       // checking whether all required fields are filled
       
-      if($_SESSION['previousStep'] == 7)
+      if($_SESSION['previousStep'] == 6)
       {
-         $form = Form::validate('wmelon.installer.siteName', '7');
+         $form = Form::validate('wmelon.installer.siteName', '6');
          $data = $form->getAll();
          
          $_SESSION['siteNameForm'] = $data;
       }
       
-      // rendering
-      
-      $this->pageTitle = 'Dzięki!';
+      // view
       
       $view = View('thank');
       $view->db    = clone $_SESSION['dbForm'];
@@ -603,11 +550,19 @@ class Installer_Controller extends Controller
          $view->paths = 'Nie działają';
       }
       
+      // mock form
+      
+      $form = new InstallerForm('wmelon.installer.thank');
+      $form->generate();
+      
+      // rendering
+      
+      $this->pageTitle = 'Dzięki!';
       $view->display();
    }
    
    /*
-    * ninth step - saving configuration
+    * Eighth step - saving configuration
     */
    
    public function save()
@@ -639,7 +594,7 @@ class Installer_Controller extends Controller
                  // 2 - debug notices, E_ALL error reporting; testing & debugging
 CONFIG;
       
-      //TODO: change debugLevel to 0, with option to 1, when building beta packages
+               //TODO: change debugLevel to 0, with option to 1, when building beta packages
       
       file_put_contents(WM_System . 'config.php', $configFile);
       
@@ -649,6 +604,9 @@ CONFIG;
       
       $structure = file_get_contents(WM_Bundles . 'installer/structure.sql');
       $data      = file_get_contents(WM_Bundles . 'installer/data.sql');
+      
+      $samplePost = file_get_contents(WM_Bundles . 'installer/samplePost.txt');
+      $samplePage = file_get_contents(WM_Bundles . 'installer/samplePage.txt');
       
       $sql = $structure . "\n\n" . $data; 
       $sql = explode(';', $sql);
@@ -664,7 +622,7 @@ CONFIG;
          
          $query = str_replace('`wm_', '`' . $db->prefix, $query);
          
-         DB::query($query, time());
+         DB::query($query, time(), $samplePost, $samplePage);
       }
       
       // feeds
@@ -746,10 +704,6 @@ CONFIG;
             'nick'     => $user->user,
             'lastseen' => time()
          ));
-      
-      // removing unblocking file
-      
-      unlink(WM_System . $_SESSION['unblocking-filename']);
       
       // removing session and redirecting to home page
       

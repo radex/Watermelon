@@ -1,0 +1,65 @@
+<exec>
+// access only for admin
+
+if(!Auth::isLogged())
+{
+   SiteRedirect('e404');
+}
+
+</exec>
+
+Na tej podstronie znajdziesz opis niektórych zaawansowanych opcji Watermelona.
+
+h2. Textile
+
+*Textile* to prosty w obsłudze, ale zaawansowany język formatowania tekstu. Pozwala na tworzenie list, tabel, przypisów, i wielu innych elementów stron bez konieczności użycia HTML (choć jest on dozwolony)
+
+* "Opis możliwości Textile":http://textile.sitemonks.com/ (po angielsku)
+
+Wersja Textile zawarta w Watermelonie zawiera kilka zmian, jeszcze bardziej ułatwiających pisanie tekstu:
+
+h3. Uproszczone linki
+
+Gdy chcemy dołączyć link do innej podstrony na Twojej stronie, zamiast podawać pełen adres, możesz po prostu podać samą nazwę podstrony. Textile automatycznie zamieni wszystkie linki nie zaczynające się od _http://_ lub _https://_ na linki do podstron Twojej strony.
+
+Dla przykładu, zamiast pisać <code>"Przykładowy post":http://moj.blog.com/2010/12/Przykładowy_post</code> możesz napisać po prostu <code>"Przykładowy post":2010/12/Przykładowy_post</code>
+
+h3. YouTube
+
+Chciałbyś wstawić film z YouTube na swojego bloga? Nic prostszego. Po prostu napisz w nowej linii:
+
+<code(html)>
+youtube. (adres do filmu)
+</code>
+
+… a Watermelon zrobi resztę za Ciebie.
+
+h3. Kolorowanie składni
+
+Jeśli zajmujesz się programowaniem, to na pewno spodoba Ci się fakt, że możesz dodać na swojej stronie kolorowany fragment kodu, bez konieczności instalacji żadnych dodatków. Po prostu między <code>‹code(syntax)›</code> a <code>‹code/›</code> (gdzie _syntax_ to nazwa składni, np. _php_, _js_, _cpp_ itd.) wstaw swój kod.
+
+Dla przykładu:
+
+<code(html)>
+‹code(php)›
+if(true)
+{
+   $foo = 'bar'; // komentarz
+}
+‹/code›
+</code>
+
+wyprodukuje:
+
+<code(php)>
+if(true)
+{
+   $foo = 'bar'; // komentarz
+}
+</code>
+
+###. musiałem zastosować znaki podobne do < i >, aby się nie popsuło. fixme.
+
+h3. &lt;exec>
+
+Jeśli znasz PHP, ta funkcja spodoba Ci się. Za pomocą tagu &lt;exec> możesz wykonać kod PHP bezpośrednio we wpisie lub stronie własnej. Może Ci to posłużyć np. do prezentacji jakiejś możliwości, lub dodania prostej interakcji bez pisania nowego modułu. Bądź ostrożny, gdyż niepoprawny kod uniemożliwi wejście na podstronę (wciąż będziesz mógł edytować w Panelu Admina), oraz możesz spowodować poważną lukę bezpieczeństwa. Nie używaj &lt;exec>, jeśli nie wiesz co robisz.

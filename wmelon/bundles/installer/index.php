@@ -3,8 +3,15 @@
 <link rel="stylesheet" href="<?php echo WM_BundlesURL?>watermelon/public/basic.css">
 <link rel="stylesheet" href="<?php echo WM_BundlesURL?>watermelon/public/watermelon.css">
 <link rel="stylesheet" href="<?php echo WM_SkinURL?>installer.css">
+<?php $this->drawHeadTags(); ?>
 <header></header>
-<?php  if(!$additionalData->noContainer): ?>
+<?php
+
+if(!$additionalData->noContainer)
+{
+   echo $additionalData->formOpen;
+
+?>
 <div id="content">
    <h1><?php echo $pageTitle?></h1>
    
@@ -15,36 +22,32 @@
    <div id="status-bar">
       <?php 
       
-      if(isset($additionalData->form))
-      {
-         echo '<button onclick="if(document.form.checkValidity()) document.form.submit()">Dalej</button>';
-      }
-      else
-      {
-         echo '<form action="' . WM_SiteURL . $additionalData->next . '"><button>Dalej</button></form>';
-      }
-      
+      echo '<input type="submit" value="Dalej" autofocus>';
    
       if($additionalData->previous !== null)
       {
-         echo '<form action="' . WM_SiteURL . $additionalData->previous . '"><button>Wróć</button></form>';
+         echo '<input type="button" onclick="window.location=\'' . WM_SiteURL . $additionalData->previous . '\'" value="Wróć">';
       }
       else
       {
-         echo '<button disabled>Wróć</button>';
+         echo '<input type="button" value="Wróć" disabled>';
       }
    
       ?>
-
-   
       <div id="progress-bar-container">
          <div id="progress-bar">
+            <?php if($additionalData->progress > 0): ?>
             <div id="progress-bar-progress" style="width:<?php echo $additionalData->progress?>%"></div>
+            <?php endif; ?>
          </div>
          Postęp instalacji
       </div>
    </div>
 </div>
-<?php  else: ?>
-<?php echo $content?>
-<?php  endif; ?>
+<?php
+   echo '</form>';
+}
+else
+{
+   echo $content;
+}

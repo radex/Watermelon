@@ -62,8 +62,10 @@ header
    background:#fff;
    border:1px solid #aaa;
    border-radius: 5px;
+   -moz-border-radius: 5px;
    box-shadow: 0 3px 25px #aaa;
    -webkit-box-shadow: 0 3px 25px #aaa;
+   -moz-box-shadow: 0 3px 25px #aaa;
 }
 
 #status-bar
@@ -78,6 +80,7 @@ header
    border: 1px solid #aaa;
    border-top:1px solid #bba;
    border-radius: 0 0 5px 5px;
+   -moz-border-radius: 0 0 5px 5px;
 }
 
 #status-bar button, #status-bar input
@@ -108,6 +111,7 @@ header
    
    border:1px solid #888;
    border-radius:10px;
+   -moz-border-radius:10px;
    background:#fff;
 }
 
@@ -119,6 +123,7 @@ header
    
    border:inherit;
    border-radius:10px;
+   -moz-border-radius:10px;
    background:#8bd;
 }
 
@@ -151,7 +156,8 @@ label > span > small
    line-height:1.3em;
 }
 
-input
+input[type=text],
+input[type=password]
 {
    width:200px;
    height:13px;
@@ -163,9 +169,8 @@ input
 
 input[type=radio]
 {
-   width: auto;
-   vertical-align:middle;
    padding: 3px 15px;
+   vertical-align:middle;
 }
 
 /*-=-=-=-=-=-=-*/
@@ -214,6 +219,7 @@ table tr:nth-child(odd)
    background: #ddd;
    border: 1px solid #ddd;
    border-radius: 10px;
+   -moz-border-radius: 10px;
    color: #555;
    box-shadow: #aaa 0 0 3px, #aaa 2px 2px 5px;
 }
