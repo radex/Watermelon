@@ -310,6 +310,8 @@ class Watermelon
       define('WM_StartTime', microtime());
       define('WM_StartMemory', memory_get_usage());
       
+      set_include_path('.');
+      
       // fixing "magic" quotes
       
       if(get_magic_quotes_gpc())

@@ -561,6 +561,8 @@ class Installer_Controller extends Controller
       $view->display();
    }
    
+                  //TODO: clean up here
+   
    /*
     * Eighth step - saving configuration
     */
@@ -598,6 +600,11 @@ CONFIG;
       
       file_put_contents(WM_System . 'config.php', $configFile);
       
+      // feeds
+      
+      $atomID = WM_SiteURL . time() . mt_rand();
+      $atomID = sha1($atomID);
+      
       // installing SQL
       
       DB::connect($db->host, $db->name, $db->user, $db->pass, $db->prefix);
@@ -605,8 +612,12 @@ CONFIG;
       $structure = file_get_contents(WM_Bundles . 'installer/structure.sql');
       $data      = file_get_contents(WM_Bundles . 'installer/data.sql');
       
-      $samplePost = file_get_contents(WM_Bundles . 'installer/samplePost.txt');
-      $samplePage = file_get_contents(WM_Bundles . 'installer/samplePage.txt');
+      $samplePostSummary = file_get_contents(WM_Bundles . 'installer/samplePostSummary.txt');
+      $samplePost        = file_get_contents(WM_Bundles . 'installer/samplePost.txt');
+      $samplePage        = file_get_contents(WM_Bundles . 'installer/samplePage.txt');
+      
+      $postAtomID = $atomID . 'Witaj w Watermelonie!' . time() . mt_rand();
+      $postAtomID = sha1($postAtomID);
       
       $sql = $structure . "\n\n" . $data; 
       $sql = explode(';', $sql);
@@ -622,13 +633,8 @@ CONFIG;
          
          $query = str_replace('`wm_', '`' . $db->prefix, $query);
          
-         DB::query($query, time(), $samplePost, $samplePage);
+         DB::query($query, time(), $samplePostSummary, $samplePost, $samplePage, $postAtomID);
       }
-      
-      // feeds
-      
-      $atomID = WM_SiteURL . time() . mt_rand();
-      $atomID = sha1($atomID);
       
       // siteURL
       
@@ -664,6 +670,7 @@ CONFIG;
          $textMenus = array(array
             (
                array('Blog', '', true, null),
+               array('Pomoc Watermelona', 'wmelonHelp', true, 'Opis zaawansowanych funkcji Watermelona'),
             ));
          
          $w->siteName   = $site->siteName;

@@ -5,18 +5,16 @@ INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `summary`, `content`, `author
    NULL,
    'Witaj_w_Watermelonie!',
    'Witaj w Watermelonie!',
-   'Cześć! Przed Tobą pierwsza publiczna wersja Watermelon CMS(Content Management System), aplikacji internetowej, za pomocą której możesz stworzyć własną stronę internetową lub bloga. Watermelon jest całkowicie darmowy, a jego kod jest udostępniony na wolnej licencji.
-
-Naciśnij "czytaj dalej", aby dowiedzieć się więcej na temat obsługi Watermelona i tego jak możesz pomóc projektowi.',
    '%2',
-   1, %1, %1, 'ba09226058bc1ea3711e035f932d1b7c66996625'
+   '%3',
+   1, %1, %1, '%5'
 );
 
 -- sample page
 
 INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`, `updated`) VALUES
 (
-   NULL, 'wmelonHelp', 'Pomoc Watermelona', '%3', 1, %1, %1
+   NULL, 'wmelonHelp', 'Pomoc Watermelona', '%4', 1, %1, %1
 );
 
 -- sample comment for these
@@ -30,7 +28,16 @@ VALUES
 ),
 (
    NULL, 1, 'page', 1, NULL, NULL, NULL, %1,
-   'Inny fajny koment',
+   'Ten artykuł jest widoczny tylko dla Ciebie. Jeśli chcesz, możesz podejrzeć, jak wygląda on "od środka". Uważaj tylko, żeby go nie usunąć! :)',
+   false
+),
+(
+   NULL, 1, 'page', 1, NULL, NULL, NULL, %1,
+   'Pamiętaj, aby usunąć link do tej podstrony z menu, aby inni go nie widzieli.
+
+"Edycja menu":admin/options/nav/: Panel Admina » Ustawienia » Menu
+
+Nadal będziesz mógł się tutaj dostać z "tabeli stron":admin/pages/ w Panelu Admina',
    false
 );
 

@@ -40,7 +40,16 @@ class Sblam_Extension extends Extension
    
    public static function onAutoload()
    {
-      self::$apiKey = 'Lnep34ioYivirpcwy4'; //TODO: use Registry, and auto-generate
+      Registry::create('sblam.apiKey', null, true);
+      
+      self::$apiKey = Registry::get('sblam.apiKey');
+      
+      // if admin and no api key, display information
+      
+      if(Watermelon::$appType == Watermelon::AppType_Admin && Watermelon::$segments == array() && empty(self::$apiKey))
+      {
+         Watermelon::addMessage('info', 'Filtr antyspamowy nie będzie działał poprawnie dopóki nie zostanie <a href="$/options/#sblamOptions">skonfigurowany</a>');
+      }
    }
    
    /*
@@ -60,7 +69,14 @@ class Sblam_Extension extends Extension
    
    public static function test($text, $author, $email, $website)
    {
-      return sblamtestpost(array($text, $author, $email, $website), self::$apiKey);
+      if(!empty($apiKey))
+      {
+         return sblamtestpost(array($text, $author, $email, $website), self::$apiKey);
+      }
+      else
+      {
+         return 0;
+      }
    }
    
    /*

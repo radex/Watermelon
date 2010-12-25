@@ -73,6 +73,8 @@ class Options_Controller extends Controller
       $nick           = $userData->nick;
       $email          = $userData->email;
       
+      $sblamKey       = $this->registry->get('sblam.apiKey');
+      
       // label notes
       
       $siteSlogan_label     = 'W kilku słowach opisz o czym jest ta strona';
@@ -91,6 +93,8 @@ class Options_Controller extends Controller
          $email_label .= '<img src="http://gravatar.com/avatar/' . md5($email) . '?s=64&amp;d=mm" style="vertical-align:middle" />';
       }
       
+      $sblamKey_label       = '';
+      
       // input args
       
       $siteName       = array('value' => $siteName);
@@ -103,9 +107,11 @@ class Options_Controller extends Controller
       $nick           = array('value' => $nick,           'labelNote' => $nick_label);
       $email          = array('value' => $email,          'labelNote' => $email_label);
       
+      $sblamKey       = array('value' => $sblamKey,       'labelNote' => $sblamKey_label);
+      
       // adding inputs
       
-      $form->addHTML('<fieldset><legend>Strona</legend>');
+      $form->addHTML('<fieldset id="siteOptions"><legend>Strona</legend>');
       $form->addInput('text',     'siteName',       'Nazwa strony',                   true,  $siteName);
       $form->addInput('text',     'siteSlogan',     'Slogan strony',                  false, $siteSlogan);
       $form->addInput('textarea', 'footer',         'Stopka',                         false, $footer);
@@ -113,10 +119,15 @@ class Options_Controller extends Controller
       $form->addInput('textarea', 'tail',           'Własne tagi na koniec strony',   false, $tail);
       $form->addHTML('</fieldset>');
       
-      $form->addHTML('<fieldset><legend>Ty</legend>');
-      $form->addInput('text',     'login',          'Twój login',                     false, $login);
+      $form->addHTML('<fieldset id="adminOptions"><legend>Ty</legend>');
+      $form->addInput('text',     'login',          'Twój login',                     true,  $login);
       $form->addInput('text',     'nick',           'Twój nick',                      false, $nick);
       $form->addInput('email',    'email',          'Twój email',                     false, $email);
+      $form->addHTML('</fieldset>');
+      
+      $form->addHTML('<fieldset id="sblamOptions"><legend>Sblam!</legend>');
+      $form->addHTML('<p>Sblam! to filtr antyspamowy użyty w Watermelonie. Aby działał poprawnie należy ustalić dla niego <em>klucz API</em>. Własny klucz możesz <a href="http://sblam.com/key.html">wygenerować na stronie Sblam!</a></p>');
+      $form->addInput('text',     'sblamKey',       'Klucz API',                      false, $sblamKey);
       $form->addHTML('</fieldset>');
       
       // rendering
@@ -155,6 +166,10 @@ class Options_Controller extends Controller
          ));
       
       $_SESSION['Auth_login'] = $data->login;
+      
+      // saving data - sblam!
+      
+      $this->registry->set('sblam.apiKey', $data->sblamKey);
       
       // redirecting
       

@@ -309,25 +309,25 @@ Applying Attributes:
 */
 
 // define these before including this file to override the standard glyphs
-@define('txt_quote_single_open',  '&#8216;');
-@define('txt_quote_single_close', '&#8217;');
-@define('txt_quote_double_open',  '&#8220;');
-@define('txt_quote_double_close', '&#8221;');
-@define('txt_apostrophe',         '&#8217;');
-@define('txt_prime',              '&#8242;');
-@define('txt_prime_double',       '&#8243;');
-@define('txt_ellipsis',           '&#8230;');
-@define('txt_emdash',             '&#8212;');
-@define('txt_endash',             '&#8211;');
-@define('txt_dimension',          '&#215;');
-@define('txt_trademark',          '&#8482;');
-@define('txt_registered',         '&#174;');
-@define('txt_copyright',          '&#169;');
-@define('txt_half',               '&#189;');
-@define('txt_quarter',            '&#188;');
-@define('txt_threequarters',      '&#190;');
-@define('txt_degrees',            '&#176;');
-@define('txt_plusminus',          '&#177;');
+@define('txt_quote_single_open',  '‘');
+@define('txt_quote_single_close', '’');
+@define('txt_quote_double_open',  '„');
+@define('txt_quote_double_close', '”');
+@define('txt_apostrophe',         '’');
+@define('txt_prime',              '′');
+@define('txt_prime_double',       '″');
+@define('txt_ellipsis',           '…');
+@define('txt_emdash',             '—');
+@define('txt_endash',             '–');
+@define('txt_dimension',          '×');
+@define('txt_trademark',          '™');
+@define('txt_registered',         '®');
+@define('txt_copyright',          '©');
+@define('txt_half',               '½');
+@define('txt_quarter',            '¼');
+@define('txt_threequarters',      '¾');
+@define('txt_degrees',            '°');
+@define('txt_plusminus',          '±');
 @define('txt_has_unicode',        @preg_match('/\pL/u', 'a')); // Detect if Unicode is compiled into PCRE
 
 class Textile_lib
