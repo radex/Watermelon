@@ -709,7 +709,8 @@ CONFIG;
             'password' => $pass,
             'salt'     => $salt,
             'nick'     => $user->user,
-            'lastseen' => time()
+            'email'    => null,
+            'lastseen' => time(),
          ));
       
       // removing session and redirecting to home page

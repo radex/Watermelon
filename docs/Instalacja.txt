@@ -1,0 +1,12 @@
+Instalacja
+----------
+
+1. Przekopiuj wszystkie pliki z katalogu code/ na swój serwer
+2. Nadaj uprawnienia 777 dla:
+   - wmelon/cache/feed.atom
+   - wmelon/cache/textile/
+   - wmelon/cache/textile_restricted/
+   - wmelon/cache.php
+3. Otwórz folder gdzie przekopiowałeś Watermelona w przeglądarce
+4. Postępuj wraz z zaleceniami instalatora
+5. To wszystko!

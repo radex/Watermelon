@@ -30,6 +30,8 @@ include 'Textarea.php';
 include 'HiddenInput.php';
 include 'HiddenData.php';
 
+// TODO: find a better solution to the bug with form in session (current fix sucks and doesn't fix the problem completely)
+
 class Form
 {
    /*
@@ -132,17 +134,19 @@ class Form
       
       // check whether form exists in session
       
-      if(!isset($_SESSION['Form_lastForm']))
+      $sesionName = 'Form_' . $formID;
+      
+      if(!isset($_SESSION[$sessionName]))
       {
          return;
       }
       
-      $form = unserialize($_SESSION['Form_lastForm']);
+      $form = unserialize($_SESSION[$sessionName]);
       
-      // check whether form in session is the same as this one
-      // and if there are any errors
       
-      if($form->formID != $formID || empty($form->errors))
+      // check whether there are any errors
+      
+      if(empty($form->errors))
       {
          return;
       }
@@ -153,7 +157,7 @@ class Form
       $this->errors   = $form->errors;
       $this->noAdding = true;
       
-      unset($_SESSION['Form_lastForm']);
+      unset($_SESSION[$sessionName]);
    }
    
    /*
@@ -238,7 +242,7 @@ class Form
       
       // storing form object in session (so that in can be reconstructed on action page)
       
-      $_SESSION['Form_lastForm'] = serialize($this);
+      $_SESSION['Form_' . $this->formID] = serialize($this);
       
       // extra <form> attributes
       
@@ -308,22 +312,15 @@ class Form
    {
       // checking if form exists
       
-      if(!isset($_SESSION['Form_lastForm']))
+      $sessionName = 'Form_' . $formID;
+      
+      if(!isset($_SESSION[$sessionName]))
       {
          SiteRedirect($fallbackPage);
          return;
       }
       
-      $form = unserialize($_SESSION['Form_lastForm']);
-      
-      // checking if form in session is the same form we're supposed to validate
-      
-      if($formID != $form->formID)
-      {
-         unset($_SESSION['Form_lastForm']);
-         SiteRedirect($fallbackPage);
-         return;
-      } 
+      $form = unserialize($_SESSION[$sessionName]); 
       
       // validating form
       
@@ -354,13 +351,13 @@ class Form
       
       if(!empty($form->errors))
       {
-         $_SESSION['Form_lastForm'] = serialize($form);
+         $_SESSION[$sessionName] = serialize($form);
          SiteRedirect($fallbackPage);
       }
       
       // if everything is fine, returning form object
       
-      unset($_SESSION['Form_lastForm']);
+      unset($_SESSION[$sessionName]);
       
       return $form;
    }
@@ -384,7 +381,7 @@ class Form
    
    public function fallBack()
    {
-      $_SESSION['Form_lastForm'] = serialize($this);
+      $_SESSION['Form_' . $this->formID] = serialize($this);
       
       SiteRedirect($this->fallbackPage);
    }

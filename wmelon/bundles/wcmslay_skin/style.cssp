@@ -213,6 +213,7 @@ body > header
    display: block
    width: $containerWidth
    margin: 0 auto
+   height: 33px
    li
       display: inline-block
       vertical-align: bottom

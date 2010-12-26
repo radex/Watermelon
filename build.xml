@@ -39,7 +39,7 @@
       <copy todir="${buildDir}/docs/">
          <fileset dir="docs"/>
       </copy>
-      <copy file="docs/README.txt" todir="${buildDir}"/>
+      <copy file="docs/Instalacja.txt" todir="${buildDir}"/>
       
       <!-- clearing cache -->
       

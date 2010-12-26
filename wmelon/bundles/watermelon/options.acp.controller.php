@@ -345,6 +345,8 @@ class Options_Controller extends Controller
       
       // saving and redirecting
       
+      $textMenu = array();
+      
       foreach($nav as $item)
       {
          $textMenu[] = array($item->name, $item->url, $item->relative, $item->title);

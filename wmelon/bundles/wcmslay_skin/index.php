@@ -17,7 +17,7 @@
       echo $this->drawTextMenu(0);
       
       if(Auth::isLogged())
-      {   
+      {
          echo '<li style="float:right; padding-right:5px"><a href="' . SiteURL('%/') . '">Panel Admina</a></li>';
          echo '<li style="float:right"><a href="' . SiteURL('auth/logout') . '">Wyloguj</a></li>';
       }
