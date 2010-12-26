@@ -28,8 +28,28 @@
 
 class View
 {
-   private $viewPath;             // path to view (set by Loader::view(), and then used by ->display() to load actual view)
-   public  $parameters = array(); // [dictionary] parameters to be passed to actual view
+   
+   /*
+    * public array $parametrs
+    * 
+    * Parameters to be passed to the actual view
+    */
+   
+   public $parameters = array();
+   
+   /*
+    * private string $viewPath
+    * 
+    * Path to the view
+    * 
+    * It is set by Loader::view(), and then used by ->display()
+    */
+   
+   private $viewPath;
+   
+   
+   /**************************************************************************/
+   
    
    /*
     * public void display([$return = false])

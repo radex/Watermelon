@@ -145,12 +145,12 @@ abstract class Skin
    public $additionalData;
    
    /*
-    * protected void drawTextMenu(int $id)
+    * public void drawTextMenu(int $id)
     * 
     * Prints text menu number $id
     */
    
-   protected function drawTextMenu($id)
+   public function drawTextMenu($id)
    {
       foreach($this->textMenus[$id] as $menuItem)
       {
@@ -166,12 +166,12 @@ abstract class Skin
    }
    
    /*
-    * protected void drawHeadTags()
+    * public void drawHeadTags()
     * 
     * Prints tags from ->headTags
     */
    
-   protected function drawHeadTags()
+   public function drawHeadTags()
    {
       foreach($this->headTags as $tag)
       {
@@ -180,12 +180,12 @@ abstract class Skin
    }
    
    /*
-    * protected void drawTailTags()
+    * public void drawTailTags()
     * 
     * Prints tags from ->tailTags
     */
    
-   protected function drawTailTags()
+   public function drawTailTags()
    {
       foreach($this->tailTags as $tag)
       {
@@ -194,12 +194,12 @@ abstract class Skin
    }
    
    /*
-    * protected void drawMessages()
+    * public void drawMessages()
     * 
     * Prints messages
     */
    
-   protected function drawMessages()
+   public function drawMessages()
    {
       foreach($this->messages as $message)
       {
@@ -216,17 +216,17 @@ abstract class Skin
     * 
     * (Watermelon calls it for you)
     */
-   
+
    public function display()
    {
-      $content    = &$this->content;
-      $pageTitle  = $this->pageTitle;
-      $siteName   = $this->siteName;
-      $siteSlogan = $this->siteSlogan;
-      $footer     = SiteLinks($this->footer);
+      $content           = &$this->content;
+      $pageTitle         = $this->pageTitle;
+      $siteName          = $this->siteName;
+      $siteSlogan        = $this->siteSlogan;
+      $footer            = SiteLinks($this->footer);
       $dontShowPageTitle = $this->dontShowPageTitle;
       
-      $additionalData = &$this->additionalData;
+      $additionalData    = &$this->additionalData;
       
       include WM_SkinPath . 'index.php';
    }

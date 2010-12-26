@@ -37,4 +37,20 @@ class WCMSLay_Skin extends Skin
          echo '</section>';
       }
    }
+   
+   public function display()
+   {
+      $skin = new View(WM_SkinPath . 'index_phptal.php');
+      
+      $skin->content           = $this->content;
+      $skin->pageTitle         = $this->pageTitle;
+      $skin->siteName          = $this->siteName;
+      $skin->siteSlogan        = $this->siteSlogan;
+      $skin->footer            = SiteLinks($this->footer);
+      $skin->dontShowPageTitle = $this->dontShowPageTitle;
+      $skin->additionalData    = $this->additionalData;
+      $skin->skin              = $this;
+      
+      $skin->display();
+   }
 }
