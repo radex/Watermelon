@@ -42,9 +42,9 @@ include 'testing/Benchmark.php';
 // module types headers
 
 include 'headers/ACPInfo.php';
-include 'headers/Blockset.php';
-include 'headers/Controller.php';
-include 'headers/Extension.php';
-include 'headers/Model.php';
-include 'headers/Skin.php';
-include 'headers/View.php';
+include 'headers/blockset.php';
+include 'headers/controller.php';
+include 'headers/extension.php';
+include 'headers/model.php';
+include 'headers/skin.php';
+include 'headers/view.php';

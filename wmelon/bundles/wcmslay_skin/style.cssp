@@ -1,5 +1,5 @@
 @turbine
-   plugins: boxshadow
+   plugins: boxshadow, borderradius
 
 @constants
    imgPath:../../bundles/wcmslay_skin/img
@@ -17,7 +17,7 @@
    contentWidth: 720px
 
 @import url('../../bundles/watermelon/public/basic.css');
-@import url('../../bundles/watermelon/public/watermelon.css')
+@import url('../../bundles/watermelon/public/watermelon.css');
 
 body
    font-size: 13px

@@ -1,6 +1,6 @@
 <?php defined('WM') or die?><!doctype html>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="<?php echo WM_SystemURL?>core/turbine/css.php?files=wcmslay_skin/style.cssp">
+<link rel="stylesheet" href="<?php echo WM_SystemURL?>core/Turbine/css.php?files=wcmslay_skin/style.cssp">
 <?php echo $this->drawHeadTags()?>
 
 <header>

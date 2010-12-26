@@ -9,7 +9,7 @@
          <col />
          <col style="width:50px"/>
          <col />
-         <col style="width:110px" />
+         <col style="width:120px" />
       </colgroup>
       <thead>
          <tr>

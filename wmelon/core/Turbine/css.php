@@ -87,6 +87,17 @@ if($_GET['files']){
 	$fingerprint = '';
 	foreach($files as $file){
 		if(file_exists($file)){
+		   
+		   // -- quick fix: only .cssp files permited
+		   
+		   if(substr($file, -5) != '.cssp')
+		   {
+		      exit;
+		   }
+		   
+		   // -- /quick fix
+		   
+		   
 			$fingerprint .= $file.filemtime($file);
 		}
 	}
