@@ -134,7 +134,7 @@ class Form
       
       // check whether form exists in session
       
-      $sesionName = 'Form_' . $formID;
+      $sessionName = 'Form_' . $formID;
       
       if(!isset($_SESSION[$sessionName]))
       {

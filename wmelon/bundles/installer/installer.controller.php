@@ -709,7 +709,7 @@ CONFIG;
             'password' => $pass,
             'salt'     => $salt,
             'nick'     => $user->user,
-            'email'    => null,
+            'email'    => '',
             'lastseen' => time(),
          ));
       
