@@ -20,6 +20,29 @@
 
 class WCMSLay_Skin extends Skin
 {
+   /*
+    * text menus
+    */
+   
+   public function drawTextMenu($id)
+   {
+      foreach($this->textMenus[$id] as $menuItem)
+      {
+         list($name, $URL, $relative, $title) = $menuItem;
+         
+         if($relative)
+         {
+            $URL = SiteURL($URL);
+         }
+         
+         echo '<a href="' . $URL . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a>';
+      }
+   }
+   
+   /*
+    * block menus
+    */
+   
    protected function drawBlockMenu($id)
    {
       foreach($this->blockMenus[$id] as $menu)
@@ -36,21 +59,5 @@ class WCMSLay_Skin extends Skin
          
          echo '</section>';
       }
-   }
-   
-   public function display()
-   {
-      $skin = new View(WM_SkinPath . 'index_phptal.php');
-      
-      $skin->content           = $this->content;
-      $skin->pageTitle         = $this->pageTitle;
-      $skin->siteName          = $this->siteName;
-      $skin->siteSlogan        = $this->siteSlogan;
-      $skin->footer            = SiteLinks($this->footer);
-      $skin->dontShowPageTitle = $this->dontShowPageTitle;
-      $skin->additionalData    = $this->additionalData;
-      $skin->skin              = $this;
-      
-      $skin->display();
    }
 }

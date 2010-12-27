@@ -51,7 +51,7 @@ class ACPSkin extends Skin
     * Left side of primary navigation bar
     */
    
-   protected function drawLeftNav()
+   public function drawLeftNav()
    {
       foreach($this->leftNavItems as $i => $item)
       {
@@ -87,7 +87,7 @@ class ACPSkin extends Skin
     * Right side of primary navigation bar
     */
    
-   protected function drawRightNav()
+   public function drawRightNav()
    {
       if($this->startsWith('options'))
       {
@@ -107,7 +107,7 @@ class ACPSkin extends Skin
     * Secondary navigation bar
     */
    
-   protected function drawSubNav()
+   public function drawSubNav()
    {
       // checking if any item is selected
       

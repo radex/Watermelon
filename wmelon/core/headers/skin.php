@@ -219,15 +219,17 @@ abstract class Skin
 
    public function display()
    {
-      $content           = &$this->content;
-      $pageTitle         = $this->pageTitle;
-      $siteName          = $this->siteName;
-      $siteSlogan        = $this->siteSlogan;
-      $footer            = SiteLinks($this->footer);
-      $dontShowPageTitle = $this->dontShowPageTitle;
+      $skin = new View(WM_SkinPath . 'index.php');
       
-      $additionalData    = &$this->additionalData;
+      $skin->content           = $this->content;
+      $skin->pageTitle         = $this->pageTitle;
+      $skin->siteName          = $this->siteName;
+      $skin->siteSlogan        = $this->siteSlogan;
+      $skin->footer            = SiteLinks($this->footer);
+      $skin->dontShowPageTitle = $this->dontShowPageTitle;
+      $skin->additionalData    = $this->additionalData;
+      $skin->skin              = $this;
       
-      include WM_SkinPath . 'index.php';
+      $skin->display();
    }
 }
