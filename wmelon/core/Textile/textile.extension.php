@@ -216,7 +216,7 @@ class Textile_Extension extends Extension
       
       self::$shelf[$shelvedID] = '<pre class="brush: ' . $brush . '">' . htmlspecialchars($code, ENT_NOQUOTES) . '</pre>';
       
-      return '<wm:shelf(' . $shelvedID . ')>';
+      return ' <wm:shelf(' . $shelvedID . ')>';
    }
    
    /*
