@@ -20,6 +20,19 @@
 
 header('Content-Type: text/javascript');
 
-include 'SyntaxHighlighter/shCore.js';
-include 'SyntaxHighlighter/shAutoloader.js';
-include 'sh.js';
+$files = array
+   (
+      'jquery.js',
+      'SyntaxHighlighter/shCore.js',
+      'SyntaxHighlighter/shAutoloader.js',
+      'sh.js',
+   );
+
+// loading files
+
+foreach($files as $file)
+{
+   include $file;
+   
+   echo "\n\n";
+}

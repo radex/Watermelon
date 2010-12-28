@@ -69,7 +69,7 @@ class AdminQuick
       
       // showing question
       
-      $message = $questionClosure($ids, Watermelon::$controllerObject->model);
+      $message = $questionClosure($ids, Watermelon::$controller->model);
       
       echo QuestionBox($message, $controller . '/deleteSubmit/' . implode(',', $ids) . '/' . $backPage);
    }
@@ -127,13 +127,13 @@ class AdminQuick
       
       // deleting
       
-      $deletingClosure($ids, Watermelon::$controllerObject->model);
+      $deletingClosure($ids, Watermelon::$controller->model);
       
       // redirecting
       
       $message = $messageClosure(count($ids));
       
-      Watermelon::$controllerObject->addMessage('tick', $message);
+      Watermelon::$controller->addMessage('tick', $message);
       
       $backPage = base64_decode($backPage);
       $backPage = empty($backPage) ? $controller : $backPage;

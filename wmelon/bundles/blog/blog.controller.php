@@ -62,11 +62,14 @@ class Blog_Controller extends Controller
          
          $post->url = '$/' . date('Y/m', $post->created) . '/' . $post->name;
          
-         // post creation human date and comments count
+         // post creation human date
          
          $post->created_human = HumanDate($post->created, true, true);
          
-         $post->comments = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
+         // commentsCount
+         
+         $post->comments  = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
+         $post->comments .= ' ' . pl_inflect($post->comments, 'komentarzy', 'komentarz', 'komentarze');
          
          //--
          
@@ -128,7 +131,7 @@ class Blog_Controller extends Controller
    }
    
    /*
-    * feed generator (accessible through '/feed.atom' URL)
+    * feed (accessible through '/feed.atom' URL)
     */
    
    public function feed_action()

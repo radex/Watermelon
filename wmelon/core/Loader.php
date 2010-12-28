@@ -108,8 +108,16 @@ class Loader
    
    private static function module($name, $typeName)
    {
-      $name      = strtolower($name);
-      $className = $name . '_' . $typeName;
+      $name = strtolower($name);
+      
+      if($typeName == 'extension')
+      {
+         $className = $name;
+      }
+      else
+      {
+         $className = $name . '_' . $typeName;
+      }
       
       // return if already loaded
       

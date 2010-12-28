@@ -58,7 +58,7 @@ class InstallerForm extends Form
          {
             // passing <form> declaration to $additionalData (where it will be used by skin)
             
-            Watermelon::$controllerObject->additionalData->formOpen = $formOpen[0];
+            Watermelon::$controller->additionalData->formOpen = $formOpen[0];
             
             return '';
          },

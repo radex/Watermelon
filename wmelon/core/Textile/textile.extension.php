@@ -155,7 +155,7 @@ class Textile_Extension extends Extension
       
       // replacing youtube tag
       
-      $text = preg_replace_callback('/youtube\.(.*?)v=([0-9a-zA-Z]+)(.*?)$/s', array(__CLASS__, 'replaceYoutube'), $text);
+      $text = preg_replace_callback('/youtube\.(.*?)v=([0-9a-zA-Z_-]+)(.*?)$/s', array(__CLASS__, 'replaceYoutube'), $text);
       
       // textile
       
@@ -243,11 +243,18 @@ class Textile_Extension extends Extension
    {
       $videoID = $args[2];
       
-      return '<iframe class="youtubeVideo" src="http://youtube-nocookie.com/embed/' . $videoID . '?rel=0"></iframe>';
+      // return '<iframe class="youtubeVideo" src="http://youtube.com/embed/' . $videoID . '"></iframe>';
+      
+      return '<object class="youtubeVideo">' .
+      '  <param name="movie" value="http://www.youtube-nocookie.com/v/' . $videoID . '?fs=1"></param>' .
+      '  <param name="allowFullScreen" value="true"></param>' .
+      '  <param name="allowscriptaccess" value="always"></param>' .
+      '  <embed src="http://www.youtube-nocookie.com/v/' . $videoID . '?fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" class="youtubeVideo"></embed>' .
+      '</object>';
    }
    
    /*
-    * adds website base URL to links that does not start with 'http://' 
+    * adds website base URL to links that does not start with 'http(s)://'
     */
    
    private static function fixLinks($args)
@@ -268,5 +275,7 @@ class Textile_Extension extends Extension
       }
    }
 }
+
+// Textile_Extension is used instead of just Textile, so that use of method textile() is possible
 
 class Textile extends Textile_Extension{}

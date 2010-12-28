@@ -105,12 +105,12 @@ class Watermelon
    
    
    /*
-    * public static Controller $controllerObject
+    * public static Controller $controller
     * 
     * Currently running controller object
     */
    
-   public static $controllerObject;
+   public static $controller;
    
    /*
     * public static object $config
@@ -191,7 +191,7 @@ class Watermelon
       $controllerObj = new e404_Controller();
       $controllerObj->index_action();
       
-      self::$controllerObject = $controllerObj;
+      self::$controller = $controllerObj;
    }
    
    /*
@@ -212,7 +212,7 @@ class Watermelon
          
          $installer = new Installer_Controller;
          
-         self::$controllerObject = $installer;
+         self::$controller = $installer;
          self::$controllerName   = 'installer';
          self::$bundleName       = 'installer';
          
@@ -229,12 +229,11 @@ class Watermelon
       {
          Loader::extension($extensionName);
          
-         $className = $extensionName . '_Extension';
-         $className::onAutoload();
+         $extensionName::onAutoload();
       }
       
       include WM_Core . 'FrontendLibraries/FrontendLibraries.extension.php';
-      FrontendLibraries_Extension::onAutoload();
+      FrontendLibraries::onAutoload();
       
       include WM_Core . 'Textile/textile.extension.php';
       Textile::onAutoload();
@@ -717,7 +716,7 @@ class Watermelon
       $controllerClassName = $controller . '_Controller';
       $controllerObj       = new $controllerClassName;
       
-      self::$controllerObject = $controllerObj;
+      self::$controller = $controllerObj;
       
       /// if controller handler is set, run it
       
@@ -778,7 +777,7 @@ class Watermelon
       
       // running skin, or outputing data
       
-      $controller = self::$controllerObject;
+      $controller = self::$controller;
       $outputType = $controller->outputType;
       
       if($outputType == Controller::Plain_OutputType)
@@ -830,7 +829,7 @@ class Watermelon
          }
          
          $headTags[] = '<title>' . $title . '</title>';
-         $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\';</script>';
+         $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\'</script>';
          
          if(self::$appType == self::AppType_Site)
          {

@@ -24,7 +24,7 @@
  * Authorization - login, logout, etc.
  */
 
-class Auth_Extension extends Extension
+class Auth extends Extension
 {
    private static $isLogged = false; // whether user session exists
    private static $userData;         // information about logged user
@@ -179,5 +179,3 @@ class Auth_Extension extends Extension
       return true;
    }
 }
-
-class Auth extends Auth_Extension{}

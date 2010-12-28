@@ -1,5 +1,7 @@
 <?php die?>
 
+<!-- Pages -->
+
 <div class="blog-pages-top" tal:condition="php: page > 1">
    <a href="${previousPage}" class="blog-previousPage" tal:condition="php: page > 1">« Nowsze wpisy</a>
    <div class="blog-previousPage" tal:condition="php: page == 1" />
@@ -10,12 +12,14 @@
    <div class="blog-nextPage" tal:condition="not: anotherPage" />
 </div>
 
+<!-- Posts -->
+
 <article tal:repeat="post posts" id="blogpost-${post/id}">
    <header>
       <h1>
          <a href="${post/url}">${post/title}</a>
          <span class="h1-comment">
-            ${structure post/created_human}, ${post/comments} ${php:pl_inflect(post.comments, 'komentarzy', 'komentarz', 'komentarze')}
+            ${structure post/created_human}, ${post/comments}
          </span>
          <span class="adminTools" tal:condition="php: Auth::isLogged()">
             <a href="${post/editHref}">[Edytuj]</a> | <a href="${post/deleteHref}">[Usuń]</a>
@@ -31,6 +35,8 @@
    <a class="blog-readMore" href="${post/url}">Czytaj dalej »</a>
 </article>
 
+<!-- Pages -->
+
 <div class="blog-pages-bottom" tal:condition="php: page > 1 || anotherPage">
    <a href="${previousPage}" class="blog-previousPage" tal:condition="php: page > 1">« Nowsze wpisy</a>
    <div class="blog-previousPage" tal:condition="php: page == 1" />
@@ -40,6 +46,8 @@
    <a href="${nextPage}" class="blog-nextPage" tal:condition="anotherPage">Starsze wpisy »</a>
    <div class="blog-nextPage" tal:condition="not: anotherPage" />
 </div>
+
+<!-- if no posts -->
 
 <p tal:condition="php: count(posts) == 0">
    Brak wpisów. <a tal:attributes="href string:%/blog/new" tal:condition="php: Auth::isLogged()">Napisz pierwszego!</a>

@@ -21,7 +21,7 @@
 /*
  * class ViewPreFilter
  * 
- * Filters PHPTAL views, i.a. by replacing <? with <?php and <?= with <?php echo (to prevent failing on servers with disabled short_open_tags)
+ * Filters PHPTAL views by replacing <? with <?php and <?= with <?php echo (to prevent failing on servers with disabled short_open_tags)
  */
 
 class ViewPreFilter extends PHPTAL_PreFilter

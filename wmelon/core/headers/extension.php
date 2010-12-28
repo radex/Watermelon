@@ -34,7 +34,7 @@ abstract class Extension
       
       // attempting to load model with the same name
       
-      $className = substr(get_called_class(), 0, -10); // name of class - '_Extension'
+      $className = get_called_class();
       
       try
       {

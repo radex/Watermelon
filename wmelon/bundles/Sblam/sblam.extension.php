@@ -24,7 +24,7 @@
 
 include 'sblam.php';
 
-class Sblam_Extension extends Extension
+class Sblam extends Extension
 {
    /*
     * public static string $apiKey
@@ -40,11 +40,13 @@ class Sblam_Extension extends Extension
    
    public static function onAutoload()
    {
+      // retrieving API key
+      
       Registry::create('sblam.apiKey', null, true);
       
       self::$apiKey = Registry::get('sblam.apiKey');
       
-      // if admin and no api key, display information
+      // display notice if admin and no API key set
       
       if(Watermelon::$appType == Watermelon::AppType_Admin && Watermelon::$segments == array() && empty(self::$apiKey))
       {
@@ -69,6 +71,8 @@ class Sblam_Extension extends Extension
    
    public static function test($text, $author, $email, $website)
    {
+      // if no API key set
+      
       if(!empty($apiKey))
       {
          return sblamtestpost(array($text, $author, $email, $website), self::$apiKey);
@@ -98,8 +102,6 @@ class Sblam_Extension extends Extension
    
    public static function JS()
    {
-      return '<script src="' . WM_BundlesURL . 'sblam/sblam.js.php" type="text/javascript"></script>';
+      return '<script src="' . WM_BundlesURL . 'sblam/sblam.js.php"></script>';
    }
 }
-
-class Sblam extends Sblam_Extension{}

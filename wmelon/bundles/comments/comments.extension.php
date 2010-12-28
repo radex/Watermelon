@@ -22,7 +22,7 @@
  * Comments extension
  */
 
-class Comments_Extension extends Extension
+class Comments extends Extension
 {
    /*
     * public string commentsView(int $id, string $type, string $backPage)
@@ -132,5 +132,3 @@ class Comments_Extension extends Extension
       return $view->display(true);
    }
 }
-
-class Comments extends Comments_Extension{}

@@ -118,7 +118,7 @@ class ACPSkin extends Skin
       
       // checking if any subitems are given
       
-      $subitems = Watermelon::$controllerObject->subNav;
+      $subitems = Watermelon::$controller->subNav;
       
       if(empty($subitems))
       {

@@ -21,11 +21,11 @@ ${php:skin.drawHeadTags()}
 </header>
 
 <div id="container">
-   <div id="content">
+   <section id="content">
       ${php:skin.drawMessages()}
       <h1 tal:condition="php: !empty(pageTitle) AND !dontShowPageTitle">${pageTitle}</h1>
       ${structure content}
-   </div>
+   </section>
 </div>
 
 <footer>

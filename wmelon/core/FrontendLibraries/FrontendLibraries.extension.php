@@ -18,13 +18,23 @@
  //  along with Watermelon CMS. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class FrontendLibraries_Extension extends Extension
+class FrontendLibraries extends Extension
 {
    public static function onAutoload()
    {
-      Watermelon::$headTags[] = '<link rel="stylesheet" href="' . WM_SystemURL . 'core/FrontendLibraries/sh.css.php?v=3.0.83">';
+      // libraries versions
       
-      Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/jquery.js?v=1.4.4"></script>';
-      Watermelon::$tailTags[] = '<script src="' . WM_SystemURL . 'core/FrontendLibraries/sh.js.php?v=3.0.83"></script>';
+      $jquery_version = '1.4.4';
+      $sh_version     = '3.0.83';
+      
+      $versions = $jquery_version . '/' . $sh_version;
+      
+      // adding
+      
+      $baseURL = WM_SystemURL . 'core/FrontendLibraries/';
+      
+      Watermelon::$headTags[] = '<link rel="stylesheet" href="' . $baseURL . 'sh.css.php?v=3.0.83">';
+      
+      Watermelon::$tailTags[] = '<script src="' . $baseURL . 'js.php?v=' . $versions . '"></script>';
    }
 }
