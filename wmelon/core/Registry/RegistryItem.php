@@ -34,29 +34,11 @@ class RegistryItem
     * Value associated with name
     * 
     * Note that:
-    *    - if item is persistent, and $isSynced is FALSE, $value contents may be not be real
+    *    - if item is persistent, and $isSynced is FALSE, $value contents may be not be correct
     *    - name is case-insensitive
     */
     
    public $value;
-    
-   /*
-    * public bool $isPersistent
-    * 
-    * Whether the item's value is saved to database
-    * 
-    * Note that if item is persistent, and $isSynced is FALSE, $value contents may be not be real
-    */
-     
-   public $isPersistent;
-   
-   /*
-    * public bool $isReadOnly
-    * 
-    * Whether only value of an item is accesible
-    */
-   
-   public $isReadOnly;
    
    //--
    
@@ -70,10 +52,8 @@ class RegistryItem
    
    //--
    
-   public function __construct($value, $isPersistent, $isReadOnly)
+   public function __construct($value)
    {
-      $this->value        = $value;
-      $this->isPersistent = $isPersistent;
-      $this->isReadOnly   = $isReadOnly;
+      $this->value = $value;
    }
 }

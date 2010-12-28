@@ -23,7 +23,7 @@ include 'RegistryItem.php';
 /*
  * class Registry
  * 
- * Data storing facility. Beyond just storing data in array it also provides options to store data in database, and make item read-only
+ * Data storing utility
  */
 
 class Registry
@@ -31,7 +31,7 @@ class Registry
    private static $items = array(); // [RegistryItem[]] - items dictionary
    
    /*
-    * public static void create(string $name[, mixed $value = null[, bool $isPersistent = false[, bool $isReadOnly = false]]])
+    * public static void create(string $name[, mixed $value = null])
     * 
     * Creates new item in Registry
     * 
@@ -42,26 +42,12 @@ class Registry
     * mixed $value = null
     *    Value associated with name
     * 
-    * bool $isPersistent = false
-    *    Whether the item's value is saved to database
-    *    Note that value is treated as default value if $isPersistent is set to TRUE, which means that if item doesn't exist in database yet, newly created one will have value equal default value
-    * 
-    * bool $isReadOnly = false
-    *    Whether properties of an item are unchangeable
-    *    Note that:
-    *       - read-only item can be changed anyway if is also persistent
-    *       - being read-only is not saved in database if item is persistent
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name already exist (or has been invalidated) [alreadyRegistered]
-    * - $isPersistent is wrong type [isPersistentWrongType]
-    * - $isReadOnly is wrong type [readOnlyWrongType]
+    * Throws an exception if item with given name already exist [alreadyRegistered]
     */
    
-   public static function create($name, $value = null, $isPersistent = false, $isReadOnly = false)
+   public static function create($name, $value = null)
    {
-      self::runThrowers($name, 'nameNotString');
+      $name = (string) $name;
       
       // if item with given name already exist
       
@@ -70,39 +56,22 @@ class Registry
          throw new WMException('Attempt to create already existing item "' . $name . '" in Registry', 'Registry:alreadyRegistered');
       }
       
-      // if $isPersistent is wrong type
-      
-      if(!is_bool($isPersistent))
-      {
-         throw new WMException('isPersistent property has to be bool!', 'Registry:isPersistentWrongType');
-      }
-      
-      // if $isReadOnly is wrong type
-      
-      if(!is_bool($isReadOnly))
-      {
-         throw new WMException('isReadOnly property has to be bool!', 'Registry:isReadOnlyWrongType');
-      }
-      
       // registering
       
-      self::$items[$name] = new RegistryItem($value, $isPersistent, $isReadOnly);
+      self::$items[$name] = new RegistryItem($value);
       
       // if item is persistent and doesn't exist yet in database, create it
       
-      if($isPersistent)
+      // inserts serialized value (for cases where value is not string)
+      // "ON DUPLICATE KEY UPDATE `name`=`name`" does nothing. It's just for not throwing exception if item already exists in database
+      
+      DB::query("INSERT INTO `__registry` SET `name` = '%1', `value` = '%2' ON DUPLICATE KEY UPDATE `name`=`name`", $name, serialize($value));
+      
+      // if didn't exist and was inserted, sets isSynced to TRUE
+      
+      if(DB::affectedRows() > 0)
       {
-         // inserts serialized value (for cases where value is not string)
-         // "ON DUPLICATE KEY UPDATE `name`=`name`" does nothing. It's just for not throwing exception if item already exists in database
-         
-         DB::query("INSERT INTO `__registry` SET `name` = '%1', `value` = '%2' ON DUPLICATE KEY UPDATE `name`=`name`", $name, serialize($value));
-         
-         // if didn't exist and was inserted, sets isSynced to TRUE
-         
-         if(DB::affectedRows() > 0)
-         {
-            self::$items[$name]->isSynced = true;
-         }
+         self::$items[$name]->isSynced = true;
       }
    }
    
@@ -112,18 +81,18 @@ class Registry
     *
     * Fetches value of an item with given name from Registry
     *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
+    * Throws an exception if item with given name doesn't exist [doesNotExist]
     */
    
    public static function get($name)
    {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist');
+      $name = (string) $name;
+      
+      self::throwIfDoesNotExist($name);
       
       // if item is persistent and not synchronized, first synchronize.
       
-      if(self::$items[$name]->isPersistent && !self::$items[$name]->isSynced)
+      if(!self::$items[$name]->isSynced)
       {
          $value = DBQuery::select('registry')->where('name', $name)->act();
          $value = $value->fetchObject()->value;
@@ -144,139 +113,59 @@ class Registry
     *
     * Sets value of an item with given name in Registry
     *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    * - item is read-only [readOnly]
+    * Throws an exception if item with given name doesn't exist [doesNotExist]
     */
    
    public static function set($name, $value)
    {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly');
+      $name = (string) $name;
+      
+      self::throwIfDoesNotExist($name);
       
       // changing value
       
       self::$items[$name]->value = $value;
       
-      // synchronizing with database (if persistent)
+      // synchronizing with database
       
-      if(self::$items[$name]->isPersistent)
-      {
-         DBQuery::update('registry')->set('value', serialize($value))->where('name', $name)->act();
-      }
+      DBQuery::update('registry')->set('value', serialize($value))->where('name', $name)->act();
    }
    
    /*
     * public static void delete(string $name)
     *
-    * Deletes item with given name in Registry
+    * Deletes item with given name from Registry
     *
-    * Similar to invalidating, but deleting does not reserve the name, so it's possible to recreate an item with the same name.
-    * 
-    * Note that it also deletes value in database (if persistent)
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    * - item is read-only [readOnly]
+    * Throws an exception if item with given name doesn't exist [doesNotExist]
     */
    
    public static function delete($name)
    {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly');
+      $name = (string) $name;
       
-      // deleting in database if persistent
+      self::throwIfDoesNotExist($name);
       
-      if(self::$items[$name]->isPersistent)
-      {
-         DBQuery::delete('registry')->where('name', $name)->act();
-      }
-      
-      // deleting locally
+      // deleting
       
       unset(self::$items[$name]);
-   }
-   
-   /*
-    * public static void invalidate(string $name)
-    *
-    * Invalidates item with given name in Registry - deletes it, and reserves the name, so it's not possible to recreate item with the same name
-    *
-    * Similar to deleting, but invalidating also reserves name.
-    *
-    * Note that it also deletes value in database (if persistent)
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    * - item is read-only [readOnly]
-    */
-   
-   public static function invalidate($name)
-   {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist', 'readOnly');
       
-      // deleting in database if persistent
-      
-      if(self::$items[$name]->isPersistent)
-      {
-         DBQuery::delete('registry')->where('name', $name)->act();
-      }
-      
-      // invalidating
-      
-      self::$items[$name] = '';
+      DBQuery::delete('registry')->where('name', $name)->act();
    }
    
    /*
     * public static bool exists(string $name)
     *
     * Returns whether item with given name exists
-    * 
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
     */
    
    public static function exists($name)
    {
-      self::runThrowers($name, 'nameNotString');
+      $name = (string) $name;
       
       return is_object(self::$items[$name]);
    }
-
-   /*
-    * public static bool isPersistent(string $name)
-    *
-    * Returns whether item with given name is persistent
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    */
-    
-   public static function isPersistent($name)
-   {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist');
-
-      return self::$items[$name]->isPersistent;
-   }
-
-   /*
-    * public static bool isReadOnly(string $name)
-    *
-    * Returns whether item with given name is read-only
-    *
-    * Throws an exception if:
-    * - $name isn't string [nameNotString]
-    * - item with given name doesn't exist [doesNotExist]
-    */
    
-   public static function isReadOnly($name)
-   {
-      self::runThrowers($name, 'nameNotString', 'doesNotExist');
-
-      return self::$items[$name]->isReadOnly === true;
-   }
+   /**************************************************************************/
    
    public function __invoke()
    {
@@ -292,51 +181,6 @@ class Registry
       }
    }
    
-   #####
-   ##### private methods
-   #####
-   
-   /*
-    * runs given exception throwers. Give $name as first argument, and throwers' string codes as following
-    * 
-    * additionally, runs strtolower on name (to assure case-insensitivity)
-    */
-   
-   private static function runThrowers(&$name)
-   {
-      // getting throwers' names
-      
-      $wantedThrowers = func_get_args();
-      array_shift($wantedThrowers); // shifting $name off beginning of an array
-      
-      // running throwers
-      
-      foreach($wantedThrowers as $thrower)
-      {
-         $methodName = 'throwIf' . $thrower;
-         
-         self::$methodName($name);
-      }
-   }
-   
-   /*
-    * throws an exception if given item name is not string, and runs strtolower on name (to assure case-insensitivity)
-    */
-   
-   private static function throwIfNameNotString(&$name)
-   {
-      if(!is_string($name))
-      {
-         throw new WMException('Item name in Registry has to be string!', 'Registry:nameNotString');
-      }
-      else
-      {
-         // name is case-insensitive - strtolower-ing
-      
-         $name = strtolower($name);
-      }
-   }
-   
    /*
     * throws an exception if item with given name doesn't exist
     */
@@ -346,18 +190,6 @@ class Registry
       if(!is_object(self::$items[$name]))
       {
          throw new WMException('Attempt to access nonexisting item "' . $name . '" in Registry', 'Registry:doesNotExist');
-      }
-   }
-   
-   /*
-    * throws an exception if item with given name is read-only
-    */
-   
-   private static function throwIfReadOnly($name)
-   {
-      if(self::$items[$name]->isReadOnly === true)
-      {
-         throw new WMException('Attempt to access read-only item "' . $name . '" in Registry', 'Registry:readOnly');
       }
    }
 }
