@@ -27,54 +27,16 @@
 abstract class Skin
 {
    /*
-    * public string $content
+    * Variables available in skin through simple ${name}:
     * 
-    * Page content
+    * string $content           - page content
+    * string $pageTitle         - title of currently loaded page (page header)
+    * string $siteName          - name of whole website
+    * string $siteSlogan        - short description of website
+    * string $footer            - text (HTML) to be placed in footer
+    * bool   $dontShowPageTitle - whether page title header should not be displayed in skin.
+    *                             Allows to display header in other place to preserve coherence (e.g. when using <article>)
     */
-   
-   public $content;
-   
-   /*
-    * public string $pageTitle
-    * 
-    * Title of currently loaded page (page header)
-    */
-   
-   public $pageTitle;
-   
-   /*
-    * public string $siteName
-    * 
-    * Name of whole website
-    */
-   
-   public $siteName;
-   
-   /*
-    * public string $siteSlogan
-    * 
-    * Slogan (some text, usually placed below site name) of website
-    */
-   
-   public $siteSlogan;
-   
-   /*
-    * public string $footer
-    * 
-    * Text to place in footer
-    */
-   
-   public $footer;
-   
-   /*
-    * public bool $dontShowPageTitle
-    * 
-    * Whether page title header should not be displayed in skin
-    * 
-    * Option allows to display header in other place to preserve coherence (e.g. when using <article>)
-    */
-   
-   public $dontShowPageTitle;
    
    /*
     * public string[] $headTags
@@ -209,26 +171,17 @@ abstract class Skin
       }
    }
    
-   /*
-    * public void display()
-    * 
-    * Displays skin
-    * 
-    * (Watermelon calls it for you)
-    */
-
-   public function display()
+   public function __construct($variables, $skinPath)
    {
-      $skin = new View(WM_SkinPath . 'index.php');
+      $skin = new View($skinPath);
       
-      $skin->content           = $this->content;
-      $skin->pageTitle         = $this->pageTitle;
-      $skin->siteName          = $this->siteName;
-      $skin->siteSlogan        = $this->siteSlogan;
-      $skin->footer            = SiteLinks($this->footer);
-      $skin->dontShowPageTitle = $this->dontShowPageTitle;
-      $skin->additionalData    = $this->additionalData;
-      $skin->skin              = $this;
+      foreach($variables as $key => &$value)
+      {
+         $skin->$key = $value;
+         $this->$key = $value;
+      }
+      
+      $skin->skin = $this;
       
       $skin->display();
    }

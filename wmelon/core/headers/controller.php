@@ -182,20 +182,7 @@ abstract class Controller
          return;
       }
       
-      // loading skin (output type is set to skinned)
-      
-      include WM_SkinPath . 'skin.php';
-      
-      if(Watermelon::$appType == Watermelon::Admin)
-      {
-         $className = 'ACPSkin';
-      }
-      else
-      {
-         $className = Watermelon::$config->skin . '_skin';
-      }
-
-      $skin = new $className;
+      // otherwise - if output type is set to skinned
       
       // head tags
       
@@ -231,26 +218,37 @@ abstract class Controller
       $tailTags   = &Watermelon::$tailTags;
       $tailTags[] = &Watermelon::$config->tailTags;
       
+      // loading skin
+      
+      include WM_SkinPath . 'skin.php';
+      
+      if(Watermelon::$appType == Watermelon::Admin)
+      {
+         $className = 'ACPSkin';
+      }
+      else
+      {
+         $className = Watermelon::$config->skin . '_skin';
+      }
+      
       // setting configuration
-      
-      $skin->content    = &$content;
-      
-      $skin->pageTitle  = $pageTitle;
-      $skin->dontShowPageTitle = $this->dontShowPageTitle;
-      $skin->siteName   = htmlspecialchars($siteName);
-      $skin->siteSlogan = htmlspecialchars(Watermelon::$config->siteSlogan);
-      $skin->footer     = &Watermelon::$config->footer;
       
       $messages = $_SESSION['WM_Messages'];
       $_SESSION['WM_Messages'] = array();
+      
+      $skin->content           = &$content;
+      $skin->pageTitle         = $pageTitle;
+      $skin->dontShowPageTitle = $this->dontShowPageTitle;
+      $skin->siteName          = htmlspecialchars($siteName);
+      $skin->siteSlogan        = htmlspecialchars(Watermelon::$config->siteSlogan);
+      $skin->footer            = SiteLinks(Watermelon::$config->footer);
+      $skin->messages          = &$messages;
+      $skin->headTags          = &$headTags;
+      $skin->tailTags          = &$tailTags;
+      $skin->blockMenus        = &Watermelon::$config->blockMenus;
+      $skin->textMenus         = &Watermelon::$config->textMenus;
+      $skin->additionalData    = $this->additionalData;
 
-      $skin->messages   = &$messages;
-      $skin->headTags   = &$headTags;
-      $skin->tailTags   = &$tailTags;
-      $skin->blockMenus = &Watermelon::$config->blockMenus;
-      $skin->textMenus  = &Watermelon::$config->textMenus;
-      $skin->additionalData = $this->additionalData;
-
-      $skin->display();
+      new $className($skin, WM_SkinPath . 'index.php');
    }
 }
