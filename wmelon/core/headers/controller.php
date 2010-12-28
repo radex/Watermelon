@@ -130,7 +130,7 @@ abstract class Controller
    }
    
    /*
-    * Controller
+    * constructor
     */
    
    public function __construct()
@@ -153,5 +153,104 @@ abstract class Controller
       
       $this->segments   = &Watermelon::$segments;
       $this->parameters = &Watermelon::$parameters;
+   }
+   
+   /*
+    * generating
+    */
+   
+   public function generate()
+   {
+      $content = ob_get_clean();
+      
+      $content = SiteLinks($content);
+      
+      // running skin, or outputing data
+      
+      if($this->outputType == self::Plain_OutputType)
+      {
+         echo $content;
+         
+         return;
+      }
+      elseif($this->outputType == self::XML_OutputType)
+      {
+         header('Content-Type: text/xml');
+         
+         echo $this->output->asXML();
+         
+         return;
+      }
+      
+      // loading skin (output type is set to skinned)
+      
+      include WM_SkinPath . 'skin.php';
+      
+      if(Watermelon::$appType == Watermelon::Admin)
+      {
+         $className = 'ACPSkin';
+      }
+      else
+      {
+         $className = Watermelon::$config->skin . '_skin';
+      }
+
+      $skin = new $className;
+      
+      // head tags
+      
+      $headTags   = &Watermelon::$headTags;
+      $headTags[] = &Watermelon::$config->headTags; 
+      
+      $siteName  = Watermelon::$config->siteName;
+      $pageTitle = $this->pageTitle;
+      
+      if(Watermelon::$appType == Watermelon::Admin)
+      {
+         $title = empty($pageTitle) ? 'Panel Admina - ' . $siteName : $pageTitle . ' - Panel Admina - ' . $siteName;
+      }
+      elseif(Watermelon::$appType == Watermelon::Installer)
+      {
+         $title = 'Watermelon CMS';
+      }
+      else
+      {
+         $title = empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName;
+      }
+      
+      $headTags[] = '<title>' . $title . '</title>';
+      $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\'</script>';
+      
+      if(Watermelon::$appType == Watermelon::Site)
+      {
+         $headTags[] = '<link rel="alternate" type="application/atom+xml" href="' . WM_SiteURL . 'feed.atom"/>';
+      }
+      
+      // tail tags
+      
+      $tailTags   = &Watermelon::$tailTags;
+      $tailTags[] = &Watermelon::$config->tailTags;
+      
+      // setting configuration
+      
+      $skin->content    = &$content;
+      
+      $skin->pageTitle  = $pageTitle;
+      $skin->dontShowPageTitle = $this->dontShowPageTitle;
+      $skin->siteName   = htmlspecialchars($siteName);
+      $skin->siteSlogan = htmlspecialchars(Watermelon::$config->siteSlogan);
+      $skin->footer     = &Watermelon::$config->footer;
+      
+      $messages = $_SESSION['WM_Messages'];
+      $_SESSION['WM_Messages'] = array();
+
+      $skin->messages   = &$messages;
+      $skin->headTags   = &$headTags;
+      $skin->tailTags   = &$tailTags;
+      $skin->blockMenus = &Watermelon::$config->blockMenus;
+      $skin->textMenus  = &Watermelon::$config->textMenus;
+      $skin->additionalData = $this->additionalData;
+
+      $skin->display();
    }
 }

@@ -44,16 +44,16 @@ class Watermelon
     * public static enum $appType
     * 
     * Type of running application:
-    *    ::AppType_Site      - for website
-    *    ::AppType_Admin     - for admin control panel
-    *    ::AppType_Installer - for Watermelon installer
+    *    ::Site      - for website
+    *    ::Admin     - for admin control panel
+    *    ::Installer - for Watermelon installer
     */
    
    public static $appType;
    
-   const AppType_Site      = 1;
-   const AppType_Admin     = 2;
-   const AppType_Installer = 3;
+   const Site      = 1;
+   const Admin     = 2;
+   const Installer = 3;
    
    /*
     * public static string[] $segments
@@ -206,7 +206,7 @@ class Watermelon
       
       // if installer - skipping configuration etc, just loading controller and generating
       
-      if(self::$appType == self::AppType_Installer)
+      if(self::$appType == self::Installer)
       {
          include WM_Bundles . 'installer/installer.controller.php';
          
@@ -218,7 +218,7 @@ class Watermelon
          
          $installer->installer();
          
-         self::generate();
+         self::$controller->generate();
          
          return;
       }
@@ -242,21 +242,12 @@ class Watermelon
       
       if(defined('WM_Debug') || Auth::isLogged())
       {
-         $modules = self::indexModules();
-         
-         // updating Registry if modules index has changed
-         
-         if(serialize($modules) != serialize(self::$config->modulesList))
-         {
-            self::$config->modulesList = $modules;
-            
-            Registry::set('wmelon', self::$config);
-         }
+         self::indexModules();
       }
       
       // if ACP - checking if logged in
       
-      if(self::$appType == self::AppType_Admin)
+      if(self::$appType == self::Admin)
       {
          if(!Auth::adminPrivileges())
          {
@@ -284,7 +275,7 @@ class Watermelon
       // loading controller and generating
       
       self::loadController();
-      self::generate();
+      self::$controller->generate();
    }
    
    /*
@@ -344,7 +335,7 @@ class Watermelon
       
       if(!isset($dbHost))
       {
-         self::$appType = self::AppType_Installer;
+         self::$appType = self::Installer;
          
          $installer = true;
          
@@ -415,7 +406,7 @@ class Watermelon
       define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
       define('WM_CacheURL',    WM_SystemURL . 'cache/');
       
-      if(self::$appType == self::AppType_Admin)
+      if(self::$appType == self::Admin)
       {
          define('WM_SkinPath', WM_System    . 'core/ACPSkin/');
          define('WM_SkinURL',  WM_SystemURL . 'core/ACPSkin/');
@@ -430,10 +421,16 @@ class Watermelon
    }
    
    /*
-    * searches bundles for module files - controllers, models, extensions, etc., in order to create modules list
+    * public static object indexModules([bool $save = false])
+    * 
+    * Scans bundles for module files - controllers, models, extensions etc., to create list of them
+    * 
+    * bool $save - if TRUE, list is saved to config, otherwise it's returned
+    * 
+    * Don't call it.
     */
    
-   public static function indexModules()
+   public static function indexModules($save = false)
    {
       $modulesList = new stdClass;
       
@@ -444,6 +441,8 @@ class Watermelon
       $modulesList->skins       = array();
       $modulesList->acpcontrollers = array();
       $modulesList->acpinfofiles   = array();
+      
+      // searching
       
       foreach(new DirectoryIterator(WM_Bundles) as $dir)
       {
@@ -515,7 +514,23 @@ class Watermelon
          }
       }
       
-      return $modulesList;
+      // saving or returning
+      
+      if($save)
+      {
+         // if something has changed
+         
+         if(serialize($modulesList) != serialize(self::$config->modulesList))
+         {
+            self::$config->modulesList = $modulesList;
+            
+            Registry::set('wmelon', self::$config);
+         }
+      }
+      else
+      {
+         return $modulesList;
+      }
    }
    
    /*
@@ -563,17 +578,17 @@ class Watermelon
       
       // setting app type (but only if not already set to installer)
       
-      if(self::$appType != self::AppType_Installer)
+      if(self::$appType != self::Installer)
       {
          if($segments[0] == 'admin')
          {
-            self::$appType = self::AppType_Admin;
+            self::$appType = self::Admin;
             
             array_shift($segments);
          }
          else
          {
-            self::$appType = self::AppType_Site;
+            self::$appType = self::Site;
          }
       }
    }
@@ -587,14 +602,14 @@ class Watermelon
     * 
     * Used by ::loadController()
     * 
-    * enum $type = {self::AppType_Site, self::AppType_Admin}
+    * enum $type = {self::Site, self::Admin}
     */
    
-   private static function controllerDetails($controllerName, $type = self::AppType_Site)
+   private static function controllerDetails($controllerName, $type = self::Site)
    {
       // determining file extension and modulesList property name depending on $type
       
-      if($type == self::AppType_Admin)
+      if($type == self::Admin)
       {
          $key = 'acpcontrollers';
          $extension = '.acp.controller.php';
@@ -651,7 +666,7 @@ class Watermelon
       
       $appType = self::$appType;
       
-      if($appType == self::AppType_Admin)
+      if($appType == self::Admin)
       {
          $defaultController = 'blog';
       }
@@ -761,107 +776,5 @@ class Watermelon
       // if neither action specified in URI, nor action handler exists
       
       self::displayNoPageFoundError();
-   }
-   
-   /*
-    * private static void generatePage()
-    * 
-    * Generates page (loads skin etc)
-    */
-   
-   private static function generate()
-   {
-      $content = ob_get_clean();
-      
-      $content = SiteLinks($content);
-      
-      // running skin, or outputing data
-      
-      $controller = self::$controller;
-      $outputType = $controller->outputType;
-      
-      if($outputType == Controller::Plain_OutputType)
-      {
-         echo $content;
-      }
-      elseif($outputType == Controller::XML_OutputType)
-      {
-         header('Content-Type: text/xml');
-         
-         echo $controller->output->asXML();
-      }
-      else
-      {
-         // loading skin
-         
-         include WM_SkinPath . 'skin.php';
-         
-         if(self::$appType == self::AppType_Admin)
-         {
-            $className = 'ACPSkin';
-         }
-         else
-         {
-            $className = self::$config->skin . '_skin';
-         }
-
-         $skin = new $className;
-         
-         // head tags
-         
-         $headTags   = &self::$headTags;
-         $headTags[] = &self::$config->headTags; 
-         
-         $siteName  = self::$config->siteName;
-         $pageTitle = $controller->pageTitle;
-         
-         if(self::$appType == self::AppType_Admin)
-         {
-            $title = empty($pageTitle) ? 'Panel Admina - ' . $siteName : $pageTitle . ' - Panel Admina - ' . $siteName;
-         }
-         elseif(self::$appType == self::AppType_Installer)
-         {
-            $title = 'Watermelon CMS';
-         }
-         else
-         {
-            $title = empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName;
-         }
-         
-         $headTags[] = '<title>' . $title . '</title>';
-         $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\'</script>';
-         
-         if(self::$appType == self::AppType_Site)
-         {
-            $headTags[] = '<link rel="alternate" type="application/atom+xml" href="' . WM_SiteURL . 'feed.atom"/>';
-         }
-         
-         // tail tags
-         
-         $tailTags   = &self::$tailTags;
-         $tailTags[] = &self::$config->tailTags;
-         
-         // setting configuration
-         
-         $skin->content    = &$content;
-         
-         $skin->pageTitle  = $pageTitle;
-         $skin->dontShowPageTitle = $controller->dontShowPageTitle;
-         $skin->siteName   = htmlspecialchars($siteName);
-         $skin->siteSlogan = htmlspecialchars(self::$config->siteSlogan);
-         $skin->footer     = &self::$config->footer;
-         
-         $messages = $_SESSION['WM_Messages'];
-         $_SESSION['WM_Messages'] = array();
-
-         $skin->messages   = &$messages;
-         $skin->headTags   = &$headTags;
-         $skin->tailTags   = &$tailTags;
-         $skin->blockMenus = &self::$config->blockMenus;
-         $skin->textMenus  = &self::$config->textMenus;
-         $skin->additionalData = $controller->additionalData;
-
-         $skin->display();
-      }
    }
 }
