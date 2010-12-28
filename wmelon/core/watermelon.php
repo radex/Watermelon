@@ -80,14 +80,6 @@ class Watermelon
    public static $resName = '';
    
    /*
-    * public static string $bundleName
-    * 
-    * Name of bundle currently running controller belongs to
-    */
-   
-   public static $bundleName = '';
-   
-   /*
     * public static string $controllerName
     * 
     * Name of currently running controller
@@ -185,10 +177,10 @@ class Watermelon
    {
       include WM_Bundles . 'watermelon/e404.controller.php';
       
-      self::$bundleName = 'watermelon';
       self::$controllerName = 'e404';
       
       $controllerObj = new e404_Controller();
+      $controllerObj->bundleName = 'watermelon';
       $controllerObj->index_action();
       
       self::$controller = $controllerObj;
@@ -210,15 +202,13 @@ class Watermelon
       {
          include WM_Bundles . 'installer/installer.controller.php';
          
-         $installer = new Installer_Controller;
-         
-         self::$controller = $installer;
          self::$controllerName   = 'installer';
-         self::$bundleName       = 'installer';
          
-         $installer->installer();
+         self::$controller = $controller = new Installer_Controller;
          
-         self::$controller->generate();
+         $controller->bundleName = 'installer';
+         $controller->installer();
+         $controller->generate();
          
          return;
       }
@@ -724,12 +714,14 @@ class Watermelon
       
       // loading controller
       
-      list($controllerPath, self::$bundleName) = $controllerDetails;
+      list($controllerPath, $bundleName) = $controllerDetails;
       
       include $controllerPath;
       
       $controllerClassName = $controller . '_Controller';
       $controllerObj       = new $controllerClassName;
+      
+      $controllerObj->bundleName = $bundleName;
       
       self::$controller = $controllerObj;
       

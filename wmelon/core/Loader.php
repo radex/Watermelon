@@ -62,7 +62,7 @@ class Loader
       }
       else
       {
-         $module = Watermelon::$bundleName;
+         $module = Watermelon::$controller->bundleName;
       }
       
       // checking whether "skin view" exists, and returning proper view object

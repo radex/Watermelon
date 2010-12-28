@@ -1,3 +1,3 @@
 <?php
 
-include 'wmelon/core/watermelon.php';
+include 'wmelon/core/Watermelon.php';

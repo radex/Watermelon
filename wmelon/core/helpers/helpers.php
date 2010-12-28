@@ -19,7 +19,6 @@
  //  
 
 include 'language.php';
-include 'Form/Form.php';
 
 if(Watermelon::$appType == Watermelon::Admin)
 {

@@ -27,6 +27,18 @@
 abstract class Controller
 {
    /*
+    * public static string $bundleName
+    * 
+    * Name of bundle currently this controller belongs to
+    * 
+    * Don't change - it is set automatically
+    */
+   
+   public $bundleName;
+   
+   /**************************************************************************/
+   
+   /*
     * public string $pageTitle
     * 
     * Header of page
@@ -184,10 +196,12 @@ abstract class Controller
       
       // otherwise - if output type is set to skinned
       
+      $config = &Watermelon::$config;
+      
       // head tags
       
       $headTags   = &Watermelon::$headTags;
-      $headTags[] = &Watermelon::$config->headTags; 
+      $headTags[] = $config->headTags;
       
       $siteName  = Watermelon::$config->siteName;
       $pageTitle = $this->pageTitle;
@@ -215,8 +229,8 @@ abstract class Controller
       
       // tail tags
       
+      $tailTags[] = $config->tailTags;
       $tailTags   = &Watermelon::$tailTags;
-      $tailTags[] = &Watermelon::$config->tailTags;
       
       // loading skin
       
@@ -228,7 +242,7 @@ abstract class Controller
       }
       else
       {
-         $className = Watermelon::$config->skin . '_skin';
+         $className = $config->skin . '_skin';
       }
       
       // setting configuration
@@ -240,13 +254,13 @@ abstract class Controller
       $skin->pageTitle         = $pageTitle;
       $skin->dontShowPageTitle = $this->dontShowPageTitle;
       $skin->siteName          = htmlspecialchars($siteName);
-      $skin->siteSlogan        = htmlspecialchars(Watermelon::$config->siteSlogan);
-      $skin->footer            = SiteLinks(Watermelon::$config->footer);
+      $skin->siteSlogan        = htmlspecialchars($config->siteSlogan);
+      $skin->footer            = SiteLinks($config->footer);
       $skin->messages          = &$messages;
       $skin->headTags          = &$headTags;
       $skin->tailTags          = &$tailTags;
-      $skin->blockMenus        = &Watermelon::$config->blockMenus;
-      $skin->textMenus         = &Watermelon::$config->textMenus;
+      $skin->blockMenus        = &$config->blockMenus;
+      $skin->textMenus         = &$config->textMenus;
       $skin->additionalData    = $this->additionalData;
 
       new $className($skin, WM_SkinPath . 'index.php');
