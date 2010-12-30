@@ -531,7 +531,7 @@ class Watermelon
    
    private static function divide()
    {
-      $resName = $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : '';
+      $resName = $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : $_SERVER['QUERY_STRING'];
       $resName = substr($resName, 1);
       
       self::$resName = $resName;
