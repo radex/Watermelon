@@ -134,7 +134,7 @@ class Textile_Extension extends Extension
       else
       {
          $textiled = file_get_contents($path);
-         $textiled = substr($textiled, 7);      // removing <?die? >
+         $textiled = substr($textiled, 11);      // removing <?php die? >
          
          return $textiled;
       }
