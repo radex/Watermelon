@@ -23,7 +23,7 @@ INSERT INTO `wm_comments` (`id`, `record`, `type`, `authorID`, `authorName`, `au
 VALUES
 (
    NULL, 1, 'blogpost', 1, NULL, NULL, NULL, %1,
-   'W komentarzach również możesz używać __(uproszczonej)__ składni "**Textile**":http://pl.wikipedia.org/wiki/Textile',
+   'W komentarzach również możesz używać _(uproszczonej)_ składni "**Textile**":http://pl.wikipedia.org/wiki/Textile',
    false
 ),
 (
