@@ -212,7 +212,7 @@ abstract class Controller
       }
       elseif(Watermelon::$appType == Watermelon::Installer)
       {
-         $title = 'Watermelon CMS';
+         $title = 'Watermelon';
       }
       else
       {

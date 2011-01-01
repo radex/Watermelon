@@ -1,53 +1,56 @@
-<?php defined('WM') or die?><!doctype html>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="<?php echo WM_BundlesURL?>watermelon/public/basic.css">
-<link rel="stylesheet" href="<?php echo WM_BundlesURL?>watermelon/public/watermelon.css">
-<link rel="stylesheet" href="<?php echo WM_SkinURL?>installer.css">
-<?php $this->drawHeadTags(); ?>
+<?php die?>
+<!doctype html>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/basic.css"/>
+<link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/watermelon.css"/>
+<link rel="stylesheet" href="${WM_SystemURL}core/Turbine/css.php?files=installer/installer.cssp"/>
+${php:skin.drawHeadTags()}
+
 <header></header>
-<?php
 
-if(!$additionalData->noContainer)
-{
-   echo $additionalData->formOpen;
+<!-- Container layout -->
 
-?>
-<div id="content">
-   <h1><?php echo $pageTitle?></h1>
+<tal:block tal:condition="not: exists: additionalData/noContainer">
    
-   <?php  $this->drawMessages() ?>
+   ${structure additionalData/formOpen}
    
-   <?php echo $content?>
-
-   <div id="status-bar">
-      <?php 
+   <div id="container">
+      <div id="content">
+         <h1>${pageTitle}</h1>
       
-      echo '<input type="submit" value="Dalej" autofocus>';
-   
-      if($additionalData->previous !== null)
-      {
-         echo '<input type="button" onclick="window.location=\'' . WM_SiteURL . $additionalData->previous . '\'" value="Wróć">';
-      }
-      else
-      {
-         echo '<input type="button" value="Wróć" disabled>';
-      }
-   
-      ?>
-      <div id="progress-bar-container">
-         <div id="progress-bar">
-            <?php if($additionalData->progress > 0): ?>
-            <div id="progress-bar-progress" style="width:<?php echo $additionalData->progress?>%"></div>
-            <?php endif; ?>
+         ${php:skin.drawMessages()}
+      
+         ${structure content}
+      </div>
+      <div id="status-bar">
+      
+         <!-- buttons -->
+      
+         <input type="submit" value="Dalej" autofocus="true"/>
+      
+         <input tal:condition="true: additionalData/previous" type="button" onclick="window.location='${WM_SiteURL}${additionalData/previous}'" value="Wróć"/>
+      
+         <input tal:condition="not: additionalData/previous" type="button" value="Wróć" disabled="true"/>
+      
+         <!-- progress bar -->
+      
+         <div id="progress-bar-container">
+            <div id="progress-bar">
+               <div tal:condition="php: additionalData.progress > 0" id="progress-bar-progress" style="width:${additionalData/progress}%"/>
+            </div>
+            Postęp instalacji
          </div>
-         Postęp instalacji
       </div>
    </div>
-</div>
-<?php
-   echo '</form>';
-}
-else
-{
-   echo $content;
-}
+   
+   ${structure additionalData/formClose}
+   
+</tal:block>
+
+<!-- Container-less layout -->
+
+<tal:block tal:condition="exists: additionalData/noContainer">
+   
+   ${structure content}
+
+</tal:block>

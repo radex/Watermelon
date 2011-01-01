@@ -68,6 +68,8 @@ class InstallerForm extends Form
       
       $generated = str_replace('</form>', '', $generated);
       
+      Watermelon::$controller->additionalData->formClose = '</form>';
+      
       // returning
       
       return $generated;
