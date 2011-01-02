@@ -73,7 +73,7 @@ class Sblam extends Extension
    {
       // if no API key set
       
-      if(!empty($apiKey))
+      if(!empty(self::$apiKey))
       {
          return sblamtestpost(array($text, $author, $email, $website), self::$apiKey);
       }
