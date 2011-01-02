@@ -69,7 +69,7 @@ class Sblam_Extension extends Extension
    
    public static function test($text, $author, $email, $website)
    {
-      if(!empty($apiKey))
+      if(!empty(self::$apiKey))
       {
          return sblamtestpost(array($text, $author, $email, $website), self::$apiKey);
       }
