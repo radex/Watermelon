@@ -50,6 +50,13 @@ class Comments extends Extension
       $approvedCount   = 0;   // counter of approved comments
       $unapprovedCount = 0;   // counter of unapproved comments
       
+      // visibilityToken
+      
+      if(!Auth::isLogged() && isset($_SESSION['wmelon.comments.visibilityToken']))
+      {
+         $visibilityToken = $_SESSION['wmelon.comments.visibilityToken'];
+      }
+      
       // composing comments array
       
       foreach($commentsObj as $comment)
@@ -62,6 +69,18 @@ class Comments extends Extension
          $comment->deleteHref  = '%/comments/delete/'  . $comment->id . '/' . base64_encode($backPage . '#comments-link');
          $comment->approveHref = '%/comments/approve/' . $linkEnding;
          $comment->rejectHref  = '%/comments/reject/'  . $linkEnding;
+         
+         // visibility
+         // (comment is visible if admin or comment is approved or comment visibility token match user's visibility token)
+         
+         $comment->visible = (Auth::isLogged() || !$comment->awaitingModeration || ($comment->visibilityToken == $visibilityToken && !empty($comment->visibilityToken)));
+         
+         // additionalInformation (for admin)
+         
+         if(Auth::isLogged() && $authorID === null)
+         {
+            $comment->additionalInfo = $comment->authorEmail . '; IP:' . $comment->authorIP;
+         }
          
          // if commented as logged user
          
@@ -137,9 +156,9 @@ class Comments extends Extension
          
          // adding inputs
          
-         $form->addInput('text', 'name', 'Imię', true, $name);
-         $form->addInput('email', 'email', 'Email', true, $email);
-         // $form->addInput('text', 'website', 'Strona', false, $website); //FIXME!
+         $form->addInput('text',  'name',    'Imię',   true,  $name);
+         $form->addInput('email', 'email',   'Email',  true,  $email);
+         $form->addInput('url',   'website', 'Strona', false, $website);
       }
       
       // content input
@@ -148,9 +167,11 @@ class Comments extends Extension
       
       // comments counter
       
-      $commentsCount = $approvedCount . ' ' . pl_inflect($approvedCount, 'komentarzy', 'komentarz', 'komentarze');
+      $commentsCount = (Auth::isLogged() ? $commentsObj->rows : $approvedCount); // number of visible (approved) comments - for user and all comments - for admin
       
-      if($unapprovedCount > 0)
+      $commentsCount = $commentsCount . ' ' . pl_inflect($commentsCount, 'komentarzy', 'komentarz', 'komentarze');
+      
+      if(Auth::isLogged() && $unapprovedCount > 0)
       {
          $commentsCount .= ' <span class="important">(' . $unapprovedCount . ' do sprawdzenia!)</span>';
       }
@@ -163,6 +184,8 @@ class Comments extends Extension
       $view->areComments   = $commentsObj->exists;
       $view->commentsCount = $commentsCount;
       $view->users         = $users;
+      
+      $view->visibilityToken = $visibilityToken;
       
       $view->id            = $id;
       $view->type          = $type;
@@ -209,6 +232,21 @@ class Comments extends Extension
          $_SESSION['wmelon.comments.email']   = $form->email;
          $_SESSION['wmelon.comments.website'] = $form->website;
          
+         // assigning "visibility token" (token user needs to have in session to see his own comments, even if not approved)
+         
+         if(isset($_SESSION['wmelon.comments.visibilityToken']))
+         {
+            $visibilityToken = $_SESSION['wmelon.comments.visibilityToken'];
+         }
+         else
+         {
+            $visibilityToken = $form->name . $form->email . mt_rand();
+            $visibilityToken = md5($visibilityToken);
+            $visibilityToken = substr($visibilityToken, 16);
+            
+            $_SESSION['wmelon.comments.visibilityToken'] = $visibilityToken;
+         }
+         
          // adding comment
       
          switch($commentStatus)
@@ -216,13 +254,13 @@ class Comments extends Extension
             case 0:
             case 1:
             case -1:
-               $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true);
+               $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true, $visibilityToken);
             
-               Watermelon::addMessage('tick', 'Twój komentarz zostanie sprawdzony, zanim zostanie pokazany');
+               Watermelon::addMessage('tick', 'Twój komentarz zostanie sprawdzony zanim zostanie publicznie pokazany');
             break;
          
             case -2:
-               $commentID = $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false);
+               $commentID = $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false, $visibilityToken);
             
                Watermelon::addMessage('tick', 'Dodano komentarz');
 

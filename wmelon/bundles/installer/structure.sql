@@ -38,9 +38,11 @@ CREATE TABLE `wm_comments` (
   `authorName` varchar(40) DEFAULT NULL,
   `authorEmail` varchar(64) DEFAULT NULL,
   `authorWebsite` varchar(40) DEFAULT NULL,
+  `authorIP` varchar(15) DEFAULT NULL,
   `created` int(10) NOT NULL,
   `content` text NOT NULL,
   `awaitingModeration` tinyint(1) NOT NULL,
+  `visibilityToken` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `record` (`record`),
   KEY `type` (`type`)

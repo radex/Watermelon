@@ -8,26 +8,22 @@
    <!-- Comment -->
    
    <tal:block tal:condition="areComments" tal:repeat="comment comments">
-      <article tal:attributes="class comment/cssClass | nothing" id="comment-${comment/id}" tal:condition="php: Auth::isLogged() OR !comment.awaitingModeration">
+      <article tal:attributes="class comment/cssClass | nothing" id="comment-${comment/id}" tal:condition="comment/visible">
          
-         <!-- header (for anonymous user) -->
+         <!-- header (for anonymous user's comment) -->
          
          <header tal:condition="not: comment/authorID">
             <img src="${comment/gravatarURL}" alt="" />
-            <tal:block tal:condition="php: false">
-               <strong tal:condition="php: comment.authorWebsite"><a href="${comment/authorWebsite}" rel="nofollow">${comment/authorName}</a></strong>
-               <strong tal:condition="php: !comment.authorWebsite">${comment/authorName}</strong>
-               
-               Fix it!
-            </tal:block>
-            <strong>${comment/authorName}</strong>
+            <strong tal:attributes="title comment/additionalInfo | nothing">
+               <a href="${comment/authorWebsite}" rel="nofollow" tal:omit-tag="not: comment/authorWebsite">${comment/authorName}</a>
+            </strong>
          </header>
          
-         <!-- header (for logged user) -->
+         <!-- header (for logged user's post) -->
          
          <header tal:condition="comment/authorID">
             <img src="${comment/gravatarURL}" alt="" />
-            <strong><?= $ctx->users[$ctx->comment->authorID]->nick ?></strong>
+            <strong><a href="${WM_SiteURL}"><?= $ctx->users[$ctx->comment->authorID]->nick ?></a></strong>
          </header>
          
          <!-- content -->
@@ -48,7 +44,12 @@
                   <a href="${comment/approveHref}" tal:condition="comment/awaitingModeration">[Zatwierdź]</a>
                   <a href="${comment/rejectHref}" tal:condition="not: comment/awaitingModeration">[Odrzuć]</a>
                </tal:block>
-               
+            </div>
+            
+            <!-- "not approved" - for not logged users -->
+            
+            <div class="adminTools" tal:condition="php: !Auth::isLogged() AND comment.awaitingModeration">
+               Komentarz oczekuje na moderację
             </div>
             
             <!-- content itself -->

@@ -99,25 +99,30 @@ class Comments_Model extends Model
    }
    
    /*
-    * public int postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $awaitingModeration)
+    * public int postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $awaitingModeration, string $visibilityToken)
     * 
     * Posts a comment (for $id record of $type type of content)
     * 
     * Returns its ID
     */
    
-   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $content, $awaitingModeration)
+   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $content, $awaitingModeration, $visibilityToken)
    {
+      $authorWebsite = (string) $authorWebsite;
+      $authorWebsite = (empty($authorWebsite) ? null : $authorWebsite); // NULL if empty
+      
       return DB::insert('comments', array
          (
-            'record'        => (int)    $id,
-            'type'          => (string) $type,
-            'authorName'    => (string) $authorName,
-            'authorEmail'   => (string) $authorEmail,
-            'authorWebsite' => (string) $authorWebsite,
-            'content'       => (string) $content,
-            'created'       => time(),
-            'awaitingModeration' => (int) $awaitingModeration
+            'record'             => (int)    $id,
+            'type'               => (string) $type,
+            'authorName'         => (string) $authorName,
+            'authorEmail'        => (string) $authorEmail,
+            'authorWebsite'      =>          $authorWebsite,
+            'authorIP'           =>          ClientIP(),
+            'content'            => (string) $content,
+            'created'            =>          time(),
+            'awaitingModeration' => (int)    $awaitingModeration,
+            'visibilityToken'    => (string) $visibilityToken,
          ));
    }
    

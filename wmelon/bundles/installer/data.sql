@@ -19,26 +19,26 @@ INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`, `
 
 -- sample comment for these
 
-INSERT INTO `wm_comments` (`id`, `record`, `type`, `authorID`, `authorName`, `authorEmail`, `authorWebsite`, `created`, `content`, `awaitingModeration`)
+INSERT INTO `wm_comments` (`id`, `record`, `type`, `authorID`, `authorName`, `authorEmail`, `authorWebsite`, `authorIP`, `created`, `content`, `awaitingModeration`, `visibilityToken`)
 VALUES
 (
-   NULL, 1, 'blogpost', 1, NULL, NULL, NULL, %1,
+   NULL, 1, 'blogpost', 1, NULL, NULL, NULL, NULL, %1,
    'W komentarzach również możesz używać _(uproszczonej)_ składni "**Textile**":http://pl.wikipedia.org/wiki/Textile',
-   false
+   false, NULL
 ),
 (
-   NULL, 1, 'page', 1, NULL, NULL, NULL, %1,
+   NULL, 1, 'page', 1, NULL, NULL, NULL, NULL, %1,
    'Ten artykuł jest widoczny tylko dla Ciebie. Jeśli chcesz, możesz podejrzeć, jak wygląda on "od środka". Uważaj tylko, żeby go nie usunąć! :)',
-   false
+   false, NULL
 ),
 (
-   NULL, 1, 'page', 1, NULL, NULL, NULL, %1,
+   NULL, 1, 'page', 1, NULL, NULL, NULL, NULL, %1,
    'Pamiętaj, aby usunąć link do tej podstrony z menu, aby inni go nie widzieli.
 
 "Edycja menu":admin/options/nav/: Panel Admina » Ustawienia » Menu
 
 Nadal będziesz mógł się tutaj dostać z "tabeli stron":admin/pages/ w Panelu Admina',
-   false
+   false, NULL
 );
 
 -- user privileges (user itself is created in controller)
