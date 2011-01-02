@@ -26,7 +26,10 @@ include 'FormInput.php';
 include 'TextInput.php';
 include 'PasswordInput.php';
 include 'EmailInput.php';
+include 'URLInput.php';
+
 include 'Textarea.php';
+
 include 'HiddenInput.php';
 include 'HiddenData.php';
 

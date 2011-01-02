@@ -3,7 +3,7 @@
    <article>
       <header>
          <h1>
-            ${post/title}
+            <a href="${post/url}">${post/title}</a>
             <span class="h1-comment">${structure php:HumanDate(post.created, true, true)}</span>
             <span class="adminTools" tal:condition="php: Auth::isLogged()">
                <a href="${editHref}">[Edytuj]</a> | <a href="${deleteHref}">[Usuń]</a>

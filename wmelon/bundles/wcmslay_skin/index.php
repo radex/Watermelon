@@ -15,7 +15,7 @@ ${php:skin.drawHeadTags()}
 
       <tal:block tal:condition="php:Auth::isLogged()">
          <a href="${php:SiteURL('%/')}" style="float:right; margin-right:5px">Panel Admina</a>
-         <a href="${php:SiteURL('auth/login')}" style="float:right">Wyloguj</a>
+         <a href="${php:SiteURL('auth/logout')}" style="float:right">Wyloguj</a>
       </tal:block>
    </nav>
 </header>

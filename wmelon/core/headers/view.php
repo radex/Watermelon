@@ -79,6 +79,7 @@ class View
       
       $view->setOutputMode(PHPTAL::HTML5);
       $view->addPreFilter(new ViewPreFilter);
+      $view->addPreFilter(new PHPTAL_PreFilter_StripComments);
       
       // returning or displaying
       

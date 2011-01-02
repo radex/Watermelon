@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2008-2010 Radosław Pietruszewski.
+ //  Copyright 2008-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -322,17 +322,6 @@ function HashString($string, $algo = null)
    {
       return hash($algo, $string);
    }
-}
-
-/*
- * bool ValidEmail(string $email)
- * 
- * Returns whether $email is valid email address
- */
-
-function ValidEmail($email)
-{
-   return preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $email) == 1;
 }
 
 /*

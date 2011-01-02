@@ -10,11 +10,12 @@
    green: #859e1c
    lighterGreen: #b5ce4c
    blue: #93b2d0
+   lightBlue: #EEF7F6
    sidebar: #f2ede1
    darkerSidebar: #fefcf2
    
-   containerWidth: 750px
-   contentWidth: 720px
+   containerWidth: 800px
+   contentWidth: 770px
 
 @import url('../../bundles/watermelon/public/basic.css');
 @import url('../../bundles/watermelon/public/watermelon.css');
@@ -80,9 +81,15 @@ label > span
 label > span > small
    display: block
 
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url]
+   width: 300px
+
 textarea
-   height: 8em
-   width: 400px
+   height: 10em
+   width: 500px
 
 code
    font-family: Monaco, monospace
@@ -228,7 +235,7 @@ body > header
       padding: 0 10px
       color: $lighterGreen
       text-decoration: none
-      text-shadow: 0 0 3px rgba(230, 255, 115, .5)
+      text-shadow: 0 0 2px rgba(0,0,0,.7), 0 0 3px rgba(230, 255, 115, .7)
    a:hover
       text-shadow: 0 0 3px #000, 0 0 20px #000
 

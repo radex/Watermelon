@@ -4,7 +4,7 @@ Instalacja
 1. Przekopiuj wszystkie pliki z katalogu code/ na swój serwer
 2. Nadaj uprawnienia 777 dla:
    - dot.htaccess
-   - wmelon/cache.php
+   - wmelon/config.php
    - wmelon/cache/feed.atom
    - wmelon/cache/textile/
    - wmelon/cache/textile_restricted/

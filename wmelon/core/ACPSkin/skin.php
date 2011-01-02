@@ -197,10 +197,10 @@ class ACPSkin extends Skin
     * display
     */
    
-   public function display()
+   public function __construct($variables, $skinPath)
    {
       $this->loadNavInfo();
       
-      parent::display();
+      parent::__construct($variables, $skinPath);
    }
 }

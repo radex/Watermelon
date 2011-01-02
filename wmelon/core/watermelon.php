@@ -179,11 +179,9 @@ class Watermelon
       
       self::$controllerName = 'e404';
       
-      $controllerObj = new e404_Controller();
-      $controllerObj->bundleName = 'watermelon';
-      $controllerObj->index_action();
-      
-      self::$controller = $controllerObj;
+      self::$controller = $controller = new e404_Controller();
+      $controller->bundleName = 'watermelon';
+      $controller->index_action();
    }
    
    /*

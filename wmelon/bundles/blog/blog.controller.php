@@ -66,19 +66,26 @@ class Blog_Controller extends Controller
          
          $post->created_human = HumanDate($post->created, true, true);
          
-         // comments counter
+         // comments counter - visible (approved) comments for users, all comments - for admin
          
-         $approvedComments = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
-         
-         $post->comments = $approvedComments . ' ' . pl_inflect($approvedComments, 'komentarzy', 'komentarz', 'komentarze');
-         
-         // unapproved comments counter (for admin)
-         
-         if(Auth::isLogged())
+         if(!Auth::isLogged())
          {
-            $comments = Model('comments')->countCommentsFor($post->id, 'blogpost', true);
+            $approvedComments = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
+
+            $post->comments = $approvedComments . ' ' . pl_inflect($approvedComments, 'komentarzy', 'komentarz', 'komentarze');
+         }
+         else
+         {
+            // counters
             
-            $unapprovedComments = $comments - $approvedComments;
+            $approvedComments   = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
+            $allComments        = Model('comments')->countCommentsFor($post->id, 'blogpost', true);
+            
+            $unapprovedComments = $allComments - $approvedComments;
+            
+            // x comments text
+            
+            $post->comments = $allComments . ' ' . pl_inflect($allComments, 'komentarzy', 'komentarz', 'komentarze');
             
             // if any unapproved comments
             
@@ -128,21 +135,24 @@ class Blog_Controller extends Controller
          return;
       }
       
+      // post
+      
+      $postData->content = Textile::textile($postData->content);
+      $postData->url     = '#/' . date('Y/m', $postData->created) . '/' . $postData->name;
+      
       // displaying (if exists)
       
       $id = $postData->id;
       
-      $postData->content = Textile::textile($postData->content);
-      
-      $this->pageTitle = $postData->title;
+      $this->pageTitle         = $postData->title;
       $this->dontShowPageTitle = true;
       
       $view = View('post');
-      $view->post = $postData;
-      $view->commentsView = Comments::commentsView($id, 'blogpost', '#/' . date('Y/m', $postData->created) . '/' . $name);
-      
-      $view->editHref   = '%/blog/edit/' . $id . '/backTo:post';
-      $view->deleteHref = '%/blog/delete/' . $id . '/' . base64_encode('#/blog');
+      $view->post         = $postData;
+      $view->commentsView = Comments::commentsView($id, 'blogpost', $postData->url);
+
+      $view->editHref     = '%/blog/edit/' . $id . '/backTo:post';
+      $view->deleteHref   = '%/blog/delete/' . $id . '/' . base64_encode('#/blog');
       
       $view->display();
    }
