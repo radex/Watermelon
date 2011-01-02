@@ -1,12 +1,16 @@
 <?php die?>
-<tal:block>
+<section class="comments">
    <h1 id="comments-link">
       Komentarze
-      <span class="h1-comment">${commentsCount} ${php:pl_inflect(commentsCount, 'komentarzy', 'komentarz', 'komentarze')}</span>
+      <span class="h1-comment">${structure commentsCount}</span>
    </h1>
    
+   <!-- Comment -->
+   
    <tal:block tal:condition="areComments" tal:repeat="comment comments">
-      <article class="comment" id="comment-${comment/id}" tal:condition="php: Auth::isLogged() OR !comment.awaitingModeration">
+      <article tal:attributes="class comment/cssClass | nothing" id="comment-${comment/id}" tal:condition="php: Auth::isLogged() OR !comment.awaitingModeration">
+         
+         <!-- header (for anonymous user) -->
          
          <header tal:condition="not: comment/authorID">
             <img src="${comment/gravatarURL}" alt="" />
@@ -19,12 +23,19 @@
             <strong>${comment/authorName}</strong>
          </header>
          
+         <!-- header (for logged user) -->
+         
          <header tal:condition="comment/authorID">
             <img src="${comment/gravatarURL}" alt="" />
             <strong><?= $ctx->users[$ctx->comment->authorID]->nick ?></strong>
          </header>
-      
+         
+         <!-- content -->
+         
          <section>
+            
+            <!-- admin tools -->
+            
             <div class="adminTools" tal:condition="php: Auth::isLogged()">
                <strong tal:condition="comment/awaitingModeration">
                   Niesprawdzony!
@@ -39,16 +50,23 @@
                </tal:block>
                
             </div>
-            <? echo Textile::textileRestricted($ctx->comment->content) ?>
+            
+            <!-- content itself -->
+            
+            <?= Textile::textileRestricted($ctx->comment->content) ?>
          </section>
          
       </article>
    </tal:block>
    
+   <!-- no comments -->
+   
    <p tal:condition="not: areComments">
       Nie ma tutaj komentarzy. Napisz pierwszego!
    </p>
    
+   <!-- comment form -->
+   
    <h1 id="commentForm-link">Napisz komentarz</h1>
    ${structure form}${structure php: Sblam::JS()}
-</tal:block>
+</section>

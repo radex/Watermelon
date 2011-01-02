@@ -47,7 +47,10 @@ class Comments extends Extension
       
       $commentsObj = $model->commentsFor($id, $type);
       
-      $commentsCount = 0;
+      $approvedCount   = 0;   // counter of approved comments
+      $unapprovedCount = 0;   // counter of unapproved comments
+      
+      // composing comments array
       
       foreach($commentsObj as $comment)
       {
@@ -72,6 +75,10 @@ class Comments extends Extension
             {
                $users[$authorID] = $auth->userData_id($authorID);
             }
+            
+            // CSS class (for admin comments distinction)
+            
+            $comment->cssClass = 'adminComment';
          }
          
          // gravatar url
@@ -89,9 +96,13 @@ class Comments extends Extension
          
          // comments counter
          
-         if(!$comment->awaitingModeration)
+         if($comment->awaitingModeration)
          {
-            $commentsCount++;
+            $unapprovedCount++;
+         }
+         else
+         {
+            $approvedCount++;
          }
          
          //--
@@ -107,28 +118,129 @@ class Comments extends Extension
       $form->globalMessages = false;
       $form->submitLabel = 'Zapisz';
       
+      // user data inputs (if not logged in)
+      
       if(!Auth::isLogged())
       {
-         $form->addInput('text', 'name', 'Imię');
-         $form->addInput('email', 'email', 'Email');
-         // $form->addInput('text', 'website', 'Strona', false, array('labelNote' => '(Opcjonalnie)')); //FIXME!
+         // remembered user data
+         
+         $name    = $_SESSION['wmelon.comments.name'];
+         $email   = $_SESSION['wmelon.comments.email'];
+         $website = $_SESSION['wmelon.comments.website'];
+         
+         // inputs args
+         
+         $name    = array('value' => $name);
+         $email   = array('value' => $email);
+         $website = array('value' => $website, 'labelNote' => '(Opcjonalnie)');
+
+         
+         // adding inputs
+         
+         $form->addInput('text', 'name', 'Imię', true, $name);
+         $form->addInput('email', 'email', 'Email', true, $email);
+         // $form->addInput('text', 'website', 'Strona', false, $website); //FIXME!
       }
       
+      // content input
+      
       $form->addInput('textarea', 'content', 'Treść komentarza');
+      
+      // comments counter
+      
+      $commentsCount = $approvedCount . ' ' . pl_inflect($approvedCount, 'komentarzy', 'komentarz', 'komentarze');
+      
+      if($unapprovedCount > 0)
+      {
+         $commentsCount .= ' <span class="important">(' . $unapprovedCount . ' do sprawdzenia!)</span>';
+      }
       
       // view
       
       $view = Loader::view('comments/comments', true);
       
-      $view->comments = $comments;
-      $view->areComments = $commentsObj->exists;
+      $view->comments      = $comments;
+      $view->areComments   = $commentsObj->exists;
       $view->commentsCount = $commentsCount;
-      $view->users = $users;
-      $view->id = $id;
-      $view->type = $type;
-      $view->backPage = $backPage;
-      $view->form = $form->generate();
+      $view->users         = $users;
+      
+      $view->id            = $id;
+      $view->type          = $type;
+      $view->backPage      = $backPage;
+      
+      $view->form          = $form->generate();
       
       return $view->display(true);
+   }
+   
+   /*
+    * posting comment
+    * 
+    * Don't call - it's called automatically
+    */
+   
+   public static function postComment($id, $type, $backPage)
+   {
+      if(empty($id) || empty($type) || empty($backPage))
+      {
+         Watermelon::displayNoPageFoundError();
+         return;
+      }
+      
+      //--
+      
+      $model = Loader::model('comments');
+      
+      $backPage = base64_decode($backPage);
+      
+      $form = Form::validate('wmelon.comments.addComment', $backPage)->getAll();
+      
+      // testing for spam and adding
+      
+      if(!Auth::isLogged()) // if not logged in
+      {
+         // testing for spam
+         
+         $commentStatus = Sblam::test('content', 'name', 'email', 'website');
+         
+         // remembering user's data
+         
+         $_SESSION['wmelon.comments.name']    = $form->name;
+         $_SESSION['wmelon.comments.email']   = $form->email;
+         $_SESSION['wmelon.comments.website'] = $form->website;
+         
+         // adding comment
+      
+         switch($commentStatus)
+         {
+            case 0:
+            case 1:
+            case -1:
+               $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true);
+            
+               Watermelon::addMessage('tick', 'Twój komentarz zostanie sprawdzony, zanim zostanie pokazany');
+            break;
+         
+            case -2:
+               $commentID = $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false);
+            
+               Watermelon::addMessage('tick', 'Dodano komentarz');
+
+               $backPage .= '#comment-' . $commentID;
+            break;
+         
+            case 2:
+               Watermelon::addMessage('warning', 'Filtr uznał twój komentarz za spam. ' . Sblam::reportLink());
+            break;
+         }
+      }
+      else // if logged in
+      {
+         $commentID = $model->postComment_logged($id, $type, $form->content);
+         
+         $backPage .= '#comment-' . $commentID;
+      }
+      
+      SiteRedirect($backPage);
    }
 }

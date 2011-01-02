@@ -30,56 +30,6 @@ class Comments_Controller extends Controller
    
    public function post_action($id, $type, $backPage)
    {
-      if(empty($id) || empty($type) || empty($backPage))
-      {
-         Watermelon::displayNoPageFoundError();
-         return;
-      }
-      
-      //--
-      
-      $backPage = base64_decode($backPage);
-      
-      $form = Form::validate('wmelon.comments.addComment', $backPage)->getAll();
-      
-      // testing for spam and adding
-      
-      if(!Auth::isLogged()) // if not logged in
-      {
-         $commentStatus = Sblam::test('content', 'name', 'email', 'website');
-      
-         // adding comment
-      
-         switch($commentStatus)
-         {
-            case 0:
-            case 1:
-            case -1:
-               $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true);
-            
-               $this->addMessage('tick', 'Twój komentarz zostanie sprawdzony, zanim zostanie pokazany');
-            break;
-         
-            case -2:
-               $commentID = $this->model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false);
-            
-               $this->addMessage('tick', 'Dodano komentarz');
-
-               $backPage .= '#comment-' . $commentID;
-            break;
-         
-            case 2:
-               $this->addMessage('warning', 'Filtr uznał twój komentarz za spam. ' . Sblam::reportLink());
-            break;
-         }
-      }
-      else
-      {
-         $commentID = $this->model->postComment_logged($id, $type, $form->content);
-         
-         $backPage .= '#comment-' . $commentID;
-      }
-      
-      SiteRedirect($backPage);
+      Comments::postComment($id, $type, $backPage);
    }
 }

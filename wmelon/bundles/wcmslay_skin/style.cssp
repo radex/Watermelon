@@ -139,6 +139,10 @@ h1 .adminTools a
    font-family: $standardFont
    color: #888
 
+.h1-comment .important
+   color: #AF4020
+   font-weight: bold
+
 h1 .adminTools
    float: right
    padding: 5px 5px
@@ -329,19 +333,13 @@ body > footer
 // Comments
 //
 
-.comment
+.comments > article           // comment
    margin-bottom: 20px
    overflow: hidden
    display: table
    width: 100%
    border: 1px solid transparent
    border-radius: 5px
-
-.comment:nth-of-type(odd)
-   background-color: #f8f8f8
-   border: 1px solid #ddd
-
-.comment
    header
       display: table-cell
       width: 90px
@@ -362,3 +360,19 @@ body > footer
       font-size: .9em
       border: 1px solid #ddd
       border-radius: 0 5px 0 5px
+
+.comments > article:nth-of-type(odd)
+   background-color: #f8f8f8
+   border: 1px solid #ddd
+
+// admin comments
+
+.comments > article.adminComment
+   background: $lightBlue
+   header
+      border-right: 1px solid #bbb
+   .adminTools
+      border: 1px solid #bbb
+
+.comments > article.adminComment:nth-of-type(odd)
+   border: 1px solid #bbb

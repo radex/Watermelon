@@ -66,10 +66,27 @@ class Blog_Controller extends Controller
          
          $post->created_human = HumanDate($post->created, true, true);
          
-         // commentsCount
+         // comments counter
          
-         $post->comments  = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
-         $post->comments .= ' ' . pl_inflect($post->comments, 'komentarzy', 'komentarz', 'komentarze');
+         $approvedComments = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
+         
+         $post->comments = $approvedComments . ' ' . pl_inflect($approvedComments, 'komentarzy', 'komentarz', 'komentarze');
+         
+         // unapproved comments counter (for admin)
+         
+         if(Auth::isLogged())
+         {
+            $comments = Model('comments')->countCommentsFor($post->id, 'blogpost', true);
+            
+            $unapprovedComments = $comments - $approvedComments;
+            
+            // if any unapproved comments
+            
+            if($unapprovedComments > 0)
+            {
+               $post->comments .= ' <a href="' . $post->url . '#comments-link" class="important">(' . $unapprovedComments . ' do sprawdzenia!)</a>';
+            }
+         }
          
          //--
          

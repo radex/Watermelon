@@ -15,23 +15,32 @@
 <!-- Posts -->
 
 <article tal:repeat="post posts" id="blogpost-${post/id}">
+   
+   <!-- header -->
+   
    <header>
       <h1>
          <a href="${post/url}">${post/title}</a>
          <span class="h1-comment">
-            ${structure post/created_human}, ${post/comments}
+            ${structure post/created_human}, ${structure post/comments}
          </span>
          <span class="adminTools" tal:condition="php: Auth::isLogged()">
             <a href="${post/editHref}">[Edytuj]</a> | <a href="${post/deleteHref}">[Usuń]</a>
          </span>
       </h1>
    </header>
+   
+   <!-- post content -->
+   
    <article tal:condition="not: post/summary">
       <?= Textile::textile($ctx->post->content) ?>
    </article>
    <article tal:condition="post/summary">
       <?= Textile::textile($ctx->post->summary . ' <em>[...]</em>') ?>
    </article>
+   
+   <!-- read more -->
+   
    <a class="blog-readMore" href="${post/url}">Czytaj dalej »</a>
 </article>
 
