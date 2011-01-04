@@ -22,6 +22,7 @@ CREATE TABLE `wm_blogposts` (
   `created` int(10) NOT NULL,
   `updated` int(10) NOT NULL,
   `atomID` varchar(40) NOT NULL,
+  `commentsAllowed` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

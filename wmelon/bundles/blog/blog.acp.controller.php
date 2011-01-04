@@ -62,7 +62,7 @@ class Blog_Controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Treść', '<small>Napisany (uaktualniony)</small>', 'Komentarzy', 'Akcje');
+      $table->header = array('Tytuł', '<small>Napisany (uaktualniony)</small>', 'Komentarzy');
       $table->selectedActions[] = array('Usuń', 'blog/delete/');
       
       // adding posts
@@ -73,34 +73,51 @@ class Blog_Controller extends Controller
          
          //--
          
-         $title = '<a href="#/' . date('Y/m', $post->created) . '/' . $post->name . '">' . $post->title . '</a>';
+         $title = '<a href="$/blog/edit/' . $id . ' title="Edytuj wpis">' . $post->title . '</a>';
          
          //--
          
          $content = strip_tags($post->content);
          
-         if(strlen($content) > 100)
+         if(strlen($content) > 130)
          {
-            $content = substr($content, 0, 100) . ' (...)';
+            $content = substr($content, 0, 130) . ' (...)';
          }
          
          //--
          
-         $dates = '<small>' . HumanDate($post->created, true, true) . ' (' . HumanDate($post->updated, true, true) . ')</small>'; //TODO: + by [author]
-         
-         //--
-         
-         $comments = $commentsModel->countCommentsFor($id, 'blogpost', true);
-         
-         //--
+         $linkTo = '#/' . date('Y/m', $post->created) . '/' . $post->name;
          
          $actions = '';
-         $actions .= '<a href="$/blog/edit/' . $id . '">Edytuj</a> | ';
-         $actions .= '<a href="$/blog/delete/' . $id . '">Usuń</a>';
+         $actions .= '<a href="' . $linkTo . '" title="Zobacz wpis na stronie">Zobacz</a> | ';
+         $actions .= '<a href="$/blog/edit/' . $id . '" title="Edytuj wpis">Edytuj</a> | ';
+         $actions .= '<a href="$/blog/delete/' . $id . '" title="Usuń wpis">Usuń</a>';
          
          //--
          
-         $table->addLine($id, $title, $content, $dates, $comments, $actions);
+         $postInfo  = $title . '<br>';
+         $postInfo .= '<small>' . $content . '</small><br>';
+         $postInfo .= '<div class="acp-actions">' . $actions . '</div>';
+         
+         //--
+         
+         $dates = '<small>' . HumanDate($post->created, true, true) . '<br>(' . HumanDate($post->updated, true, true) . ')</small>'; //TODO: + by [author]
+         
+         //--
+         
+         $allComments        = $commentsModel->countCommentsFor($id, 'blogpost', true);
+         $unapprovedComments = $allComments - $commentsModel->countCommentsFor($id, 'blogpost', false);
+         
+         $comments = $allComments;
+         
+         if($unapprovedComments > 0)
+         {
+            $comments .= ' <strong><a href="' . $linkTo . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
+         }
+         
+         //--
+         
+         $table->addLine($id, $postInfo, $dates, $comments);
       }
       
       // displaying

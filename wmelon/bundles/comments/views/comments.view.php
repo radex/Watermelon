@@ -1,6 +1,6 @@
 <?php die?>
 <section class="comments">
-   <h1 id="comments-link">
+   <h1 id="comments-link" tal:condition="php: open || areComments">
       Komentarze
       <span class="h1-comment">${structure commentsCount}</span>
    </h1>
@@ -21,9 +21,9 @@
          
          <!-- header (for logged user's post) -->
          
-         <header tal:condition="comment/authorID">
+         <header tal:condition="exists: comment/author">
             <img src="${comment/gravatarURL}" alt="" />
-            <strong><a href="${WM_SiteURL}"><?= $ctx->users[$ctx->comment->authorID]->nick ?></a></strong>
+            <strong><a href="${WM_SiteURL}">${comment/author/nick}</a></strong>
          </header>
          
          <!-- content -->
@@ -62,12 +62,18 @@
    
    <!-- no comments -->
    
-   <p tal:condition="not: areComments">
+   <p tal:condition="php: !areComments && open">
       Nie ma tutaj komentarzy. Napisz pierwszego!
    </p>
    
    <!-- comment form -->
    
-   <h1 id="commentForm-link">Napisz komentarz</h1>
-   ${structure form}${structure php: Sblam::JS()}
+   <tal:block tal:condition="open">
+      <h1 id="commentForm-link">Napisz komentarz</h1>
+      ${structure form}${structure php: Sblam::JS()}
+   </tal:block>
+   
+   <!-- "commenting has been disabled" message -->
+   
+   <div tal:condition="not:open" class="comments-closed">Komentowanie zostało wyłączone</div>
 </section>

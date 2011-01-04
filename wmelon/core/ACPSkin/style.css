@@ -520,7 +520,23 @@ body > footer a:hover, #footer a:visited:hover
  * ACP-specific classes
  */
 
+.acptable tr:nth-of-type(even)
+{
+   background: #f8f8f8;
+}
+
 .acp-tablePages
 {
    float: right;
+}
+
+.acp-actions
+{
+   font-size: 11px;
+   visibility: hidden;
+}
+
+tr:hover .acp-actions
+{
+   visibility: visible;
 }

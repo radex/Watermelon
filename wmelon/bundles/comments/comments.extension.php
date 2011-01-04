@@ -25,14 +25,16 @@
 class Comments extends Extension
 {
    /*
-    * public string commentsView(int $id, string $type, string $backPage)
+    * public string commentsView(int $id, string $type, string $backPage[, bool $open = true])
     * 
     * Returns output of comments view for $id record of $type type of content (blog post, page, etc.)
     * 
     * string $backPage - name of page (on the same website) on which comment view will be displayed (name of page to go back on after posting a comment), e.g.: 'blog/post/1'
+    * 
+    * bool $open - whether commenting is allowed. If not, "commenting has been disabled" message is displayed, and already posted comments (if any)
     */
    
-   public static function commentsView($id, $type, $backPage)
+   public static function commentsView($id, $type, $backPage, $open = true)
    {
       $id       = (int) $id;
       $type     = (string) $type;
@@ -94,6 +96,10 @@ class Comments extends Extension
             {
                $users[$authorID] = $auth->userData_id($authorID);
             }
+            
+            // reference to author's data object
+            
+            $comment->author = &$users[$authorID];
             
             // CSS class (for admin comments distinction)
             
@@ -169,11 +175,14 @@ class Comments extends Extension
       
       $commentsCount = (Auth::isLogged() ? $commentsObj->rows : $approvedCount); // number of visible (approved) comments - for user and all comments - for admin
       
-      $commentsCount = $commentsCount . ' ' . pl_inflect($commentsCount, 'komentarzy', 'komentarz', 'komentarze');
+      if($commentsCount > 0)
+      {
+         $commentsCountStr = $commentsCount . ' ' . pl_inflect($commentsCount, 'komentarzy', 'komentarz', 'komentarze');
+      }
       
       if(Auth::isLogged() && $unapprovedCount > 0)
       {
-         $commentsCount .= ' <span class="important">(' . $unapprovedCount . ' do sprawdzenia!)</span>';
+         $commentsCountStr .= ' <span class="important">(' . $unapprovedCount . ' do sprawdzenia!)</span>';
       }
       
       // view
@@ -182,8 +191,7 @@ class Comments extends Extension
       
       $view->comments      = $comments;
       $view->areComments   = $commentsObj->exists;
-      $view->commentsCount = $commentsCount;
-      $view->users         = $users;
+      $view->commentsCount = $commentsCountStr;
       
       $view->visibilityToken = $visibilityToken;
       
@@ -192,6 +200,8 @@ class Comments extends Extension
       $view->backPage      = $backPage;
       
       $view->form          = $form->generate();
+      
+      $view->open          = $open;
       
       return $view->display(true);
    }

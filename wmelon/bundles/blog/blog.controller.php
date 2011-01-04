@@ -71,8 +71,12 @@ class Blog_Controller extends Controller
          if(!Auth::isLogged())
          {
             $approvedComments = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
-
-            $post->comments = $approvedComments . ' ' . pl_inflect($approvedComments, 'komentarzy', 'komentarz', 'komentarze');
+            
+            if($approvedComments > 0)
+            {
+               $post->comments  = ', ' . $approvedComments;
+               $post->comments .= ' ' . pl_inflect($approvedComments, 'komentarzy', 'komentarz', 'komentarze');
+            }
          }
          else
          {
@@ -83,11 +87,14 @@ class Blog_Controller extends Controller
             
             $unapprovedComments = $allComments - $approvedComments;
             
-            // x comments text
+            // all comments counter
             
-            $post->comments = $allComments . ' ' . pl_inflect($allComments, 'komentarzy', 'komentarz', 'komentarze');
+            if($allComments > 0)
+            {
+               $post->comments = ', ' . $allComments . ' ' . pl_inflect($allComments, 'komentarzy', 'komentarz', 'komentarze');
+            }
             
-            // if any unapproved comments
+            // unapproved comments counter
             
             if($unapprovedComments > 0)
             {
@@ -149,7 +156,7 @@ class Blog_Controller extends Controller
       
       $view = View('post');
       $view->post         = $postData;
-      $view->commentsView = Comments::commentsView($id, 'blogpost', $postData->url);
+      $view->commentsView = Comments::commentsView($id, 'blogpost', $postData->url, (bool) $postData->commentsAllowed);
 
       $view->editHref     = '%/blog/edit/' . $id . '/backTo:post';
       $view->deleteHref   = '%/blog/delete/' . $id . '/' . base64_encode('#/blog');

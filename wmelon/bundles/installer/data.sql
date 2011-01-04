@@ -1,13 +1,13 @@
 -- sample blog post
 
-INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `summary`, `content`, `author`, `created`, `updated`, `atomID`) VALUES
+INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `summary`, `content`, `author`, `created`, `updated`, `atomID`, `commentsAllowed`) VALUES
 (
    NULL,
    'Witaj_w_Watermelonie!',
    'Witaj w Watermelonie!',
    '%2',
    '%3',
-   1, %1, %1, '%5'
+   1, %1, %1, '%5', TRUE
 );
 
 -- sample page

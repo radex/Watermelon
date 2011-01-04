@@ -372,8 +372,6 @@ body > footer
    background-color: #f8f8f8
    border: 1px solid #ddd
 
-// admin comments
-
 .comments > article.adminComment
    background: $lightBlue
    header
@@ -383,3 +381,6 @@ body > footer
 
 .comments > article.adminComment:nth-of-type(odd)
    border: 1px solid #bbb
+
+.comments-closed
+   font-style: italic
