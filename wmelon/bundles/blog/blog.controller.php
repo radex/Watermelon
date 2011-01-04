@@ -70,7 +70,7 @@ class Blog_Controller extends Controller
          
          if(!Auth::isLogged())
          {
-            $approvedComments = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
+            $approvedComments = $post->approvedCommentsCount;
             
             if($approvedComments > 0)
             {
@@ -82,8 +82,8 @@ class Blog_Controller extends Controller
          {
             // counters
             
-            $approvedComments   = Model('comments')->countCommentsFor($post->id, 'blogpost', false);
-            $allComments        = Model('comments')->countCommentsFor($post->id, 'blogpost', true);
+            $approvedComments   = $post->approvedCommentsCount;
+            $allComments        = $post->commentsCount;
             
             $unapprovedComments = $allComments - $approvedComments;
             

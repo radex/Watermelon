@@ -75,7 +75,7 @@ class Comments extends Extension
          // visibility
          // (comment is visible if admin or comment is approved or comment visibility token match user's visibility token)
          
-         $comment->visible = (Auth::isLogged() || !$comment->awaitingModeration || ($comment->visibilityToken == $visibilityToken && !empty($comment->visibilityToken)));
+         $comment->visible = (Auth::isLogged() || $comment->approved || ($comment->visibilityToken == $visibilityToken && !empty($comment->visibilityToken)));
          
          // additionalInformation (for admin)
          
@@ -121,13 +121,13 @@ class Comments extends Extension
          
          // comments counter
          
-         if($comment->awaitingModeration)
+         if($comment->approved)
          {
-            $unapprovedCount++;
+            $approvedCount++;
          }
          else
          {
-            $approvedCount++;
+            $unapprovedCount++;
          }
          
          //--
@@ -264,13 +264,13 @@ class Comments extends Extension
             case 0:
             case 1:
             case -1:
-               $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true, $visibilityToken);
+               $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false, $visibilityToken);
             
                Watermelon::addMessage('tick', 'Twój komentarz zostanie sprawdzony zanim zostanie publicznie pokazany');
             break;
          
             case -2:
-               $commentID = $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false, $visibilityToken);
+               $commentID = $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true, $visibilityToken);
             
                Watermelon::addMessage('tick', 'Dodano komentarz');
 

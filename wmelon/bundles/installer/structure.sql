@@ -23,6 +23,7 @@ CREATE TABLE `wm_blogposts` (
   `updated` int(10) NOT NULL,
   `atomID` varchar(40) NOT NULL,
   `commentsAllowed` tinyint(1) NOT NULL DEFAULT '1',
+  `commentsCount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -33,8 +34,8 @@ CREATE TABLE `wm_blogposts` (
 
 CREATE TABLE `wm_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `record` int(11) NOT NULL COMMENT 'ID of record (blog post, page, etc) it belongs to',
-  `type` varchar(40) NOT NULL COMMENT 'type of record (blog post, page, etc)',
+  `record` int(11) NOT NULL,
+  `type` varchar(40) NOT NULL,
   `authorID` int(11) DEFAULT NULL,
   `authorName` varchar(40) DEFAULT NULL,
   `authorEmail` varchar(64) DEFAULT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE `wm_comments` (
   `authorIP` varchar(15) DEFAULT NULL,
   `created` int(10) NOT NULL,
   `content` text NOT NULL,
-  `awaitingModeration` tinyint(1) NOT NULL,
+  `approved` tinyint(1) NOT NULL,
   `visibilityToken` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `record` (`record`),

@@ -105,8 +105,8 @@ class Blog_Controller extends Controller
          
          //--
          
-         $allComments        = $commentsModel->countCommentsFor($id, 'blogpost', true);
-         $unapprovedComments = $allComments - $commentsModel->countCommentsFor($id, 'blogpost', false);
+         $allComments        = $post->commentsCount;
+         $unapprovedComments = $allComments - $post->approvedCommentsCount;
          
          $comments = $allComments;
          

@@ -74,7 +74,7 @@ class Comments_Controller extends Controller
          
          //--
          
-         $status = $comment->awaitingModeration ? 'Niesprawdzony' : '';
+         $status = $comment->approved ? 'Niesprawdzony' : '';
          
          //TODO: <td> and <tr> attributes in Form
          
@@ -84,7 +84,7 @@ class Comments_Controller extends Controller
          $actions .= '<a href="$/comments/edit/' . $id . '">Edytuj</a>&nbsp;|&nbsp;';
          $actions .= '<a href="$/comments/delete/' . $id . '">Usuń</a> | ';
          
-         if($comment->awaitingModeration)
+         if($comment->approved)
          {
             $actions .= '<a href="$/comments/approve/' . $id . '">Zatwierdź</a>';
          }

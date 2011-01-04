@@ -1,44 +1,43 @@
 -- sample blog post
 
-INSERT INTO `wm_blogposts` (`id`, `name`, `title`, `summary`, `content`, `author`, `created`, `updated`, `atomID`, `commentsAllowed`) VALUES
+INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `created`, `updated`, `atomID`, `commentsCount`) VALUES
 (
-   NULL,
    'Witaj_w_Watermelonie!',
    'Witaj w Watermelonie!',
    '%2',
    '%3',
-   1, %1, %1, '%5', TRUE
+   1, %1, %1, '%5', 1
 );
 
 -- sample page
 
-INSERT INTO `wm_pages` (`id`, `name`, `title`, `content`, `author`, `created`, `updated`) VALUES
+INSERT INTO `wm_pages` (`name`, `title`, `content`, `author`, `created`, `updated`) VALUES
 (
-   NULL, 'wmelonHelp', 'Pomoc Watermelona', '%4', 1, %1, %1
+   'wmelonHelp', 'Pomoc Watermelona', '%4', 1, %1, %1
 );
 
 -- sample comment for these
 
-INSERT INTO `wm_comments` (`id`, `record`, `type`, `authorID`, `authorName`, `authorEmail`, `authorWebsite`, `authorIP`, `created`, `content`, `awaitingModeration`, `visibilityToken`)
+INSERT INTO `wm_comments` (`record`, `type`, `authorID`, `created`, `content`, `approved`)
 VALUES
 (
-   NULL, 1, 'blogpost', 1, NULL, NULL, NULL, NULL, %1,
+   1, 'blogpost', 1, %1,
    'W komentarzach również możesz używać _(uproszczonej)_ składni "**Textile**":http://pl.wikipedia.org/wiki/Textile',
-   false, NULL
+   false
 ),
 (
-   NULL, 1, 'page', 1, NULL, NULL, NULL, NULL, %1,
+   1, 'page', 1, %1,
    'Ten artykuł jest widoczny tylko dla Ciebie. Jeśli chcesz, możesz podejrzeć, jak wygląda on "od środka". Uważaj tylko, żeby go nie usunąć! :)',
-   false, NULL
+   false
 ),
 (
-   NULL, 1, 'page', 1, NULL, NULL, NULL, NULL, %1,
+   1, 'page', 1, %1,
    'Pamiętaj, aby usunąć link do tej podstrony z menu, aby inni go nie widzieli.
 
 "Edycja menu":admin/options/nav/: Panel Admina » Ustawienia » Menu
 
 Nadal będziesz mógł się tutaj dostać z "tabeli stron":admin/pages/ w Panelu Admina',
-   false, NULL
+   false
 );
 
 -- user privileges (user itself is created in controller)

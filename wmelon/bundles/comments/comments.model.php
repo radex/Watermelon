@@ -61,30 +61,6 @@ class Comments_Model extends Model
    }
    
    /*
-    * public int countCommentsFor(int $id, string $type, bool $all)
-    * 
-    * Number of comments for $id record of $type type of content
-    * 
-    * bool $all - whether all comments shall be counted (true) or only approved ones (false)
-    */
-   
-   public function countCommentsFor($id, $type, $all)
-   {
-      $id   = (int) $id;
-      $type = (string) $type;
-      $all  = (bool) $all;
-      
-      $query = DBQuery::select('id', 'comments')->where('record', $id)->andWhere('type', $type);
-      
-      if(!$all)
-      {
-         $query = $query->andWhere('awaitingModeration', false);
-      }
-      
-      return $query->act()->rows;
-   }
-   
-   /*
     * public void deleteCommentsFor(int $id, string $type)
     * 
     * Deletes comments for $id record of $type type of content
@@ -99,21 +75,26 @@ class Comments_Model extends Model
    }
    
    /*
-    * public int postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $awaitingModeration, string $visibilityToken)
+    * public int postComment(int $id, string $type, string $authorName, string $authorEmail, string $authorWebsite, string $content, bool $approved, string $visibilityToken)
     * 
-    * Posts a comment (for $id record of $type type of content)
+    * Posts a comment (for $id record of $type type of content) and updates comments counters
     * 
     * Returns its ID
     */
    
-   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $content, $awaitingModeration, $visibilityToken)
+   public function postComment($id, $type, $authorName, $authorEmail, $authorWebsite, $content, $approved, $visibilityToken)
    {
+      $id            = (int)  $id;
+      $approved      = (bool) $approved;
+      
       $authorWebsite = (string) $authorWebsite;
       $authorWebsite = (empty($authorWebsite) ? null : $authorWebsite); // NULL if empty
       
-      return DB::insert('comments', array
+      //--
+      
+      $commentID = DB::insert('comments', array
          (
-            'record'             => (int)    $id,
+            'record'             =>          $id,
             'type'               => (string) $type,
             'authorName'         => (string) $authorName,
             'authorEmail'        => (string) $authorEmail,
@@ -121,30 +102,56 @@ class Comments_Model extends Model
             'authorIP'           =>          ClientIP(),
             'content'            => (string) $content,
             'created'            =>          time(),
-            'awaitingModeration' => (int)    $awaitingModeration,
+            'approved'           =>          $approved,
             'visibilityToken'    => (string) $visibilityToken,
          ));
+      
+      // update counters
+      
+      DB::query('UPDATE __%1 SET commentsCount = commentsCount + 1 WHERE id = %2', $type . 's', $id);
+      
+      if(!$approved)
+      {
+         DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = %2', $type . 's', $id);
+      }
+      
+      //--
+      
+      return $commentID;
    }
    
    /*
     * public int postComment(int $id, string $type, string $content)
     * 
-    * Posts a comment as currently logged user (for $id record of $type type of content)
+    * Posts a comment as currently logged user (for $id record of $type type of content) and updates comments counters
     * 
     * Returns its ID
     */
    
    public function postComment_logged($id, $type, $content)
    {
-      return DB::insert('comments', array
+      $id = (int) $id;
+      
+      //--
+      
+      $commentID = DB::insert('comments', array
          (
-            'record'        => (int)    $id,
+            'record'        =>          $id,
             'type'          => (string) $type,
-            'authorID'      => Auth::userData()->id,
+            'authorID'      =>          Auth::userData()->id,
             'content'       => (string) $content,
-            'created'       => time(),
-            'awaitingModeration' => false
+            'created'       =>          time(),
+            'approved'      =>          false
          ));
+      
+      // update counters
+      
+      DB::query('UPDATE __%1 SET commentsCount = commentsCount + 1 WHERE id = %2', $type . 's', $id);
+      DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = %2', $type . 's', $id);
+      
+      //--
+      
+      return $commentID;
    }
    
    /*
@@ -164,11 +171,27 @@ class Comments_Model extends Model
    /*
     * public void deleteComments(int[] $ids)
     * 
-    * Deletes comments with given ID-s
+    * Deletes comments with given ID-s and updates comments counters
     */
    
    public function deleteComments(array $ids)
    {
+      foreach($ids as $id)
+      {
+         $comment = DB::select('comments', $id);
+         
+         // updating counters
+         
+         DB::query('UPDATE __%1 SET commentsCount = commentsCount - 1 WHERE id = %2', $type . 's', $id);
+         
+         if($comment->approved)
+         {
+            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = %2', $type . 's', $id);
+         }
+      }
+      
+      // deleting
+      
       DB::delete('comments', $ids);
    }
    
@@ -180,17 +203,21 @@ class Comments_Model extends Model
    
    public function approve($id)
    {
-      DBQuery::update('comments')->set('awaitingModeration', false)->where('id', (int) $id)->act();
+      DBQuery::update('comments')->set('approved', true)->where('id', (int) $id)->act();
+      
+      // TODO
    }
    
    /*
     * public void reject(int $id)
     * 
-    * Marks $id comment as rejected (awaiting moderation)
+    * Marks $id comment as not approved (awaiting moderation)
     */
    
    public function reject($id)
    {
-      DBQuery::update('comments')->set('awaitingModeration', true)->where('id', (int) $id)->act();
+      DBQuery::update('comments')->set('approved', false)->where('id', (int) $id)->act();
+      
+      // TODO
    }
 }

@@ -1,6 +1,6 @@
 <?php die?>
 <section class="comments">
-   <h1 id="comments-link" tal:condition="php: open || areComments">
+   <h1 id="comments-link" tal:condition="php: areComments">
       Komentarze
       <span class="h1-comment">${structure commentsCount}</span>
    </h1>
@@ -33,7 +33,7 @@
             <!-- admin tools -->
             
             <div class="adminTools" tal:condition="php: Auth::isLogged()">
-               <strong tal:condition="comment/awaitingModeration">
+               <strong tal:condition="not: comment/approved">
                   Niesprawdzony!
                </strong>
                <a href="${comment/editHref}">[Edytuj]</a> |
@@ -41,14 +41,14 @@
                
                <tal:block tal:condition="not: comment/authorID">
                   |
-                  <a href="${comment/approveHref}" tal:condition="comment/awaitingModeration">[Zatwierdź]</a>
-                  <a href="${comment/rejectHref}" tal:condition="not: comment/awaitingModeration">[Odrzuć]</a>
+                  <a href="${comment/approveHref}" tal:condition="not: comment/approved">[Zatwierdź]</a>
+                  <a href="${comment/rejectHref}" tal:condition="comment/approved">[Odrzuć]</a>
                </tal:block>
             </div>
             
             <!-- "not approved" - for not logged users -->
             
-            <div class="adminTools" tal:condition="php: !Auth::isLogged() AND comment.awaitingModeration">
+            <div class="adminTools" tal:condition="php: !Auth::isLogged() && !comment.approved">
                Komentarz oczekuje na moderację
             </div>
             
@@ -59,12 +59,6 @@
          
       </article>
    </tal:block>
-   
-   <!-- no comments -->
-   
-   <p tal:condition="php: !areComments && open">
-      Nie ma tutaj komentarzy. Napisz pierwszego!
-   </p>
    
    <!-- comment form -->
    
