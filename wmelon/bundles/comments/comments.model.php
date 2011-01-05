@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ class Comments_Model extends Model
             'authorID'      =>          Auth::userData()->id,
             'content'       => (string) $content,
             'created'       =>          time(),
-            'approved'      =>          false
+            'approved'      =>          true
          ));
       
       // update counters
@@ -182,11 +182,14 @@ class Comments_Model extends Model
          
          // updating counters
          
-         DB::query('UPDATE __%1 SET commentsCount = commentsCount - 1 WHERE id = %2', $type . 's', $id);
+         $tableName = $comment->type . 's';
+         $recordID  = $comment->record;
+         
+         DB::query('UPDATE __%1 SET commentsCount = commentsCount - 1 WHERE id = %2', $tableName, $recordID);
          
          if($comment->approved)
          {
-            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = %2', $type . 's', $id);
+            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = %2', $tableName, $recordID);
          }
       }
       
@@ -196,28 +199,65 @@ class Comments_Model extends Model
    }
    
    /*
-    * public void approve(int $id)
+    * public void approve(int[] $ids)
     * 
-    * Marks $id comment as approved (not awaiting moderation)
+    * Marks $ids comments as approved (not awaiting moderation)
     */
    
-   public function approve($id)
+   public function approve(array $ids)
    {
-      DBQuery::update('comments')->set('approved', true)->where('id', (int) $id)->act();
-      
-      // TODO
+      foreach($ids as $id)
+      {
+         $comment = DB::select('comments', $id);
+         
+         // updating counters
+         
+         $tableName = $comment->type . 's';
+         $recordID  = $comment->record;
+         
+         if(!$comment->approved)
+         {
+            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = %2', $tableName, $recordID);
+         }
+         
+         // approving
+
+         DBQuery::update('comments')->set('approved', true)->where('id', $id)->act();
+      }
    }
    
    /*
-    * public void reject(int $id)
+    * public void reject(int[] $ids)
     * 
-    * Marks $id comment as not approved (awaiting moderation)
+    * Marks $ids comments as not approved (awaiting moderation)
     */
    
-   public function reject($id)
+   public function reject(array $ids)
    {
-      DBQuery::update('comments')->set('approved', false)->where('id', (int) $id)->act();
-      
-      // TODO
+      foreach($ids as $id)
+      {
+         $comment = DB::select('comments', $id);
+         
+         // can't reject admin's comment
+         
+         if($comment->authorID !== null)
+         {
+            continue;
+         }
+         
+         // updating counters
+         
+         $tableName = $comment->type . 's';
+         $recordID  = $comment->record;
+         
+         if($comment->approved)
+         {
+            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = %2', $tableName, $recordID);
+         }
+         
+         // rejecting
+
+         DBQuery::update('comments')->set('approved', false)->where('id', $id)->act();
+      }
    }
 }

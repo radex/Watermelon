@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -46,10 +46,16 @@ class Comments_Controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Komentarz', 'Napisany', 'Status', 'Akcje');
+      $table->header = array('Komentarz', 'Napisany', 'Autor', 'Status');
       $table->selectedActions[] = array('Usuń', 'comments/delete/');
+      $table->selectedActions[] = array('Zatwierdź', 'comments/approve/');
+      $table->selectedActions[] = array('Odrzuć', 'comments/reject/');
       
-      //TODO: link to blog post/page where post was written
+      // users, posts, pages
+      
+      $users = array();
+      $posts = array();   // in all three arrays data about certain uesr/blog post/page is stored, in [id] key
+      $pages = array();
       
       // adding comments
       
@@ -70,34 +76,105 @@ class Comments_Controller extends Controller
          
          //--
          
-         $created = HumanDate($comment->created); //TODO: + by [author]
+            $actions = '';
+            
+            // previewing
+            
+            if($comment->type == 'blogpost')
+            {
+               // fetching data
+               
+               if(!isset($posts[$comment->record]))
+               {
+                  $posts[$comment->record] = Model('blog')->postData_id($comment->record);
+               }
+               
+               $post = &$posts[$comment->record];
+               
+               //--
+               
+               $actions .= '<a href="#/' . date('Y/m', $post->created) . '/' . $post->name . '#comment-' . $id . '" title="Obejrzyj komentarz na stronie">Zobacz</a> | ';
+            }
+            elseif($comment->type = 'page')
+            {
+               // fetching data
+               
+               if(!isset($pages[$comment->record]))
+               {
+                  $pages[$comment->record] = Model('pages')->pageData_id($comment->record);
+               }
+               
+               $page = &$pages[$comment->record];
+               
+               //--
+               
+               $actions .= '<a href="#/' . $page->name . '#comment-' . $id . '" title="Obejrzyj komentarz na stronie">Zobacz</a> | ';
+            }
+         
+            $actions .= '<a href="$/comments/edit/' . $id . '" title="Edytuj komentarz">Edytuj</a> | ';
+            $actions .= '<a href="$/comments/delete/' . $id . '" title="Usuń komentarz">Usuń</a>';
+            
+            // approve/reject (only if comment wasn't written by admin)
+            
+            if($comment->authorID === null)
+            {
+               if($comment->approved)
+               {
+                  $actions .= ' | <a href="$/comments/reject/' . $id . '" title="Oznacz komentarz jako oczekujący na moderację">Odrzuć</a>';
+               }
+               else
+               {
+                  $actions .= ' | <a href="$/comments/approve/' . $id . '" title="Oznacz komentarz jako sprawdzony">Zatwierdź</a>';
+               }
+            }
          
          //--
          
-         $status = $comment->approved ? 'Niesprawdzony' : '';
+         $commentInfo = $content;
+         $commentInfo .= '<div class="acp-actions">' . $actions . '</div>';
+         
+         //--
+         
+         $created = HumanDate($comment->created);
+         
+         //--
+         
+         if($comment->authorID !== null)
+         {
+            // fetching data
+            
+            if(!isset($users[$comment->authorID]))
+            {
+               $users[$comment->authorID] = Model('auth')->userData_id($comment->authorID);
+            }
+            
+            $user = &$users[$comment->authorID];
+            
+            //--
+            
+            $author = htmlspecialchars($user->nick) . ' (admin)';
+         }
+         else
+         {
+            $author = htmlspecialchars($comment->authorName);
+            
+            if($comment->authorWebsite !== null)
+            {
+               $author = '<a href="' . htmlspecialchars($comment->authorWebsite) . '" target="_blank">' . $author . '</a>';
+            }
+            
+            $author .= '<br>' . htmlspecialchars($comment->authorEmail);
+         }
+         
+         //--
+         
+         $status = $comment->approved ? '' : 'Niesprawdzony';
          
          //TODO: <td> and <tr> attributes in Form
          
          //--
          
-         $actions = '';
-         $actions .= '<a href="$/comments/edit/' . $id . '">Edytuj</a>&nbsp;|&nbsp;';
-         $actions .= '<a href="$/comments/delete/' . $id . '">Usuń</a> | ';
-         
-         if($comment->approved)
-         {
-            $actions .= '<a href="$/comments/approve/' . $id . '">Zatwierdź</a>';
-         }
-         else
-         {
-            $actions .= '<a href="$/comments/reject/' . $id . '">Odrzuć</a>';
-         }
-         
-         //TODO: mark as spam
-         
-         //--
-         
-         $table->addLine($id, $content, $created, $status, $actions);
+         $table->addLine($id, $commentInfo, $created, $author, $status);
       }
       
       // displaying
@@ -168,24 +245,23 @@ class Comments_Controller extends Controller
    /*
     * delete comment
     */
-   
+
    function delete_action($ids, $backPage)
    {
-      AdminQuick::delete($ids, $backPage, 'comments',
+      AdminQuick::bulkAction('delete', 'comments', $ids, $backPage,
          function($ids, $model)
          {
             return 'Czy na pewno chcesz usunąć ' . count($ids) . ' komentarzy?';
          });
-      
    }
-   
+
    /*
     * delete comment submit
     */
-   
-   function deleteSubmit_action($ids, $backPage)
+
+   function delete_submit_action($ids, $backPage)
    {
-      AdminQuick::deleteSubmit($ids, $backPage, 'comments',
+      AdminQuick::bulkActionSubmit('comments', $ids, $backPage,
          function($ids, $model)
          {
             $model->deleteComments($ids);
@@ -199,28 +275,26 @@ class Comments_Controller extends Controller
    /*
     * approve comment
     */
-   
-   function approve_action($id, $backPage)
+
+   function approve_action($ids, $backPage)
    {
-      $this->model->approve($id);
-      
-      $backPage = base64_decode($backPage);
-      $backPage = empty($backPage) ? 'comments' : $backPage;
-      
-      SiteRedirect($backPage);
+      AdminQuick::bulkActionSubmit('comments', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->approve($ids);
+         });
    }
    
    /*
     * reject comment
     */
    
-   function reject_action($id, $backPage)
+   function reject_action($ids, $backPage)
    {
-      $this->model->reject($id);
-      
-      $backPage = base64_decode($backPage);
-      $backPage = empty($backPage) ? 'comments' : $backPage;
-      
-      SiteRedirect($backPage);
+      AdminQuick::bulkActionSubmit('comments', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->reject($ids);
+         });
    }
 }

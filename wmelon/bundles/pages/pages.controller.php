@@ -35,12 +35,6 @@ class Pages_Controller extends Controller
    
    function _controllerHandler($pageName)
    {
-      if(empty($pageName))
-      {
-         Watermelon::displayNoPageFoundError();
-         return;
-      }
-      
       // getting post data
       
       $pageData = $this->model->pageData_name($pageName);
@@ -62,7 +56,7 @@ class Pages_Controller extends Controller
       
       $view = View('page');
       $view->page = $pageData;
-      $view->commentsView = Comments::commentsView($pageData->id, 'page', '#/' . $pageName);
+      $view->commentsView = Comments::commentsView($pageData->id, 'page', '#/' . $pageName, (bool) $pageData->commentsAllowed);
       
       $view->editHref = '%/pages/edit/' . $id . '/backTo:site';
       $view->deleteHref = '%/pages/delete/' . $id;

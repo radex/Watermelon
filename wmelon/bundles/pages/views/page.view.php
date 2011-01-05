@@ -3,7 +3,7 @@
    <article>
       <header>
          <h1>
-            ${page/title}
+            <a href="$/${page/name}">${page/title}</a>
             <span class="adminTools" tal:condition="php: Auth::isLogged()">
                <a href="${editHref}">[Edytuj]</a> | <a href="${deleteHref}">[Usuń]</a>
             </span>

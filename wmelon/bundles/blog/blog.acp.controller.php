@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ class Blog_Controller extends Controller
          $linkTo = '#/' . date('Y/m', $post->created) . '/' . $post->name;
          
          $actions = '';
-         $actions .= '<a href="' . $linkTo . '" title="Zobacz wpis na stronie">Zobacz</a> | ';
+         $actions .= '<a href="' . $linkTo . '" title="Obejrzyj wpis na stronie">Zobacz</a> | ';
          $actions .= '<a href="$/blog/edit/' . $id . '" title="Edytuj wpis">Edytuj</a> | ';
          $actions .= '<a href="$/blog/delete/' . $id . '" title="Usuń wpis">Usuń</a>';
          
@@ -274,23 +274,23 @@ class Blog_Controller extends Controller
    /*
     * delete post
     */
-   
+
    function delete_action($ids, $backPage)
    {
-      AdminQuick::delete($ids, $backPage, 'blog',
+      AdminQuick::bulkAction('delete', 'blog', $ids, $backPage,
          function($ids, $model)
          {
             return 'Czy na pewno chcesz usunąć ' . count($ids) . ' postów?';
-         });  
+         });
    }
-   
+
    /*
     * delete post submit
     */
-   
-   function deleteSubmit_action($ids, $backPage)
+
+   function delete_submit_action($ids, $backPage)
    {
-      AdminQuick::deleteSubmit($ids, $backPage, 'blog',
+      AdminQuick::bulkActionSubmit('blog', $ids, $backPage,
          function($ids, $model)
          {
             $model->deletePosts($ids);

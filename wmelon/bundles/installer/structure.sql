@@ -24,6 +24,7 @@ CREATE TABLE `wm_blogposts` (
   `atomID` varchar(40) NOT NULL,
   `commentsAllowed` tinyint(1) NOT NULL DEFAULT '1',
   `commentsCount` int(11) NOT NULL DEFAULT '0',
+  `approvedCommentsCount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -62,6 +63,9 @@ CREATE TABLE `wm_pages` (
   `author` int(11) NOT NULL,
   `created` int(10) NOT NULL,
   `updated` int(10) NOT NULL,
+  `commentsAllowed` tinyint(1) NOT NULL DEFAULT '1',
+  `commentsCount` int(11) NOT NULL DEFAULT '0',
+  `approvedCommentsCount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `page_name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

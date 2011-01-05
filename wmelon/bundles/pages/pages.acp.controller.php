@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -52,9 +52,9 @@ class Pages_controller extends Controller
       
       // if no pages
       
-      if(!$pages->exists)
+      if($pages->empty)
       {
-         echo '<p>Brak stron. <a href="$/pages/new">Napisz pierwszą.</a></p>';
+         echo '<p>Brak stron. <a href="$/pages/new">Utwórz pierwszą.</a></p>';
          return;
       }
       
@@ -62,7 +62,7 @@ class Pages_controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Treść', '<small>Napisany (uaktualniony)</small>', 'Komentarzy', 'Akcje');
+      $table->header = array('Tytuł', '<small>Napisana (uaktualniona)</small>', 'Komentarzy');
       $table->selectedActions[] = array('Usuń', 'pages/delete/');
       
       // adding pages
@@ -74,35 +74,50 @@ class Pages_controller extends Controller
          //--
          
          $name  = $page->name;
-         $title = '<a href="#/' . $name . '">' . $page->title . '</a>';
+         $title = '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">' . $page->title . '</a>';
          
          //--
          
          $content = strip_tags($page->content);
          
-         if(strlen($content) > 100)
+         if(strlen($content) > 130)
          {
-            $content = substr($content, 0, 100) . ' (...)';
+            $content = substr($content, 0, 130) . ' (...)';
          }
          
          //--
          
-         $dates  = '<small>' . HumanDate($page->created, true, true);
-         $dates .= ' (' . HumanDate($page->updated, true, true) . ')</small>'; //TODO: + by [author]
-         
-         //--
-         
-         $comments = $commentsModel->countCommentsFor($id, 'page', true);
-         
-         //--
-         
          $actions = '';
-         $actions .= '<a href="$/pages/edit/' . $id . '">Edytuj</a> | ';
-         $actions .= '<a href="$/pages/delete/' . $id . '">Usuń</a>';
+         $actions .= '<a href="#/' . $name . '" title="Obejrzyj na stronie">Zobacz</a> | ';
+         $actions .= '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">Edytuj</a> | ';
+         $actions .= '<a href="$/pages/delete/' . $id . '" title="Usuń stronę">Usuń</a>';
          
          //--
          
-         $table->addLine($id, $title, $content, $dates, $comments, $actions);
+         $pageInfo = $title . '<br>';
+         $pageInfo .= $content;
+         $pageInfo .= '<div class="acp-actions">' . $actions . '</div>';
+         
+         //--
+         
+         $dates  = '<small>' . HumanDate($page->created, true, true);
+         $dates .= '<br>(' . HumanDate($page->updated, true, true) . ')</small>'; //TODO: + by [author]
+         
+         //--
+         
+         $allComments        = $page->commentsCount;
+         $unapprovedComments = $allComments - $page->approvedCommentsCount;
+         
+         $comments = $allComments;
+         
+         if($unapprovedComments > 0)
+         {
+            $comments .= ' <strong><a href="#/' . $name . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
+         }
+         
+         //--
+         
+         $table->addLine($id, $pageInfo, $dates, $comments);
       }
       
       // displaying
@@ -246,21 +261,20 @@ class Pages_controller extends Controller
 
    function delete_action($ids, $backPage)
    {
-      AdminQuick::delete($ids, $backPage, 'pages',
+      AdminQuick::bulkAction('delete', 'pages', $ids, $backPage,
          function($ids, $model)
          {
             return 'Czy na pewno chcesz usunąć ' . count($ids) . ' stron';
          });
-      
    }
 
    /*
     * delete page submit
     */
 
-   function deleteSubmit_action($ids, $backPage)
+   function delete_submit_action($ids, $backPage)
    {
-      AdminQuick::deleteSubmit($ids, $backPage, 'pages',
+      AdminQuick::bulkActionSubmit('pages', $ids, $backPage,
          function($ids, $model)
          {
             $model->deletePages($ids);

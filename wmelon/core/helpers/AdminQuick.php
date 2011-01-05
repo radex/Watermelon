@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -25,30 +25,31 @@
 class AdminQuick
 {
    /*
-    * public static void delete(string $ids, string $backPage, string $controller, $questionClosure)
+    * public static void bulkAction(string $actionName, string $controller, string $ids, string $backPage, $questionClosure)
     * 
-    * Generates delete page for ACP controllers
+    * Generates question page for bulk action (e.g. deleting) for ACP controllers
     * 
-    * string $ids        - ID-s string passed by URL
-    * string $backPage   - base64ed page to get back to after deletion, passed by URL
+    * string $actionName - name of action, e.g. 'delete'; have to be the same as method name (without 'action') and as submit method page (without '_submit_action')
     * string $controller - name of controller, e.g. 'blog'
+    * string $ids        - ID-s string passed by URL
+    * string $backPage   - base64ed page to get back to after action, passed by URL
     * 
     * string $questionClosure(array $ids, Model $model) -
-    *    Closure generating question message
+    *    Anonymous function generating question message
     *    
-    *    array $ids   - array with ID-s to be deleted
+    *    array $ids   - array with ID-s to be passed
     *    Model $model - model of currently running controller
     */
    
    /*
     * Usage:
    
-   function delete_action($ids, $backPage)
+   function [action]_action($ids, $backPage)
    {
-      AdminQuick::delete($ids, $backPage, '__controller__',
+      AdminQuick::bulkAction('[action]', '[controller]', $ids, $backPage,
          function($ids, $model)
          {
-            return '__message__';
+            return '[message]';
          });
       
    }
@@ -56,7 +57,7 @@ class AdminQuick
     *
     */
    
-   public static function delete($ids, $backPage, $controller, $questionClosure)
+   public static function bulkAction($actionName, $controller, $ids, $backPage, $questionClosure)
    {
       $ids = IDs($ids);
       
@@ -71,50 +72,52 @@ class AdminQuick
       
       $message = $questionClosure($ids, Watermelon::$controller->model);
       
-      echo QuestionBox($message, $controller . '/deleteSubmit/' . implode(',', $ids) . '/' . $backPage);
+      echo QuestionBox($message, $controller . '/' . $actionName . '_submit/' . implode(',', $ids) . '/' . $backPage);
    }
    
    /*
-    * public static void deleteSubmit(string $ids, string $backPage, string $controller, $deletingClosure, $messageClosure)
+    * public static void bulkActionSubmit(string $controller, string $ids, string $backPage, $actionClosure[, $messageClosure])
     * 
-    * Generates delete submit page for ACP controllers
+    * Performs bulk action for ACP controllers
     * 
-    * string $ids        - ID-s string passed by URL
-    * string $backPage   - base64ed page to get back to after deletion, passed by URL
     * string $controller - name of controller, e.g. 'blog'
+    * string $ids        - ID-s string passed by URL
+    * string $backPage   - base64ed page to get back to after action, passed by URL
     * 
-    * void $deletingClosure(int[] $ids, Model $model) -
-    *    Closure deleting $ids items
+    * void $actionClosure(int[] $ids, Model $model) -
+    *    Anonymous function performing action on $ids
     *    
-    *    int[] $ids[] - array of ID-s of items to be deleted
+    *    int[] $ids   - array of ID-s of items to perform action on
     *    Model $model - model of currently running controller
     * 
     * string $messageClosure(int $count)
-    *    Closure generating message that items have been deleted
+    *    Anonymous function generating message that action has been performed
     *    
-    *    int $count - number of deleted items
+    *    If not specified, no message is displayed
+    *    
+    *    int $count - number of items which action was performed on
     */
     
     /*
      * Usage:
     
-    function deleteSubmit_action($ids, $backPage)
+    function [action]_submit_action($ids, $backPage)
     {
-       AdminQuick::deleteSubmit($ids, $backPage, '__controller__',
+       AdminQuick::bulkActionSubmit('[controller]', $ids, $backPage,
           function($ids, $model)
           {
-             $model->__deleteMethod__($ids);
+             $model->[actionMethod]($ids);
           },
           function($count)
           {
-             return '__message__';
+             return '[message]';
           });
     }
     
      * 
      */
    
-   public static function deleteSubmit($ids, $backPage, $controller, $deletingClosure, $messageClosure)
+   public static function bulkActionSubmit($controller, $ids, $backPage, $actionClosure, $messageClosure = null)
    {
       $ids = IDs($ids);
       
@@ -127,13 +130,18 @@ class AdminQuick
       
       // deleting
       
-      $deletingClosure($ids, Watermelon::$controller->model);
+      $actionClosure($ids, Watermelon::$controller->model);
+      
+      // message
+      
+      if($messageClosure !== null)
+      {
+         $message = $messageClosure(count($ids));
+      
+         Watermelon::$controller->addMessage('tick', $message);
+      }
       
       // redirecting
-      
-      $message = $messageClosure(count($ids));
-      
-      Watermelon::$controller->addMessage('tick', $message);
       
       $backPage = base64_decode($backPage);
       $backPage = empty($backPage) ? $controller : $backPage;
