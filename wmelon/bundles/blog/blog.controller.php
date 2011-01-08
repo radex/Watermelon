@@ -156,7 +156,7 @@ class Blog_Controller extends Controller
       
       $view = View('post');
       $view->post         = $postData;
-      $view->commentsView = Comments::commentsView($id, 'blogpost', $postData->url, (bool) $postData->commentsAllowed);
+      $view->commentsView = Comments::commentsView($id, 'blogpost', $postData->url, (bool) $postData->allowComments);
 
       $view->editHref     = '%/blog/edit/' . $id . '/backTo:post';
       $view->deleteHref   = '%/blog/delete/' . $id . '/' . base64_encode('#/blog');

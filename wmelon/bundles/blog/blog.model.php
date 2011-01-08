@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -25,14 +25,66 @@
 class Blog_Model extends Model
 {
    /*
-    * public DBResult allPosts()
+    * public DBResult allPosts([string $scope])
     * 
-    * List of all posts
+    * Returns list of all posts
+    * 
+    * string $scope:
+    *    null (default) - all posts
+    *    'all'          - drafts and published (not really all)
+    *    'drafts'       - drafts (not published posts)
+    *    'published'    - published posts
+    *    'trash'        - posts moved to trash
     */
    
-   public function allPosts()
+   public function allPosts($scope = null)
    {
-      return DBQuery::select('blogposts')->orderBy('id', true)->act();
+      $query = DBQuery::select('blogposts')->orderBy('id', true);
+      
+      // scope
+      
+      switch($scope)
+      {
+         case 'all':
+            $query = $query->where('status IN("published", "draft")');
+         break;
+         
+         case 'drafts':
+            $query = $query->where('status', 'draft');
+         break;
+         
+         case 'published':
+            $query = $query->where('status', 'published');
+         break;
+         
+         case 'trash':
+            $query = $query->where('status', 'trash');
+         break;
+      }
+      
+      //--
+      
+      return $query->act();
+   }
+   
+   /*
+    * public object counts()
+    * 
+    * Returns posts counts:
+    * ->all       - for published/drafts
+    * ->trash     - for deleted posts
+    * ->drafts    - for drafts
+    * ->published - for published posts
+    */
+   
+   public function counts()
+   {
+      $counts->all       = DBQuery::select('blogposts')->where('status IN("published", "draft")')->act()->rows;
+      $counts->trash     = DBQuery::select('blogposts')->where('status', 'trash')->act()->rows;
+      $counts->drafts    = DBQuery::select('blogposts')->where('status', 'draft')->act()->rows;
+      $counts->published = DBQuery::select('blogposts')->where('status', 'published')->act()->rows;
+      
+      return $counts;
    }
    
    /*
@@ -41,13 +93,15 @@ class Blog_Model extends Model
     * List of posts (11 posts, starting from $page)
     * 
     * There are 10 posts for page, but 11 are selected, so that we know if there's another page
+    * 
+    * Note that only published posts are selected
     */
    
    public function posts($page)
    {
       $page = (int) $page - 1;
       
-      return DBQuery::select('blogposts')->orderBy('id', true)->limit($page * 10, 11)->act();
+      return DBQuery::select('blogposts')->where('status', 'published')->orderBy('id', true)->limit($page * 10, 11)->act();
    }
    
    /*
@@ -73,15 +127,26 @@ class Blog_Model extends Model
    }
    
    /*
-    * public int postPost(string $title, string $content[, string $summary])
+    * public int postPost(bool $publish, string $title, string $content, string $summary, bool $allowComments)
     * 
-    * Posts a post with given data, as currently logged user and with current time
+    * Posts a post with given data, as currently logged user and with current time and returns its ID
     * 
-    * Returns its ID
+    * bool $publish - if true, post is published, otherwise it's saved as draft
     */
    
-   public function postPost($title, $content, $summary)
+   public function postPost($publish, $title, $content, $summary, $allowComments)
    {
+      // status
+      
+      if($publish)
+      {
+         $status = 'published';
+      }
+      else
+      {
+         $status = 'draft';
+      }
+      
       // summary
       
       $summary = (string) $summary;
@@ -100,19 +165,24 @@ class Blog_Model extends Model
       
       $id = DB::insert('blogposts', array
          (
-            'name'    => $this->generateName($title),
-            'title'   => (string) $title,
-            'content' => (string) $content,
-            'summary' => $summary,
-            'author'  => Auth::userData()->id,
-            'created' => time(),
-            'updated' => time(),
-            'atomID'  => $atomID
+            'name'          =>          $this->generateName($title),
+            'title'         => (string) $title,
+            
+            'content'       => (string) $content,
+            'summary'       =>          $summary,
+            
+            'author'        =>          Auth::userData()->id,
+            'created'       =>          time(),
+            'updated'       =>          time(),
+            
+            'atomID'        =>          $atomID,
+            'allowComments' => (bool)   $allowComments,
+            'status'        =>          $status,
          ));
       
       // updating feed
       
-      $this->generateFeed();
+      $this->updateFeed();
       
       // returning post ID
       
@@ -120,12 +190,12 @@ class Blog_Model extends Model
    }
    
    /*
-    * public void editPost(int $id, string $title, string $content[, string $summary])
+    * public void editPost(int $id, string $title, string $content, string $summary, bool $allowComments)
     * 
     * Edits $id post, setting given data
     */
    
-   public function editPost($id, $title, $content, $summary)
+   public function editPost($id, $title, $content, $summary, $allowComments)
    {
       // summary
       
@@ -140,19 +210,35 @@ class Blog_Model extends Model
       
       DB::update('blogposts', (int) $id, array
          (
-            'title'   => (string) $title,
-            'content' => (string) $content,
-            'summary' => $summary,
-            'updated' => time(),
+            'title'         => (string) $title,
+            'content'       => (string) $content,
+            'summary'       =>          $summary,
+            'updated'       =>          time(),
+            'allowComments' => (bool)   $allowComments,
          ));
       
-      $this->generateFeed();
+      $this->updateFeed();
    }
    
    /*
-    * public void deletePost(int[] $ids)
+    * public void changeStatus(int[] $ids, enum $status)
     * 
-    * Deletes posts with given ID-s
+    * Changes status of posts to $status
+    * 
+    * enum $status = {'published','draft','trash'}
+    */
+   
+   public function changeStatus($ids, $status)
+   {
+      DBQuery::update('blogposts')->set('status', $status)->where('id', 'in', $ids)->act();
+      
+      $this->updateFeed();
+   }
+   
+   /*
+    * public void deletePosts(int[] $ids)
+    * 
+    * Deletes posts
     */
    
    public function deletePosts(array $ids)
@@ -164,16 +250,16 @@ class Blog_Model extends Model
          Model('comments')->deleteCommentsFor($id, 'blogpost');
       }
       
-      $this->generateFeed();
+      $this->updateFeed();
    }
    
    /*
-    * public void generateFeed()
+    * public void updateFeed()
     * 
     * Generates Atom feed from 20 last blog posts, and saves it to cache file
     */
    
-   public function generateFeed()
+   public function updateFeed()
    {
       $wmelon = Watermelon::$config;
       
@@ -202,7 +288,7 @@ class Blog_Model extends Model
       
       // adding blog posts
       
-      $posts = DBQuery::select('blogposts')->orderBy('id', true)->limit(0, 20)->act();
+      $posts = DBQuery::select('blogposts')->where('status', 'published')->orderBy('id', true)->limit(0, 20)->act();
       
       foreach($posts as $post)
       {

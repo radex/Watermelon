@@ -696,7 +696,7 @@ CONFIG;
       Loader::extension('Auth');
       Auth::onAutoload();
       
-      Model('blog')->generateFeed();
+      Model('blog')->updateFeed();
       
       // adding superuser
       

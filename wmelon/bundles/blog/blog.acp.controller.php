@@ -44,9 +44,33 @@ class Blog_Controller extends Controller
    
    function index_action()
    {
-      $this->pageTitle = 'Lista wpisów';
+      // determining posts scope (all/trash/drafts/published)
       
-      $posts = $this->model->allPosts();
+      switch($this->parameters->scope)
+      {
+         case 'trash':
+            $scopeLabel = ' (kosz)';
+            $scope = 'trash';
+         break;
+         
+         case 'drafts':
+            $scopeLabel = ' (szkice)';
+            $scope = 'drafts';
+         break;
+         
+         case 'published':
+            $scopeLabel = ' (opublikowane)';
+            $scope = 'published';
+         break;
+         
+         default:
+            $scope = 'all';
+         break;
+      }
+      
+      // fetching posts
+      
+      $posts = $this->model->allPosts($scope);
       
       $commentsModel = Model('comments');
       
@@ -54,7 +78,12 @@ class Blog_Controller extends Controller
       
       if($posts->empty)
       {
-         echo '<p>Brak wpisów. <a href="$/blog/new">Napisz pierwszy.</a></p>';
+         $view = View('admin/list');
+         $view->counts = $this->model->counts();
+         $view->table  = null;
+         
+         $view->display();
+         
          return;
       }
       
@@ -63,7 +92,18 @@ class Blog_Controller extends Controller
       $table = new ACPTable;
       $table->isPagination = false;
       $table->header = array('Tytuł', '<small>Napisany (uaktualniony)</small>', 'Komentarzy');
-      $table->selectedActions[] = array('Usuń', 'blog/delete/');
+      
+      // actions for selected posts
+      
+      if($scope == 'trash')
+      {
+         $table->selectedActions[] = array('Usuń na zawsze', 'blog/delete/');
+         $table->selectedActions[] = array('Przywróć',       'blog/untrash/');
+      }
+      else
+      {
+         $table->selectedActions[] = array('Usuń', 'blog/trash/');
+      }
       
       // adding posts
       
@@ -73,47 +113,71 @@ class Blog_Controller extends Controller
          
          //--
          
-         $title = '<a href="$/blog/edit/' . $id . ' title="Edytuj wpis">' . $post->title . '</a>';
+            $title = '<a href="$/blog/edit/' . $id . ' title="Edytuj wpis">' . $post->title . '</a>';
+         
+            // draft marker (only for 'all' scope)
+         
+            if($post->status == 'draft' && $scope == 'all')
+            {
+               $title = '(Szkic) ' . $title;
+            }
          
          //--
          
-         $content = strip_tags($post->content);
+            $content = strip_tags($post->content);
          
-         if(strlen($content) > 130)
-         {
-            $content = substr($content, 0, 130) . ' (...)';
-         }
-         
-         //--
-         
-         $linkTo = '#/' . date('Y/m', $post->created) . '/' . $post->name;
-         
-         $actions = '';
-         $actions .= '<a href="' . $linkTo . '" title="Obejrzyj wpis na stronie">Zobacz</a> | ';
-         $actions .= '<a href="$/blog/edit/' . $id . '" title="Edytuj wpis">Edytuj</a> | ';
-         $actions .= '<a href="$/blog/delete/' . $id . '" title="Usuń wpis">Usuń</a>';
+            if(strlen($content) > 130)
+            {
+               $content = substr($content, 0, 130) . ' (...)';
+            }
          
          //--
          
-         $postInfo  = $title . '<br>';
-         $postInfo .= '<small>' . $content . '</small><br>';
-         $postInfo .= '<div class="acp-actions">' . $actions . '</div>';
+            $linkTo = '#/' . date('Y/m', $post->created) . '/' . $post->name;
+         
+            $actions = '';
+            $actions .= '<a href="' . $linkTo . '" title="Obejrzyj wpis na stronie">Zobacz</a>';
+            $actions .= ' | <a href="$/blog/edit/' . $id . '" title="Edytuj wpis">Edytuj</a>';
+            
+            // deleting or moving to trash (depending on scope)
+            
+            if($scope == 'trash')
+            {
+               $actions .= ' | <a href="$/blog/delete/' . $id . '" title="Nieodwracalnie usuń wpis">Usuń na zawsze</a>';
+            }
+            else
+            {
+               $actions .= ' | <a href="$/blog/trash/' . $id . '" title="Przenieś wpis do kosza">Usuń</a>';
+            }
+            
+            // moving posts from trash to drafts (in trash scope)
+            
+            if($scope == 'trash')
+            {
+               $actions .= ' | <a href="$/blog/untrash/' . $id . '" title="Przywróć wpis z kosza do szkiców">Przywróć</a>';
+            }
+            
+         //--
+         
+            $postInfo  = $title . '<br>';
+            $postInfo .= '<small>' . $content . '</small><br>';
+            $postInfo .= '<div class="acp-actions">' . $actions . '</div>';
          
          //--
          
-         $dates = '<small>' . HumanDate($post->created, true, true) . '<br>(' . HumanDate($post->updated, true, true) . ')</small>'; //TODO: + by [author]
+            $dates = '<small>' . HumanDate($post->created, true, true) . '<br>(' . HumanDate($post->updated, true, true) . ')</small>'; //TODO: + by [author]
          
          //--
          
-         $allComments        = $post->commentsCount;
-         $unapprovedComments = $allComments - $post->approvedCommentsCount;
+            $allComments        = $post->commentsCount;
+            $unapprovedComments = $allComments - $post->approvedCommentsCount;
          
-         $comments = $allComments;
+            $comments = $allComments;
          
-         if($unapprovedComments > 0)
-         {
-            $comments .= ' <strong><a href="' . $linkTo . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
-         }
+            if($unapprovedComments > 0)
+            {
+               $comments .= ' <strong><a href="' . $linkTo . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
+            }
          
          //--
          
@@ -122,7 +186,14 @@ class Blog_Controller extends Controller
       
       // displaying
       
-      echo $table->generate();
+      $this->pageTitle = 'Lista wpisów' . $scopeLabel;
+      
+      $view = View('admin/list');
+      $view->counts = $this->model->counts();
+      $view->posts  = $posts;
+      $view->table  = $table->generate();
+      
+      $view->display();
    }
    
    /*
@@ -131,24 +202,39 @@ class Blog_Controller extends Controller
    
    function new_action()
    {
-      //TODO: give option (for advanced users) to type name for themselves
-      
       // options
       
       $this->pageTitle = 'Nowy wpis';
       
       $form = new Form('wmelon.blog.newPost', 'blog/newSubmit', 'blog/new');
       
+      $form->displaySubmitButton = false;
+      
+      // label notes
+      
+      $summary_note = 'Jeśli chcesz, napisz krótko wstęp lub streszczenie wpisu - zostanie ono pokazane na stronie głównej i w czytnikach kanałów';
+      
       // input args
       
-      $contentArgs = array('style' => 'width: 100%; height:30em');
-      $summaryArgs = array('labelNote' => 'Jeśli chcesz, napisz krótko wstęp lub streszczenie wpisu - zostanie ono pokazane na stronie głównej i w czytnikach kanałów');
+      $contentArgs       = array('style' => 'width: 100%; height:30em');
+      $summaryArgs       = array('labelNote' => $summary_note);
+      $allowCommentsArgs = array('value' => true);
       
       // adding inputs
       
-      $form->addInput('text', 'title', 'Tytuł', true);
-      $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
-      $form->addInput('textarea', 'summary', 'Streszczenie', false, $summaryArgs);
+      $form->addInput('text',     'title',           'Tytuł',                true);
+      $form->addInput('textarea', 'content',         'Treść',                true,  $contentArgs);
+      $form->addInput('textarea', 'summary',         'Streszczenie',         false, $summaryArgs);
+      $form->addInput('checkbox', 'allowComments',   'Pozwól na komentarze', false, $allowCommentsArgs);
+      
+      // submit buttons (save and publish)
+      
+      $form->addHTML('<br><label><span></span>');
+      $form->addHTML('<input type="submit" name="submit_save" value="Zapisz">');
+      $form->addHTML('<input type="submit" name="submit_publish" value="Publikuj">');
+      $form->addHTML('</label>');
+      
+      // displaying
       
       echo $form->generate();
    }
@@ -162,7 +248,22 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.newPost', 'blog/new');
       $data = $form->getAll();
       
-      $id = $this->model->postPost($data->title, $data->content, $data->summary);
+      // determining action - save or publish
+      
+      if(isset($_POST['submit_publish']))
+      {
+         $publish = true;
+      }
+      else
+      {
+         $publish = false;
+      }
+      
+      // posting
+      
+      $id = $this->model->postPost($publish, $data->title, $data->content, $data->summary, $data->allowComments);
+      
+      // redirecting
       
       $this->addMessage('tick', 'Dodano wpis!');
       
@@ -209,7 +310,7 @@ class Blog_Controller extends Controller
          break;
       }
       
-      // form options
+      // options
       
       $this->pageTitle = 'Edytuj wpis';
       
@@ -217,23 +318,36 @@ class Blog_Controller extends Controller
       
       $form->displaySubmitButton = false;
       
-      // inputs labels
+      // label notes
       
-      $sumarryLabel = 'Jeśli chcesz, napisz krótko wstęp lub streszczenie wpisu - zostanie ono pokazane na stronie głównej i w czytnikach kanałów';
+      $summary_note = 'Jeśli chcesz, napisz krótko wstęp lub streszczenie wpisu - zostanie ono pokazane na stronie głównej i w czytnikach kanałów';
       
       // inputs args
       
-      $titleArgs   = array('value' => $data->title);
-      $contentArgs = array('value' => $data->content, 'style' => 'width: 100%; height:30em');
-      $summaryArgs = array('value' => $data->summary, 'labelNote' => $sumarryLabel);
+      $titleArgs         = array('value' => $data->title);
+      $contentArgs       = array('value' => $data->content, 'style' => 'width: 100%; height:30em');
+      $summaryArgs       = array('value' => $data->summary, 'labelNote' => $summary_note);
+      $allowCommentsArgs = array('value' => $data->allowComments);
       
       // adding inputs
       
-      $form->addInput('text', 'title', 'Tytuł', true, $titleArgs);
-      $form->addInput('textarea', 'content', 'Treść', true, $contentArgs);
-      $form->addInput('textarea', 'summary', 'Streszczenie', false, $summaryArgs);
+      $form->addInput('text',     'title',           'Tytuł',                true,  $titleArgs);
+      $form->addInput('textarea', 'content',         'Treść',                true,  $contentArgs);
+      $form->addInput('textarea', 'summary',         'Streszczenie',         false, $summaryArgs);
+      $form->addInput('checkbox', 'allowComments',   'Pozwól na komentarze', false, $allowCommentsArgs);
       
-      $form->addHTML('<label><span></span><input type="submit" value="Zapisz">' . $backToLabel . '</label>');
+      // submit buttons
+      
+      $form->addHTML('<br><label><span></span>');
+      $form->addHTML('<input type="submit" name="submit_save" value="Zapisz">');
+      
+      if($data->status == 'draft')
+      {
+         $form->addHTML('<input type="submit" name="submit_publish" value="Opublikuj">');
+      }
+      
+      $form->addHTML($backToLabel);
+      $form->addHTML('</label>');
       
       echo $form->generate();
    }
@@ -262,13 +376,56 @@ class Blog_Controller extends Controller
       $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . $backTo);
       $data = $form->getAll();
       
-      $this->model->editPost($id, $data->title, $data->content, $data->summary);
+      $this->model->editPost($id, $data->title, $data->content, $data->summary, $data->allowComments);
+      
+      // updating status (if 'Publish' button selected)
+      
+      if(isset($_POST['submit_publish']))
+      {
+         $this->model->changeStatus($id, 'published');
+         
+         $this->addMessage('tick', 'Opublikowano wpis');
+      }
       
       // redirecting
       
       $this->addMessage('tick', 'Zaktualizowano wpis');
       
       SiteRedirect('blog/edit/' . $id . $backTo);
+   }
+
+   /*
+    * move posts to trash
+    */
+
+   function trash_action($ids, $backPage)
+   {
+      AdminQuick::bulkActionSubmit('blog', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->changeStatus($ids, 'trash');
+         },
+         function($count)
+         {
+            return 'Przeniesiono ' . $count . ' postów do kosza';
+         });
+   }
+   
+   /*
+    * move posts from trash to drafts
+    */
+
+   function untrash_action($ids, $backPage)
+   {
+      AdminQuick::bulkActionSubmit('blog', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->changeStatus($ids, 'draft');
+         },
+         function($count)
+         {
+            return 'Przywrócono ' . $count . ' postów z kosza';
+         });
    }
    
    /*
@@ -280,7 +437,7 @@ class Blog_Controller extends Controller
       AdminQuick::bulkAction('delete', 'blog', $ids, $backPage,
          function($ids, $model)
          {
-            return 'Czy na pewno chcesz usunąć ' . count($ids) . ' postów?';
+            return 'Czy na pewno chcesz usunąć ' . count($ids) . ' wpisów?';
          });
    }
 
@@ -297,7 +454,7 @@ class Blog_Controller extends Controller
          },
          function($count)
          {
-            return 'Usunięto ' . $count . ' postów';
+            return 'Usunięto ' . $count . ' wpisów';
          });
    }
 }

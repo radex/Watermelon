@@ -33,6 +33,8 @@ include 'Textarea.php';
 include 'HiddenInput.php';
 include 'HiddenData.php';
 
+include 'Checkbox.php';
+
 // TODO: find a better solution to the bug with form in session (current fix sucks and doesn't fix the problem completely)
 
 class Form

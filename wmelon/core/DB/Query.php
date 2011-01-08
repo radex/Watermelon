@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -330,15 +330,40 @@ class DBQuery
       
       // adding
       
-      $q = ' ' . $field . ' ' . $op . ' ' . DB::sqlValue($value) . ' ';
-      
-      if(!$and)
+      if(strtolower($op) == 'in') // 'in' operator - for IN(...)
       {
-         $this->where = 'WHERE' . $q;
+         // if not array
+         
+         if(!is_array($value))
+         {
+            $value = array($value);
+         }
+         
+         // converting to string
+         
+         foreach($value as &$item)
+         {
+            $item = DB::sqlValue($item);
+         }
+         
+         $value = implode(', ', $value);
+         
+         // query
+         
+         $q = $field . ' IN(' . $value . ')' . ' ';
       }
       else
       {
-         $this->where .= 'AND' . $q;
+         $q = $field . ' ' . $op . ' ' . DB::sqlValue($value) . ' ';
+      }
+      
+      if(!$and)
+      {
+         $this->where = 'WHERE ' . $q;
+      }
+      else
+      {
+         $this->where .= 'AND ' . $q;
       }
    }
    

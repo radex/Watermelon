@@ -379,6 +379,8 @@ function QuestionBox($message, $yesPage)
 
 function SiteLinks($html)
 {
+   // href/action="x"
+   
    $html = str_replace('href="#/',   'href="'   . WM_SiteURL, $html);
    $html = str_replace('action="#/', 'action="' . WM_SiteURL, $html);
    
@@ -387,6 +389,17 @@ function SiteLinks($html)
    
    $html = str_replace('href="%/',   'href="'   . WM_AdminURL, $html);
    $html = str_replace('action="%/', 'action="' . WM_AdminURL, $html);
+   
+   // href/action=x (it's better not to, but PHPTAL sometimes doesn't generate "" in attributes)
+   
+   $html = str_replace('href=#/',   'href='   . WM_SiteURL, $html);
+   $html = str_replace('action=#/', 'action=' . WM_SiteURL, $html);
+   
+   $html = str_replace('href=$/',   'href='   . WM_CurrURL, $html);
+   $html = str_replace('action=$/', 'action=' . WM_CurrURL, $html);
+   
+   $html = str_replace('href=%/',   'href='   . WM_AdminURL, $html);
+   $html = str_replace('action=%/', 'action=' . WM_AdminURL, $html);
    
    return $html;
 }
