@@ -22,7 +22,7 @@
       <h1>
          <a href="${post/url}">${post/title}</a>
          <span class="h1-comment">
-            ${structure post/created_human}${structure post/comments | nothing}
+            ${structure post/published_human}${structure post/comments | nothing}
          </span>
          <span class="adminTools" tal:condition="php: Auth::isLogged()">
             <a href="${post/editHref}">[Edytuj]</a> | <a href="${post/deleteHref}">[Usuń]</a>

@@ -19,7 +19,7 @@ CREATE TABLE `wm_blogposts` (
   `content` text NOT NULL,
   `summary` text,
   `author` int(11) NOT NULL,
-  `created` int(10) NOT NULL,
+  `published` int(10) NOT NULL,
   `updated` int(10) NOT NULL,
   `atomID` varchar(40) NOT NULL,
   `allowComments` tinyint(1) NOT NULL DEFAULT '1',

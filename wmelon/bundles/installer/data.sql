@@ -1,6 +1,6 @@
 -- sample blog post
 
-INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `created`, `updated`, `atomID`, `commentsCount`) VALUES
+INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `published`, `updated`, `atomID`, `commentsCount`) VALUES
 (
    'Witaj_w_Watermelonie!',
    'Witaj w Watermelonie!',

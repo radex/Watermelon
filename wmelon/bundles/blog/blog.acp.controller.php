@@ -91,7 +91,7 @@ class Blog_Controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', '<small>Napisany (uaktualniony)</small>', 'Komentarzy');
+      $table->header = array('Tytuł', 'Data', 'Komentarzy');
       
       // actions for selected posts
       
@@ -112,11 +112,18 @@ class Blog_Controller extends Controller
          $id = $post->id;
          
          //--
-         
-            $title = '<a href="$/blog/edit/' . $id . ' title="Edytuj wpis">' . $post->title . '</a>';
-         
+            
+            $title = '<strong>' . $post->title . '</strong>';
+            
+            // title as link to edit (not for trash)
+            
+            if($scope != 'trash')
+            {
+               $title = '<a href="$/blog/edit/' . $id . '" title="Edytuj wpis">' . $title . '</a>';
+            }
+            
             // draft marker (only for 'all' scope)
-         
+            
             if($post->status == 'draft' && $scope == 'all')
             {
                $title = '(Szkic) ' . $title;
@@ -124,37 +131,51 @@ class Blog_Controller extends Controller
          
          //--
          
-            $content = strip_tags($post->content);
+            $content = nl2br(strip_tags($post->content));
          
-            if(strlen($content) > 130)
+            if(mb_strlen($content) > 130)
             {
-               $content = substr($content, 0, 130) . ' (...)';
+               $content = mb_substr($content, 0, 130) . ' (...)';
             }
          
          //--
          
-            $linkTo = '#/' . date('Y/m', $post->created) . '/' . $post->name;
+            $linkTo = '#/' . date('Y/m', $post->published) . '/' . $post->name;
          
             $actions = '';
-            $actions .= '<a href="' . $linkTo . '" title="Obejrzyj wpis na stronie">Zobacz</a>';
-            $actions .= ' | <a href="$/blog/edit/' . $id . '" title="Edytuj wpis">Edytuj</a>';
             
-            // deleting or moving to trash (depending on scope)
+            // preview and editing (not for trash)
+            
+            if($scope != 'trash')
+            {
+               $actions .= '<a href="' . $linkTo . '" title="Obejrzyj wpis na stronie">Zobacz</a>';
+               $actions .= ' | <a href="$/blog/edit/' . $id . '" title="Edytuj wpis">Edytuj</a>';
+            }
+            
+            // publishing (for drafts)
+            
+            if($post->status == 'draft')
+            {
+               $actions .= ' | <a href="$/blog/publish/' . $id . '" title="Publikuj wpis">Publikuj</a>';
+            }
+            
+            // moving to drafts
+            
+            if($post->status == 'published')
+            {
+               $actions .= ' | <a href="$/blog/unpublish/' . $id . '" title="Przenieś opublikowany post do szkiców">Przenieś do szkiców</a>';
+            }
+            
+            // deleting and untrashing (trash scope), or moving to trash (other scopes)
             
             if($scope == 'trash')
             {
-               $actions .= ' | <a href="$/blog/delete/' . $id . '" title="Nieodwracalnie usuń wpis">Usuń na zawsze</a>';
+               $actions .= '<a href="$/blog/delete/' . $id . '" title="Nieodwracalnie usuń wpis">Usuń na zawsze</a>';
+               $actions .= ' | <a href="$/blog/untrash/' . $id . '" title="Przywróć wpis z kosza do szkiców">Przywróć</a>';
             }
             else
             {
                $actions .= ' | <a href="$/blog/trash/' . $id . '" title="Przenieś wpis do kosza">Usuń</a>';
-            }
-            
-            // moving posts from trash to drafts (in trash scope)
-            
-            if($scope == 'trash')
-            {
-               $actions .= ' | <a href="$/blog/untrash/' . $id . '" title="Przywróć wpis z kosza do szkiców">Przywróć</a>';
             }
             
          //--
@@ -164,8 +185,28 @@ class Blog_Controller extends Controller
             $postInfo .= '<div class="acp-actions">' . $actions . '</div>';
          
          //--
-         
-            $dates = '<small>' . HumanDate($post->created, true, true) . '<br>(' . HumanDate($post->updated, true, true) . ')</small>'; //TODO: + by [author]
+            
+            $dates = '<small>';
+            
+            // creation/publication date
+            
+            if($post->status == 'published')
+            {
+               $dates .= HumanDate($post->published, true, true) . ' opublikowany';
+            }
+            else
+            {
+               $dates .= HumanDate($post->published, true, true) . ' utworzony';
+            }
+            
+            // update date
+            
+            if($post->updated > $post->published)
+            {
+               $dates .= ', <br>' . HumanDate($post->updated, true, true) . ' zmieniony';
+            }
+            
+            $dates .= '</small>';
          
          //--
          
@@ -181,7 +222,9 @@ class Blog_Controller extends Controller
          
          //--
          
-         $table->addLine($id, $postInfo, $dates, $comments);
+         $cells = array($postInfo, $dates, $comments);
+         
+         $table->addLine($id, $cells);
       }
       
       // displaying
@@ -291,7 +334,7 @@ class Blog_Controller extends Controller
       
       $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
       
-      $postURL = '#/' . date('Y/m', $data->created) . '/' . $data->name;
+      $postURL = '#/' . date('Y/m', $data->published) . '/' . $data->name;
       
       switch($this->parameters->backto)
       {
@@ -382,7 +425,7 @@ class Blog_Controller extends Controller
       
       if(isset($_POST['submit_publish']))
       {
-         $this->model->changeStatus($id, 'published');
+         $this->model->publish($id);
          
          $this->addMessage('tick', 'Opublikowano wpis');
       }
@@ -393,7 +436,41 @@ class Blog_Controller extends Controller
       
       SiteRedirect('blog/edit/' . $id . $backTo);
    }
+   
+   /*
+    * publish posts
+    */
 
+   function publish_action($ids, $backPage)
+   {
+      AdminQuick::bulkActionSubmit('blog', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->publish($ids);
+         },
+         function($count)
+         {
+            return 'Opublikowano ' . $count . ' postów';
+         });
+   }
+   
+   /*
+    * move posts to drafts
+    */
+
+   function unpublish_action($ids, $backPage)
+   {
+      AdminQuick::bulkActionSubmit('blog', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->changeStatus($ids, 'draft');
+         },
+         function($count)
+         {
+            return 'Zmieniono ' . $count . ' postów na szkice';
+         });
+   }
+   
    /*
     * move posts to trash
     */

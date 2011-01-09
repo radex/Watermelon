@@ -58,9 +58,10 @@ class ACPTable
     * Actions (that will be displayed as buttons) for selected items
     * 
     * $selectedActions = array($action, ...)
-    *    $action = array($label, $basePage)
-    *       string $label    - label of a button, e.g. 'Delete'
-    *       string $basePage - base of page of an action, e.g. 'pages/delete/'
+    *    $action = array($label, $basePage[, $description])
+    *       string $label       - label of a button
+    *       string $basePage    - base of page of an action, e.g. 'pages/delete/'
+    *       string $description - description (title="") of button
     */
    
    public $selectedActions = array();
@@ -114,7 +115,11 @@ class ACPTable
     * 
     * Table contents
     * 
-    * If ->isCheckbox is true, there shall be ID at the beginning of every item
+    * $data = array($row, ...)
+    *    $row = array([$id, ]$cells[, $attributes])
+    *       int      $id         - ID of cell (only if ->isCheckbox is TRUE)
+    *       string[] $cells      = array(string $cell, ...)
+    *       array    $attributes = array(string $htmlAttribute => $value, ...)
     */
    
    public $data;
@@ -122,42 +127,20 @@ class ACPTable
    /****************************************************/
    
    /*
-    * public void addLine(int $id, string $cell[, ...])
-    * public void addLine(int $id, string[] $cells)
-    * public void addLine(string $cell[, ...])
-    * public void addLine(string[] $cells)
+    * public void addLine(int $id, string[] $cells[, $attributes])
+    * public void addLine(string[] $cells[, $attributes])
     * 
     * Adds a line to the table
     * 
     * If ->isCheckbox is true, you have to pass ID of item represented by this line before actual cells
     * 
-    * You can pass cell contents either by passing them in consecutive strings or as strings array
+    * array $attributes - HTML attributes of a row
+    *    = array(string $htmlAttribute => $value, ...)
     */
    
    public function addLine()
    {
-      $args = func_get_args();
-      $line = array();
-      
-      if(is_array($args[0])) // array
-      {
-         $line = $args[0];
-      }
-      elseif(is_string($args[0])) // string, ...
-      {
-         $line = $args;
-      }
-      elseif(is_int($args[0]) && is_string($args[1])) // int, string, ...
-      {
-         $line = $args;
-      }
-      elseif(is_int($args[0]) && is_array($args[1])) // int, array
-      {
-         $line = $args[1];
-         array_unshift($line, $args[0]);
-      }
-      
-      $this->data[] = $line;
+      $this->data[] = func_get_args();
    }
    
    /*
@@ -207,11 +190,16 @@ class ACPTable
          
             foreach($this->selectedActions as $action)
             {
-               list($label, $basePage) = $action;
-            
+               list($label, $basePage, $description) = $action;
+               
+               if(!empty($description))
+               {
+                  $description = ' title="' . htmlspecialchars($description) . '"';
+               }
+               
                $basePage = SiteURL($basePage);
             
-               $pb .= '<input type="button" value="' . $label . '" onclick="TableAction(' . $this->tableID . ',\'' . $basePage . '\')"> ';
+               $pb .= '<input type="button" value="' . $label . '"' . $description . ' onclick="TableAction(' . $this->tableID . ',\'' . $basePage . '\')">' . "\n";
             }
          }
          
@@ -220,21 +208,29 @@ class ACPTable
          
       // header/footer of the table
       
-      $h .= '<tr>';
+         $h .= '<tr>';
+         
+         // select/unselect all
+         
+         if($this->isCheckbox)
+         {
+            $h .= '<th style="width: 15px" onclick="TableChangeSelection(' . $this->tableID . ', true)">';
+            $h .= '<input type="checkbox" title="Zaznacz/odznacz wszystkie">';
+            $h .= '</th>';
+         }
+         
+         // header labels
+         
+         foreach($this->header as $headerLabel)
+         {
+            $h .= "<th>\n\t" . $headerLabel . "\n</th>\n";
+         }
+         
+         //--
+         
+         $h .= "</tr>\n\n";
       
-      if($this->isCheckbox)
-      {
-         $h .= '<th onclick="TableChangeSelection(' . $this->tableID . ', true)"><input type="checkbox" title="Zaznacz/odznacz wszystkie"></th>';
-      }
-      
-      foreach($this->header as $headerLabel)
-      {
-         $h .= '<th>' . $headerLabel . '</th>';
-      }
-      
-      $h .= '</tr>';
-      
-      // table itself
+      // table beginning
       
       $t .= $pb;
       
@@ -243,32 +239,55 @@ class ACPTable
       $t .= '<thead>' . $h . '</thead>';
       $t .= '<tfoot>' . $h . '</tfoot>';
       
+      // adding rows
+      
       foreach($this->data as $line)
       {
-         $t .= '<tr>';
+         // data
+         
+         if($this->isCheckbox)
+         {
+            list($id, $cells, $attributes) = $line;
+         }
+         else
+         {
+            list($cells, $attributes) = $line;
+         }
+         
+         if(!isset($attributes))
+         {
+            $attributes = array();
+         }
+         
+         // attributes (optionally)
+         
+         $t .= '<tr';
+         
+         foreach($attributes as $attribute => $value)
+         {
+            $t .= ' ' . $attribute . '="' . htmlspecialchars($value) . '"';
+         }
+         
+         $t .= '>';
          
          // checkbox
          
          if($this->isCheckbox)
          {
-            $id = $line[0];
-            
-            array_shift($line); // shifting ID out of an array
-            
             $t .= '<td title="ID: ' . $id . '" onclick="TableFlip(' . $this->tableID . ', ' . $id . ')">';
-            $t .= '<input type="checkbox" id="table' . $this->tableID . '-id' . $id . '" onclick="TableFlip(' . $this->tableID . ', ' . $id . ')"></td>';
+            $t .= '<input type="checkbox" id="table' . $this->tableID . '-id' . $id . '" onclick="TableFlip(' . $this->tableID . ', ' . $id . ')"></td>' . "\n";
          }
          
          // cells
          
-         foreach($line as $cell)
+         foreach($cells as $cell)
          {
-            $t .= '<td>' . $cell . '</td>';
+            $t .= "<td>\n\t" . $cell . "\n</td>\n";
          }
          
          //--
          
-         $t .= '</tr>';
+         $t .= "</tr>\n\n";
       }
       
       $t .= '</table>';

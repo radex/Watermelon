@@ -290,6 +290,8 @@ class Watermelon
       
       set_include_path('.');
       
+      mb_internal_encoding('UTF-8');
+      
       // fixing "magic" quotes
       
       if(get_magic_quotes_gpc())

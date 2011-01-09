@@ -172,7 +172,7 @@ class Blog_Model extends Model
             'summary'       =>          $summary,
             
             'author'        =>          Auth::userData()->id,
-            'created'       =>          time(),
+            'published'     =>          time(),
             'updated'       =>          time(),
             
             'atomID'        =>          $atomID,
@@ -221,6 +221,19 @@ class Blog_Model extends Model
    }
    
    /*
+    * public void publish(int[] $ids)
+    * 
+    * Changes status of posts to published and updates published/updates dates
+    */
+   
+   public function publish($ids)
+   {
+      DBQuery::update('blogposts')->set('published', time())->where('id', 'in', $ids)->act();
+      
+      $this->changeStatus($ids, 'published');
+   }
+   
+   /*
     * public void changeStatus(int[] $ids, enum $status)
     * 
     * Changes status of posts to $status
@@ -230,7 +243,7 @@ class Blog_Model extends Model
    
    public function changeStatus($ids, $status)
    {
-      DBQuery::update('blogposts')->set('status', $status)->where('id', 'in', $ids)->act();
+      DBQuery::update('blogposts')->set('status', $status, 'updated', time())->where('id', 'in', $ids)->act();
       
       $this->updateFeed();
    }
@@ -296,11 +309,11 @@ class Blog_Model extends Model
          
          $postElement->title     = $post->title;
          $postElement->id        = $post->atomID;
-         $postElement->published = date(DATE_ATOM, $post->created);
+         $postElement->published = date(DATE_ATOM, $post->published);
          $postElement->updated   = date(DATE_ATOM, $post->updated);
          
          $postElement->link['rel']  = 'alternate';
-         $postElement->link['href'] = WM_SiteURL . date('Y/m', $post->created) . '/' . $post->name;
+         $postElement->link['href'] = WM_SiteURL . date('Y/m', $post->published) . '/' . $post->name;
          
          $postElement->content['type'] = 'html';
          $postElement->content = Textile::textile($post->content);

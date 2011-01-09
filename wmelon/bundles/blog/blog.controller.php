@@ -60,11 +60,15 @@ class Blog_Controller extends Controller
          
          // URL to post
          
-         $post->url = '$/' . date('Y/m', $post->created) . '/' . $post->name;
+         $post->url = '$/' . date('Y/m', $post->published) . '/' . $post->name;
          
-         // post creation human date
+         // is draft
          
-         $post->created_human = HumanDate($post->created, true, true);
+         $post->draft = ($post->status == 'draft');
+         
+         // post creation human-readable date
+         
+         $post->published_human = HumanDate($post->published, true, true);
          
          // comments counter - visible (approved) comments for users, all comments - for admin
          
@@ -126,40 +130,53 @@ class Blog_Controller extends Controller
    
    public function _post_action($name)
    {
-      if(empty($name))
+      // getting post data
+      
+      $post = $this->model->postData_name($name);
+      
+      if(!$post)
       {
          Watermelon::displayNoPageFoundError();
          return;
       }
       
-      // getting post data
+      // checking if published
       
-      $postData = $this->model->postData_name($name);
-      
-      if(!$postData)
+      if($post->status !== 'published')
       {
-         Watermelon::displayNoPageFoundError();
-         return;
+         // displaying notice for admin, or 'not found'
+         
+         if(Auth::isLogged())
+         {
+            $this->addMessage('info', 'Ten wpis nie jest opublikowany. Tylko Ty go możesz zobaczyć.');
+         }
+         else
+         {
+            Watermelon::displayNoPageFoundError();
+            return;
+         }
       }
       
       // post
       
-      $postData->content = Textile::textile($postData->content);
-      $postData->url     = '#/' . date('Y/m', $postData->created) . '/' . $postData->name;
+      $post->content = Textile::textile($post->content);
+      $post->url     = '#/' . date('Y/m', $post->published) . '/' . $post->name;
       
       // displaying (if exists)
       
-      $id = $postData->id;
+      $id = $post->id;
       
-      $this->pageTitle         = $postData->title;
+      $this->pageTitle         = $post->title;
       $this->dontShowPageTitle = true;
       
       $view = View('post');
-      $view->post         = $postData;
-      $view->commentsView = Comments::commentsView($id, 'blogpost', $postData->url, (bool) $postData->allowComments);
+      $view->post         = $post;
+      $view->commentsView = Comments::commentsView($id, 'blogpost', $post->url, (bool) $post->allowComments);
 
       $view->editHref     = '%/blog/edit/' . $id . '/backTo:post';
       $view->deleteHref   = '%/blog/delete/' . $id . '/' . base64_encode('#/blog');
+      
+      $view->published_human = HumanDate($post->published, true, true);
       
       $view->display();
    }
