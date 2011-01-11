@@ -280,6 +280,7 @@ class Watermelon
       
       session_start();
       session_regenerate_id();
+      session_name('Watermelon');
       
       ob_start();
       

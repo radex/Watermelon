@@ -142,7 +142,7 @@ class Options_Controller extends Controller
    function general_save_action()
    {
       $form = Form::validate('wmelon.options.general', 'options/general');
-      $data = $form->getAll();
+      $data = $form->get();
       
       // saving data - wmelon config
       
@@ -165,7 +165,7 @@ class Options_Controller extends Controller
             'email' => $data->email,
          ));
       
-      $_SESSION['Auth_login'] = $data->login;
+      $_SESSION['wmelon.user.login'] = $data->login;
       
       // saving data - sblam!
       

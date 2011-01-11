@@ -111,36 +111,38 @@ class ACPTable
    public $header;
    
    /*
-    * public array $data
+    * public array $rows
     * 
     * Table contents
     * 
     * $data = array($row, ...)
     *    $row = array([$id, ]$cells[, $attributes])
-    *       int      $id         - ID of cell (only if ->isCheckbox is TRUE)
-    *       string[] $cells      = array(string $cell, ...)
-    *       array    $attributes = array(string $htmlAttribute => $value, ...)
+    *       int $id
+    *          ID of item represented by row (only if ->isCheckbox is TRUE)
+    *       
+    *       string[] $cells = array(string $cell, ...)
+    *          HTML contents of cells
+    *          
+    *       array $attributes = array(string $htmlAttribute => $value, ...)
+    *          HTML attributes of a row
     */
    
-   public $data;
+   public $rows;
    
    /****************************************************/
    
    /*
-    * public void addLine(int $id, string[] $cells[, $attributes])
-    * public void addLine(string[] $cells[, $attributes])
+    * public void addRow(int $id, string[] $cells[, $attributes])
+    * public void addRow(string[] $cells[, $attributes])
     * 
-    * Adds a line to the table
+    * Adds a row to the table
     * 
-    * If ->isCheckbox is true, you have to pass ID of item represented by this line before actual cells
-    * 
-    * array $attributes - HTML attributes of a row
-    *    = array(string $htmlAttribute => $value, ...)
+    * Attributes as in ->rows
     */
    
-   public function addLine()
+   public function addRow()
    {
-      $this->data[] = func_get_args();
+      $this->rows[] = func_get_args();
    }
    
    /*
@@ -241,7 +243,7 @@ class ACPTable
       
       // adding rows
       
-      foreach($this->data as $line)
+      foreach($this->rows as $line)
       {
          // data
          

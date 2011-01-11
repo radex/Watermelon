@@ -392,23 +392,12 @@ class Form
    }
    
    /*
-    * public string get(string $inputName)
-    * 
-    * Returns value of input with given name
-    */
-   
-   public function get($name)
-   {
-      return $this->items[$name]->value;
-   }
-   
-   /*
-    * public object getAll()
+    * public object get()
     * 
     * Returns values of all inputs in form as object
     */
    
-   public function getAll()
+   public function get()
    {
       $values = new stdClass;
       

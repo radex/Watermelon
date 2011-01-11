@@ -393,7 +393,7 @@ class Installer_Controller extends Controller
       if($_SESSION['previousStep'] == 4)
       {
          $form = Form::validate('wmelon.installer.dbInfo', '4');
-         $data = $form->getAll();
+         $data = $form->get();
          
          $_SESSION['dbForm'] = $data;
          
@@ -472,7 +472,7 @@ class Installer_Controller extends Controller
       if($_SESSION['previousStep'] == 5)
       {
          $form = Form::validate('wmelon.installer.userData', '5');
-         $data = $form->getAll();
+         $data = $form->get();
          
          $_SESSION['userDataForm'] = $data;
          
@@ -525,7 +525,7 @@ class Installer_Controller extends Controller
       if($_SESSION['previousStep'] == 6)
       {
          $form = Form::validate('wmelon.installer.siteName', '6');
-         $data = $form->getAll();
+         $data = $form->get();
          
          $_SESSION['siteNameForm'] = $data;
       }
@@ -717,8 +717,8 @@ CONFIG;
       
       session_unset();
       
-      $_SESSION['Auth_login'] = $user->user;
-      $_SESSION['Auth_pass']  = $user->pass;
+      $_SESSION['wmelon.user.login'] = $user->user;
+      $_SESSION['wmelon.user.pass']  = $user->pass;
       
       SiteRedirect('');
    }

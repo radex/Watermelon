@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ class Auth extends Extension
    {
       // checking whether user is logged in
       
-      if(isset($_SESSION['Auth_login']) && isset($_SESSION['Auth_pass']))
+      if(isset($_SESSION['wmelon.user.login']) && isset($_SESSION['wmelon.user.pass']))
       {
          try
          {
@@ -69,8 +69,8 @@ class Auth extends Extension
       $login = trim(strtolower($login));
       $pass  = trim($pass);
       
-      $_SESSION['Auth_login'] = $login;
-      $_SESSION['Auth_pass']  = $pass;
+      $_SESSION['wmelon.user.login'] = $login;
+      $_SESSION['wmelon.user.pass']  = $pass;
       
       if(self::_isLogged())
       {
@@ -86,8 +86,8 @@ class Auth extends Extension
    
    public static function logout()
    {
-      unset($_SESSION['Auth_login']);
-      unset($_SESSION['Auth_pass']);
+      unset($_SESSION['wmelon.user.login']);
+      unset($_SESSION['wmelon.user.pass']);
       
       self::$isLogged = false;
    }
@@ -148,8 +148,8 @@ class Auth extends Extension
    {
       // getting user data, checking existence
       
-      $login = $_SESSION['Auth_login'];
-      $pass  = $_SESSION['Auth_pass'];
+      $login = $_SESSION['wmelon.user.login'];
+      $pass  = $_SESSION['wmelon.user.pass'];
       
       $model = Loader::model('auth');
       

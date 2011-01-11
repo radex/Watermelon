@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -25,9 +25,9 @@
 /*
 future ideas:
 
-- make it extensible by other extensions
-- and (as an example) make LaTeX extension (that'd be cool, huh?)
+- make it extensible by other extensions (e.g. LaTeX would be cool)
 - move it to universal Cache, when it's done
+- refactor Textile library and update it
 
 */
 
@@ -46,60 +46,7 @@ class Textile_Extension extends Extension
    
    public static function textile($text)
    {
-      // fetching cached or generating HTML from Textile
-      
-      $hash = md5($text);
-      
-      $path = WM_Cache . 'textile/' . $hash . '.php';
-      
-      if(!file_exists($path) || defined('WM_Debug'))
-      {
-         // Textile --> HTML
-         
-         $textiled = self::generateTextile($text);
-         
-         // array --> string to be cached
-         
-         $cacheString = "<?php\ndefined('WM') or die;\n"; // so that direct access is not possible
-         
-         $cacheString .= '$textiled = ' . var_export($textiled, true) . ';';
-         
-         // caching
-         
-         if(!defined('WM_Debug'))
-         {
-            file_put_contents($path, $cacheString);
-         }
-      }
-      else
-      {
-         include $path;    // textiled content is in $textiled variable
-      }
-      
-      // generating final output
-      
-      foreach($textiled as $i => $data)
-      {
-         if($i % 2 == 0)
-         {
-            // if $data is string
-            
-            $output .= $data;
-         }
-         else
-         {
-            // if $data is PHP code to be evaluated
-            
-            ob_start();
-            
-            $evaluated  = eval($data);
-            $evaluated .= ob_get_clean();
-            
-            $output .= $evaluated;
-         }
-      }
-      
-      return $output;
+      return self::textile_string($text, false);
    }
    
    /*
@@ -112,46 +59,64 @@ class Textile_Extension extends Extension
    
    public static function textileRestricted($text)
    {
+      return self::textile_string($text, true);
+   }
+   
+   /**************************************************************************/
+   
+   protected static function textile_string($text, $restricted)
+   {
+      // path
+      
+      $path = WM_Cache . 'textile';
+      
+      if($restricted)
+      {
+         $path .= '_restricted';
+      }
+      
+      $path .= '/' . md5($text) . '.php';
+      
       // fetching cached or generating HTML from Textile
-      
-      $hash = md5($text);
-      
-      $path = WM_Cache . 'textile_restricted/' . $hash . '.php';
       
       if(!file_exists($path) || defined('WM_Debug'))
       {
-         // generating & caching
+         // generating
          
-         $textiled = self::$textile->TextileRestricted($text);
+         if($restricted)
+         {
+            $textiled = self::$textile->TextileRestricted($text);
+         }
+         else
+         {
+            $textiled = self::generateTextile($text);
+         }
+         
+         // caching
          
          if(!defined('WM_Debug'))
          {
             file_put_contents($path, '<?php die?>' . $textiled); // so that direct access is not possible
          }
-         
-         return $textiled;
       }
       else
       {
          $textiled = file_get_contents($path);
          $textiled = substr($textiled, 11);      // removing <?php die? >
-         
-         return $textiled;
       }
+      
+      return $textiled;
    }
-   
-   /**************************************************************************/
    
    /*
     * Does actual convertion from Textile markup to HTML
     */
    
-   private static function generateTextile($text)
+   protected static function generateTextile($text)
    {
       // shelving code snippets & PHP to be executed
       
       $text = preg_replace_callback('/<code\(([^)]+)\)>(.*?)<\/code>/ms', array(__CLASS__, 'shelveCode'), $text);
-      $text = preg_replace_callback('/<exec>(.*?)<\/exec>/ms', array(__CLASS__, 'shelveExec'), $text);
       
       // replacing youtube tag
       
@@ -171,10 +136,6 @@ class Textile_Extension extends Extension
       {
          $text = str_replace('<wm:shelf(' . $i . ')>', $item, $text);
       }
-      
-      // converting to array (needed for <exec>)
-      
-      $text = explode('<wm:execStop/>', $text);
       
       return $text;
    }
@@ -208,7 +169,7 @@ class Textile_Extension extends Extension
     * replaces <code()>..</code> syntax with placeholder (and puts HTML on "shelf"), so that entities won't be broken by Textile
     */
    
-   private static function shelveCode($args)
+   protected static function shelveCode($args)
    {
       list(, $brush, $code) = $args;
       
@@ -220,26 +181,10 @@ class Textile_Extension extends Extension
    }
    
    /*
-    * replaces <exec>..</exec> syntax with placeholder (and puts PHP from it on "shelf")
-    */
-   
-   private static function shelveExec($args)
-   {
-      list(, $code) = $args;
-      
-      $shelvedID = count(self::$shelf);
-      
-      self::$shelf[$shelvedID] = '<wm:execStop/>' . $code . '<wm:execStop/>';
-            // <wm:execStop/>s will be used later to convert converted text to array (so that when cached, text and code to be evaluated are separated)
-      
-      return '<wm:shelf(' . $shelvedID . ')>';
-   }
-   
-   /*
     * replaces 'youtube. [url]' syntax with HTML
     */
    
-   private static function replaceYoutube($args)
+   protected static function replaceYoutube($args)
    {
       $videoID = $args[2];
       
@@ -254,18 +199,14 @@ class Textile_Extension extends Extension
    }
    
    /*
-    * adds website base URL to links that does not start with 'http(s)://'
+    * adds website base URL to links that does not start with protocol name (e.g. 'http://')
     */
    
-   private static function fixLinks($args)
+   protected static function fixLinks($args)
    {
       list($href, $url) = $args;
       
-      if(substr($url, 0, 7) == 'http://')
-      {
-         return $href;
-      }
-      elseif(substr($url, 0, 8) == 'https://')
+      if(preg_match('/^[a-z]+:/i', $url) == 1)
       {
          return $href;
       }

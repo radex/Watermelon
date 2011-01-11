@@ -77,9 +77,9 @@ class Comments extends Extension
          
          $comment->visible = (Auth::isLogged() || $comment->approved || ($comment->visibilityToken == $visibilityToken && !empty($comment->visibilityToken)));
          
-         // additionalInformation (for admin)
+         // additional information (for admin)
          
-         if(Auth::isLogged() && $authorID === null)
+         if(Auth::isLogged() && $comment->authorID === null)
          {
             $comment->additionalInfo = $comment->authorEmail . '; IP:' . $comment->authorIP;
          }
@@ -226,7 +226,7 @@ class Comments extends Extension
       
       $backPage = base64_decode($backPage);
       
-      $form = Form::validate('wmelon.comments.addComment', $backPage)->getAll();
+      $form = Form::validate('wmelon.comments.addComment', $backPage)->get();
       
       // testing for spam and adding
       

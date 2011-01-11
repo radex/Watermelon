@@ -46,7 +46,7 @@ class Comments_Controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Komentarz', 'Napisany', 'Autor', 'Status');
+      $table->header = array('Komentarz', 'Napisany', 'Autor');
       $table->selectedActions[] = array('Usuń', 'comments/delete/');
       $table->selectedActions[] = array('Zatwierdź', 'comments/approve/');
       $table->selectedActions[] = array('Odrzuć', 'comments/reject/');
@@ -65,14 +65,14 @@ class Comments_Controller extends Controller
          
          //--
          
-         $content = strip_tags($comment->content);
+            $content = strip_tags($comment->content);
          
-         if(strlen($content) > 500)
-         {
-            $content = substr($content, 0, 500) . ' (...)';
-         }
+            if(mb_strlen($content) > 500)
+            {
+               $content = mb_substr($content, 0, 500) . ' (...)';
+            }
          
-         $content = nl2br($content);
+            $content = nl2br($content);
          
          //--
          
@@ -93,7 +93,7 @@ class Comments_Controller extends Controller
                
                //--
                
-               $actions .= '<a href="#/' . date('Y/m', $post->created) . '/' . $post->name . '#comment-' . $id . '" title="Obejrzyj komentarz na stronie">Zobacz</a> | ';
+               $actions .= '<a href="#/' . date('Y/m', $post->published) . '/' . $post->name . '#comment-' . $id . '" title="Obejrzyj komentarz na stronie">Zobacz</a> | ';
             }
             elseif($comment->type = 'page')
             {
@@ -129,52 +129,60 @@ class Comments_Controller extends Controller
             }
          
          //--
-         
-         $commentInfo = $content;
-         $commentInfo .= '<div class="acp-actions">' . $actions . '</div>';
-         
-         //--
-         
-         $created = HumanDate($comment->created);
-         
-         //--
-         
-         if($comment->authorID !== null)
-         {
-            // fetching data
             
-            if(!isset($users[$comment->authorID]))
+            $commentInfo = '';
+            
+            if(!$comment->approved)
             {
-               $users[$comment->authorID] = Model('auth')->userData_id($comment->authorID);
+               $commentInfo .= '[<strong>Niesprawdzony!</strong>] ';
             }
             
-            $user = &$users[$comment->authorID];
-            
-            //--
-            
-            $author = htmlspecialchars($user->nick) . ' (admin)';
-         }
-         else
-         {
-            $author = htmlspecialchars($comment->authorName);
-            
-            if($comment->authorWebsite !== null)
+            $commentInfo .= $content;
+            $commentInfo .= '<div class="acp-actions">' . $actions . '</div>';
+         
+         //--
+         
+            $created = HumanDate($comment->created);
+         
+         //--
+         
+            if($comment->authorID !== null)
             {
-               $author = '<a href="' . htmlspecialchars($comment->authorWebsite) . '" target="_blank">' . $author . '</a>';
-            }
+               // fetching data
             
-            $author .= '<br>' . htmlspecialchars($comment->authorEmail);
-         }
+               if(!isset($users[$comment->authorID]))
+               {
+                  $users[$comment->authorID] = Model('auth')->userData_id($comment->authorID);
+               }
+            
+               $user = &$users[$comment->authorID];
+            
+               //--
+            
+               $author = htmlspecialchars($user->nick) . ' (admin)';
+            }
+            else
+            {
+               $author = htmlspecialchars($comment->authorName);
+            
+               if($comment->authorWebsite !== null)
+               {
+                  $author = '<a href="' . htmlspecialchars($comment->authorWebsite) . '" target="_blank">' . $author . '</a>';
+               }
+            
+               $author .= '<br>' . htmlspecialchars($comment->authorEmail);
+            }
          
          //--
          
-         $status = $comment->approved ? '' : 'Niesprawdzony';
+            if(!$comment->approved)
+            {
+               $rowAttributes = array('style' => 'background-color:#F5E8D9');
+            }
          
-         //TODO: <td> and <tr> attributes in Form
+            $cells = array($commentInfo, $created, $author);
          
-         //--
-         
-         $table->addLine($id, $commentInfo, $created, $author, $status);
+            $table->addRow($id, $cells, $rowAttributes);
       }
       
       // displaying
@@ -228,7 +236,7 @@ class Comments_Controller extends Controller
       // editing
       
       $form = Form::validate('wmelon.comments.editComment', 'comments/edit/' . $id . '/' . $backPage);
-      $data = $form->getAll();
+      $data = $form->get();
       
       $this->model->editComment($id, $data->content);
       

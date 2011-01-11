@@ -264,29 +264,13 @@ function SiteRedirect($urn = '', $type = null)
 
 function ClientIP()
 {
-   $ip = false;
-   
    if(!empty($_SERVER['HTTP_CLIENT_IP']))
    {
       $ip = $_SERVER['HTTP_CLIENT_IP'];
    }
    elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
    {
-      $ips = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']);
-      
-      if($ip)
-      {
-         array_unshift($ips, $ip);
-         $ip = false;
-      }
-      
-      foreach($ips as $v)
-      {
-         if(!preg_match('#^(192\.168|172\.16|10|224|240|127|0)\.#', $v))
-         {
-            return $v;
-         }
-      }
+      $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
    }
    else
    {

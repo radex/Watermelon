@@ -97,12 +97,12 @@ class Blog_Controller extends Controller
       
       if($scope == 'trash')
       {
-         $table->selectedActions[] = array('Usuń na zawsze', 'blog/delete/');
-         $table->selectedActions[] = array('Przywróć',       'blog/untrash/');
+         $table->selectedActions[] = array('Usuń na zawsze', 'blog/delete/', 'Nieodwracalnie usuń zaznaczone wpisy');
+         $table->selectedActions[] = array('Przywróć',       'blog/untrash/', 'Przywróć zaznaczone wpisy z kosza do szkiców');
       }
       else
       {
-         $table->selectedActions[] = array('Usuń', 'blog/trash/');
+         $table->selectedActions[] = array('Usuń', 'blog/trash/', 'Przenieś zaznaczone wpisy do kosza');
       }
       
       // adding posts
@@ -224,7 +224,7 @@ class Blog_Controller extends Controller
          
          $cells = array($postInfo, $dates, $comments);
          
-         $table->addLine($id, $cells);
+         $table->addRow($id, $cells);
       }
       
       // displaying
@@ -289,7 +289,7 @@ class Blog_Controller extends Controller
    function newSubmit_action()
    {
       $form = Form::validate('wmelon.blog.newPost', 'blog/new');
-      $data = $form->getAll();
+      $data = $form->get();
       
       // determining action - save or publish
       
@@ -417,7 +417,7 @@ class Blog_Controller extends Controller
       // editing
       
       $form = Form::validate('wmelon.blog.editPost', 'blog/edit/' . $id . $backTo);
-      $data = $form->getAll();
+      $data = $form->get();
       
       $this->model->editPost($id, $data->title, $data->content, $data->summary, $data->allowComments);
       

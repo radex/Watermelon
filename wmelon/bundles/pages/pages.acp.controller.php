@@ -117,7 +117,9 @@ class Pages_controller extends Controller
          
          //--
          
-         $table->addLine($id, $pageInfo, $dates, $comments);
+         $cells = array($pageInfo, $dates, $comments);
+         
+         $table->addRow($id, $cells);
       }
       
       // displaying
@@ -156,7 +158,7 @@ class Pages_controller extends Controller
    function newSubmit_action()
    {
       $form = Form::validate('wmelon.pages.newPage', 'pages/new');
-      $data = $form->getAll();
+      $data = $form->get();
       
       $id = $this->model->postPage($data->title, $data->name, $data->content);
       
@@ -244,7 +246,7 @@ class Pages_controller extends Controller
       // editing
       
       $form = Form::validate('wmelon.pages.editPage', 'pages/edit/' . $id . $backTo);
-      $data = $form->getAll();
+      $data = $form->get();
       
       $this->model->editPage($id, $data->title, $data->name, $data->content);
       

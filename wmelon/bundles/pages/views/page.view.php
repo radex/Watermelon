@@ -4,7 +4,7 @@
       <header>
          <h1>
             <a href="$/${page/name}">${page/title}</a>
-            <span class="adminTools" tal:condition="php: Auth::isLogged()">
+            <span class="adminTools" tal:condition="isAdmin">
                <a href="${editHref}">[Edytuj]</a> | <a href="${deleteHref}">[Usuń]</a>
             </span>
          </h1>

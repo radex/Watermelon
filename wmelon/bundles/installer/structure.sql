@@ -31,6 +31,19 @@ CREATE TABLE `wm_blogposts` (
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 -- 
+-- Structure for table `wm_categories`
+-- 
+
+CREATE TABLE `wm_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(25) NOT NULL,
+  `title` varchar(60) NOT NULL,
+  `count` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
 -- Structure for table `wm_comments`
 -- 
 

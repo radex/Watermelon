@@ -32,7 +32,7 @@
             
             <!-- admin tools -->
             
-            <div class="adminTools" tal:condition="php: Auth::isLogged()">
+            <div class="adminTools" tal:condition="isAdmin">
                <strong tal:condition="not: comment/approved">
                   Niesprawdzony!
                </strong>

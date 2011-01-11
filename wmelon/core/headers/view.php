@@ -28,14 +28,13 @@
 
 class View
 {
-   
    /*
-    * public array $parametrs
+    * public array $params
     * 
     * Parameters to be passed to the actual view
     */
    
-   public $parameters = array();
+   public $params = array();
    
    /*
     * private string $viewPath
@@ -61,7 +60,7 @@ class View
    
    public function display($return = false)
    {
-      // getting view file contents, and stripping from <?die?\>
+      // getting view file contents, and stripping from <?php die?\>
       
       $viewContent = file_get_contents($this->viewPath);
       $viewContent = str_replace('<?php die?>', '', $viewContent);
@@ -72,14 +71,27 @@ class View
       $view = new PHPTAL;
       $view->setSource($viewContent, $this->viewPath);
       
-      foreach($this->parameters as $key => $value)
+      foreach($this->params as $key => $value)
       {
          $view->set($key, $value);
       }
       
       $view->setOutputMode(PHPTAL::HTML5);
-      $view->addPreFilter(new ViewPreFilter);
+      
+      // PHPTAL filters
+      
+      $view->addPreFilter(new ViewPreFilter);                  // <?  -->  <?php, <?=  -->  <?php echo
       $view->addPreFilter(new PHPTAL_PreFilter_StripComments);
+      
+      if(!defined('WM_Debug'))
+      {
+         $view->addPreFilter(new PHPTAL_PreFilter_Normalize);  // strips whitespaces etc.
+      }
+      
+      // predefined parameters
+      // (NOTE: when changed, change also array in ->__set())
+      
+      $view->set('isAdmin', Auth::adminPrivileges());
       
       // returning or displaying
       
@@ -103,23 +115,42 @@ class View
    
    public function set($name, $value)
    {
-      $this->parameters[$name] = $value;
+      $this->__set($name, $value);
       
       return $this;
    }
+   
+   /*
+    * constructor
+    */
    
    public function __construct($viewPath)
    {
       $this->viewPath = $viewPath;
    }
    
+   /*
+    * param getter
+    */
+   
    public function __get($name)
    {
-      return $this->parameters[$name];
+      return $this->params[$name];
    }
+   
+   /*
+    * param setter
+    */
    
    public function __set($name, $value)
    {
-      $this->parameters[$name] = $value;
+      if(!in_array($name, array('isAdmin'))) // can't set predefined param
+      {
+         $this->params[$name] = $value;
+      }
+      else
+      {
+         throw new WM_Exception($name . ' jest zarezerwowaną nazwą parametru w widokach', 'view:predefinedParam');
+      }
    }
 }

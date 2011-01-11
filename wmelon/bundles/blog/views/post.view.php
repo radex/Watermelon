@@ -5,7 +5,7 @@
          <h1>
             <a href="${post/url}">${post/title}</a>
             <span class="h1-comment">${structure published_human}</span>
-            <span class="adminTools" tal:condition="php: Auth::isLogged()">
+            <span class="adminTools" tal:condition="isAdmin">
                <a href="${editHref}">[Edytuj]</a> | <a href="${deleteHref}">[Usuń]</a>
             </span>
          </h1>

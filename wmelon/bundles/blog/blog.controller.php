@@ -106,6 +106,17 @@ class Blog_Controller extends Controller
             }
          }
          
+         // content
+         
+         if($post->summary === null)
+         {
+            $post->content = Textile::textile($post->content);
+         }
+         else
+         {
+            $post->summary = Textile::textile($post->summary . ' <em>[...]</em>');
+         }
+         
          //--
          
          $posts[] = $post;

@@ -56,7 +56,7 @@ class Auth_Controller extends Controller
    function loginSubmit_action()
    {
       $form = Form::validate('wmelon.auth.login', 'auth/login');
-      $data = $form->getAll();
+      $data = $form->get();
       
       // validating
       

@@ -24,7 +24,7 @@
          <span class="h1-comment">
             ${structure post/published_human}${structure post/comments | nothing}
          </span>
-         <span class="adminTools" tal:condition="php: Auth::isLogged()">
+         <span class="adminTools" tal:condition="isAdmin">
             <a href="${post/editHref}">[Edytuj]</a> | <a href="${post/deleteHref}">[Usuń]</a>
          </span>
       </h1>
@@ -33,10 +33,10 @@
    <!-- post content -->
    
    <article tal:condition="not: post/summary">
-      <?= Textile::textile($ctx->post->content) ?>
+      ${structure post/content}
    </article>
    <article tal:condition="post/summary">
-      <?= Textile::textile($ctx->post->summary . ' <em>[...]</em>') ?>
+      ${structure post/summary}
    </article>
    
    <!-- read more -->
@@ -59,5 +59,5 @@
 <!-- if no posts -->
 
 <p tal:condition="php: count(posts) == 0">
-   Brak wpisów. <a tal:attributes="href string:%/blog/new" tal:condition="php: Auth::isLogged()">Napisz pierwszego!</a>
+   Brak wpisów. <a tal:attributes="href string:%/blog/new" tal:condition="isAdmin">Napisz pierwszego!</a>
 </p>
