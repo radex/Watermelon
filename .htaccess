@@ -5,14 +5,18 @@
 <IfModule mod_rewrite.c>
    RewriteEngine On
    
+   # URL test (for detection whether mod_rewrite works)
+   
+   RewriteRule wmelon/core/urltest.php$ wmelon/core/urltest.php?%{QUERY_STRING}&works [L]
+   
+   # adding trailing slash
+   
    RewriteCond %{REQUEST_FILENAME} !-f
    RewriteCond %{REQUEST_FILENAME} !-d
    RewriteCond %{REQUEST_URI} !(/)$
    RewriteRule (.*)$ $1/ [L]
    
-   RewriteCond %{REQUEST_FILENAME} !-f
-   RewriteCond %{REQUEST_FILENAME} !-d
-   RewriteRule watermelonurltest wmelon/core/works.html [L]
+   # x -> index.php/x
    
    RewriteCond %{REQUEST_FILENAME} !-f
    RewriteCond %{REQUEST_FILENAME} !-d

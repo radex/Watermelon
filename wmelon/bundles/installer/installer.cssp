@@ -35,10 +35,6 @@ header
    height: 43px
    background-image: url($imgPath/logo.png)
 
-#content a
-   color: #3E7FA1
-   border-bottom: 1px solid #B1CCE9
-
 #container
    width: 750px
    margin: 0 auto
@@ -51,20 +47,20 @@ header
    background: #fff
    background: #fff linear-gradient(top, #fff, #f8f8f8)
    border-radius: 7px 7px 0 0
+   a
+      color: #3E7FA1
+      border-bottom: 1px solid #B1CCE9
 
 #status-bar
    padding: 10px
-   //background: #ebe7d4
-   //border-top: 1px solid #bba
    background: linear-gradient(top, #ddd, #bbb)
    box-shadow: inset 0 3px 4px #ccc
    border-radius: 0 0 5px 5px
-
-#status-bar button, #status-bar input
-   float: right
-   line-height: 1.2em
-   margin-left: 5px
-   margin-right: 5px
+   button, input
+      float: right
+      line-height: 1.2em
+      margin-left: 5px
+      margin-right: 5px
 
 #progress-bar-container
    width: 300px
@@ -79,8 +75,8 @@ header
    width: 100%
    border: 1px solid #888
    border-radius: 10px
-   -moz-border-radius: 10px
    background: #fff
+   box-shadow: inset 0 -2px 2px #eee
 
 #progress-bar-progress
    margin: -1px
@@ -88,27 +84,25 @@ header
    width: 100px
    border: inherit
    border-radius: 10px
-   -moz-border-radius: 10px
    background: #8bd
+   background: linear-gradient(top, #9ce, #7ac)
 
 label
    display: block
    padding: 5px
-
-label > span
-   display: inline-block
-   width: 350px
-   margin-right: 10px
-   font-weight: bold
-   text-align: right
-   color: #444
-
-label > span > small
-   display: block
-   font-size: 0.8em
-   font-weight: normal
-   color: #777
-   line-height: 1.3em
+   > span
+      display: inline-block
+      width: 350px
+      margin-right: 10px
+      font-weight: bold
+      text-align: right
+      color: #444
+      > small
+         display: block
+         font-size: 0.8em
+         font-weight: normal
+         color: #777
+         line-height: 1.3em
 
 input[type=text],
 input[type=password]
@@ -126,7 +120,7 @@ table
    width: 100%
 
 td, th
-   border: 1px solid #ccc
+   border: 1px solid #ddd
    padding: 5px 10px
 
 th
@@ -141,31 +135,25 @@ table tr:nth-child(odd)
    margin: 100px auto 0
    width: 750px
    text-align: center
-
-#lang-chooser a
-   display: inline-block
-   width: 100px
-   margin: 20px
-   padding: 15px
-   background: #ddd
-   border: 1px solid #ddd
-   border-radius: 10px
-   -moz-border-radius: 10px
-   color: #555
-   box-shadow: #aaa 0 0 3px, #aaa 2px 2px 5px
-
-#lang-chooser a:hover
-   background: #d8d8d8
-   border: 1px solid #999
-
-#lang-chooser img
-   box-shadow: #777 0 0 3px
-
-#lang-chooser a:hover img
-   box-shadow: #777 0 0 10px
+   a
+      display: inline-block
+      width: 100px
+      margin: 20px
+      padding: 15px
+      background: #ddd
+      border: 1px solid #ddd
+      border-radius: 10px
+      color: #555
+      box-shadow: #aaa 0 0 3px, #aaa 2px 2px 5px
+   a:hover
+      background: #d8d8d8
+      border: 1px solid #999
+   img
+      box-shadow: #777 0 0 3px
+   a:hover img
+      box-shadow: #777 0 0 10px
 
 .advanced-hr
    margin-top: 25px
-
-.advanced-hr hr
-   margin-top: 0
+   hr
+      margin-top: 0

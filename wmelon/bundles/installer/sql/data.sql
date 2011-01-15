@@ -1,12 +1,12 @@
 -- sample blog post
 
-INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `published`, `updated`, `atomID`, `commentsCount`) VALUES
+INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `published`, `updated`, `atomID`, `commentsCount`, `approvedCommentsCount`) VALUES
 (
    'Witaj_w_Watermelonie!',
    'Witaj w Watermelonie!',
    '%2',
    '%3',
-   1, %1, %1, '%5', 1
+   1, %1, %1, '%5', 1, 1
 );
 
 -- sample page
@@ -23,12 +23,12 @@ VALUES
 (
    1, 'blogpost', 1, %1,
    'W komentarzach również możesz używać _(uproszczonej)_ składni "**Textile**":http://pl.wikipedia.org/wiki/Textile',
-   false
+   true
 ),
 (
    1, 'page', 1, %1,
    'Ten artykuł jest widoczny tylko dla Ciebie. Jeśli chcesz, możesz podejrzeć, jak wygląda on "od środka". Uważaj tylko, żeby go nie usunąć! :)',
-   false
+   true
 ),
 (
    1, 'page', 1, %1,
@@ -37,7 +37,7 @@ VALUES
 "Edycja menu":admin/options/nav/: Panel Admina » Ustawienia » Menu
 
 Nadal będziesz mógł się tutaj dostać z "tabeli stron":admin/pages/ w Panelu Admina',
-   false
+   true
 );
 
 -- user privileges (user itself is created in controller)

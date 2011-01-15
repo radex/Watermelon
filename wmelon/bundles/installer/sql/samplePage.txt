@@ -1,7 +1,7 @@
 <exec>
 // access only for admin
 
-if(!Auth::isLogged())
+if(!Users::isLogged())
 {
    SiteRedirect('e404');
 }

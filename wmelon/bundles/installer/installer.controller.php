@@ -42,8 +42,43 @@ class Installer_Controller extends Controller
       // URL-s
       
       $baseURL = $this->baseURL();
-      $siteURL = $baseURL . 'index.php/';
-      $systemURL = $baseURL . 'wmelon/';
+      
+      if(isset($_SESSION['wmelon.installer.siteURL']) && isset($_SESSION['wmelon.installer.systemURL'])) // already set
+      {
+         $siteURL   = $_SESSION['wmelon.installer.siteURL'];
+         $systemURL = $_SESSION['wmelon.installer.systemURL'];
+      }
+      elseif(isset($_GET['urltested']))
+      {
+         // got back from url test
+         
+         $systemURL = $baseURL . 'wmelon/';
+         
+         if(isset($_GET['works']))
+         {
+            $siteURL = $baseURL;
+         }
+         else
+         {
+            $siteURL = $baseURL . 'index.php/';
+         }
+         
+         $_SESSION['wmelon.installer.siteURL'] = $siteURL;
+         $_SESSION['wmelon.installer.systemURL'] = $systemURL;
+         
+         Redirect($siteURL);
+      }
+      else
+      {
+         // base URL not yet determined
+         // description of how it works is in wmelon/core/urltest.php
+         
+         $installerURL = $baseURL . 'index.php?urltested';
+         
+         $testfileURL = $baseURL . 'wmelon/core/urltest.php?backto=' . base64_encode($installerURL);
+         
+         Redirect($testfileURL);
+      }
       
       // constants
       
@@ -64,7 +99,7 @@ class Installer_Controller extends Controller
       
       $step = (int) $this->segments[0];
       
-      if($step < 1 || $step > 8)
+      if($step < 1 || $step > 7)
       {
          $step = 1;
       }
@@ -108,17 +143,11 @@ class Installer_Controller extends Controller
          case '1':
          default: $this->langChooser(); break;
          case '2': $this->greeting(); break;
-         case '3': $this->paths(); break;
-         case '4': $this->dbInfo(); break;
-         case '5': $this->userdata(); break;
-         case '6': $this->websiteName(); break;
-         case '7': $this->thank(); break;
-         case '8': $this->save(); break;
-         
-         case 'wmelonInstallerTest':
-            $this->outputType = self::Plain_OutputType;
-            echo 'It works!';
-         break;
+         case '3': $this->dbInfo(); break;
+         case '4': $this->userdata(); break;
+         case '5': $this->websiteName(); break;
+         case '6': $this->thank(); break;
+         case '7': $this->save(); break;
          
          case 'clear':
             session_destroy();
@@ -139,11 +168,23 @@ class Installer_Controller extends Controller
       
       $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; // full URL
       
-      $pathInfo = $_SERVER['PATH_INFO'];                                  // everything what is after index.php
+      $pathInfo  = $_SERVER['PATH_INFO'];                                 // everything what is after index.php
+      $queryInfo = $_SERVER['QUERY_STRING'];                              // everything what is after ?
+      
+      // stripping PATH_INFO
       
       if(!empty($pathInfo))
       {
-         $url = substr($url, 0, -strlen($pathInfo));                      // URL to index.php
+         $url = substr($url, 0, -strlen($pathInfo));
+      }
+      
+      // stripping QUERY_STRING
+      
+      if(!empty($queryInfo))
+      {
+         $queryInfo = '?' . $queryInfo;
+         
+         $url = substr($url, 0, -strlen($queryInfo));
       }
       
       // deleting '/' from URL if present
@@ -170,39 +211,6 @@ class Installer_Controller extends Controller
       // returns
       
       return $url;
-      
-      //******
-      
-      //FIXME: it freezes on some servers
-      
-      //******
-      
-      // determining whether .htaccess works - by trying to request special page 'watermelonurltest' (without index.php)
-      
-      $errorReporting = error_reporting();
-      
-      error_reporting(0);
-      
-      $urlTestResponse = file_get_contents($url . 'watermelonurltest');
-      
-      error_reporting($errorReporting);
-      
-      // determining final URLs
-      
-      if($urlTestResponse != 'Works!')
-      {
-         $siteURL = $url . 'index.php/';
-      }
-      else
-      {
-         $siteURL = $url;
-      }
-      
-      $systemURL = $url . 'wmelon/';
-      
-      // returns
-      
-      return array($siteURL, $systemURL);
    }
    
    /*
@@ -247,85 +255,11 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * Third step - paths
-    * 
-    * (TODO: automate it, again)
-    */
-   
-   public function paths()
-   {
-      // default values
-      
-      if(isset($_SESSION['pathsForm']))
-      {
-         $data = $_SESSION['pathsForm'];
-         
-         if($data)
-         {
-            $works = ' checked';
-         }
-         else
-         {
-            $doesNotWork = ' checked';
-         }
-      }
-      
-      // form
-      
-      $form = new InstallerForm('wmelon.installer.paths');
-      
-      // adding inputs
-      
-      $form->addHTML('<label><input type="radio" name="rewriteWorks" value="true"' . $works . '>Działa <small>(pokazuje się <em>Works!</em>)</small></label>');
-      $form->addHTML('<label><input type="radio" name="rewriteWorks" value="false"' . $doesNotWork . '>Nie działa</label>');
-      
-      // displaying
-      
-      $this->pageTitle = 'Ścieżki';
-      
-      $view = View('paths');
-      $view->testSite = WM_BaseURL . 'watermelonurltest';
-      $view->form = $form->generate();
-      $view->display();
-   }
-   
-   /*
-    * Fourth step - DB info
+    * Third step - DB info
     */
    
    public function dbInfo()
    {
-      // validating paths
-      
-      if($_SESSION['previousStep'] == 3)
-      {
-         $form = Form::validate('wmelon.installer.paths', '3');
-         
-         $data = $_POST['rewriteWorks'];
-         
-         // validating
-         
-         switch($data)
-         {
-            case 'true':
-               $data = true;
-            break;
-            
-            case 'false':
-               $data = false;
-            break;
-            
-            default:
-               $form->addError('Wybierz odpowiedź na pytanie');
-               $form->fallback();
-            break;
-         }
-         
-         // saving in session
-         
-         $_SESSION['pathsForm'] = $data;
-      }
-      
       // default values
       
       if(isset($_SESSION['dbForm']))
@@ -354,13 +288,12 @@ class Installer_Controller extends Controller
       
       // label note
       
-      $nameNote   = 'Jeśli baza danych o podanej nazwie nie istnieje, musisz samemu ją stworzyć';
       $hostNote   = 'Prawie zawsze jest to <em>localhost</em>';
-      $prefixNote = 'Zostaw taki jaki jest, chyba że chcesz mieć kilka kopii Watermelona na jednej bazie danych - wtedy obie muszą mieć ustalony inny prefiks';
+      $prefixNote = 'Nie zmieniaj o ile nie chcesz zainstalować dwóch kopii Watermelona na jednej bazie danych';
       
       // input args
       
-      $nameArgs   = array('value' => $data->name,   'labelNote' => $nameNote);
+      $nameArgs   = array('value' => $data->name);
       $userArgs   = array('value' => $data->user);
       $passArgs   = array('value' => $data->pass);
       $hostArgs   = array('value' => $data->host,   'labelNote' => $hostNote);
@@ -381,7 +314,7 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * Fifth step - admin username and password.
+    * Fourth step - admin username and password.
     * 
     * Validating DB info, but not yet importing tables to database (it will be done in last step)
     */
@@ -390,9 +323,11 @@ class Installer_Controller extends Controller
    {
       // validating DB info
       
-      if($_SESSION['previousStep'] == 4)
+                        // TODO: because DB class don't escape database names, check if table name / prefix is [a-zA-Z_]
+      
+      if($_SESSION['previousStep'] == 3)
       {
-         $form = Form::validate('wmelon.installer.dbInfo', '4');
+         $form = InstallerForm::validate('wmelon.installer.dbInfo');
          $data = $form->get();
          
          $_SESSION['dbForm'] = $data;
@@ -412,10 +347,22 @@ class Installer_Controller extends Controller
             }
             elseif($e->stringCode() == 'DB:selectError')
             {
-               $form->addError('Nie udało się wybrać bazy danych "' . $data->name . '". Spróbuj jeszcze raz.');
-               $form->fallback();
+               // can't select database - try to create one first
                
-                     //TODO: try to create the database if doesn't exist
+               try
+               {
+                  $testDatabase = substr(md5(mt_rand()), 0, 16);
+                  
+                  DB::query('CREATE DATABASE ' . $testDatabase);
+                  DB::query('DROP DATABASE ' . $testDatabase);
+               }
+               catch(WMException $e)
+               {
+                  // don't have privileges to create database
+                  
+                  $form->addError('Nie udało się wybrać bazy danych "' . $data->name . '". Spróbuj jeszcze raz.');
+                  $form->fallback();
+               }
             }
          }
       }
@@ -439,13 +386,11 @@ class Installer_Controller extends Controller
       
       // label notes
       
-      $pass2Note = 'Aby upewnić się, że nie popełnisz błędu podczas wpisywania';
-      
       // input args
       
       $userArgs  = array('value' => $data->user);
       $passArgs  = array('value' => $data->pass);
-      $pass2Args = array('value' => $data->pass2, 'labelNote' => $pass2Note);
+      $pass2Args = array('value' => $data->pass2);
       
       // adding args
       
@@ -460,7 +405,7 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * Sixth step - website name
+    * Fifth step - website name
     * 
     * And validating user data form
     */
@@ -469,9 +414,9 @@ class Installer_Controller extends Controller
    {
       // validating userdata form
       
-      if($_SESSION['previousStep'] == 5)
+      if($_SESSION['previousStep'] == 4)
       {
-         $form = Form::validate('wmelon.installer.userData', '5');
+         $form = InstallerForm::validate('wmelon.installer.userData');
          $data = $form->get();
          
          $_SESSION['userDataForm'] = $data;
@@ -480,7 +425,7 @@ class Installer_Controller extends Controller
          
          if($data->pass != $data->pass2)
          {
-            $form->addError('Podane hasła się nie zgadzają');
+            $form->addError('Podane hasła muszą być identyczne');
             $form->fallback();
          }
       }
@@ -515,16 +460,16 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * Seventh step - thank
+    * Sixth step - thank
     */
    
    public function thank()
    {
       // checking whether all required fields are filled
       
-      if($_SESSION['previousStep'] == 6)
+      if($_SESSION['previousStep'] == 5)
       {
-         $form = Form::validate('wmelon.installer.siteName', '6');
+         $form = InstallerForm::validate('wmelon.installer.siteName');
          $data = $form->get();
          
          $_SESSION['siteNameForm'] = $data;
@@ -536,7 +481,6 @@ class Installer_Controller extends Controller
       $view->db    = clone $_SESSION['dbForm'];
       $view->user  = clone $_SESSION['userDataForm'];
       $view->site  = clone $_SESSION['siteNameForm'];
-      $view->paths = $_SESSION['pathsForm'];
       
       $view->db->pass   = $this->starPassword($view->db->pass);
       $view->user->pass = $this->starPassword($view->user->pass);
@@ -561,10 +505,8 @@ class Installer_Controller extends Controller
       $view->display();
    }
    
-                  //TODO: clean up here
-   
    /*
-    * Eighth step - saving configuration
+    * Seventh step - saving configuration
     */
    
    public function save()
@@ -574,78 +516,85 @@ class Installer_Controller extends Controller
       $db    = $_SESSION['dbForm'];
       $user  = $_SESSION['userDataForm'];
       $site  = $_SESSION['siteNameForm'];
-      $paths = $_SESSION['pathsForm'];
       
       // saving config.php
       
-      $configFile = <<<CONFIG
-<?php
-
-/*   Database   */
-
-\$dbHost     = '$db->host';
-\$dbUser     = '$db->user';
-\$dbPass     = '$db->pass';
-\$dbName     = '$db->name';
-\$dbPrefix   = '$db->prefix';
-
-/*   Advanced   */
-
-\$debugLevel = 1; // 0 - no debug notices, no error reporting; real world applications
-                 // 1 - debug notices, E_ALL ^ E_NOTICE error reporting; programming
-                 // 2 - debug notices, E_ALL error reporting; testing & debugging
-CONFIG;
+      $configFile = file_get_contents(WM_Bundles . 'installer/config.php');
       
-               //TODO: change debugLevel to 0, with option to 1, when building beta packages
+      $configFile = str_replace('{host}',   addslashes($db->host), $configFile);
+      $configFile = str_replace('{user}',   addslashes($db->user), $configFile);
+      $configFile = str_replace('{pass}',   addslashes($db->pass), $configFile);
+      $configFile = str_replace('{name}',   addslashes($db->name), $configFile);
+      $configFile = str_replace('{prefix}', addslashes($db->prefix), $configFile);
       
       file_put_contents(WM_System . 'config.php', $configFile);
       
-      // feeds
+      // generating Atom ID for website
       
       $atomID = WM_SiteURL . time() . mt_rand();
       $atomID = sha1($atomID);
       
+      // connecting with database
+      
+      try
+      {
+         DB::connect($db->host, $db->name, $db->user, $db->pass, $db->prefix);
+      }
+      catch(WMException $e)
+      {
+         // creating database if necessary
+         
+         if($e->stringCode() == 'DB:selectError')
+         {
+            DB::query('CREATE DATABASE ' . $db->name);
+            
+            DB::connect($db->host, $db->name, $db->user, $db->pass, $db->prefix);
+         }
+         else
+         {
+            throw $e;
+         }
+      }
+      
       // installing SQL
       
-      DB::connect($db->host, $db->name, $db->user, $db->pass, $db->prefix);
-      
-      $structure = file_get_contents(WM_Bundles . 'installer/structure.sql');
-      $data      = file_get_contents(WM_Bundles . 'installer/data.sql');
-      
-      $samplePostSummary = file_get_contents(WM_Bundles . 'installer/samplePostSummary.txt');
-      $samplePost        = file_get_contents(WM_Bundles . 'installer/samplePost.txt');
-      $samplePage        = file_get_contents(WM_Bundles . 'installer/samplePage.txt');
-      
-      $postAtomID = $atomID . 'Witaj w Watermelonie!' . time() . mt_rand();
-      $postAtomID = sha1($postAtomID);
-      
-      $sql = $structure . "\n\n" . $data; 
-      $sql = explode(';', $sql);
-      
-      foreach($sql as $query)
-      {
-         $query = trim($query);
+         $path = WM_Bundles . 'installer/';
          
-         if(empty($query))
+         // SQL files
+         
+         $structure = file_get_contents($path . 'sql/structure.sql');
+         $data      = file_get_contents($path . 'sql/data.sql');
+         
+         // combining and replacing table prefix
+         
+         $sql = $structure . "\n\n" . $data;
+         
+         $sql = str_replace('`wm_', '`' . $db->prefix, $sql);
+         
+         // sample content files
+         
+         $samplePostSummary = file_get_contents($path . 'sql/samplePostSummary.txt');
+         $samplePost        = file_get_contents($path . 'sql/samplePost.txt');
+         $samplePage        = file_get_contents($path . 'sql/samplePage.txt');
+         
+         // generating Atom feed ID for sample post
+         
+         $postAtomID = $atomID . 'Witaj w Watermelonie!' . time() . mt_rand();
+         $postAtomID = sha1($postAtomID);
+         
+         // making queries
+         
+         foreach(explode(';', $sql) as $query)
          {
-            continue;
+            $query = trim($query);
+         
+            if(empty($query))
+            {
+               continue;
+            }
+         
+            DB::query($query, time(), $samplePostSummary, $samplePost, $samplePage, $postAtomID);
          }
-         
-         $query = str_replace('`wm_', '`' . $db->prefix, $query);
-         
-         DB::query($query, time(), $samplePostSummary, $samplePost, $samplePage, $postAtomID);
-      }
-      
-      // siteURL
-      
-      if($paths)
-      {
-         $siteURL = WM_BaseURL;
-      }
-      else
-      {
-         $siteURL = WM_BaseURL . 'index.php/';
-      }
       
       // adding wmelon configuration to Registry
          
@@ -654,16 +603,16 @@ CONFIG;
          // modules
          
          $w->modulesList       = Watermelon::indexModules();
-         $w->autoload          = array('auth', 'comments', 'sblam');
+         $w->autoload          = array('users', 'comments', 'sblam');
          $w->defaultController = 'blog';
          
          // other
          
-         $w->siteURL           = $siteURL;
+         $w->siteURL           = WM_SiteURL;
          $w->systemURL         = WM_SystemURL;
          
          $w->skin              = 'wcmslay';
-         $w->atomID            - $atomID;
+         $w->atomID            = $atomID;
          
          // frontend
          
@@ -675,7 +624,7 @@ CONFIG;
          
          $w->siteName   = $site->siteName;
          $w->siteSlogan = null;
-         $w->footer     = '<small><a href="$/admin">Panel Admina</a></small>';
+         $w->footer     = '<small><a href="$/users/login">Logowanie</a></small>';
          $w->blockMenus = array(array());
          $w->textMenus  = $textMenus;
          
@@ -688,18 +637,18 @@ CONFIG;
          
          Watermelon::$config = $w;
       
-      // generating feed
-      
+      // generating Atom feed
+   
       include WM_Core . 'Textile/textile.extension.php';
       Textile::onAutoload();
-      
-      Loader::extension('Auth');
-      Auth::onAutoload();
-      
+   
+      Loader::extension('Users');
+      Users::onAutoload();
+   
       Model('blog')->updateFeed();
       
       // adding superuser
-      
+         
       $salt = substr(HashString(mt_rand()), 0, 16);
       $pass = HashString($user->pass . $salt);
       
