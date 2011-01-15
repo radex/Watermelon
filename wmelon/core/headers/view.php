@@ -91,7 +91,10 @@ class View
       // predefined parameters
       // (NOTE: when changed, change also array in ->__set())
       
-      $view->set('isAdmin', Auth::adminPrivileges());
+      if(class_exists('Users'))      // there's no Users in Installer
+      {
+         $view->set('isAdmin', Users::adminPrivileges());
+      }
       
       // returning or displaying
       

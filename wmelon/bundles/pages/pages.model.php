@@ -87,7 +87,7 @@ class Pages_Model extends Model
             'name'    => (string) $name,
             'title'   => (string) $title,
             'content' => (string) $content,
-            'author'  => Auth::userData()->id,
+            'author'  => Users::userData()->id,
             'created' => time(),
             'updated' => time(),
          ));

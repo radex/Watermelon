@@ -72,7 +72,7 @@ class Blog_Controller extends Controller
          
          // comments counter - visible (approved) comments for users, all comments - for admin
          
-         if(!Auth::isLogged())
+         if(!Users::isLogged())
          {
             $approvedComments = $post->approvedCommentsCount;
             
@@ -157,7 +157,7 @@ class Blog_Controller extends Controller
       {
          // displaying notice for admin, or 'not found'
          
-         if(Auth::isLogged())
+         if(Users::isLogged())
          {
             $this->addMessage('info', 'Ten wpis nie jest opublikowany. Tylko Ty go możesz zobaczyć.');
          }

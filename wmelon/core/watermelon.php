@@ -228,7 +228,7 @@ class Watermelon
       
       // indexing modules (if debug or admin logged)
       
-      if(defined('WM_Debug') || Auth::isLogged())
+      if(defined('WM_Debug') || Users::isLogged())
       {
          self::indexModules();
       }
@@ -237,9 +237,9 @@ class Watermelon
       
       if(self::$appType == self::Admin)
       {
-         if(!Auth::adminPrivileges())
+         if(!Users::adminPrivileges())
          {
-            SiteRedirect('auth/login/' . base64_encode(self::$resName), 'site');
+            SiteRedirect('users/login/' . base64_encode(self::$resName), 'site');
             exit;
          }
       }
@@ -278,9 +278,9 @@ class Watermelon
    {
       define('WM', '');
       
+      session_name('Watermelon');
       session_start();
       session_regenerate_id();
-      session_name('Watermelon');
       
       ob_start();
       

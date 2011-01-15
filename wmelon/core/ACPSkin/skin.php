@@ -100,7 +100,7 @@ class ACPSkin extends Skin
          echo '<li><a href="' . SiteURL('options') . '">Ustawienia</a>' . "\n";
       }
       
-      echo '<li><a href="' . SiteURL('#/auth/logout') . '">Wyloguj</a>' . "\n";
+      echo '<li><a href="' . SiteURL('#/users/logout') . '">Wyloguj</a>' . "\n";
    }
    
    /*

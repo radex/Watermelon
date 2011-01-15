@@ -19,16 +19,16 @@
  //  
 
 /*
- * Auth controller
+ * Users controller
  * 
  * Logging in and out
  */
 
-class Auth_Controller extends Controller
+class Users_Controller extends Controller
 {
    function index_action()
    {
-      SiteRedirect('auth/login');
+      SiteRedirect('users/login');
    }
    
    /*
@@ -39,7 +39,7 @@ class Auth_Controller extends Controller
    {
       $this->pageTitle = 'Logowanie';
 
-      $form = new Form('wmelon.auth.login', 'auth/loginSubmit', 'auth/login');
+      $form = new Form('wmelon.auth.login', 'users/loginSubmit', 'users/login');
       $form->submitLabel = 'Zaloguj';
       
       $form->addInput('text', 'login', 'Login');
@@ -55,14 +55,14 @@ class Auth_Controller extends Controller
    
    function loginSubmit_action()
    {
-      $form = Form::validate('wmelon.auth.login', 'auth/login');
+      $form = Form::validate('wmelon.auth.login', 'users/login');
       $data = $form->get();
       
       // validating
       
       try
       {
-         Auth::login($data->login, $data->pass);
+         Users::login($data->login, $data->pass);
       }
       catch(WMException $e)
       {
@@ -89,7 +89,7 @@ class Auth_Controller extends Controller
    
    function logout_action()
    {
-      Auth::logout();
+      Users::logout();
       
       if(!empty($_SERVER['HTTP_REFERER']))
       {

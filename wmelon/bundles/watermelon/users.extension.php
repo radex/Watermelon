@@ -19,12 +19,12 @@
  //  
 
 /*
- * class Auth
+ * class Users
  * 
- * Authorization - login, logout, etc.
+ * Authorization, users....
  */
 
-class Auth extends Extension
+class Users extends Extension
 {
    private static $isLogged = false; // whether user session exists
    private static $userData;         // information about logged user
@@ -151,7 +151,7 @@ class Auth extends Extension
       $login = $_SESSION['wmelon.user.login'];
       $pass  = $_SESSION['wmelon.user.pass'];
       
-      $model = Loader::model('auth');
+      $model = Loader::model('users');
       
       $userData = $model->userData_login($login);
       

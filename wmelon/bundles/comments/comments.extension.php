@@ -41,7 +41,7 @@ class Comments extends Extension
       $backPage = (string) $backPage;
       
       $model    = Loader::model('comments');
-      $auth     = Loader::model('auth');
+      $auth     = Loader::model('users');
       
       $users = array();
       
@@ -54,7 +54,7 @@ class Comments extends Extension
       
       // visibilityToken
       
-      if(!Auth::isLogged() && isset($_SESSION['wmelon.comments.visibilityToken']))
+      if(!Users::isLogged() && isset($_SESSION['wmelon.comments.visibilityToken']))
       {
          $visibilityToken = $_SESSION['wmelon.comments.visibilityToken'];
       }
@@ -75,11 +75,11 @@ class Comments extends Extension
          // visibility
          // (comment is visible if admin or comment is approved or comment visibility token match user's visibility token)
          
-         $comment->visible = (Auth::isLogged() || $comment->approved || ($comment->visibilityToken == $visibilityToken && !empty($comment->visibilityToken)));
+         $comment->visible = (Users::isLogged() || $comment->approved || ($comment->visibilityToken == $visibilityToken && !empty($comment->visibilityToken)));
          
          // additional information (for admin)
          
-         if(Auth::isLogged() && $comment->authorID === null)
+         if(Users::isLogged() && $comment->authorID === null)
          {
             $comment->additionalInfo = $comment->authorEmail . '; IP:' . $comment->authorIP;
          }
@@ -145,7 +145,7 @@ class Comments extends Extension
       
       // user data inputs (if not logged in)
       
-      if(!Auth::isLogged())
+      if(!Users::isLogged())
       {
          // remembered user data
          
@@ -173,14 +173,14 @@ class Comments extends Extension
       
       // comments counter
       
-      $commentsCount = (Auth::isLogged() ? $commentsObj->rows : $approvedCount); // number of visible (approved) comments - for user and all comments - for admin
+      $commentsCount = (Users::isLogged() ? $commentsObj->rows : $approvedCount); // number of visible (approved) comments - for user and all comments - for admin
       
       if($commentsCount > 0)
       {
          $commentsCountStr = $commentsCount . ' ' . pl_inflect($commentsCount, 'komentarzy', 'komentarz', 'komentarze');
       }
       
-      if(Auth::isLogged() && $unapprovedCount > 0)
+      if(Users::isLogged() && $unapprovedCount > 0)
       {
          $commentsCountStr .= ' <span class="important">(' . $unapprovedCount . ' do sprawdzenia!)</span>';
       }
@@ -230,7 +230,7 @@ class Comments extends Extension
       
       // testing for spam and adding
       
-      if(!Auth::isLogged()) // if not logged in
+      if(!Users::isLogged()) // if not logged in
       {
          // testing for spam
          

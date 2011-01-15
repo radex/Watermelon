@@ -48,7 +48,7 @@
             
             <!-- "not approved" - for not logged users -->
             
-            <div class="adminTools" tal:condition="php: !Auth::isLogged() && !comment.approved">
+            <div class="adminTools" tal:condition="php: !isAdmin && !comment.approved">
                Komentarz oczekuje na moderację
             </div>
             

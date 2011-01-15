@@ -19,12 +19,10 @@
  //  
 
 /*
- * Auth model
+ * Users model
  */
 
-//TODO: rename to User
-
-class Auth_Model extends Model
+class Users_Model extends Model
 {
    /*
     * public object userData_login(string $login)

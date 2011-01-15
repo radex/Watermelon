@@ -138,7 +138,7 @@ class Comments_Model extends Model
          (
             'record'        =>          $id,
             'type'          => (string) $type,
-            'authorID'      =>          Auth::userData()->id,
+            'authorID'      =>          Users::userData()->id,
             'content'       => (string) $content,
             'created'       =>          time(),
             'approved'      =>          true

@@ -171,7 +171,7 @@ class Blog_Model extends Model
             'content'       => (string) $content,
             'summary'       =>          $summary,
             
-            'author'        =>          Auth::userData()->id,
+            'author'        =>          Users::userData()->id,
             'published'     =>          time(),
             'updated'       =>          time(),
             
@@ -289,7 +289,7 @@ class Blog_Model extends Model
          $feed->subtitle = strip_tags($wmelon->siteSlogan);
       }
       
-      $feed->author->name = Auth::userData()->nick;
+      $feed->author->name = Users::userData()->nick;
       $feed->author->uri  = WM_SiteURL;
       
       $feed->link['rel'] = 'self';

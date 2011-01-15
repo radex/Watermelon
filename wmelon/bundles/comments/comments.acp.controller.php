@@ -152,7 +152,7 @@ class Comments_Controller extends Controller
             
                if(!isset($users[$comment->authorID]))
                {
-                  $users[$comment->authorID] = Model('auth')->userData_id($comment->authorID);
+                  $users[$comment->authorID] = Model('users')->userData_id($comment->authorID);
                }
             
                $user = &$users[$comment->authorID];

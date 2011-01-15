@@ -67,7 +67,7 @@ class Options_Controller extends Controller
       $head           = $config->headTags;
       $tail           = $config->tailTags;
       
-      $userData = Auth::userData();
+      $userData = Users::userData();
       
       $login          = $userData->login;
       $nick           = $userData->nick;

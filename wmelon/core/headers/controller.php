@@ -200,8 +200,7 @@ abstract class Controller
       
       // head tags
       
-      $headTags   = &Watermelon::$headTags;
-      $headTags[] = $config->headTags;
+      $headTags = &Watermelon::$headTags;
       
       $siteName  = Watermelon::$config->siteName;
       $pageTitle = $this->pageTitle;
@@ -221,11 +220,14 @@ abstract class Controller
       
       $headTags[] = '<title>' . $title . '</title>';
       $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\'</script>';
+      $headTags[] = '<link rel="top" href="' . WM_SiteURL . '">';
       
       if(Watermelon::$appType == Watermelon::Site)
       {
          $headTags[] = '<link rel="alternate" type="application/atom+xml" href="' . WM_SiteURL . 'feed.atom"/>';
       }
+      
+      $headTags[] = $config->headTags;
       
       // tail tags
       

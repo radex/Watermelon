@@ -25,10 +25,10 @@ class User_Blockset extends Blockset
       //FIXME: fix Loader, so that you can properly load views from blocksets and extensions
       
       $view = View('watermelon/userCard', true);
-      $view->isLogged = Auth::isLogged();
-      $view->userData = Auth::userData();
+      $view->isLogged = Users::isLogged();
+      $view->userData = Users::userData();
       $view->userData->lastseen = date('d.m.Y H:i:s', $view->userData->lastseen);
-      $view->privileges = Auth::privileges();
+      $view->privileges = Users::privileges();
       $view->display();
    }
 }

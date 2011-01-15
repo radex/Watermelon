@@ -40,16 +40,6 @@ class DB
    public static $queriesArray = array();
    
    /*
-    * public static resource $link
-    * 
-    * Connection resource
-    * 
-    * Don't change
-    */
-   
-   public static $link;
-   
-   /*
     * public static string $prefix
     * 
     * Table names prefix
@@ -58,6 +48,12 @@ class DB
     */
    
    public static $prefix;
+   
+   /*
+    * Whether connection with database has been already established
+    */
+   
+   public static $connected;
    
    /*******************************************************/
    
@@ -119,7 +115,7 @@ class DB
          
          foreach($args as &$arg)
          {
-            $arg = mysql_real_escape_string($arg, self::$link);
+            $arg = mysql_real_escape_string($arg);
          }
 
          $query = self::replaceArgs($query, $args);
@@ -134,7 +130,7 @@ class DB
       
       // executing query, and returning DBResult if everything is fine
       
-      $queryResult = mysql_query($query, self::$link);
+      $queryResult = mysql_query($query);
       
       if($queryResult)
       {
@@ -143,7 +139,7 @@ class DB
       
       // on error - throwing an exception
       
-      throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error(self::$link) . '"', 'DB:queryError');
+      throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error() . '"', 'DB:queryError');
    }
    
    /*******************************************************/
@@ -233,7 +229,7 @@ class DB
    
    public static function insertedID()
    {
-      return mysql_insert_id(self::$link);
+      return mysql_insert_id();
    }
    
    /*
@@ -246,7 +242,7 @@ class DB
    
    public static function affectedRows()
    {
-      return mysql_affected_rows(self::$link);
+      return mysql_affected_rows();
    }
    
    /*******************************************************/
@@ -259,34 +255,33 @@ class DB
    
    public static function connect($host, $name, $user, $pass, $prefix)
    {
-      // returning, if connection was already established
-      
-      if(self::$link !== null)
+      if(self::$connected)
       {
          return;
       }
       
       // establishing connection
       
-      self::$link = @mysql_connect($host, $user, $pass);
-      
-      self::$prefix = $prefix;
+      $link = @mysql_connect($host, $user, $pass);
       
       // on errors
       
-      if(!self::$link)
+      if(!$link)
       {
-         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:connectError');
+         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_connect zwrócił błąd: ' . mysql_error() . ')', 'DB:connectError');
       }
       
       if(!@mysql_select_db($name))
       {
-         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error(self::$link) . ')', 'DB:selectError');
+         throw new WMException('Nie mogę połączyć się z bazą danych (mysql_select_db zwrócił błąd: ' . mysql_error() . ')', 'DB:selectError');
       }
       
-      // setting proper charset
+      // settings
       
       self::query("SET NAMES 'utf8'");
+      
+      self::$connected = true;
+      self::$prefix    = $prefix;
    }
    
    /*******************************************************/
