@@ -65,7 +65,7 @@ class Registry
       // inserts serialized value (for cases where value is not string)
       // "ON DUPLICATE KEY UPDATE `name`=`name`" does nothing. It's just for not throwing exception if item already exists in database
       
-      DB::query("INSERT INTO `__registry` SET `name` = '%1', `value` = '%2' ON DUPLICATE KEY UPDATE `name`=`name`", $name, serialize($value));
+      DB::query("INSERT INTO `__registry` SET `name` = '?', `value` = '?' ON DUPLICATE KEY UPDATE `name`=`name`", $name, serialize($value));
       
       // if didn't exist and was inserted, sets isSynced to TRUE
       

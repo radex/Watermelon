@@ -73,7 +73,7 @@ class Benchmark
       
       if($saveToDatabase)
       {
-         DB::query("INSERT INTO `__benchmark` (`name`, `value`) VALUES ('%1','%2')", $benchmarkName, $difference);
+         DB::query("INSERT INTO `__benchmark` (`name`, `value`) VALUES ('?','?')", $benchmarkName, $difference);
       }
       
       return $difference;
@@ -89,7 +89,7 @@ class Benchmark
    
    public static function results($benchmarkName)
    {
-      $timesRes = DB::query("SELECT `value` FROM `__benchmark` WHERE `name` = '%1'", $benchmarkName);
+      $timesRes = DB::query("SELECT `value` FROM `__benchmark` WHERE `name` = '?'", $benchmarkName);
       
       while($time = $timesRes->fetchObject())
       {

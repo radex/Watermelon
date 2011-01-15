@@ -108,11 +108,11 @@ class Comments_Model extends Model
       
       // update counters
       
-      DB::query('UPDATE __%1 SET commentsCount = commentsCount + 1 WHERE id = %2', $type . 's', $id);
+      DB::query('UPDATE __? SET commentsCount = commentsCount + 1 WHERE id = ?', $type . 's', $id);
       
       if(!$approved)
       {
-         DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = %2', $type . 's', $id);
+         DB::query('UPDATE __? SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = ?', $type . 's', $id);
       }
       
       //--
@@ -146,8 +146,8 @@ class Comments_Model extends Model
       
       // update counters
       
-      DB::query('UPDATE __%1 SET commentsCount = commentsCount + 1 WHERE id = %2', $type . 's', $id);
-      DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = %2', $type . 's', $id);
+      DB::query('UPDATE __? SET commentsCount = commentsCount + 1 WHERE id = ?', $type . 's', $id);
+      DB::query('UPDATE __? SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = ?', $type . 's', $id);
       
       //--
       
@@ -185,11 +185,11 @@ class Comments_Model extends Model
          $tableName = $comment->type . 's';
          $recordID  = $comment->record;
          
-         DB::query('UPDATE __%1 SET commentsCount = commentsCount - 1 WHERE id = %2', $tableName, $recordID);
+         DB::query('UPDATE __? SET commentsCount = commentsCount - 1 WHERE id = ?', $tableName, $recordID);
          
          if($comment->approved)
          {
-            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = %2', $tableName, $recordID);
+            DB::query('UPDATE __? SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = ?', $tableName, $recordID);
          }
       }
       
@@ -217,7 +217,7 @@ class Comments_Model extends Model
          
          if(!$comment->approved)
          {
-            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = %2', $tableName, $recordID);
+            DB::query('UPDATE __? SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = ?', $tableName, $recordID);
          }
          
          // approving

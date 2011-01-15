@@ -570,6 +570,7 @@ class Installer_Controller extends Controller
          $sql = $structure . "\n\n" . $data;
          
          $sql = str_replace('`wm_', '`' . $db->prefix, $sql);
+         $sql = str_replace('{time}', time(), $sql);
          
          // sample content files
          
@@ -592,8 +593,8 @@ class Installer_Controller extends Controller
             {
                continue;
             }
-         
-            DB::query($query, time(), $samplePostSummary, $samplePost, $samplePage, $postAtomID);
+            
+            DB::query($query, $samplePostSummary, $samplePost, $postAtomID, $samplePage);
          }
       
       // adding wmelon configuration to Registry

@@ -4,16 +4,16 @@ INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `pu
 (
    'Witaj_w_Watermelonie!',
    'Witaj w Watermelonie!',
-   '%2',
-   '%3',
-   1, %1, %1, '%5', 1, 1
+   '?',
+   '?',
+   1, {time}, {time}, '?', 1, 1
 );
 
 -- sample page
 
 INSERT INTO `wm_pages` (`name`, `title`, `content`, `author`, `created`, `updated`) VALUES
 (
-   'wmelonHelp', 'Pomoc Watermelona', '%4', 1, %1, %1
+   'wmelonHelp', 'Pomoc Watermelona', '?', 1, {time}, {time}
 );
 
 -- sample comment for these
@@ -21,17 +21,17 @@ INSERT INTO `wm_pages` (`name`, `title`, `content`, `author`, `created`, `update
 INSERT INTO `wm_comments` (`record`, `type`, `authorID`, `created`, `content`, `approved`)
 VALUES
 (
-   1, 'blogpost', 1, %1,
+   1, 'blogpost', 1, {time},
    'W komentarzach również możesz używać _(uproszczonej)_ składni "**Textile**":http://pl.wikipedia.org/wiki/Textile',
    true
 ),
 (
-   1, 'page', 1, %1,
+   1, 'page', 1, {time},
    'Ten artykuł jest widoczny tylko dla Ciebie. Jeśli chcesz, możesz podejrzeć, jak wygląda on "od środka". Uważaj tylko, żeby go nie usunąć! :)',
    true
 ),
 (
-   1, 'page', 1, %1,
+   1, 'page', 1, {time},
    'Pamiętaj, aby usunąć link do tej podstrony z menu, aby inni go nie widzieli.
 
 "Edycja menu":admin/options/nav/: Panel Admina » Ustawienia » Menu

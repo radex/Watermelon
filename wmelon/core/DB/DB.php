@@ -70,16 +70,16 @@ class DB
     * 
     * Precede table names with double underscore
     * 
-    * Mark all input data (those typed in apostrophes) as %(number), and pass their values in $arg(number)
+    * Mark all input data (those typed in apostrophes) as ?, and pass their values in corresponding $argX
     * All values passed in arguments are filtered by mysql_real_escape_string
     *
     * For example:
     * 
-    * DB::query("SELECT `id`, `password` FROM `__users` WHERE `nick` = '%1' AND `salt` = '%2'", 'radex', '86fcf28678ebe8a0');
+    * DB::query("SELECT id, password FROM __users WHERE nick = '?' AND salt = '?'", 'radex', '86fcf28678ebe8a0');
     * 
     * will be interpreted (assuming that table prefix is set to 'wcms_') as:
     * 
-    * "SELECT `id`, `password` FROM `wcms_users` WHERE `nick` = 'radex' AND `salt` = '86fcf28678ebe8a0'"
+    * "SELECT id, password FROM wcms_users WHERE nick = 'radex' AND salt = '86fcf28678ebe8a0'"
     */
    
    public static function query()
@@ -111,13 +111,13 @@ class DB
 
          $query = str_replace('__', self::$prefix, $query);
 
-         // replacing input data palceholders (%number) with their (escaped) values passed in arguments
+         // replacing input data palceholders ('?') with their (escaped) corresponding values, passed in args
          
          foreach($args as &$arg)
          {
             $arg = mysql_real_escape_string($arg);
          }
-
+         
          $query = self::replaceArgs($query, $args);
       }
       
@@ -320,82 +320,21 @@ class DB
    /*
     * private static string replaceArgs(string $query, array $args)
     * 
-    * Replaces %x in $query with contents of $args[x-1]
+    * Replaces '?' characters in $query with corresponding $args item values
     */
    
    private static function replaceArgs($query, $args)
    {
-      $argNumState = false; // TRUE when collecting numbers after '%' sign
-      $argNumber   = '';    // arg number (figures after '%' sign)
+      $query = explode('?', $query);
       
-      for($i = 0, $j = strlen($query); $i < $j; $i++)
-      { 
-         $char         = $query[$i];
-         $prevChar     = $query[$i - 1];
-         $prevPrevChar = $query[$i - 2];
-         $nextChar     = $query[$i + 1];
-         
-         // if collecting arg number figures
-         
-         if($argNumState)
-         {
-            // if last char
-
-            if($i == $j - 1)
-            {
-               $lastChar = true;
-            }
-            
-            // if first figure; validation is already done
-            
-            if($argNumber == '')
-            {
-               $argNumber .= $char;
-               
-               if($lastChar)
-               {
-                  $query2 .= $args[(int) $argNumber - 1];
-               }
-               
-               continue;
-            }
-            
-            // if number
-            
-            if($char >= '0' && $char <= '9')
-            {
-               $argNumber .= $char;
-               
-               if($lastChar)
-               {
-                  $query2 .= $args[(int) $argNumber - 1];
-               }
-               
-               continue;
-            }
-            else
-            {
-               $argNumState = false;
-               $query2     .= $args[(int) $argNumber - 1];
-               $argNumber   = '';
-            }
-         }
-         
-         // if current char is '%', previous char isn't '\' (or two previous chars are '\\'), and next char is a number
-         
-         if($char == '%' && ($prevChar != '\\' || $prevPrevChar == '\\') && $nextChar >= '1' && $nextChar <= '9')
-         {
-            $argNumState = true;
-            continue;
-         }
-         
-         // if just a text char
-         
-         $query2 .= $char;
+      $newQuery = '';
+      
+      foreach($query as $queryPart)
+      {
+         $newQuery .= $queryPart;
+         $newQuery .= array_shift($args);
       }
       
-      //--
-      
-      return $query2;
+      return $newQuery;
    }
 }
