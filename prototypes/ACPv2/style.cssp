@@ -1,0 +1,134 @@
+@turbine
+   plugins: boxshadow, borderradius, backgroundgradient
+
+@constants   
+   primaryFont: Helvetica Neue, Helvetica, sans-serif
+   secondaryFont: Verdana, Sans, sans-serif
+
+body, html
+   overflow-y: auto
+   overflow-x: hidden
+
+body
+   line-height: 1em
+   font-family: $secondaryFont
+   background: #ddd
+
+//
+// Primary navigation bar
+//
+
+#primaryBar
+   height: 40px
+   background: linear-gradient(top, #666, #444)
+   border-bottom: 1px solid #333
+   box-shadow: 0 0 5px #000
+   padding-left: 5px
+   > a
+      display: inline-block
+      vertical-align: middle
+      height: 14px
+      padding: 6px 8px
+      margin: 7px
+      font-size: 14px
+      color: #ddd
+      text-shadow: 1px 1px 1px rgba(255,255,255,.1)
+   > a:hover, > a.selected
+      background: linear-gradient(top, #888, #666)
+      box-shadow: inset 1px 1px 1px rgba(0,0,0,.5)
+      border-radius: 5px
+      color: #fff
+      text-shadow: 1px 1px 1px rgba(0,0,0,.3)
+   .primaryBar-separator
+      display: inline-block
+      vertical-align: middle
+      height: 26px
+      width: 1px
+      margin: 7px 0
+      background: #333
+   #primaryBar-options
+      float: right
+      height: 12px
+      padding: 14px
+      font-size: 12px
+      color: #bbb
+      text-shadow: 1px 1px 1px #333
+      a
+         display: inline-block
+         color: #ddd
+         border-bottom: 1px solid rgba(255,255,255,.2)
+      a:hover
+         color: #fff
+         border-bottom: 1px solid rgba(255,255,255,.3)
+
+//
+// Secondary navigation bar
+//
+
+#secondaryBar
+   margin: 0 20px
+   margin-bottom: -1px
+   padding-left: 10px
+   a
+      display: inline-block
+      height: 14px
+      padding: 4px 8px
+      margin-right: 4px
+      border: 1px solid #aaa
+      border-bottom: 1px solid #888
+      border-radius: 5px 5px 0 0
+      background: #ccc
+      color: #555
+      font-size: 14px
+   a.selected, a:hover
+      background: #fff
+      border: 1px solid #888
+      border-bottom: 1px solid #fff
+      color: #333
+      text-shadow: 1px 1px 1px #bbb
+      
+
+/**************************************************************************/
+
+#content
+   margin: 0 20px
+   padding: 15px
+   background: #fff
+   border: 1px solid #888
+   border-radius: 5px
+   font-family: $primaryFont
+   font-size: 14px
+   line-height: 1.4em
+   color: #666
+
+body > footer
+   margin-top: 25px
+   font-size: 11px
+   color: #888
+   text-align: center
+   a
+      display: inline-block
+      color: #333
+      border-bottom: 1px solid #bbb
+   a:hover
+      text-shadow: 1px 1px 1px #aaa
+      border-bottom: 1px solid #888
+
+#siteName
+   display: inline-block
+   font-family: $primaryFont
+   font-size: 30px
+   font-weight: normal
+   margin: 30px 30px
+   color: #333
+   text-shadow: 0 0 2px #aaa, 1px 1px 1px #666
+   a
+      display: inline-block
+      text-shadow: none
+      color: #666
+      font-size: 12px
+      border-bottom: 1px solid #bbb
+   a:hover
+      color: #000
+      text-shadow: 1px 1px 1px #aaa
+      border-bottom: 1px solid #888
