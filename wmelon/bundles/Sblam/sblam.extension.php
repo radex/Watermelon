@@ -35,10 +35,10 @@ class Sblam extends Extension
    public static $apiKey;
    
    /*
-    * onAutoload
+    * init
     */
    
-   public static function onAutoload()
+   public static function init()
    {
       // retrieving API key
       

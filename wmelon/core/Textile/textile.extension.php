@@ -144,7 +144,7 @@ class Textile_Extension extends Extension
     * (pseudo-)constructor
     */
    
-   public static function onAutoload()
+   public static function init()
    {
       self::$textile = new Textile_Lib;
       

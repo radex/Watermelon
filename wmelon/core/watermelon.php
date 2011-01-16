@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2008-2010 Radosław Pietruszewski.
+ //  Copyright 2008-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -115,7 +115,6 @@ class Watermelon
     * Member variables:
     * 
     * modulesList       - list of all kinds of module classes - controllers, models, views, etc. (description of structure later)
-    * autoload          - array of extension names to load automatically
     * controllerHandler - controller to run if there's no controller with name such as in URI
     * defaultController - controller to run if no controller name is given in URI
     * 
@@ -213,18 +212,7 @@ class Watermelon
       
       // auto-loading extensions
       
-      foreach(self::$config->autoload as $extensionName)
-      {
-         Loader::extension($extensionName);
-         
-         $extensionName::onAutoload();
-      }
-      
-      include WM_Core . 'FrontendLibraries/FrontendLibraries.extension.php';
-      FrontendLibraries::onAutoload();
-      
-      include WM_Core . 'Textile/textile.extension.php';
-      Textile::onAutoload();
+      new FrontendLibraries;
       
       // indexing modules (if debug or admin logged)
       
@@ -363,11 +351,34 @@ class Watermelon
          $_SESSION['WM_Messages'] = array();
       }
       
-      // libraries etc.
+      // URL-s
       
       self::divide();
       
-      include 'libs.php';
+      // including libraries
+      
+      $libs = array
+      (
+         'helpers/helpers.php',
+
+         'DB/DB.php',
+         'Loader.php',
+         'Registry/Registry.php',
+         'EventCenter.php',
+
+         'testing/Exception.php',
+
+         'headers/Controller.php',
+         'headers/Skin.php',
+         'headers/View.php',
+         'headers/Model.php',
+         'headers/Extension.php',
+      );
+
+      foreach($libs as $file)
+      {
+         include WM_Core . $file;
+      }
       
       // and that's it for the installer
       

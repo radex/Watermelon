@@ -31,12 +31,12 @@ class Users extends Extension
    private static $privileges;       // privileges logged user has
    
    /*
-    * public static void onAutoload()
+    * public static void init()
     * 
     * Sets $isLogged to proper value and if user is logged in, updates 'lastseen' field in database
     */
    
-   public static function onAutoload()
+   public static function init()
    {
       // checking whether user is logged in
       

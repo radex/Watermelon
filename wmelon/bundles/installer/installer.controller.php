@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -604,7 +604,6 @@ class Installer_Controller extends Controller
          // modules
          
          $w->modulesList       = Watermelon::indexModules();
-         $w->autoload          = array('users', 'comments', 'sblam');
          $w->defaultController = 'blog';
          
          // other
@@ -639,13 +638,7 @@ class Installer_Controller extends Controller
          Watermelon::$config = $w;
       
       // generating Atom feed
-   
-      include WM_Core . 'Textile/textile.extension.php';
-      Textile::onAutoload();
-   
-      Loader::extension('Users');
-      Users::onAutoload();
-   
+      
       Model('blog')->updateFeed();
       
       // adding superuser

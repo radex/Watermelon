@@ -26,6 +26,12 @@
 
 abstract class Extension
 {
+   /*
+    * Constructor
+    * 
+    * Note that Extensions are usually used statically, and constructor is usually never called. You can use ::init() instead.
+    */
+   
    public function __construct()
    {
       $this->db       = new DB();
@@ -44,12 +50,12 @@ abstract class Extension
    }
    
    /*
-    * public static void onAutoload()
+    * public static void init()
     * 
-    * Function, that will be called on plugin autoload
+    * Function called when extension is loaded
     * 
-    * Override it, if you need to do something on extensions auto-loading (but not on normal loading)
+    * Override it to perform actions (config loading etc.) before plugins is used
     */
    
-   public static function onAutoload(){}
+   public static function init(){}
 }

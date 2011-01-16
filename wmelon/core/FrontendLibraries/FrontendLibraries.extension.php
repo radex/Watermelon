@@ -20,7 +20,7 @@
 
 class FrontendLibraries extends Extension
 {
-   public static function onAutoload()
+   public static function init()
    {
       // libraries versions
       

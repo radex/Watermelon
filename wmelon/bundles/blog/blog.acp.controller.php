@@ -72,7 +72,7 @@ class Blog_Controller extends Controller
       
       $posts = $this->model->allPosts($scope);
       
-      $commentsModel = Model('comments');
+      $commentsModel = new Comments_Model;
       
       // if no blog posts
       

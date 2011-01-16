@@ -26,6 +26,9 @@
  * Notice that you don't create any View objects. You get them from Loader::view(), or its shortcut view().
  */
 
+include WM_Core . 'PHPTAL/PHPTAL.php';
+include WM_Core . 'ViewPreFilter.php';
+
 class View
 {
    /*

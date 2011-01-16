@@ -20,12 +20,6 @@
 
 include 'language.php';
 
-if(Watermelon::$appType == Watermelon::Admin)
-{
-   include 'ACPTable.php';
-   include 'AdminQuick.php';
-}
-
 /*
  * mixed CallMethodQuietly(object &$object, string $methodName[, array $args])
  * 

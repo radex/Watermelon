@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -24,8 +24,67 @@
  * Loading all kinds of modules - models, view, blocks and extensions
  */
 
+spl_autoload_register(array('Loader', 'autoloader')); // registering Watermelon autoloader
+
 class Loader
 {
+   public static function autoloader($className)
+   {
+      $className = strtolower($className);
+      
+      // core libs
+      
+      $coreLibs = array
+         (
+            'acpinfo'     => 'headers/ACPInfo.php',
+            'blockset'    => 'headers/Blockset.php',
+            
+            'eventcenter' => 'EventCenter.php',
+            
+            'benchmark'   => 'testing/Benchmark.php',
+            'unittester'  => 'testing/UnitTester.php',
+            
+            'form'        => 'Form/Form.php',
+            'acptable'    => 'helpers/ACPTable.php',
+            'adminquick'  => 'AdminQuick.php',
+         );
+      
+      if(isset($coreLibs[$className]))
+      {
+         include $coreLibs[$className];
+         return;
+      }
+      
+      // models
+      
+      if(substr($className, -6) == '_model')
+      {
+         self::model(substr($className, 0, -6));
+         return;
+      }
+      
+      // extensions
+      
+      if(isset(Watermelon::$config->modulesList->extensions[$className]))
+      {
+         self::extension($className);
+         $className::init();
+         return;
+      }
+      
+      // core extensions/libraries
+      
+      $coreExtensions['frontendlibraries'] = 'FrontendLibraries/FrontendLibraries.extension.php';
+      $coreExtensions['textile']           = 'Textile/textile.extension.php';
+      
+      if(isset($coreExtensions[$className]))
+      {
+         include WM_Core . $coreExtensions[$className];
+         $className::init();
+         return;
+      }
+   }
+   
    /*
     * public static Model model(string $name)
     * 

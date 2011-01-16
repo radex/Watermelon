@@ -48,7 +48,7 @@ class Pages_controller extends Controller
       
       $pages = $this->model->pages();
       
-      $commentsModel = Model('comments');
+      $commentsModel = new Comments_Model;
       
       // if no pages
       
