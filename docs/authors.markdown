@@ -1,10 +1,10 @@
-Authors of Watermelon CMS
+Authors of Watermelon
 -------------------------
 
 * Radosław _'radex'_ Pietruszewski - radexpl[at]gmail[dot]com
 
 
-Libraries Watermelon CMS uses
+Libraries Watermelon uses
 -----------------------------
 
 * [PHPTAL](http://phptal.org/) (LGPL 2.1)

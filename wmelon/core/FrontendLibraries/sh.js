@@ -1,6 +1,6 @@
 
  //  
- //  Watermelon CMS
+ //  Watermelon
  //  
 
 

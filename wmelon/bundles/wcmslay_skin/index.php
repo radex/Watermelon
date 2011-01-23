@@ -30,7 +30,7 @@ ${php:skin.drawHeadTags()}
 
 <footer>
    ${structure footer}<br/>
-   powered by <strong>Watermelon CMS</strong>
+   powered by <strong>Watermelon</strong>
    <tal:block tal:condition="php:defined('WM_Debug')">
       <br/><br/>
       Wygenerowano w: <?= round(Benchmark::executionTime(), -2) / 1000 ?> ms<br/>
