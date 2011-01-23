@@ -597,9 +597,7 @@ class Installer_Controller extends Controller
             DB::query($query, $samplePostSummary, $samplePost, $postAtomID, $samplePage);
          }
       
-      // adding wmelon configuration to Registry
-         
-         Registry::create('wmelon', $w, true);
+      // installing Watermelon's configuration
          
          // modules
          
@@ -633,7 +631,7 @@ class Installer_Controller extends Controller
          
          // setting config
          
-         Registry::set('wmelon', $w);
+         Config::set('wmelon.wmelon', $w);
          
          Watermelon::$config = $w;
       

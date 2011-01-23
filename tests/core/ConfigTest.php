@@ -336,22 +336,4 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->delete('t3.test2.nosuchkey');
    }
-   
-   /**
-    * @test
-    */
-
-   public function testInvokeShortcut()
-   {
-      $c = new Config;
-      
-      $c->set('t4.test1', 'foo');
-      
-      $this->assertSame('foo', $c('t4.test1'));
-      
-      $c('t4.test1', 'bar');
-      
-      $this->assertSame('bar', $c('t4.test1'));
-      $this->assertSame('bar', $c->get('t4.test1'));
-   }
 }

@@ -105,16 +105,6 @@ CREATE TABLE `wm_privileges` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_registry`
--- 
-
-CREATE TABLE `wm_registry` (
-  `name` varchar(256) CHARACTER SET latin1 NOT NULL,
-  `value` text CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- 
 -- Structure for table `wm_users`
 -- 
 

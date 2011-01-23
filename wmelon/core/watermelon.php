@@ -214,6 +214,11 @@ class Watermelon
       
       new FrontendLibraries;
       
+      if(self::$appType == self::Admin)
+      {
+         new Sblam;
+      }
+      
       // indexing modules (if debug or admin logged)
       
       if(defined('WM_Debug') || Users::isLogged())
@@ -363,7 +368,7 @@ class Watermelon
 
          'DB/DB.php',
          'Loader.php',
-         'Registry/Registry.php',
+         'Config.php',
          'EventCenter.php',
 
          'testing/Exception.php',
@@ -391,11 +396,9 @@ class Watermelon
       
       DB::connect($dbHost, $dbName, $dbUser, $dbPass, $dbPrefix);
       
-      // getting main configuration array from Registry
+      // getting main configuration array from Config
       
-      Registry::create('wmelon', $w, true);
-      
-      $w = Registry::get('wmelon');
+      $w = Config::get('wmelon.wmelon');
       
       self::$config = &$w;
       
@@ -526,7 +529,7 @@ class Watermelon
          {
             self::$config->modulesList = $modulesList;
             
-            Registry::set('wmelon', self::$config);
+            Config::set('wmelon.wmelon', self::$config);
          }
       }
       else

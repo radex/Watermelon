@@ -63,7 +63,6 @@ class Config
    
    /*
     * public static mixed get(string $name)
-    * public mixed __invoke(string $name)
     * 
     * Fetches value of $name field
     * 
@@ -108,7 +107,6 @@ class Config
    
    /*
     * public static void set(string $name, mixed $value)
-    * public void __invoke(string $name, mixed $value)
     * 
     * Sets $name field to $value
     * 
@@ -220,26 +218,6 @@ class Config
       // returning final answer
       
       return self::subKeyExists($field, $keys);
-   }
-   
-   /**************************************************************************/
-   
-   /*
-    * Handy shortcut for configuration getter/setter
-    */
-   
-   public function __invoke()
-   {
-      $args = func_get_args();
-      
-      if(count($args) == 1)
-      {
-         return self::get($args[0]);
-      }
-      else
-      {
-         return self::set($args[0], $args[1]);
-      }
    }
    
    /**************************************************************************/

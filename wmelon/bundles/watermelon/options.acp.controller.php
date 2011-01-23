@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ class Options_Controller extends Controller
       $nick           = $userData->nick;
       $email          = $userData->email;
       
-      $sblamKey       = $this->registry->get('sblam.apiKey');
+      $sblamKey       = $this->config->get('wmelon.sblam.apiKey');
       
       // label notes
       
@@ -154,7 +154,7 @@ class Options_Controller extends Controller
       $config->headTags       = $data->head;
       $config->tailTags       = $data->tail;
       
-      $this->registry->set('wmelon', $config);
+      $this->config->set('wmelon.wmelon', $config);
       
       // saving data - userdata
       
@@ -169,7 +169,7 @@ class Options_Controller extends Controller
       
       // saving data - sblam!
       
-      $this->registry->set('sblam.apiKey', $data->sblamKey);
+      $this->config->set('wmelon.sblam.apiKey', $data->sblamKey);
       
       // redirecting
       
@@ -354,7 +354,7 @@ class Options_Controller extends Controller
       
       Watermelon::$config->textMenus = array($textMenu);
       
-      $this->registry->set('wmelon', Watermelon::$config);
+      $this->config->set('wmelon.wmelon', Watermelon::$config);
       
       SiteRedirect('options/nav');
    }

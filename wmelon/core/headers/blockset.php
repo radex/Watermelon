@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2009-2010 Radosław Pietruszewski.
+ //  Copyright 2009-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@ abstract class BlockSet
 {
    public function __construct()
    {
-      $this->db       = new DB();
-      $this->load     = new Loader();
-      $this->registry = new Registry();
+      $this->db     = new DB;
+      $this->load   = new Loader;
+      $this->config = new Config;
       
       // attempting to load model with the same name
       
