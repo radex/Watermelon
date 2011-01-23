@@ -340,12 +340,12 @@ class Installer_Controller extends Controller
          }
          catch(WMException $e)
          {
-            if($e->stringCode() == 'DB:connectError')
+            if($e->getCode() == 'DB:connectError')
             {
                $form->addError('Nie udało się połączyć z serwerem bazy danych za pomocą podanych danych. Spróbuj jeszcze raz.');
                $form->fallback();
             }
-            elseif($e->stringCode() == 'DB:selectError')
+            elseif($e->getCode() == 'DB:selectError')
             {
                // can't select database - try to create one first
                
@@ -517,18 +517,6 @@ class Installer_Controller extends Controller
       $user  = $_SESSION['userDataForm'];
       $site  = $_SESSION['siteNameForm'];
       
-      // saving config.php
-      
-      $configFile = file_get_contents(WM_Bundles . 'installer/config.php');
-      
-      $configFile = str_replace('{host}',   addslashes($db->host), $configFile);
-      $configFile = str_replace('{user}',   addslashes($db->user), $configFile);
-      $configFile = str_replace('{pass}',   addslashes($db->pass), $configFile);
-      $configFile = str_replace('{name}',   addslashes($db->name), $configFile);
-      $configFile = str_replace('{prefix}', addslashes($db->prefix), $configFile);
-      
-      file_put_contents(WM_System . 'config.php', $configFile);
-      
       // generating Atom ID for website
       
       $atomID = WM_SiteURL . time() . mt_rand();
@@ -544,7 +532,7 @@ class Installer_Controller extends Controller
       {
          // creating database if necessary
          
-         if($e->stringCode() == 'DB:selectError')
+         if($e->getCode() == 'DB:selectError')
          {
             DB::query('CREATE DATABASE ' . $db->name);
             
@@ -565,13 +553,6 @@ class Installer_Controller extends Controller
          $structure = file_get_contents($path . 'sql/structure.sql');
          $data      = file_get_contents($path . 'sql/data.sql');
          
-         // combining and replacing table prefix
-         
-         $sql = $structure . "\n\n" . $data;
-         
-         $sql = str_replace('`wm_', '`' . $db->prefix, $sql);
-         $sql = str_replace('{time}', time(), $sql);
-         
          // sample content files
          
          $samplePostSummary = file_get_contents($path . 'sql/samplePostSummary.txt');
@@ -585,7 +566,10 @@ class Installer_Controller extends Controller
          
          // making queries
          
-         foreach(explode(';', $sql) as $query)
+         $sql = $structure . "\n\n" . $data;
+         $sql = explode(';', $sql);
+         
+         foreach($sql as $query)
          {
             $query = trim($query);
          
@@ -594,7 +578,17 @@ class Installer_Controller extends Controller
                continue;
             }
             
-            DB::query($query, $samplePostSummary, $samplePost, $postAtomID, $samplePage);
+            // substituting placeholders
+            
+            $query = str_replace('`wm_', '`' . $db->prefix, $query);
+            $query = str_replace('{time}', time(), $query);
+            $query = str_replace('{atom-id}', $postAtomID, $query);
+
+            $query = str_replace('{post-summary}', mysql_real_escape_string($samplePostSummary), $query);
+            $query = str_replace('{post-content}', mysql_real_escape_string($samplePost), $query);
+            $query = str_replace('{page-content}', mysql_real_escape_string($samplePage), $query);
+            
+            DB::query(true, $query);
          }
       
       // installing Watermelon's configuration
@@ -653,6 +647,18 @@ class Installer_Controller extends Controller
             'email'    => '',
             'lastseen' => time(),
          ));
+      
+      // saving config.php
+      
+      $configFile = file_get_contents(WM_Bundles . 'installer/config.php');
+      
+      $configFile = str_replace('{host}',   addslashes($db->host), $configFile);
+      $configFile = str_replace('{user}',   addslashes($db->user), $configFile);
+      $configFile = str_replace('{pass}',   addslashes($db->pass), $configFile);
+      $configFile = str_replace('{name}',   addslashes($db->name), $configFile);
+      $configFile = str_replace('{prefix}', addslashes($db->prefix), $configFile);
+      
+      file_put_contents(WM_System . 'config.php', $configFile);
       
       // removing session and redirecting to home page
       

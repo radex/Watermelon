@@ -66,12 +66,12 @@ class Users_Controller extends Controller
       }
       catch(WMException $e)
       {
-         if($e->stringCode() == 'auth:userNotExists')
+         if($e->getCode() == 'auth:userNotExists')
          {
             $form->addError('Podany użytkownik nie istnieje');
             $form->fallback();
          }
-         elseif($e->stringCode() == 'auth:wrongPass')
+         elseif($e->getCode() == 'auth:wrongPass')
          {
             $form->addError('Podano złe hasło');
             $form->fallback();

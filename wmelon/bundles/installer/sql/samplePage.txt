@@ -1,13 +1,3 @@
-<exec>
-// access only for admin
-
-if(!Users::isLogged())
-{
-   SiteRedirect('e404');
-}
-
-</exec>
-
 Na tej podstronie znajdziesz opis niektórych zaawansowanych opcji Watermelona.
 
 h2. Textile

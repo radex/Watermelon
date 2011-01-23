@@ -42,7 +42,6 @@ class Loader
             'eventcenter' => 'EventCenter.php',
             
             'benchmark'   => 'testing/Benchmark.php',
-            'unittester'  => 'testing/UnitTester.php',
             
             'form'        => 'Form/Form.php',
             'acptable'    => 'helpers/ACPTable.php',

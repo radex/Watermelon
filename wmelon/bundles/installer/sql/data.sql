@@ -4,16 +4,16 @@ INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `pu
 (
    'Witaj_w_Watermelonie!',
    'Witaj w Watermelonie!',
-   '?',
-   '?',
-   1, {time}, {time}, '?', 1, 1
+   '{post-summary}',
+   '{post-content}',
+   1, {time}, {time}, '{atom-id}', 1, 1
 );
 
 -- sample page
 
 INSERT INTO `wm_pages` (`name`, `title`, `content`, `author`, `created`, `updated`) VALUES
 (
-   'wmelonHelp', 'Pomoc Watermelona', '?', 1, {time}, {time}
+   'wmelonHelp', 'Pomoc Watermelona', '{page-content}', 1, {time}, {time}
 );
 
 -- sample comment for these

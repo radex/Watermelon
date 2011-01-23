@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon CMS
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon CMS is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -20,17 +20,12 @@
 
 class WMException extends Exception
 {
-   protected $stringCode = '';
+   protected $code = '';
    
-   public function __construct($message = '', $stringCode = '')
+   public function __construct($message = '', $code = '')
    {
       parent::__construct($message, 0);
       
-      $this->stringCode = $stringCode;
-   }
-   
-   public function stringCode()
-   {
-      return $this->stringCode;
+      $this->code = $code;
    }
 }
