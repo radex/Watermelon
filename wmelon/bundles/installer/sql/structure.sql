@@ -66,6 +66,16 @@ CREATE TABLE `wm_comments` (
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 -- 
+-- Structure for table `wm_config`
+-- 
+
+CREATE TABLE `wm_config` (
+  `name` varchar(50) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
 -- Structure for table `wm_pages`
 -- 
 
