@@ -18,11 +18,11 @@
  //  along with Watermelon. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-include_once '../../wmelon/core/testing/Exception.php';
-include_once '../../wmelon/core/DB/DB.php';
-include_once '../../wmelon/core/Config.php';
+require_once dirname(__FILE__) . '/../autoloader.php';
 
-error_reporting(E_ALL - E_NOTICE);
+/**
+ * @covers Config
+ */
 
 class ConfigTest extends PHPUnit_Framework_TestCase 
 {
@@ -117,16 +117,17 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       // non-existing
       
-      $this->assertSame(false, $c->exists('test.field'));
-      $this->assertSame(null, $c->get('test.field'));
-      $this->assertSame(false, $c->exists('test.field'));
+      $this->assertNull($c->get('test.field2'));
+      $this->assertFalse($c->exists('test.field'));
+      $this->assertNull($c->get('test.field'));
+      $this->assertFalse($c->exists('test.field'));
       
       // null value
       
       $c->set('test.field', null);
       
-      $this->assertSame(true, $c->exists('test.field'));
-      $this->assertSame(null, $c->get('test.field'));
+      $this->assertTrue($c->exists('test.field'));
+      $this->assertNull($c->get('test.field'));
       
       // string value
       
@@ -141,12 +142,12 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->delete('test.field');
       
-      $this->assertSame(false, $c->exists('test.field'));
-      $this->assertSame(null, $c->get('test.field'));
+      $this->assertFalse($c->exists('test.field'));
+      $this->assertNull($c->get('test.field'));
       
       $c->set('test.field', 'sth');
       
-      $this->assertSame(true, $c->exists('test.field'));
+      $this->assertTrue($c->exists('test.field'));
       $this->assertSame('sth', $c->get('test.field'));
    }
    
@@ -162,8 +163,8 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       DB::insert('config', array('name' => 't1.test1', 'value' => serialize(null)));
       
-      $this->assertSame(true, $c->exists('t1.test1'));
-      $this->assertSame(null, $c->get('t1.test1'));
+      $this->assertTrue($c->exists('t1.test1'));
+      $this->assertNull($c->get('t1.test1'));
       
       // complex value getting
       
@@ -189,7 +190,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->delete('t1.test3');
       
-      $this->assertSame(false, DBQuery::select('config')->where('name', 't1.test3')->act()->exists);
+      $this->assertFalse(DBQuery::select('config')->where('name', 't1.test3')->act()->exists);
       
       // and recreating
       
@@ -206,7 +207,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->delete('t1.test5');
       
-      $this->assertSame(false, $c->exists('t.test5'));
+      $this->assertFalse($c->exists('t.test5'));
       $this->assertSame(false,
          DBQuery::select('config')->where('name', 't1.test5')->act()->exists);
    }
@@ -221,23 +222,23 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       // non-existing
       
-      $this->assertSame(false, $c->exists('t2.test1.foo'));
-      $this->assertSame(null, $c->get('t2.test1.foo'));
+      $this->assertFalse($c->exists('t2.test1.foo'));
+      $this->assertNull($c->get('t2.test1.foo'));
       
       $c->set('t2.test1', null);
       
-      $this->assertSame(false, $c->exists('t2.test1.foo'));
-      $this->assertSame(null, $c->get('t2.test1.foo'));
+      $this->assertFalse($c->exists('t2.test1.foo'));
+      $this->assertNull($c->get('t2.test1.foo'));
       
       $c->set('t2.test1', array('bar' => 'test'));
       
-      $this->assertSame(false, $c->exists('t2.test1.foo'));
-      $this->assertSame(null, $c->get('t2.test1.foo'));
+      $this->assertFalse($c->exists('t2.test1.foo'));
+      $this->assertNull($c->get('t2.test1.foo'));
       
       $t1->bar = 'test';
       
-      $this->assertSame(false, $c->exists('t2.test1.foo'));
-      $this->assertSame(null, $c->get('t2.test1.foo'));
+      $this->assertFalse($c->exists('t2.test1.foo'));
+      $this->assertNull($c->get('t2.test1.foo'));
       
       // setting and getting
       
@@ -246,9 +247,9 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       $t2->foo = null;
       
       $this->assertEquals($t2, $c->get('t2.test2'));
-      $this->assertSame(null, $c->get('t2.test2.foo'));
-      $this->assertSame(true, $c->exists('t2.test2'));
-      $this->assertSame(true, $c->exists('t2.test2.foo'));
+      $this->assertNull($c->get('t2.test2.foo'));
+      $this->assertTrue($c->exists('t2.test2'));
+      $this->assertTrue($c->exists('t2.test2.foo'));
       
       // deleting
       
@@ -256,9 +257,9 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->delete('t2.test2.foo');
       
-      $this->assertSame(false, $c->exists('t2.test2.foo'));
-      $this->assertSame(null, $c->get('t2.test2.foo'));
-      $this->assertSame(true, $c->exists('t2.test2'));
+      $this->assertFalse($c->exists('t2.test2.foo'));
+      $this->assertNull($c->get('t2.test2.foo'));
+      $this->assertTrue($c->exists('t2.test2'));
       $this->assertEquals($t2, $c->get('t2.test2'));
       
       // setting (as object)
@@ -267,7 +268,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->set('t2.test3', $t3);
       
-      $this->assertSame(true, $c->exists('t2.test3.foo'));
+      $this->assertTrue($c->exists('t2.test3.foo'));
       $this->assertSame('bar', $c->get('t2.test3.foo'));
       
       // setting (as array)
@@ -276,7 +277,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->set('t2.test4', $t4);
       
-      $this->assertSame(true, $c->exists('t2.test4.foo'));
+      $this->assertTrue($c->exists('t2.test4.foo'));
       $this->assertSame('bar', $c->get('t2.test4.foo'));
    }
    
@@ -292,14 +293,14 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $c->set('t3.test1.foo.bar.asd', false);
       
-      $this->assertSame(true, $c->exists('t3.test1.foo.bar.asd'));
-      $this->assertSame(true, $c->exists('t3.test1.foo.bar'));
-      $this->assertSame(true, $c->exists('t3.test1.foo'));
-      $this->assertSame(true, $c->exists('t3.test1'));
+      $this->assertTrue($c->exists('t3.test1.foo.bar.asd'));
+      $this->assertTrue($c->exists('t3.test1.foo.bar'));
+      $this->assertTrue($c->exists('t3.test1.foo'));
+      $this->assertTrue($c->exists('t3.test1'));
       
       // 2
       
-      $t2a = array('a');
+      $t2a->a = 'b';
       $t2b->foo = 'bar';
       $t2b->bar = array('a' => $t2a, 'b' => false);
       $t2c = array('foo' => $t2b, 'bar' => 666);
@@ -313,26 +314,38 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       $this->assertSame(666, $c->get('t3.test2.bar'));
       $this->assertSame('bar', $c->get('t3.test2.foo.foo'));
       $this->assertEquals($t2b->bar, $c->get('t3.test2.foo.bar'));
-      $this->assertSame(false, $c->get('t3.test2.foo.bar.b'));
+      $this->assertFalse($c->get('t3.test2.foo.bar.b'));
       $this->assertSame($t2a, $c->get('t3.test2.foo.bar.a'));
+      $this->assertSame('b', $c->get('t3.test2.foo.bar.a.a'));
       
       // 2 - exists
       
-      $this->assertSame(true, $c->exists('t3.test2'));
-      $this->assertSame(true, $c->exists('t3.test2.foo'));
-      $this->assertSame(true, $c->exists('t3.test2.bar'));
-      $this->assertSame(true, $c->exists('t3.test2.foo.foo'));
-      $this->assertSame(true, $c->exists('t3.test2.foo.bar'));
-      $this->assertSame(true, $c->exists('t3.test2.foo.bar.b'));
-      $this->assertSame(true, $c->exists('t3.test2.foo.bar.a'));
+      $this->assertTrue($c->exists('t3.test2'));
+      $this->assertTrue($c->exists('t3.test2.foo'));
+      $this->assertTrue($c->exists('t3.test2.bar'));
+      $this->assertTrue($c->exists('t3.test2.foo.foo'));
+      $this->assertTrue($c->exists('t3.test2.foo.bar'));
+      $this->assertTrue($c->exists('t3.test2.foo.bar.b'));
+      $this->assertTrue($c->exists('t3.test2.foo.bar.a'));
+      
+      // 2 - setting
+      
+      $c->set('t3.test2.foo.bar.a.a', true);
+      
+      $this->assertTrue($c->get('t3.test2.foo.bar.a.a'));
       
       // 2 - deleting
       
+      $c->delete('t3.test2.foo.bar.a');
+      
+      $this->assertFalse($c->exists('t3.test2.foo.bar.a'));
+      $this->assertFalse($c->exists('t3.test2.foo.bar.a.a'));
+      
       $c->delete('t3.test2.foo.bar');
       
-      $this->assertSame(false, $c->exists('t3.test2.foo.bar'));
-      $this->assertSame(false, $c->exists('t3.test2.foo.bar.b'));
-      $this->assertSame(false, $c->exists('t3.test2.foo.bar.a'));
+      $this->assertFalse($c->exists('t3.test2.foo.bar'));
+      $this->assertFalse($c->exists('t3.test2.foo.bar.b'));
+      $this->assertFalse($c->exists('t3.test2.foo.bar.a'));
       
       $c->delete('t3.test2.nosuchkey');
    }
