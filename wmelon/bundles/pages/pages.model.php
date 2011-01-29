@@ -32,7 +32,7 @@ class Pages_Model extends Model
    
    public function pages()
    {
-      return DBQuery::select('pages')->orderBy('id', true)->act();
+      return DBQuery::select('pages')->order('id DESC')->act();
    }
    
    /*

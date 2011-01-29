@@ -39,7 +39,7 @@ class Blog_Model extends Model
    
    public function allPosts($scope = null)
    {
-      $query = DBQuery::select('blogposts')->orderBy('id', true);
+      $query = DBQuery::select('blogposts')->order('id DESC');
       
       // scope
       
@@ -101,7 +101,7 @@ class Blog_Model extends Model
    {
       $page = (int) $page - 1;
       
-      return DBQuery::select('blogposts')->where('status', 'published')->orderBy('id', true)->limit($page * 10, 11)->act();
+      return DBQuery::select('blogposts')->where('status', 'published')->order('id DESC')->limit(11)->offset($page * 10)->act();
    }
    
    /*
@@ -301,7 +301,7 @@ class Blog_Model extends Model
       
       // adding blog posts
       
-      $posts = DBQuery::select('blogposts')->where('status', 'published')->orderBy('id', true)->limit(0, 20)->act();
+      $posts = DBQuery::select('blogposts')->where('status', 'published')->order('id DESC')->limit(20)->act();
       
       foreach($posts as $post)
       {

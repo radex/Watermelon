@@ -32,7 +32,7 @@ class Comments_Model extends Model
    
    public function comments()
    {
-      return DBQuery::select('comments')->orderBy('id', true)->act();
+      return DBQuery::select('comments')->order('id DESC')->act();
    }
    
    /*
@@ -57,7 +57,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      return DBQuery::select('comments')->where('record', $id)->andWhere('type', $type)->orderBy('id')->act();
+      return DBQuery::select('comments')->where('record', $id)->andWhere('type', $type)->order('id')->act();
    }
    
    /*

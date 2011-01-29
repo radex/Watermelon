@@ -79,153 +79,183 @@ class DBQuery
     * public string $where
     * 
     * WHERE clause of the query
-    * 
-    * Leave NULL for no WHERE clause
     */
    
    public $where;
    
    /*
-    * public string $orderBy
+    * public string $order
     * 
     * ORDER BY clause of the query
-    * 
-    * Leave NULL for no ORDER BY clause
     */
    
-   public $orderBy;
+   public $order;
    
    /*
-    * public string $limit
+    * public int $limit
     * 
-    * LIMIT clause of the query
-    * 
-    * Leave NULL for no LIMIT clause
+    * Maximum number of items in result
     */
    
    public $limit;
    
-   /*******************************************************/
-   
    /*
-    * __construct(enum $type, string $table[, string $selectedFields])
+    * public int $offset
     * 
-    * enum $type = {'insert', 'select', 'update', 'delete'}
+    * Offset of selected items
     * 
-    * string $table          - table name
-    * string $selectedFields - fields to be selected (only for SELECT query)
+    * Note that you must use limit to use offset (it's a MySQL restriction)
     */
    
-   public function __construct($type, $table, $selectedFields = null)
-   {
-      $type = strtolower($type);
-      
-      switch($type)
-      {
-         case 'insert':
-            $type = self::insert;
-         break;
-         
-         case 'select':
-         default:
-            $type = self::select;
-         break;
-         
-         case 'update':
-            $type = self::update;
-         break;
-         
-         case 'delete':
-            $type = self::delete;
-         break;
-      }
-      
-      $this->type  = $type;
-      $this->table = $table;
-      $this->selectedFields = $selectedFields;
-   }
+   public $offset;
+   
+   /**************************************************************************/
+   
+   /*
+    * private __construct()
+    * 
+    * Use DBQuery::insert/select/update/delete() instead
+    */
+   
+   private function __construct(){}
    
    /*
     * public static DBQuery insert(string $table)
-    * public static DBQuery select([string $selectedFields,] string $table)
-    * public static DBQuery update(string $table)
-    * public static DBQuery delete(string $table)
     * 
-    * Returns new object of DBQuery of insert/select/update/delete type
+    * Returns new object of DBQuery of INSERT type
     * 
-    * string $selectedFields - fields to be selected (only for SELECT query)
-    * string $table          - table name
+    * string $table - table name
     */
    
    public static function insert($table)
    {
-      return new DBQuery('insert', $table);
+      $q = new DBQuery;
+      
+      $q->type  = self::insert;
+      $q->table = $table;
+      
+      return $q;
    }
    
-   public static function select($a, $b = null)
+   /*
+    * public static DBQuery select([string $selectedFields,] string $table)
+    * 
+    * Returns new object of DBQuery of SELECT type
+    * 
+    * string $selectedFields - fields to be selected
+    * string $table          - table name
+    */
+    
+   public static function select()
    {
-      if($b === null)
+      // variable args
+      
+      $args = func_get_args();
+      
+      if(count($args) == 1)
       {
-         $table = $a;
+         list($table) = $args;
       }
       else
       {
-         $table = $b;
-         $selectedFields = $a;
+         list($selectedFields, $table) = $args;
       }
       
-      return new DBQuery('select', $table, $selectedFields);
+      // creating object
+      
+      $q = new DBQuery;
+      
+      $q->type           = self::select;
+      $q->table          = $table;
+      $q->selectedFields = $selectedFields;
+      
+      return $q;
    }
+   
+   /*
+    * public static DBQuery update(string $table)
+    * 
+    * Returns new object of DBQuery of UPDATE type
+    * 
+    * string $table - table name
+    */
    
    public static function update($table)
    {
-      return new DBQuery('update', $table);
+      $q = new DBQuery;
+      
+      $q->type  = self::update;
+      $q->table = $table;
+      
+      return $q;
    }
+   
+   /*
+    * public static DBQuery delete(string $table)
+    * 
+    * Returns new object of DBQuery of DELETE type
+    * 
+    * string $table - table name
+    */
    
    public static function delete($table)
    {
-      return new DBQuery('delete', $table);
+      $q = new DBQuery;
+      
+      $q->type  = self::delete;
+      $q->table = $table;
+      
+      return $q;
    }
    
-   /*******************************************************/
+   /**************************************************************************/
    
    /*
     * public DBQuery set(array/object $fields)
     * public DBQuery set(string $column, mixed $value[, $column, $value[, ...]])
     * 
-    * Adds given fields names and values to ->fields
+    * Sets given fields names with values to be inserted or updated
+    * 
+    * If method has been already called, fields are appended to the previous ones
     * 
     * array/object $fields - array/object of field names and values
-    * string       $column - field name
-    * string       $value  - field value
+    * 
+    * string $column - field name
+    * string $value  - field value
     * 
     * Examples:
     * 
-    * set(array('x' => 'foo', 'x' => true, 'z' => 5))
-    * set('x', 'foo',
-    *     'x', true,
-    *     'z', 5)
+    *    set(array('x' => 'foo', 'x' => true, 'z' => 5))
+    *    set('x', 'foo',
+    *        'x', true,
+    *        'z', 5)
     * 
-    * Which produces:
+    * Both produce:
     * 
-    * (x,y,z) VALUES('foo', true, 5)        for INSERT query, or
-    * 
-    * SET x = 'foo', y = true, z = 5        for UPDATE query
+    *    (x, y, z) VALUES('foo', true, 5)        for INSERT query, or
+    *    
+    *    SET x = 'foo', y = true, z = 5          for UPDATE query
     */
    
    public function set()
    {
       $args = func_get_args();
       
+      // object -> array
+      
+      if(is_object($args[0]))
+      {
+         $args[0] = (array) $args[0];
+      }
+      
       // adding
       
       if(is_array($args[0]))
       {
-         $this->fields = $args[0];
-      }
-      elseif(is_object($args[0]))
-      {
-         $this->fields = (array) $args[0];
+         foreach($args[0] as $field => $value)
+         {
+            $this->fields[$field] = $value;
+         }
       }
       else
       {
@@ -244,87 +274,88 @@ class DBQuery
    
    /*
     * public DBQuery where(string $field[, string $op = '='], string $value)
-    * public DBQuery andWhere(string $field[, string $op = '='], string $value)
+    * public DBQuery andWhere( -||- )
+    * public DBQuery orWhere( -||- )
     * 
-    * Adds WHERE clause to query
+    * Adds condition to WHERE clause in query
+    * 
+    * Use where() for the first query and andWhere/orWhere() for next ones
     * 
     * string $field - name of field to compare with $value
-    * string $op    - comparison operator, e.g. '=', '<', etc. Default is '='
+    * string $op    - comparison operator, e.g. '=', '<', etc. Default is '='. There's also special operator IN, which takes array as value (see example below)
     * string $value - some value to be compared with $field value
-    * 
-    * Use ->where() for first condition, and ->andWhere() for next ones
     * 
     * Examples:
     * 
-    * where('id', '5')        --> WHERE id = 5
-    * where('name', 'don\'t') --> WHERE name = 'don\'t'
-    * where('rate', '>', 5)   --> WHERE rate > 5
+    *    where('id', '5')        --> WHERE id = 5
+    *    where('name', "don't")  --> WHERE name = 'don\'t'
+    *    where('rate', '>', 5)   --> WHERE rate > 5
+    *    
+    *    where('foo', 'IN', array(5, 'foo', true)) -->
+    *       WHERE foo IN(5, 'foo', true)
+    *    
+    *    where('name', 'foo')->andWhere('name', 'bar')->orWhere('name', 'baz') -->
+    *       WHERE name = 'foo' AND name = 'bar' OR name = 'baz'
+    */
+   
+   /* 
+    * public DBQuery where(string $condition)
     * 
-    * ---
+    * Appends $condition to WHERE clause in query
     * 
-    * public DBQuery where(string $whereClause)
-    * 
-    * Sets ->where to $whereClause
-    * 
-    * For example: 'id = 5' in argument produces 'WHERE id = 5' in ->where
-    * 
-    * ---
-    * 
-    * public DBQuery andWhere(string $condition)
-    * 
-    * Appends $condition to ->where (remember to precede it with AND/OR)
+    * You must prepend condition with AND/OR/etc. Don't prepend it with 'WHERE'
     */
    
    public function where()
    {
-      $this->_where(false, func_get_args());
+      $args = func_get_args();
+      
+      if(count($args) == 1)
+      {
+         $this->where .= ' ' . $args[0];
+      }
+      else
+      {
+         $this->where = ' ' . $this->_where($args);
+      }
       
       return $this;
    }
    
    public function andWhere()
    {
-      $this->_where(true, func_get_args());
+      $args = func_get_args();
+      
+      $this->where .= ' AND ' . $this->_where($args);
       
       return $this;
    }
    
-   protected function _where($and, $args)
+   public function orWhere()
    {
-      $argc = count($args);
+      $args = func_get_args();
       
-      // where(1)
+      $this->where .= ' OR ' . $this->_where($args);
       
-      if($argc == 1 && !$and)
+      return $this;
+   }
+   
+   /*
+    * auxillary method for generating SQL comparison expression from array(field[, operator], value)
+    */
+   
+   protected function _where($args)
+   {
+      // for two args, implicit operator is '='
+      
+      if(count($args) == 2)
       {
-         $this->where = 'WHERE ' . $args[0] . ' ';
-         
-         return;
-      }
-      
-      // andWhere(1)
-      
-      if($argc == 1 && $and)
-      {
-         $this->where .= $args[0] . ' ';
-         
-         return;
-      }
-      
-      //--
-      
-      if($argc == 2)
-      {
-         // where/andWhere(2)
-         
          list($field, $value) = $args;
          
          $op = '=';
       }
-      elseif($argc == 3)
+      else
       {
-         // where/andWhere(3)
-         
          list($field, $op, $value) = $args;
       }
       
@@ -332,13 +363,6 @@ class DBQuery
       
       if(strtolower($op) == 'in') // 'in' operator - for IN(...)
       {
-         // if not array
-         
-         if(!is_array($value))
-         {
-            $value = array($value);
-         }
-         
          // converting to string
          
          foreach($value as &$item)
@@ -350,71 +374,61 @@ class DBQuery
          
          // query
          
-         $q = $field . ' IN(' . $value . ')' . ' ';
+         $q = $field . ' IN(' . $value . ')';
       }
       else
       {
-         $q = $field . ' ' . $op . ' ' . DB::sqlValue($value) . ' ';
+         $q = $field . ' ' . $op . ' ' . DB::sqlValue($value);
       }
       
-      if(!$and)
-      {
-         $this->where = 'WHERE ' . $q;
-      }
-      else
-      {
-         $this->where .= 'AND ' . $q;
-      }
+      return $q;
    }
    
    /*
-    * public DBQuery orderBy(string $field[, $desc = false])
-    * public DBQuery andBy(string $field[, $desc = false])
+    * public DBQuery order(string $expression)
     * 
-    * Adds ORDER BY clause to query
+    * Adds epression to ORDER BY clause in query
     * 
-    * Use ->orderBy() for first field, and ->andBy() for next ones
+    * For descending/ascending ordering just append 'DESC' or 'ASC' (as in SQL), e.g.:
+    *    ->order('id DESC')
     */
    
-   public function orderBy($field, $desc = false)
+   public function order($expression)
    {
-      $desc = ($desc == true) ? ' DESC' : '';
-      
-      $this->orderBy = 'ORDER BY ' . $field . $desc . ' ';
-      
-      return $this;
-   }
-   
-   public function andBy($field, $desc = false)
-   {
-      $this->orderBy = substr($this->orderBy, 0, -1); // deleting last space char to achieve nice separation with comma
-      
-      $desc = ($desc == true) ? ' DESC' : '';
-      
-      $this->orderBy .= ', ' . $field . $desc . ' ';
+      if(empty($this->order))
+      {
+         $this->order = ' ' . $expression;
+      }
+      else
+      {
+         $this->order .= ', ' . $expression;
+      }
       
       return $this;
    }
    
    /*
     * public DBQuery limit(int $count)
-    * public DBQuery limit(int $offset, int $count)
     * 
-    * Adds LIMIT clause to query
-    * 
-    * Order of parameters is the same as in SQL
+    * Sets count of items to be selected
     */
    
-   public function limit($a, $b = null)
+   public function limit($count)
    {
-      if($b === null)
-      {
-         $this->limit = 'LIMIT ' . $a . ' ';
-      }
-      else
-      {
-         $this->limit = 'LIMIT ' . $a . ', ' . $b . ' ';
-      }
+      $this->limit = $count;
+      
+      return $this;
+   }
+   
+   /*
+    * public DBQuery offset(int $offset)
+    * 
+    * Sets offset of selected items
+    */
+   
+   public function offset($offset)
+   {
+      $this->offset = $offset;
       
       return $this;
    }
@@ -422,13 +436,12 @@ class DBQuery
    /*******************************************************/
    
    /*
-    * public string toSQL()
     * public string __toString()
     * 
     * Returns SQL representation of DBQuery object
     */
    
-   public function toSQL()
+   public function __toString()
    {
       // type
       
@@ -498,20 +511,37 @@ class DBQuery
          }
       }
       
-      // WHERE, ORDER BY and LIMIT clauses
+      // WHERE
       
-      $q .= $this->where;
-      $q .= $this->orderBy;
-      $q .= $this->limit;
+      if(!empty($this->where))
+      {
+         $q .= 'WHERE' . $this->where . ' ';
+      }
+      
+      // ORDER BY
+      
+      if(!empty($this->order))
+      {
+         $q .= 'ORDER BY' . $this->order . ' ';
+      }
+      
+      // limit and offset
+      
+      if($this->limit !== null)
+      {
+         if($this->offset !== null)
+         {
+            $q .= 'LIMIT ' . $this->offset . ', ' . $this->limit . ' ';
+         }
+         else
+         {
+            $q .= 'LIMIT ' . $this->limit . ' ';
+         }
+      }
       
       // returning
       
       return substr($q, 0, -1);
-   }
-   
-   public function __toString()
-   {
-      return $this->toSQL();
    }
    
    /*
@@ -525,7 +555,7 @@ class DBQuery
    
    public function act()
    {
-      $result = DB::query(true, $this->toSQL());
+      $result = DB::query(true, (string) $this);
       
       switch($this->type)
       {
