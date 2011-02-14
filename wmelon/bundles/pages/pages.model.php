@@ -32,7 +32,7 @@ class Pages_Model extends Model
    
    public function pages()
    {
-      return DBQuery::select('pages')->order('id DESC')->act();
+      return Query::select('pages')->order('id DESC')->act();
    }
    
    /*
@@ -54,7 +54,7 @@ class Pages_Model extends Model
    
    public function pageData_name($name)
    {
-      return DBQuery::select('pages')->where('name', (string) $name)->act()->fetchObject();
+      return Query::select('pages')->where('name', (string) $name)->act()->fetchObject();
    }
    
    /*
@@ -141,7 +141,7 @@ class Pages_Model extends Model
       
       // if already exists, generating unique
       
-      if(DBQuery::select('pages')->where('name', $name)->act()->exists)
+      if(Query::select('pages')->where('name', $name)->act()->exists)
       {
          $i = 2;
          
@@ -151,7 +151,7 @@ class Pages_Model extends Model
             
             $i++;
          }
-         while(DBQuery::select('pages')->where('name', $name2)->act()->exists);
+         while(Query::select('pages')->where('name', $name2)->act()->exists);
          
          $name = $name2;
       }

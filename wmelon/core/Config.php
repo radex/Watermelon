@@ -85,7 +85,7 @@ class Config
          {
             // checking in database
             
-            $dbField = DBQuery::select('config')->where('name', $id)->act();
+            $dbField = Query::select('config')->where('name', $id)->act();
             
             if($dbField->exists)
             {
@@ -158,7 +158,7 @@ class Config
       {
          // deleting field completely
          
-         DBQuery::delete('config')->where('name', $id)->act();
+         Query::delete('config')->where('name', $id)->act();
          
          self::$noSuchField[$id] = true;
       }
@@ -166,7 +166,7 @@ class Config
       {
          // or only updating
          
-         DBQuery::update('config')->where('name', $id)->set('value', serialize(self::$fields[$id]))->act();
+         Query::update('config')->where('name', $id)->set('value', serialize(self::$fields[$id]))->act();
       }
    }
    
@@ -198,7 +198,7 @@ class Config
          {
             // checking in database and caching result
             
-            $dbField = DBQuery::select('config')->where('name', $id)->act();
+            $dbField = Query::select('config')->where('name', $id)->act();
             
             if($dbField->exists)
             {

@@ -39,7 +39,7 @@ class Blog_Model extends Model
    
    public function allPosts($scope = null)
    {
-      $query = DBQuery::select('blogposts')->order('id DESC');
+      $query = Query::select('blogposts')->order('id DESC');
       
       // scope
       
@@ -79,10 +79,10 @@ class Blog_Model extends Model
    
    public function counts()
    {
-      $counts->all       = DBQuery::select('blogposts')->where('status IN("published", "draft")')->act()->rows;
-      $counts->trash     = DBQuery::select('blogposts')->where('status', 'trash')->act()->rows;
-      $counts->drafts    = DBQuery::select('blogposts')->where('status', 'draft')->act()->rows;
-      $counts->published = DBQuery::select('blogposts')->where('status', 'published')->act()->rows;
+      $counts->all       = Query::select('blogposts')->where('status IN("published", "draft")')->act()->rows;
+      $counts->trash     = Query::select('blogposts')->where('status', 'trash')->act()->rows;
+      $counts->drafts    = Query::select('blogposts')->where('status', 'draft')->act()->rows;
+      $counts->published = Query::select('blogposts')->where('status', 'published')->act()->rows;
       
       return $counts;
    }
@@ -101,7 +101,7 @@ class Blog_Model extends Model
    {
       $page = (int) $page - 1;
       
-      return DBQuery::select('blogposts')->where('status', 'published')->order('id DESC')->limit(11)->offset($page * 10)->act();
+      return Query::select('blogposts')->where('status', 'published')->order('id DESC')->limit(11)->offset($page * 10)->act();
    }
    
    /*
@@ -123,7 +123,7 @@ class Blog_Model extends Model
    
    public function postData_name($name)
    {
-      return DBQuery::select('blogposts')->where('name', (string) $name)->act()->fetchObject();
+      return Query::select('blogposts')->where('name', (string) $name)->act()->fetchObject();
    }
    
    /*
@@ -228,7 +228,7 @@ class Blog_Model extends Model
    
    public function publish($ids)
    {
-      DBQuery::update('blogposts')->set('published', time())->where('id', 'in', $ids)->act();
+      Query::update('blogposts')->set('published', time())->where('id', 'in', $ids)->act();
       
       $this->changeStatus($ids, 'published');
    }
@@ -243,7 +243,7 @@ class Blog_Model extends Model
    
    public function changeStatus($ids, $status)
    {
-      DBQuery::update('blogposts')->set('status', $status, 'updated', time())->where('id', 'in', $ids)->act();
+      Query::update('blogposts')->set('status', $status, 'updated', time())->where('id', 'in', $ids)->act();
       
       $this->updateFeed();
    }
@@ -301,7 +301,7 @@ class Blog_Model extends Model
       
       // adding blog posts
       
-      $posts = DBQuery::select('blogposts')->where('status', 'published')->order('id DESC')->limit(20)->act();
+      $posts = Query::select('blogposts')->where('status', 'published')->order('id DESC')->limit(20)->act();
       
       foreach($posts as $post)
       {
@@ -348,7 +348,7 @@ class Blog_Model extends Model
       
       // if already exists, generating unique
       
-      if(DBQuery::select('blogposts')->where('name', $name)->act()->exists)
+      if(Query::select('blogposts')->where('name', $name)->act()->exists)
       {
          $i = 2;
          
@@ -358,7 +358,7 @@ class Blog_Model extends Model
             
             $i++;
          }
-         while(DBQuery::select('blogposts')->where('name', $name2)->act()->exists);
+         while(Query::select('blogposts')->where('name', $name2)->act()->exists);
          
          $name = $name2;
       }

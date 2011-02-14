@@ -19,10 +19,12 @@
  //  
 
 /*
- * class DBQuery
+ * class DBQuery (a.k.a Query)
  * 
  * Representation of database query
  */
+
+class Query extends DBQuery{}
 
 class DBQuery
 {

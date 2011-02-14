@@ -32,7 +32,7 @@ class Comments_Model extends Model
    
    public function comments()
    {
-      return DBQuery::select('comments')->order('id DESC')->act();
+      return Query::select('comments')->order('id DESC')->act();
    }
    
    /*
@@ -57,7 +57,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      return DBQuery::select('comments')->where('record', $id)->andWhere('type', $type)->order('id')->act();
+      return Query::select('comments')->where('record', $id)->andWhere('type', $type)->order('id')->act();
    }
    
    /*
@@ -71,7 +71,7 @@ class Comments_Model extends Model
       $id   = (int) $id;
       $type = (string) $type;
       
-      DBQuery::delete('comments')->where('record', $id)->andWhere('type', $type)->act();
+      Query::delete('comments')->where('record', $id)->andWhere('type', $type)->act();
    }
    
    /*
@@ -222,7 +222,7 @@ class Comments_Model extends Model
          
          // approving
 
-         DBQuery::update('comments')->set('approved', true)->where('id', $id)->act();
+         Query::update('comments')->set('approved', true)->where('id', $id)->act();
       }
    }
    
@@ -257,7 +257,7 @@ class Comments_Model extends Model
          
          // rejecting
 
-         DBQuery::update('comments')->set('approved', false)->where('id', $id)->act();
+         Query::update('comments')->set('approved', false)->where('id', $id)->act();
       }
    }
 }

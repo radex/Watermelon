@@ -179,25 +179,25 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       $c->set('t1.test3', $complexValue);
       
       $this->assertSame($complexValue,
-         unserialize(DBQuery::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
+         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
       
       $c->set('t1.test3', null);
       
       $this->assertSame(null,
-         unserialize(DBQuery::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
+         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
       
       // deleting
       
       $c->delete('t1.test3');
       
-      $this->assertFalse(DBQuery::select('config')->where('name', 't1.test3')->act()->exists);
+      $this->assertFalse(Query::select('config')->where('name', 't1.test3')->act()->exists);
       
       // and recreating
       
       $c->set('t1.test3', $complexValue);
       
       $this->assertSame($complexValue,
-         unserialize(DBQuery::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
+         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
       
       // deleting (2)
       
@@ -209,7 +209,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       
       $this->assertFalse($c->exists('t.test5'));
       $this->assertSame(false,
-         DBQuery::select('config')->where('name', 't1.test5')->act()->exists);
+         Query::select('config')->where('name', 't1.test5')->act()->exists);
    }
    
    /**
