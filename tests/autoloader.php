@@ -18,10 +18,14 @@
  //  along with Watermelon. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+/*
+ * Autoloader
+ */
+
 function tests_autoloader($className)
 {
    $className = strtolower($className);
-   
+
    $libPaths = array
       (
          'wmexception' => 'core/testing/Exception.php',
@@ -30,7 +34,7 @@ function tests_autoloader($className)
          'dbresult'    => 'core/DB/DB.php',
          'config'      => 'core/Config.php',
       );
-   
+
    if(isset($libPaths[$className]))
    {
       require dirname(__FILE__) . '/../wmelon/' . $libPaths[$className];
@@ -38,3 +42,12 @@ function tests_autoloader($className)
 }
 
 spl_autoload_register('tests_autoloader');
+
+/*
+ * Database
+ */
+
+function dbConnect()
+{
+   DB::connect('localhost', 'watermelon_tests', 'watermeloner', 'wtrmln123', 'wm_');
+}

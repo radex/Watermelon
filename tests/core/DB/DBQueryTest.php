@@ -28,7 +28,7 @@ class DBQueryTest extends PHPUnit_Framework_TestCase
 {
    public function setUp()
    {
-      DB::connect('localhost', 'watermelon_tests', 'watermeloner', 'wtrmln123', 'wm_');
+      dbConnect();
       
       $this->clearTables();
    }

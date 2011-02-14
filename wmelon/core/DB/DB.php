@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2008-2010 Radosław Pietruszewski.
+ //  Copyright 2008-2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -53,18 +53,122 @@ class DB
     * Whether connection with database has been already established
     */
    
-   public static $connected;
+   private static $connected;
    
-   /*******************************************************/
+   /**************************************************************************/
    
    /*
-    * public static DBResult query([bool $pure, ]string $query[, string $arg1[, string $arg2[, ...]]])
+    * public static object select(string $table, int $id)
     * 
-    * Executes database query, and returns DBResult object as a result
+    * Returns $id record from $table
     * 
-    * bool $pure - if TRUE, args and '__' replacing is not performed- only "pure" query is made
+    * If record doesn't exist, FALSE is returned instead
+    */
+   
+   /*
+    * public static DBResult select(string $table, int[] $ids)
     * 
-    * On error: throws an exception, and (in debug mode) saves an error to self::$errorsArray
+    * Returns $ids records from $table
+    */
+   
+   /*
+    * public static DBResult select(string $table, array($key => $value))
+    * 
+    * Returns all records from $table for which $key field equals $value
+    */
+   
+   public static function select($table, $condition)
+   {
+      $query = DBQuery::select($table);
+      $query = self::applyCondition($query, $condition);
+      
+      $result = $query->act();
+      
+      if(!is_array($condition))
+      {
+         // returning object if [int $id]
+         
+         return $result->fetch();
+      }
+      else
+      {
+         // returning DBResult otherwise
+         
+         return $result;
+      }
+   }
+   
+   /*
+    * public static int insert(string $table, array/object $fields)
+    * 
+    * Adds record to $table, and returns its ID
+    * 
+    * array/object $fields - structure with column names, and field values of record to be added
+    * 
+    * $fields = array($columnName => $value, ...)
+    */
+   
+   public static function insert($table, $fields)
+   {
+      return DBQuery::insert($table)->set($fields)->act();
+   }
+   
+   /*
+    * public static int update(string $table, int $id, array/object $fields)
+    * public static int update(string $table, int[] $ids, array/object $fields)
+    * 
+    *    Updates $id / $ids record(s) in $table
+    * 
+    * public static int update(string $table, array($key => $value), array/object $fields)
+    * 
+    *    Updates records in $table for which $key field equals $value
+    * 
+    * 
+    * array/object $fields - structure with column names, and values of fields to be updated
+    * 
+    * $fields = array($columnName => $value, ...)
+    * 
+    * Returns number of affected records
+    */
+   
+   public static function update($table, $condition, $fields)
+   {
+      $query = DBQuery::update($table)->set($fields);
+      $query = self::applyCondition($query, $condition);
+      
+      return $query->act();
+   }
+   
+   /*
+    * public static int delete(string $table, int $id)
+    * public static int delete(string $table, int[] $ids)
+    * 
+    *    Deletes $id / $ids record(s) in $table
+    * 
+    * public static int delete(string $table, array($key => $value))
+    * 
+    *    Deletes records in $table for which $key field equals $value
+    * 
+    * 
+    * Returns number of deleted records
+    */
+   
+   public static function delete($table, $condition)
+   {
+      $query = DBQuery::delete($table);
+      $query = self::applyCondition($query, $condition);
+      
+      return $query->act();
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * public static DBResult query(string $query[, string $arg1[, string $arg2[, ...]]])
+    * 
+    * Executes query to database, and returns DBResult object as a result
+    * 
+    * Throws an exception on error
     * 
     * QUERIES SYNTAX:
     * 
@@ -75,52 +179,51 @@ class DB
     *
     * For example:
     * 
-    * DB::query("SELECT id, password FROM __users WHERE nick = '?' AND salt = '?'", 'radex', '86fcf28678ebe8a0');
+    *    DB::query("SELECT id, password FROM __users WHERE nick = '?' AND salt = '?'", 'radex', '86fcf28678ebe8a0');
     * 
     * will be interpreted (assuming that table prefix is set to 'wcms_') as:
     * 
-    * "SELECT id, password FROM wcms_users WHERE nick = 'radex' AND salt = '86fcf28678ebe8a0'"
+    *    "SELECT id, password FROM wcms_users WHERE nick = 'radex' AND salt = '86fcf28678ebe8a0'"
     */
    
-   public static function query()
+   public static function query($query)
    {
       // args
       
       $args = func_get_args();
       
-      if($args[0] === true) // if $pure is specified
+      array_shift($args);
+      
+      // replacing '__' with tables prefix
+      
+      $query = str_replace('__', self::$prefix, $query);
+      
+      // replacing input data palceholders ('?') with their (escaped) corresponding values, passed in args
+      
+      foreach($args as &$arg)
       {
-         $pure  = true;
-         $query = $args[1];
-         
-         array_shift($args);
-         array_shift($args);
-      }
-      else
-      {
-         $query = $args[0];
-         
-         array_shift($args);
+         $arg = mysql_real_escape_string($arg);
       }
       
-      // args and '__' replacing
+      $query = self::replaceArgs($query, $args);
       
-      if(!$pure)
-      {
-         // replacing '__' with tables prefix
-
-         $query = str_replace('__', self::$prefix, $query);
-
-         // replacing input data palceholders ('?') with their (escaped) corresponding values, passed in args
-         
-         foreach($args as &$arg)
-         {
-            $arg = mysql_real_escape_string($arg);
-         }
-         
-         $query = self::replaceArgs($query, $args);
-      }
+      // executing query
       
+      return self::pureQuery($query);
+   }
+   
+   /*
+    * public static DBResult pureQuery(string $query)
+    * 
+    * Executes query to database, and returns DBResult object as a result
+    * 
+    * Throws an exception on error
+    * 
+    * As opposed to DB::query() it doesn't change anything in query, only "pure" query is made
+    */
+   
+   public static function pureQuery($query)
+   {
       // saving a query if debug mode is on
       
       if(defined('WM_Debug'))
@@ -142,84 +245,7 @@ class DB
       throw new WMException('Napotkano błąd podczas wykonywania zapytania do bazy danych: "' . mysql_error() . '"', 'DB:queryError');
    }
    
-   /*******************************************************/
-   
-   /*
-    * public static object select(string $table, int $id)
-    * 
-    * Returns $id record from $table
-    * 
-    * If record doesn't exist, FALSE is returned instead
-    */
-   
-   public static function select($table, $id)
-   {
-      return DBQuery::select($table)->where('id', $id)->act()->fetch();
-   }
-   
-   /*
-    * public static int insert(string $table, array/object $fields)
-    * 
-    * Adds record to $table, and returns its ID
-    * 
-    * array/object $fields - array/object with column names, and field values of record to be added
-    * 
-    * $fields = array($columnName => $value, ...)
-    */
-   
-   public static function insert($table, $fields)
-   {
-      return DBQuery::insert($table)->set($fields)->act();
-   }
-   
-   /*
-    * public static void update(string $table, int $id, array/object $fields)
-    * 
-    * Updates $id record in $table
-    * 
-    * array/object $fields - array/object with column names, and values of fields to be updated
-    * 
-    * $fields = array($columnName => $value, ...)
-    */
-   
-   public static function update($table, $id, $fields)
-   {
-      DBQuery::update($table)->set($fields)->where('id', $id)->act();
-   }
-   
-   /*
-    * public static void delete(string $table, int $id)
-    * public static void delete(string $table, int[] $ids)
-    * 
-    * Deletes $id / $ids record(s) in $table
-    */
-   
-   public static function delete($table, $ids)
-   {
-      // forming WHERE clause
-      
-      if(is_array($ids))
-      {
-         foreach($ids as &$id)
-         {
-            $id = (int) $id;
-         }
-         
-         $where = ' IN(' . implode(', ', $ids) . ')';
-      }
-      else
-      {
-         $where = ' = ' . (int) $ids;
-      }
-      
-      // performing query
-      
-      $query = 'DELETE FROM ' . self::$prefix . $table . ' WHERE id' . $where;
-      
-      self::query(true, $query);
-   }
-   
-   /*******************************************************/
+   /**************************************************************************/
    
    /*
     * public static int insertedID()
@@ -245,12 +271,12 @@ class DB
       return mysql_affected_rows();
    }
    
-   /*******************************************************/
+   /**************************************************************************/
    
    /*
     * public static void connect()
     * 
-    * Connects with database. You don't need to do it for yourself.
+    * Connects with database. Done automatically.
     */
    
    public static function connect($host, $name, $user, $pass, $prefix)
@@ -284,13 +310,13 @@ class DB
       self::$prefix    = $prefix;
    }
    
-   /*******************************************************/
+   /**************************************************************************/
    
    /*
     * public static mixed sqlValue(mixed $value)
     * 
     * Returns SQL representation of $value:
-    *    if string:    adds apostrophes before and after escapes string
+    *    if string:    adds apostrophes and escapes string
     *    if int/float: returns the same
     *    if bool/null: converts to string
     * 
@@ -336,5 +362,57 @@ class DB
       }
       
       return $newQuery;
+   }
+   
+   /*
+    * private static DBQuery applyCondition(DBQuery $query, $condition)
+    * 
+    * Applies $condition to $query
+    * 
+    * Used by ::select/update/delete()
+    * 
+    * $condition is one of following:
+    *    int   $id               - single integer applies ->where('id', $id)
+    *    int[] $ids              - array of integer applies ->where('id', 'in', $ids)
+    *    array($key => $value)   - associative array with one element applies ->where($key, $value)
+    */
+   
+   private static function applyCondition($query, $condition)
+   {
+      if(is_array($condition))
+      {
+         $keys = array_keys($condition);
+         $firstKey = $keys[0];
+         
+         if(is_int($firstKey))
+         {
+            // int[] ids
+            
+            $ids = $condition;
+            
+            foreach($ids as &$id)
+            {
+               $id = (int) $id;
+            }
+            
+            return $query->where('id', 'in', $ids);
+         }
+         else
+         {
+            // [key => val]
+            
+            foreach($condition as $key => $value); // a trick to get key name and value
+            
+            return $query->where($key, $value);
+         }
+      }
+      else
+      {
+         // int id
+         
+         $id = $condition;
+         
+         return $query->where('id', (int) $id);
+      }
    }
 }

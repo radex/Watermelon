@@ -588,7 +588,7 @@ class Installer_Controller extends Controller
             $query = str_replace('{post-content}', mysql_real_escape_string($samplePost), $query);
             $query = str_replace('{page-content}', mysql_real_escape_string($samplePage), $query);
             
-            DB::query(true, $query);
+            DB::pureQuery($query);
          }
       
       // installing Watermelon's configuration

@@ -555,7 +555,7 @@ class DBQuery
    
    public function act()
    {
-      $result = DB::query(true, (string) $this);
+      $result = DB::pureQuery((string) $this);
       
       switch($this->type)
       {
