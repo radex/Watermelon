@@ -19,27 +19,11 @@
  //  
 
 /*
- * abstract class BlockSet
+ * abstract class Blockset
  * 
- * BlockSets base class
+ * Blocksets base class
  */
 
-abstract class BlockSet
+abstract class Blockset
 {
-   public function __construct()
-   {
-      $this->db     = new DB;
-      $this->load   = new Loader;
-      $this->config = new Config;
-      
-      // attempting to load model with the same name
-      
-      $className = substr(get_called_class(), 0, -9); // name of class - '_BlockSet'
-      
-      try
-      {
-         $this->model = Loader::model($className);
-      }
-      catch(WMException $e){}
-   }
 }

@@ -595,7 +595,7 @@ class Installer_Controller extends Controller
          
          // modules
          
-         $w->modulesList       = Watermelon::indexModules();
+         $w->modulesList       = Watermelon::indexModules(false);
          $w->defaultController = 'blog';
          
          // other

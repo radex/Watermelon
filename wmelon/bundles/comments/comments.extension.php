@@ -203,7 +203,7 @@ class Comments extends Extension
       
       $view->open          = $open;
       
-      return $view->display(true);
+      return $view->generate();
    }
    
    /*

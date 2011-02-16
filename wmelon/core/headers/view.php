@@ -23,7 +23,7 @@
  * 
  * Class representing view
  * 
- * Notice that you don't create any View objects. You get them from Loader::view(), or its shortcut view().
+ * Notice that you don't create any View objects directly. You get them using View() function.
  */
 
 include WM_Core . 'PHPTAL/PHPTAL.php';
@@ -52,16 +52,28 @@ class View
    
    /**************************************************************************/
    
-   
    /*
-    * public void display([$return = false])
+    * public void display()
     * 
-    * Loads actual view
+    * Loads actual view and displays generated content
     * 
-    * If $return is TRUE, output is returned instead of being displayed
+    * To return content and not display it, use ->generate() instead
     */
    
-   public function display($return = false)
+   public function display()
+   {
+      echo $this->generate();
+   }
+   
+   /*
+    * public string generate()
+    * 
+    * Loads actual view and returns generated content
+    * 
+    * Use ->display() to display it
+    */
+   
+   public function generate()
    {
       // getting view file contents, and stripping from <?php die?\>
       
@@ -99,16 +111,9 @@ class View
          $view->set('isAdmin', Users::adminPrivileges());
       }
       
-      // returning or displaying
+      // executing
       
-      if($return)
-      {
-         return $view->execute();
-      }
-      else
-      {
-         echo $view->execute();
-      }
+      return $view->execute();
    }
    
    /*

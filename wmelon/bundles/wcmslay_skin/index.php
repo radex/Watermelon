@@ -30,32 +30,7 @@ ${php:skin.drawHeadTags()}
 
 <footer>
    ${structure footer}<br/>
-   powered by <strong>Watermelon</strong>
-   <tal:block tal:condition="php:defined('WM_Debug')">
-      <br/><br/>
-      Wygenerowano w: <?= round(Benchmark::executionTime(), -2) / 1000 ?> ms<br/>
-      Peak memory usage: <?= (int) ((memory_get_peak_usage() - WM_StartMemory) / 1000) ?> KB<br/>
-      Current memory usage: <?= (int) ((memory_get_usage() - WM_StartMemory) / 1000) ?> KB<br/>
-      
-      <br/>Zapytania wykonane do bazy danych (<?= count(DB::$queriesArray)?>):<br/>
-      
-      <ul style="text-align:left; font-size:11px">
-         <?
-            foreach(DB::$queriesArray as $query)
-            {
-               if(strlen($query) > 165)
-               {
-                  $query = substr($query, 0, 165) . ' (...)';
-               }
-
-               $query = htmlspecialchars($query);
-
-               $query = preg_replace('/([A-Z]+)/', '<em>$1</em>', $query);
-            
-               echo '<li><pre style="padding:5px">' . $query . '</pre></li>';
-            }
-         ?>
-      </ul>
-   </tal:block>
+   powered by <strong><a href="https://github.com/radex/Watermelon">Watermelon</a></strong>
+   ${structure php: Watermelon_Blockset::debugInfo()}
 </footer>
 ${php:skin.drawTailTags()}

@@ -45,7 +45,7 @@ class Loader
             
             'form'        => 'Form/Form.php',
             'acptable'    => 'helpers/ACPTable.php',
-            'adminquick'  => 'AdminQuick.php',
+            'adminquick'  => 'helpers/AdminQuick.php',
          );
       
       if(isset($coreLibs[$className]))
@@ -62,11 +62,19 @@ class Loader
          return;
       }
       
+      // blocksets
+      
+      if(substr($className, -9) == '_blockset')
+      {
+         self::module(substr($className, 0, -9), 'blockset');
+         return;
+      }
+      
       // extensions
       
       if(isset(Watermelon::$config->modulesList->extensions[$className]))
       {
-         self::extension($className);
+         self::module($className, 'extension');
          $className::init();
          return;
       }
@@ -139,28 +147,6 @@ class Loader
    }
    
    /*
-    * public static BlockSet blockSet(string $name)
-    * 
-    * Loads BlockSet, and returns its object
-    */
-   
-   public static function blockSet($name)
-   {
-      return self::module($name, 'blockset');
-   }
-   
-   /*
-    * public static Extension extension(string $name)
-    * 
-    * Loads extension, and returns its object
-    */
-   
-   public static function extension($name)
-   {
-      return self::module($name, 'extension');
-   }
-   
-   /*
     * models, extensions, blocksets
     */
    
@@ -219,26 +205,4 @@ function Model($name)
 function View($name, $isGlobal = false)
 {
    return Loader::view($name, $isGlobal);
-}
-
-/*
- * BlockSet BlockSet(string $name)
- * 
- * Handy shortcut for Loader::blockSet()
- */
-
-function BlockSet($name)
-{
-   return Loader::blockSet($name);
-}
-
-/*
- * Extension Extension(string $name)
- * 
- * Handy shortcut for Loader::extension()
- */
-
-function Extension($name)
-{
-   return Loader::extension($name);
 }

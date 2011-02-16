@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class WCMSLay_Skin extends Skin
     */
    
    protected function drawBlockMenu($id)
-   {
+   {/*
       foreach($this->blockMenus[$id] as $menu)
       {
          echo '<section>';
@@ -58,6 +58,6 @@ class WCMSLay_Skin extends Skin
          call_user_func_array(array($blockObj, $block), $parameters);
          
          echo '</section>';
-      }
+      }*/
    }
 }

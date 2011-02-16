@@ -13,6 +13,8 @@ $HeadURL$
 $LastChangedRevision$
 */
 
+# rev 3460
+
 /*
 
 _____________
@@ -420,7 +422,7 @@ class Textile_lib
 			'/(\b ?|\s|^)[([]C[])]/i',              // copyright
 			'/[([]1\/4[])]/',                       // 1/4
 			'/[([]1\/2[])]/',                       // 1/2
-			'/[([]3\/4[])]/',                       // 3/2
+			'/[([]3\/4[])]/',                       // 3/4
 			'/[([]o[])]/',                          // degrees -- that's a small 'oh'
 			'/[([]\+\/-[])]/',                      // plus minus
 		);
@@ -1389,10 +1391,15 @@ class Textile_lib
 	function fImage($m)
 	{
 		list(, $algn, $atts, $url) = $m;
+		$url = htmlspecialchars($url);
 		$atts  = $this->pba($atts);
 		$atts .= ($algn != '')	? ' align="' . $this->iAlign($algn) . '"' : '';
-		$atts .= (isset($m[4])) ? ' title="' . $m[4] . '"' : '';
-		$atts .= (isset($m[4])) ? ' alt="'	 . $m[4] . '"' : ' alt=""';
+		if (isset($m[4])) {
+			$m[4] = htmlspecialchars($m[4]);
+			$atts .= ' title="' . $m[4] . '" alt="'	 . $m[4] . '"';
+		} else {
+		   $atts .= ' alt=""';
+		}
 		$size = false;
 		if ($this->isRelUrl($url))
 			$size = @getimagesize(realpath($this->doc_root.ltrim($url, $this->ds)));

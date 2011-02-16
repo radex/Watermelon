@@ -26,19 +26,19 @@ require_once dirname(__FILE__) . '/../autoloader.php';
 
 class ConfigTest extends PHPUnit_Framework_TestCase 
 {
-   public function setUp() 
+   public static function setUpBeforeClass() 
    {
-      DB::connect('localhost', 'watermelon_tests', 'watermeloner', 'wtrmln123', 'wm_');
+      dbConnect();
       
-      $this->clearTables();
+      self::clearTables();
    }
    
-   public function tearDown()
+   public static function tearDownAfterClass()
    {
-      $this->clearTables();
+      self::clearTables();
    }
    
-   public function clearTables()
+   public static function clearTables()
    {
       DB::query('TRUNCATE TABLE wm_config');
    }
@@ -179,12 +179,12 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       $c->set('t1.test3', $complexValue);
       
       $this->assertSame($complexValue,
-         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
+         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetch()->value));
       
       $c->set('t1.test3', null);
       
       $this->assertSame(null,
-         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
+         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetch()->value));
       
       // deleting
       
@@ -197,7 +197,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
       $c->set('t1.test3', $complexValue);
       
       $this->assertSame($complexValue,
-         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetchObject()->value));
+         unserialize(Query::select('config')->where('name', 't1.test3')->act()->fetch()->value));
       
       // deleting (2)
       

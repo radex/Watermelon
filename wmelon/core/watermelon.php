@@ -426,7 +426,7 @@ class Watermelon
    }
    
    /*
-    * public static object indexModules([bool $save = false])
+    * public static object indexModules([bool $save = true])
     * 
     * Scans bundles for module files - controllers, models, extensions etc., to create list of them
     * 
@@ -435,7 +435,7 @@ class Watermelon
     * Don't call it.
     */
    
-   public static function indexModules($save = false)
+   public static function indexModules($save = true)
    {
       $modulesList = new stdClass;
       
@@ -488,7 +488,7 @@ class Watermelon
             {
                $ext = '.' . $moduleType . '.php';
                $extLen = strlen($ext);
-
+               
                if(substr($file->getFilename(), -$extLen) == $ext)
                {
                   // .acp.controller.php and .controller.php are different module types

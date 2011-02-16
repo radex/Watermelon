@@ -227,7 +227,7 @@ class Options_Controller extends Controller
       
       $view->display();
       
-      Watermelon::$headTags[] = View('navOptionsHtml')->display(true);
+      Watermelon::$headTags[] = View('navOptionsHtml')->generate();
    }
    
    /*
