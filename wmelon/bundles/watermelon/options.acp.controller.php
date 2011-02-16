@@ -73,7 +73,7 @@ class Options_Controller extends Controller
       $nick           = $userData->nick;
       $email          = $userData->email;
       
-      $sblamKey       = $this->config->get('wmelon.sblam.apiKey');
+      $sblamKey       = Config::get('wmelon.sblam.apiKey');
       
       // label notes
       
@@ -154,7 +154,7 @@ class Options_Controller extends Controller
       $config->headTags       = $data->head;
       $config->tailTags       = $data->tail;
       
-      $this->config->set('wmelon.wmelon', $config);
+      Config::set('wmelon.wmelon', $config);
       
       // saving data - userdata
       
@@ -169,7 +169,7 @@ class Options_Controller extends Controller
       
       // saving data - sblam!
       
-      $this->config->set('wmelon.sblam.apiKey', $data->sblamKey);
+      Config::set('wmelon.sblam.apiKey', $data->sblamKey);
       
       // redirecting
       
@@ -354,7 +354,7 @@ class Options_Controller extends Controller
       
       Watermelon::$config->textMenus = array($textMenu);
       
-      $this->config->set('wmelon.wmelon', Watermelon::$config);
+      Config::set('wmelon.wmelon', Watermelon::$config);
       
       SiteRedirect('options/nav');
    }

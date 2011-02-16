@@ -24,12 +24,4 @@
  * Models base class
  */
 
-abstract class Model
-{
-   public function __construct()
-   {
-      $this->db     = new DB;
-      $this->load   = new Loader;
-      $this->config = new Config;
-   }
-}
+abstract class Model{}

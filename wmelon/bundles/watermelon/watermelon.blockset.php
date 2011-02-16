@@ -27,7 +27,7 @@ class Watermelon_Blockset extends Blockset
          return;
       }
       
-      $view = View('watermelon/debuginfo', true);
+      $view = View('/watermelon/debuginfo');
       
       // stats
       

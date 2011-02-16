@@ -24,6 +24,4 @@
  * Blocksets base class
  */
 
-abstract class Blockset
-{
-}
+abstract class Blockset{}

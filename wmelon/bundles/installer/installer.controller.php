@@ -631,7 +631,7 @@ class Installer_Controller extends Controller
       
       // generating Atom feed
       
-      Model('blog')->updateFeed();
+      Blog_Model::updateFeed();
       
       // adding superuser
          

@@ -40,8 +40,8 @@ class Comments extends Extension
       $type     = (string) $type;
       $backPage = (string) $backPage;
       
-      $model    = Loader::model('comments');
-      $auth     = Loader::model('users');
+      $model    = new Comments_Model;
+      $auth     = new Users_Model;
       
       $users = array();
       
@@ -187,7 +187,7 @@ class Comments extends Extension
       
       // view
       
-      $view = Loader::view('comments/comments', true);
+      $view = Loader::view('/comments/comments');
       
       $view->comments      = $comments;
       $view->areComments   = $commentsObj->exists;
@@ -222,7 +222,7 @@ class Comments extends Extension
       
       //--
       
-      $model = Loader::model('comments');
+      $model = new Comments_Model;
       
       $backPage = base64_decode($backPage);
       

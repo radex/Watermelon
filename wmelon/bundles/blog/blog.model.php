@@ -260,7 +260,7 @@ class Blog_Model extends Model
       
       foreach($ids as $id)
       {
-         Model('comments')->deleteCommentsFor($id, 'blogpost');
+         Comments_Model::deleteCommentsFor($id, 'blogpost');
       }
       
       $this->updateFeed();

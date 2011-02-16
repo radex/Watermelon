@@ -147,17 +147,13 @@ abstract class Controller
    
    public function __construct()
    {
-      $this->db     = new DB;
-      $this->load   = new Loader;
-      $this->config = new Config;
-      
       // attempting to load model with the same name
       
-      $className = substr(get_called_class(), 0, -11); // name of class - '_Controller'
+      $modelClassName = substr(get_called_class(), 0, -11) . '_Model'; // name of class - '_Controller'
       
       try
       {
-         $this->model = Loader::model($className);
+         $this->model = new $modelClassName;
       }
       catch(WMException $e){}
       

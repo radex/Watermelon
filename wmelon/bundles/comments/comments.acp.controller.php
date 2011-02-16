@@ -86,7 +86,7 @@ class Comments_Controller extends Controller
                
                if(!isset($posts[$comment->record]))
                {
-                  $posts[$comment->record] = Model('blog')->postData_id($comment->record);
+                  $posts[$comment->record] = Blog_Model::postData_id($comment->record);
                }
                
                $post = &$posts[$comment->record];
@@ -101,7 +101,7 @@ class Comments_Controller extends Controller
                
                if(!isset($pages[$comment->record]))
                {
-                  $pages[$comment->record] = Model('pages')->pageData_id($comment->record);
+                  $pages[$comment->record] = Pages_Model::pageData_id($comment->record);
                }
                
                $page = &$pages[$comment->record];
@@ -152,7 +152,7 @@ class Comments_Controller extends Controller
             
                if(!isset($users[$comment->authorID]))
                {
-                  $users[$comment->authorID] = Model('users')->userData_id($comment->authorID);
+                  $users[$comment->authorID] = Users_Model::userData_id($comment->authorID);
                }
             
                $user = &$users[$comment->authorID];

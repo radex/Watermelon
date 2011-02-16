@@ -151,7 +151,7 @@ class Users extends Extension
       $login = $_SESSION['wmelon.user.login'];
       $pass  = $_SESSION['wmelon.user.pass'];
       
-      $model = Loader::model('users');
+      $model = new Users_Model;
       
       $userData = $model->userData_login($login);
       

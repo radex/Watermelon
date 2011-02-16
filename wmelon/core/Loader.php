@@ -58,7 +58,7 @@ class Loader
       
       if(substr($className, -6) == '_model')
       {
-         self::model(substr($className, 0, -6));
+         self::module(substr($className, 0, -6), 'model');
          return;
       }
       
@@ -93,34 +93,26 @@ class Loader
    }
    
    /*
-    * public static Model model(string $name)
-    * 
-    * Loads model with name = $name, and returns its object
-    */
-   
-   public static function model($name)
-   {
-      return self::module($name, 'model');
-   }
-   
-   /*
-    * public static View view(string $name[, bool $isGlobal = false])
+    * public static View view(string $name)
     * 
     * Loads view, and returns object representing it
     * 
-    * If you want load local view (view from the same module as class you're requesting from), just pass its name in $name
+    * If you want load local view (view from the same bundle as class you're requesting from), just pass its name in $name
     * 
-    * If you want load global view (view from other other module than class you're requesting from), pass 'moduleName/viewName' in $name, and set $isGlobal to TRUE
+    * If you want load global view (view from other other bundle than class you're requesting from), pass '/bundleName/viewName' (unix filesystems analogy)
     */
    
-   public static function view($name, $isGlobal = false)
+   public static function view($name)
    {
       $name = strtolower($name);
       
-      // getting module name, requested view belongs to
+      // getting name of bundle requested view belongs to
       
-      if($isGlobal)
+      if($name[0] == '/')
       {
+         // global view
+         
+         $name   = substr($name, 1); // removing '/' from the beginning
          $name   = explode('/', $name);
          $module = $name[0];
          array_shift($name); // shifting module name off beginning of view path
@@ -128,6 +120,8 @@ class Loader
       }
       else
       {
+         // local view
+         
          $module = Watermelon::$controller->bundleName;
       }
       
@@ -183,17 +177,6 @@ class Loader
       
       return new $className;
    }
-}
-
-/*
- * Model Model(string $name)
- * 
- * Handy shortcut for Loader::model()
- */
-
-function Model($name)
-{
-   return Loader::model($name);
 }
 
 /*

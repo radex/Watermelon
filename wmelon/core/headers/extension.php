@@ -27,29 +27,6 @@
 abstract class Extension
 {
    /*
-    * Constructor
-    * 
-    * Note that Extensions are usually used statically, and constructor is usually never called. You can use ::init() instead.
-    */
-   
-   public function __construct()
-   {
-      $this->db     = new DB;
-      $this->load   = new Loader;
-      $this->config = new Config;
-      
-      // attempting to load model with the same name
-      
-      $className = get_called_class();
-      
-      try
-      {
-         $this->model = Loader::model($className);
-      }
-      catch(WMException $e){}
-   }
-   
-   /*
     * public static void init()
     * 
     * Function called when extension is loaded

@@ -122,7 +122,7 @@ class Pages_Model extends Model
       
       foreach($ids as $id)
       {
-         Model('comments')->deleteCommentsFor($id, 'page');
+         Comments_Model::deleteCommentsFor($id, 'page');
       }
    }
    

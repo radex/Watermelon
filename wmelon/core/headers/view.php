@@ -117,21 +117,6 @@ class View
    }
    
    /*
-    * public View set(string $name, mixed $value)
-    * 
-    * Sets $name to $value, and returns the same object, so you can use it in chain, e.g:
-    * 
-    * $this->load->view('test')->set('foo', 'bar')->display();
-    */
-   
-   public function set($name, $value)
-   {
-      $this->__set($name, $value);
-      
-      return $this;
-   }
-   
-   /*
     * constructor
     */
    
