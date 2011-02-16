@@ -54,7 +54,7 @@ class Pages_Model extends Model
    
    public function pageData_name($name)
    {
-      return Query::select('pages')->where('name', (string) $name)->act()->fetchObject();
+      return Query::select('pages')->where('name', (string) $name)->act()->fetch();
    }
    
    /*

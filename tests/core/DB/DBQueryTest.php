@@ -247,7 +247,7 @@ class DBQueryTest extends PHPUnit_Framework_TestCase
       
       // selecting
       
-      $foo = DBQuery::select('tests')->where('id', $inserted_id)->act()->fetchObject();
+      $foo = DBQuery::select('tests')->where('id', $inserted_id)->act()->fetch();
       
       $this->assertEquals($inserted_id, $foo->id);
       $this->assertEquals('bar', $foo->foo);

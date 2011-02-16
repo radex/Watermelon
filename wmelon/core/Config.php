@@ -89,7 +89,7 @@ class Config
             
             if($dbField->exists)
             {
-               $field = unserialize($dbField->fetchObject()->value);
+               $field = unserialize($dbField->fetch()->value);
                
                self::$fields[$id] = $field;
             }
@@ -202,7 +202,7 @@ class Config
             
             if($dbField->exists)
             {
-               self::$fields[$id] = unserialize($dbField->fetchObject()->value);
+               self::$fields[$id] = unserialize($dbField->fetch()->value);
                
                $field = self::$fields[$id];
             }

@@ -123,7 +123,7 @@ class Blog_Model extends Model
    
    public function postData_name($name)
    {
-      return Query::select('blogposts')->where('name', (string) $name)->act()->fetchObject();
+      return Query::select('blogposts')->where('name', (string) $name)->act()->fetch();
    }
    
    /*

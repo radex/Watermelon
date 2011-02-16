@@ -34,7 +34,7 @@ class Users_Model extends Model
    
    public function userData_login($login)
    {
-      return Query::select('users')->where('login', (string) $login)->act()->fetchObject();
+      return Query::select('users')->where('login', (string) $login)->act()->fetch();
    }
    
    /*

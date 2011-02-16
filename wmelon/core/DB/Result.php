@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2008-2010 Radosław Pietruszewski.
+ //  Copyright 2008-2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  * You can iterate through its rows using foreach (yay!)
  */
 
-class DBResult implements SeekableIterator, Countable
+class DBResult implements Iterator, Countable
 {
    /*
     * public int $rows
@@ -62,6 +62,8 @@ class DBResult implements SeekableIterator, Countable
    
    public $empty = true;
    
+   /**************************************************************************/
+   
    /*
     * public mysql_result $res
     * 
@@ -70,10 +72,26 @@ class DBResult implements SeekableIterator, Countable
    
    public $res;
    
-   private $index = 0;
-   private $valid = false;
+   /*
+    * Iterator index
+    */
    
-   /*******************************************************/
+   private $index = 0;
+   
+   /**************************************************************************/
+   
+   /*
+    * public object fetch()
+    * 
+    * Fetches a row as an object
+    */
+   
+   public function fetch()
+   {
+      return mysql_fetch_object($this->res);
+   }
+   
+   /**************************************************************************/
    
    /*
     * constructor
@@ -91,23 +109,7 @@ class DBResult implements SeekableIterator, Countable
       }
    }
    
-   /*
-    * public object fetch()
-    * 
-    * Fetches a row as an object
-    */
-   
-   public function fetch()
-   {
-      return mysql_fetch_object($this->res);
-   }
-   
-   public function fetchObject()
-   {
-      return mysql_fetch_object($this->res); //TODO: DEPRECATED
-   }
-   
-   /*******************************************************/
+   /**************************************************************************/
    
    /*
     * Iterator interface methods
@@ -115,9 +117,9 @@ class DBResult implements SeekableIterator, Countable
    
    public function current()
    {
-      $this->seek($this->index);
+      mysql_data_seek($this->res, $this->index);
       
-      return $this->fetch(); //TODO: fix
+      return $this->fetch();
    }
    
    public function key()
@@ -128,45 +130,26 @@ class DBResult implements SeekableIterator, Countable
    public function next()
    {
       $this->index++;
-      
-      $this->valid = ($this->index < $this->rows);
    }
    
    public function rewind()
    {
       $this->index = 0;
       
-      try
+      if(!$this->empty)
       {
-         $this->seek(0);
-         
-         $this->valid = true;
-      }
-      catch(OutOfBoundsException $e)
-      {
-         $this->valid = false;
+         mysql_data_seek($this->res, 0);
       }
    }
    
    public function valid()
    {
-      return $this->valid;
+      return ($this->index < $this->rows);
    }
    
-   public function seek($index)
-   {
-      if($this->rows == 0)
-      {
-         throw new OutOfBoundsException;
-      }
-      else
-      {
-         if(!mysql_data_seek($this->res, $index))
-         {
-            throw new OutOfBoundsException;
-         }
-      }
-   }
+   /*
+    * Coutable interface methods
+    */
    
    public function count()
    {
