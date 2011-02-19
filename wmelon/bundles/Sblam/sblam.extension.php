@@ -48,7 +48,7 @@ class Sblam extends Extension
       
       if(Watermelon::$appType == Watermelon::Admin && Watermelon::$segments == array() && empty(self::$apiKey))
       {
-         Watermelon::addMessage('info', 'Filtr antyspamowy nie będzie działał poprawnie dopóki nie zostanie <a href="$/options/#sblamOptions">skonfigurowany</a>');
+         Watermelon::displayNotice('Filtr antyspamowy nie będzie działał poprawnie dopóki nie zostanie <a href="$/options/#sblamOptions">skonfigurowany</a>');
       }
    }
    

@@ -159,7 +159,7 @@ class Blog_Controller extends Controller
          
          if(Users::isLogged())
          {
-            $this->addMessage('info', 'Ten wpis nie jest opublikowany. Tylko Ty go możesz zobaczyć.');
+            $this->displayNotice('Ten wpis nie jest opublikowany. Tylko Ty go możesz zobaczyć.');
          }
          else
          {

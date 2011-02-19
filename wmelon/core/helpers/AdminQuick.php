@@ -138,7 +138,7 @@ class AdminQuick
       {
          $message = $messageClosure(count($ids));
       
-         Watermelon::$controller->addMessage('tick', $message);
+         Watermelon::$controller->displaySuccessNotice($message);
       }
       
       // redirecting

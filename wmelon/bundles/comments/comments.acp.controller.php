@@ -242,7 +242,7 @@ class Comments_Controller extends Controller
       
       // redirecting
       
-      $this->addMessage('tick', 'Zaktualizowano komentarz');
+      $this->displaySuccessNotice('Zaktualizowano komentarz');
       
       $backPage = base64_decode($backPage);
       $backPage = empty($backPage) ? 'comments' : $backPage;

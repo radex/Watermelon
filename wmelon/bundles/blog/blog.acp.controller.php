@@ -308,7 +308,7 @@ class Blog_Controller extends Controller
       
       // redirecting
       
-      $this->addMessage('tick', 'Dodano wpis!');
+      $this->displaySuccessNotice('Dodano wpis!');
       
       SiteRedirect('blog/edit/' . $id);
    }
@@ -427,12 +427,12 @@ class Blog_Controller extends Controller
       {
          $this->model->publish($id);
          
-         $this->addMessage('tick', 'Opublikowano wpis');
+         $this->displaySuccessNotice('Opublikowano wpis');
       }
       
       // redirecting
       
-      $this->addMessage('tick', 'Zaktualizowano wpis');
+      $this->displaySuccessNotice('Zaktualizowano wpis');
       
       SiteRedirect('blog/edit/' . $id . $backTo);
    }

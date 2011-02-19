@@ -162,7 +162,7 @@ class Pages_controller extends Controller
       
       $id = $this->model->postPage($data->title, $data->name, $data->content);
       
-      $this->addMessage('tick', 'Dodano stronę!');
+      $this->displaySuccessNotice('Dodano stronę!');
       
       SiteRedirect('pages/edit/' . $id);
    }
@@ -252,7 +252,7 @@ class Pages_controller extends Controller
       
       // redirecting
       
-      $this->addMessage('tick', 'Zaktualizowano stronę');
+      $this->displaySuccessNotice('Zaktualizowano stronę');
       
       SiteRedirect('pages/edit/' . $id . $backTo);
    }

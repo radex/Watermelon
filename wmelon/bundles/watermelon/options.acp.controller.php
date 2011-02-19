@@ -173,7 +173,7 @@ class Options_Controller extends Controller
       
       // redirecting
       
-      $this->addMessage('tick', 'Zaktualizowano ustawienia');
+      $this->displaySuccessNotice('Zaktualizowano ustawienia');
       
       SiteRedirect('options/general');
    }
