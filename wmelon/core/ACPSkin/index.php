@@ -23,7 +23,7 @@ ${php:skin.drawHeadTags()}
    ${php:skin.drawSubNav()}
    <div id="content">
       ${php:skin.drawMessages()}
-      <h1 tal:condition="php: !empty(pageTitle) AND !dontShowPageTitle">${pageTitle}</h1>
+      <h1 tal:condition="php: !empty(pageTitle) AND !noHeader">${pageTitle}</h1>
       ${structure content}
    </div>
 </div>

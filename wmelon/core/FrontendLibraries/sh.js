@@ -10,7 +10,7 @@ function path()
 
    for(var i = 0; i < args.length; i++)
    {
-      result.push(args[i].replace('@', Watermelon_baseURL + '/core/FrontendLibraries/SyntaxHighlighter/brushes/'));
+      result.push(args[i].replace('@', WM_SystemURL + '/core/FrontendLibraries/SyntaxHighlighter/brushes/'));
    }
 
    return result

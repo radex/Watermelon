@@ -73,41 +73,22 @@ abstract class Controller
    public $parameters;
    
    /*
-    * public enum $outputType
+    * public bool $plainOutput = false
     * 
-    * Requested representation method of output:
-    *    ::Skinned_OutputType - Typical page
-    *    ::Plain_OutputType   - Only echoed data is outputed, without any skin around
-    *    ::XML_OutputType     - XML created from structure in $output property
+    * If true, only echoed contents will be output (without skin and everything else)
     */
    
-   public $outputType = self::Skinned_OutputType;
-   
-   const Skinned_OutputType = 1;
-   const Plain_OutputType   = 2;
-   const XML_OutputType     = 3;
+   public $plainOutput = false;
    
    /*
-    * public SimpleXMLObject $output = null
-    * 
-    * Data to be outputed
-    * 
-    * Works only for XML output type (and possibly other future output types), for Skinned and Plain output types, just echo what you want
-    * 
-    * Note that it is by default null, so you have to initialize it with SimpleXMLObject for yourself
-    */
-   
-   public $output;
-   
-   /*
-    * public bool $dontShowPageTitle = false
+    * public bool $noHeader = false
     * 
     * Whether page title header should not be displayed in skin
     * 
-    * Option allows to display header in other place to preserve coherence (e.g. when using <article>)
+    * Option allows to display header in other place by hand to preserve coherence (e.g. when using <article>)
     */
    
-   public $dontShowPageTitle = false;
+   public $noHeader = false;
    
    /*
     * public array $acpSubNav
@@ -131,14 +112,24 @@ abstract class Controller
    public $acpSubNav;
    
    /*
-    * public void addMessage(string $type, string $message)
+    * public void displayError/displayNotice/displaySuccessNotice(string $message)
     * 
-    * Alias for Watermelon::addMessage()
+    * Shortcut for Watermelon::displayX
     */
    
-   public function addMessage($type, $message)
+   public function displayError($message)
    {
-      Watermelon::addMessage($type, $message);
+      Watermelon::displayError($message);
+   }
+   
+   public function displayNotice($message)
+   {
+      Watermelon::displayNotice($message);
+   }
+   
+   public function displaySuccessNotice($message)
+   {
+      Watermelon::displaySuccessNotice($message);
    }
    
    /*
@@ -149,7 +140,7 @@ abstract class Controller
    {
       // attempting to load model with the same name
       
-      $modelClassName = substr(get_called_class(), 0, -11) . '_Model'; // name of class - '_Controller'
+      $modelClassName = str_replace('_Controller', '_Model', get_called_class());
       
       try
       {
@@ -173,19 +164,11 @@ abstract class Controller
       
       $content = SiteLinks($content);
       
-      // running skin, or outputing data
+      // if plain, outputting data
       
-      if($this->outputType == self::Plain_OutputType)
+      if($this->plainOutput)
       {
          echo $content;
-         
-         return;
-      }
-      elseif($this->outputType == self::XML_OutputType)
-      {
-         header('Content-Type: text/xml');
-         
-         echo $this->output->asXML();
          
          return;
       }
@@ -215,7 +198,7 @@ abstract class Controller
       }
       
       $headTags[] = '<title>' . $title . '</title>';
-      $headTags[] = '<script>Watermelon_baseURL = \'' . WM_SystemURL . '\'</script>';
+      $headTags[] = '<script>WM_SystemURL = \'' . WM_SystemURL . '\'</script>';
       $headTags[] = '<link rel="top" href="' . WM_SiteURL . '">';
       
       if(Watermelon::$appType == Watermelon::Site)
@@ -245,12 +228,12 @@ abstract class Controller
       
       // setting configuration
       
-      $messages = $_SESSION['WM_Messages'];
-      $_SESSION['WM_Messages'] = array();
+      $messages = $_SESSION['wmelon.messages'];
+      $_SESSION['wmelon.messages'] = array();
       
       $skin->content           = &$content;
       $skin->pageTitle         = $pageTitle;
-      $skin->dontShowPageTitle = $this->dontShowPageTitle;
+      $skin->noHeader          = $this->noHeader;
       $skin->siteName          = htmlspecialchars($siteName);
       $skin->siteSlogan        = htmlspecialchars($config->siteSlogan);
       $skin->footer            = SiteLinks($config->footer);

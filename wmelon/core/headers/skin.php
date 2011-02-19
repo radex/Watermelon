@@ -34,7 +34,7 @@ abstract class Skin
     * string $siteName          - name of whole website
     * string $siteSlogan        - short description of website
     * string $footer            - text (HTML) to be placed in footer
-    * bool   $dontShowPageTitle - whether page title header should not be displayed in skin.
+    * bool   $noHeader - whether page title header should not be displayed in skin.
     *                             Allows to display header in other place to preserve coherence (e.g. when using <article>)
     */
    

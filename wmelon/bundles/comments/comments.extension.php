@@ -266,19 +266,19 @@ class Comments extends Extension
             case -1:
                $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false, $visibilityToken);
             
-               Watermelon::addMessage('tick', 'Twój komentarz zostanie sprawdzony zanim zostanie publicznie pokazany');
+               Watermelon::displaySuccessNotice('Twój komentarz zostanie sprawdzony zanim zostanie publicznie pokazany');
             break;
          
             case -2:
                $commentID = $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, true, $visibilityToken);
             
-               Watermelon::addMessage('tick', 'Dodano komentarz');
+               Watermelon::displaySuccessNotice('Dodano komentarz');
 
                $backPage .= '#comment-' . $commentID;
             break;
          
             case 2:
-               Watermelon::addMessage('warning', 'Filtr uznał twój komentarz za spam. ' . Sblam::reportLink());
+               Watermelon::displayError('Filtr uznał twój komentarz za spam. ' . Sblam::reportLink());
             break;
          }
       }

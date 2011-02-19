@@ -178,7 +178,7 @@ class Blog_Controller extends Controller
       $id = $post->id;
       
       $this->pageTitle         = $post->title;
-      $this->dontShowPageTitle = true;
+      $this->noHeader = true;
       
       $view = View('post');
       $view->post         = $post;
@@ -200,7 +200,7 @@ class Blog_Controller extends Controller
    {
       header('Content-Type: application/atom+xml; charset=UTF-8');
       
-      $this->outputType = self::Plain_OutputType;
+      $this->plainOutput = true;
       
       echo file_get_contents(WM_Cache . 'feed.atom');
    }

@@ -235,7 +235,7 @@ class Form
       {
          if($this->globalMessages)
          {
-            Watermelon::addMessage('error', $error);
+            Watermelon::displayError($error);
          }
          else
          {

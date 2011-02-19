@@ -22,32 +22,20 @@
 
 .errorBox
 {
-   border: 1px solid #cc7766;
-   background: #ffaa99 url('img/error.png') no-repeat 10px center;
+   border: 1px solid #DEA781;
+   background: #FFCD8A url('img/error.png') no-repeat 10px center;
 }
 
-.warningBox
+.noticeBox
 {
-   border: 1px solid #cc99aa;
-   background: #ffee99 url('img/warning.png') no-repeat 10px center;
+   border: 1px solid #80B2D2;
+   background: #B8D8EA url('img/notice.png') no-repeat 10px center;
 }
 
-.infoBox
-{
-   border: 1px solid #8499d9;
-   background: #c8dfff url('img/info.png') no-repeat 10px center;
-}
-
-.tickBox
+.successNoticeBox
 {
    border: 1px solid #97c32d;
-   background: #deeba8 url('img/tick.png') no-repeat 10px center;
-}
-
-.tipBox
-{
-   border: 1px solid #bbb;
-   background: #f8f8f8 url('img/tip.png') no-repeat 10px center;
+   background: #deeba8 url('img/successNotice.png') no-repeat 10px center;
 }
 
 .questionBox
@@ -57,10 +45,8 @@
 }
 
 .errorBox,
-.warningBox,
-.infoBox,
-.tickBox,
-.tipBox,
+.noticeBox,
+.successNoticeBox,
 .questionBox
 {
    padding: 10px;

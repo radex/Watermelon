@@ -147,23 +147,31 @@ class Watermelon
    
    public static $config;
    
+   /**************************************************************************/
+   
    /*
-    * public static void addMessage(string $type, string $message)
+    * public static void displayError/displayNotice/displaySuccessNotice(string $message)
     * 
-    * Adds message to be displayed on next page generation
+    * Sets message to be displayed on next generated page
     * 
-    * string $type    - type of message (error, warning, info, tip, tick)
-    * string $message - actual message string
+    * If you stop the script (by refreshing or redirecting), messages will be displayed on the page after refreshing/redirection
     * 
-    * Note that if you stop the script (by refreshing or redirecting), messages in array will be displayed on the page after refreshing/redirecting
+    * When used in controller, call $this->displayX instead
     */
    
-   public static function addMessage($type, $message)
+   public static function displayError($message)
+   {   
+      $_SESSION['wmelon.messages'][] = array('error', $message);
+   }
+   
+   public static function displayNotice($message)
    {
-      $type    = (string) $type;
-      $message = (string) $message;
-      
-      $_SESSION['WM_Messages'][] = array($type, $message);
+      $_SESSION['wmelon.messages'][] = array('notice', $message);
+   }
+   
+   public static function displaySuccessNotice($message)
+   {
+      $_SESSION['wmelon.messages'][] = array('successNotice', $message);
    }
    
    /*
@@ -182,6 +190,8 @@ class Watermelon
       $controller->bundleName = 'watermelon';
       $controller->index_action();
    }
+   
+   /**************************************************************************/
    
    /*
     * public static void run()

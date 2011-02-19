@@ -52,7 +52,7 @@ class Pages_Controller extends Controller
       $pageData->content = Textile::textile($pageData->content);
       
       $this->pageTitle = $pageData->title;
-      $this->dontShowPageTitle = true;
+      $this->noHeader = true;
       
       $view = View('page');
       $view->page = $pageData;
