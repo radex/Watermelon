@@ -382,10 +382,17 @@ class Form
     * public void fallBack()
     * 
     * Redirects browser back to form to show errors
+    * 
+    * Method call is ignored if no errors were added
     */
    
    public function fallBack()
    {
+      if(empty($this->errors))
+      {
+         return;
+      }
+      
       $_SESSION['Form_' . $this->formID] = serialize($this);
       
       SiteRedirect($this->fallbackPage);

@@ -26,7 +26,7 @@ ${php:skin.drawHeadTags()}
       
          <!-- buttons -->
       
-         <input type="submit" value="Dalej" autofocus="true"/>
+         <input type="submit" value="Dalej" tal:attributes="autofocus additionalData/nextButtonAutofocus | nothing" />
       
          <input tal:condition="true: additionalData/previous" type="button" onclick="window.location='${WM_SiteURL}${additionalData/previous}'" value="Wróć"/>
       

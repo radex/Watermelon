@@ -39,11 +39,31 @@ class Installer_Controller extends Controller
          rename(WM_System . '../dot.htaccess', WM_System . '../.htaccess');
       }
       
+      // storing current URL in session and retrieving one already stored
+      // that's used in below algorithm for determining base url - if current URL is the same as previous one,
+      // base url is determined again (because it means page was reloaded in browser,
+      // perhaps because .htaccess config was changed)
+      /*
+      if(isset($_SESSION['wmelon.installer.previousURL']))
+      {
+         $previousURL = $_SESSION['wmelon.installer.previousURL'];
+      }
+      
+      $currentURL = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+      
+      $_SESSION['wmelon.installer.previousURL'] = $currentURL;
+      
+      $pageReloaded = ($previousURL == $currentURL);
+      
+            //FIXME!
+      
+      */
       // URL-s
       
       $baseURL = $this->baseURL();
       
-      if(isset($_SESSION['wmelon.installer.siteURL']) && isset($_SESSION['wmelon.installer.systemURL'])) // already set
+      if(isset($_SESSION['wmelon.installer.siteURL']) && isset($_SESSION['wmelon.installer.systemURL'])/* && !$pageReloaded*/)
+         // already set and page is not reloaded (reasons explained above)
       {
          $siteURL   = $_SESSION['wmelon.installer.siteURL'];
          $systemURL = $_SESSION['wmelon.installer.systemURL'];
@@ -99,14 +119,14 @@ class Installer_Controller extends Controller
       
       $step = (int) $this->segments[0];
       
-      if($step < 1 || $step > 7)
+      if($step < 2 || $step > 7)
       {
-         $step = 1;
+         $step = 2;
       }
       
       // progress percent
       
-      $this->additionalData->progress = (int) (($step - 2) / 5 * 100);
+      $this->additionalData->progress = (int) (($step - 1) / 5 * 100);
       
       // previous step (but you can't go back after you unblock the blockade)
       
@@ -140,9 +160,8 @@ class Installer_Controller extends Controller
       
       switch(Watermelon::$segments[0])
       {
-         case '1':
-         default: $this->langChooser(); break;
-         case '2': $this->greeting(); break;
+         case '2':
+         default:  $this->greeting(); break;
          case '3': $this->dbInfo(); break;
          case '4': $this->userdata(); break;
          case '5': $this->websiteName(); break;
@@ -214,29 +233,6 @@ class Installer_Controller extends Controller
    }
    
    /*
-    * First step - language chooser
-    */
-   
-   public function langChooser()
-   {
-      SiteRedirect('2'); // won't be needed for now
-      
-      /*
-      
-      $this->additionalData->noContainer = true; // we want to display lang chooser on its own, without typical container
-      
-      $langs = array();
-      
-      $langs[] = array('pl', 'Polski', WM_SkinURL . 'img/pl.png');
-      
-      $view = View('langChooser');
-      $view->langs = $langs;
-      $view->display();
-      
-      //$this->urls();*/
-   }
-   
-   /*
     * Second step - greeting
     */
    
@@ -250,6 +246,7 @@ class Installer_Controller extends Controller
       // displaying
       
       $this->pageTitle = 'Witaj';
+      $this->additionalData->nextButtonAutofocus = true; // no real form, so autofocus on "Next" needed
       
       View('greeting')->display();
    }
@@ -280,37 +277,44 @@ class Installer_Controller extends Controller
          $data = ToObject($data);
       }
       
-      // form & page title
-      
-      $this->pageTitle = 'Dane do bazy danych';
+      // form
       
       $form = new InstallerForm('wmelon.installer.dbInfo');
       
       // label note
       
+      $nameNote   = 'Jeśli nie istnieje, instalator spróbuje ją utworzyć';
+      $userNote   = 'Użytkownik z dostępem do podanej bazy danych';
+      
+      $prefixNote = 'Niezbędny jeśli chcesz mieć dwie kopie Watermelona na jednej bazie danych';
       $hostNote   = 'Prawie zawsze jest to <em>localhost</em>';
-      $prefixNote = 'Nie zmieniaj o ile nie chcesz zainstalować dwóch kopii Watermelona na jednej bazie danych';
       
       // input args
       
-      $nameArgs   = array('value' => $data->name);
-      $userArgs   = array('value' => $data->user);
+      $nameArgs   = array('value' => $data->name,   'labelNote' => $nameNote);
+      $userArgs   = array('value' => $data->user,   'labelNote' => $userNote);
       $passArgs   = array('value' => $data->pass);
-      $hostArgs   = array('value' => $data->host,   'labelNote' => $hostNote);
       $prefixArgs = array('value' => $data->prefix, 'labelNote' => $prefixNote);
+      $hostArgs   = array('value' => $data->host,   'labelNote' => $hostNote);
       
       // adding inputs
       
       $form->addInput('text',     'name',    'Nazwa bazy danych',  true,  $nameArgs);
-      $form->addInput('text',     'user',    'Nazwa użytkownika',  true,  $userArgs);
+      $form->addInput('text',     'user',    'Użytkownik',         true,  $userArgs);
       $form->addInput('password', 'pass',    'Hasło',              false, $passArgs);
       
       $form->addHTML('<div class="advanced-hr">Zaawansowane<hr /></div>');
       
+      $form->addInput('text',     'prefix',  'Prefiks tabel',      false, $prefixArgs);
       $form->addInput('text',     'host',    'Serwer',             true,  $hostArgs);
-      $form->addInput('text',     'prefix',  'Prefiks nazw tabel', false, $prefixArgs);
       
-      echo $form->generate();
+      // displaying
+      
+      $this->pageTitle = 'Baza danych';
+      
+      $view = View('databaseInfo');
+      $view->form = $form->generate();
+      $view->display();
    }
    
    /*
@@ -323,14 +327,24 @@ class Installer_Controller extends Controller
    {
       // validating DB info
       
-                        // TODO: because DB class don't escape database names, check if table name / prefix is [a-zA-Z_]
-      
       if($_SESSION['previousStep'] == 3)
       {
          $form = InstallerForm::validate('wmelon.installer.dbInfo');
          $data = $form->get();
          
          $_SESSION['dbForm'] = $data;
+         
+         // check if database name and prefix are valid
+         
+         if(!preg_match('/^[a-zA-Z0-9_]+$/', $data->name))
+         {
+            $form->addError('Nazwa bazy danych jest niepoprawna - dozwolone są jedynie litery, cyfry oraz znak "_"');
+         }
+         
+         if(!preg_match('/^[a-zA-Z0-9_]*$/', $data->prefix))
+         {
+            $form->addError('Prefiks nazw tabel jest niepoprawny - dozwolone są jedynie litery, cyfry oraz znak "_"');
+         }
          
          // checking whether it's possible to connect using given data
 
@@ -342,7 +356,7 @@ class Installer_Controller extends Controller
          {
             if($e->getCode() == 'DB:connectError')
             {
-               $form->addError('Nie udało się połączyć z serwerem bazy danych za pomocą podanych danych. Spróbuj jeszcze raz.');
+               $form->addError('Nie mogę się połączyć z bazą danych przy użyciu podanych informacji.<br>Sprawdź ich poprawność i spróbuj ponownie.');
                $form->fallback();
             }
             elseif($e->getCode() == 'DB:selectError')
@@ -360,11 +374,15 @@ class Installer_Controller extends Controller
                {
                   // don't have privileges to create database
                   
-                  $form->addError('Nie udało się wybrać bazy danych "' . $data->name . '". Spróbuj jeszcze raz.');
+                  $form->addError('Zdaje się, że baza danych "' . $data->name . '" nie istnieje, a użytkownik "' . $data->user . '" nie ma uprawnień do jej utworzenia.<br><br>Sprawdź, czy podane dane nie zawierają błędu lub spróbuj utworzyć bazę danych ręcznie w panelu administracyjnym serwera i spróbuj ponownie.');
                   $form->fallback();
                }
             }
          }
+         
+         // if any errors, fall back
+      
+         $form->fallBack();
       }
       
       // default values
@@ -378,13 +396,9 @@ class Installer_Controller extends Controller
          $data = ToObject(array('user' => '','pass' => '','pass2' => ''));
       }
       
-      // form & page title
-      
-      $this->pageTitle = 'Dane admina';
+      // form
       
       $form = new InstallerForm('wmelon.installer.userData');
-      
-      // label notes
       
       // input args
       
@@ -400,8 +414,11 @@ class Installer_Controller extends Controller
       
       // rendering
       
-      echo '<p>Podaj nick i hasło, które chcesz mieć dla siebie na swojej stronie.</p>';
-      echo $form->generate();
+      $this->pageTitle = 'Twoje dane';
+      
+      $view = View('userData');
+      $view->form = $form->generate();
+      $view->display();
    }
    
    /*
@@ -425,7 +442,7 @@ class Installer_Controller extends Controller
          
          if($data->pass != $data->pass2)
          {
-            $form->addError('Podane hasła muszą być identyczne');
+            $form->addError('Podane hasła nie są takie same. Popraw i spróbuj ponownie.');
             $form->fallback();
          }
       }
@@ -441,9 +458,7 @@ class Installer_Controller extends Controller
          $data = ToObject(array('siteName' => ''));
       }
       
-      // form & page title
-      
-      $this->pageTitle = 'Nazwa strony';
+      // form
       
       $form = new InstallerForm('wmelon.installer.siteName');
       
@@ -455,8 +470,11 @@ class Installer_Controller extends Controller
       
       // rendering
       
-      echo '<p>Już blisko! Podaj jeszcze tylko nazwę dla Twojej nowej strony.</p>';
-      echo $form->generate();
+      $this->pageTitle = 'Nazwa strony';
+      
+      $view = View('siteName');
+      $view->form = $form->generate();
+      $view->display();
    }
    
    /*
@@ -475,25 +493,6 @@ class Installer_Controller extends Controller
          $_SESSION['siteNameForm'] = $data;
       }
       
-      // view
-      
-      $view = View('thank');
-      $view->db    = clone $_SESSION['dbForm'];
-      $view->user  = clone $_SESSION['userDataForm'];
-      $view->site  = clone $_SESSION['siteNameForm'];
-      
-      $view->db->pass   = $this->starPassword($view->db->pass);
-      $view->user->pass = $this->starPassword($view->user->pass);
-      
-      if($view->paths)
-      {
-         $view->paths = 'Działają';
-      }
-      else
-      {
-         $view->paths = 'Nie działają';
-      }
-      
       // mock form
       
       $form = new InstallerForm('wmelon.installer.thank');
@@ -502,6 +501,9 @@ class Installer_Controller extends Controller
       // rendering
       
       $this->pageTitle = 'Dzięki!';
+      $this->additionalData->nextButtonAutofocus = true;
+      
+      $view = View('thank');
       $view->display();
    }
    
@@ -668,23 +670,5 @@ class Installer_Controller extends Controller
       $_SESSION['wmelon.user.pass']  = $user->pass;
       
       SiteRedirect('');
-   }
-   
-   /*
-    * obscures password (e.g. changes qwerty to q****y)
-    */
-   
-   private function starPassword($pass)
-   {
-      $len = strlen($pass);
-      
-      if($len < 4)
-      {
-         return str_repeat('*', $len) . ' (' . $len . ')';
-      }
-      else
-      {
-         return $pass[0] . str_repeat('*', $len - 2) . $pass[$len - 1] . ' (' . $len . ')';
-      }
    }
 }

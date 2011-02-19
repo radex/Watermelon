@@ -25,6 +25,7 @@
 class InstallerForm extends Form
 {
    public $displaySubmitButton = false;
+   public $firstInputAdded = false;
    
    /*
     * constructor
@@ -42,6 +43,23 @@ class InstallerForm extends Form
       // parent constructor
       
       parent::__construct($formID, (string) $nextStep, (string) $currentStep);
+   }
+   
+   /*
+    * adding input
+    * 
+    * Sets "autofocus" on first input
+    */
+   
+   public function addInput($type, $name, $label, $required = true, array $args = array())
+   {
+      if(!$this->firstInputAdded)
+      {
+         $args['autofocus'] = true;
+         $this->firstInputAdded = true;
+      }
+      
+      parent::addInput($type, $name, $label, $required, $args);
    }
    
    /*
