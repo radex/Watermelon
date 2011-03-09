@@ -46,7 +46,7 @@ class Sblam extends Extension
       
       // display notice if admin and no API key set
       
-      if(Watermelon::$appType == Watermelon::Admin && Watermelon::$segments == array() && empty(self::$apiKey))
+      if(Watermelon::$appType == Watermelon::Admin && (Watermelon::$segments == array() || Watermelon::$segments == array('blog')) && empty(self::$apiKey))
       {
          Watermelon::displayNotice('Filtr antyspamowy nie będzie działał poprawnie dopóki nie zostanie <a href="$/options/#sblamOptions">skonfigurowany</a>');
       }

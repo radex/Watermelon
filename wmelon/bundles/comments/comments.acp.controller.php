@@ -174,7 +174,9 @@ class Comments_Controller extends Controller
             }
          
          //--
-         
+            
+            $rowAttributes = array();
+            
             if(!$comment->approved)
             {
                $rowAttributes = array('style' => 'background-color:#F5E8D9');

@@ -164,6 +164,9 @@ class DBQueryTest extends PHPUnit_Framework_TestCase
       $this->assertSame("foo IN('don\'t', true, false, null, 5, 3.1415)",
          trim(DBQuery::insert('')->where('foo', 'IN', array('don\'t', true, false, null, 5, 3.1415))->where));
       
+      $this->assertSame("foo IN(15)", trim(DBQuery::insert('')->where('foo', 'in', 15)->where));
+      $this->assertSame("foo IN('don\'t')", trim(DBQuery::insert('')->where('foo', 'in', "don't")->where));
+      
       // andWhere(2/3)
       
       $this->assertSame("foo = 5 AND bar < 14 AND baz IN(true, 3.1415)",

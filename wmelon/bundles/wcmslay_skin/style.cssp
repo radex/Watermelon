@@ -306,7 +306,7 @@ body > footer
    display: table
    margin: -15px
    height: 46px
-   width: 700px
+   width: 800px
 
 .blog-pages-top
    margin-bottom: 15px

@@ -24,8 +24,6 @@
 
 class URLFormInput extends TextFormInput
 {
-   public $inputType = 'url';
-   
    public function validate()
    {
       list($continue, $errors) = parent::validate();
@@ -43,7 +41,7 @@ class URLFormInput extends TextFormInput
          $this->value = 'http://' . $this->value;
       }
       
-      // validating email address
+      // validating URL address
       
       if(filter_var($this->value, FILTER_VALIDATE_URL) === false)
       {

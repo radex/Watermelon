@@ -22,7 +22,7 @@
  * Pages management
  */
 
-class Pages_controller extends Controller
+class Pages_Controller extends Controller
 {
    /*
     * subnav config
@@ -62,7 +62,7 @@ class Pages_controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', '<small>Napisana (uaktualniona)</small>', 'Komentarzy');
+      $table->header = array('Strona', 'Data', 'Komentarzy');
       $table->selectedActions[] = array('Usuń', 'pages/delete/');
       
       // adding pages
@@ -73,53 +73,64 @@ class Pages_controller extends Controller
          
          //--
          
-         $name  = $page->name;
-         $title = '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">' . $page->title . '</a>';
+            $name  = $page->name;
+            $title = '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę"><strong>' . $page->title . '</strong></a>';
          
          //--
          
-         $content = strip_tags($page->content);
+            $content = nl2br(strip_tags($page->content));
          
-         if(strlen($content) > 130)
-         {
-            $content = substr($content, 0, 130) . ' (...)';
-         }
-         
-         //--
-         
-         $actions = '';
-         $actions .= '<a href="#/' . $name . '" title="Obejrzyj na stronie">Zobacz</a> | ';
-         $actions .= '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">Edytuj</a> | ';
-         $actions .= '<a href="$/pages/delete/' . $id . '" title="Usuń stronę">Usuń</a>';
+            if(mb_strlen($content) > 130)
+            {
+               $content = mb_substr($content, 0, 130) . ' (...)';
+            }
          
          //--
          
-         $pageInfo = $title . '<br>';
-         $pageInfo .= $content;
-         $pageInfo .= '<div class="acp-actions">' . $actions . '</div>';
+            $actions = '';
+            $actions .= '<a href="#/' . $name . '" title="Obejrzyj na stronie">Zobacz</a> | ';
+            $actions .= '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">Edytuj</a> | ';
+            $actions .= '<a href="$/pages/delete/' . $id . '" title="Usuń stronę">Usuń</a>';
          
          //--
          
-         $dates  = '<small>' . HumanDate($page->created, true, true);
-         $dates .= '<br>(' . HumanDate($page->updated, true, true) . ')</small>'; //TODO: + by [author]
+            $pageInfo = $title . '<br>';
+            $pageInfo .= '<small>' . $content . '</small><br>';
+            $pageInfo .= '<div class="acp-actions">' . $actions . '</div>';
          
          //--
          
-         $allComments        = $page->commentsCount;
-         $unapprovedComments = $allComments - $page->approvedCommentsCount;
-         
-         $comments = $allComments;
-         
-         if($unapprovedComments > 0)
-         {
-            $comments .= ' <strong><a href="#/' . $name . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
-         }
+            $dates  = '<small>' . HumanDate($page->created, true, true);
+            $dates .= '<br>(' . HumanDate($page->updated, true, true) . ')</small>'; //TODO: + by [author]
+            
+            $dates = '<small>';
+            
+            $dates .= 'utworzona ' . HumanDate($page->created, true, true);
+            
+            if($page->updated > $page->created)
+            {
+               $dates .= ', <br>zmieniona ' . HumanDate($page->updated, true, true);
+            }
+            
+            $dates .= '</small>';
          
          //--
          
-         $cells = array($pageInfo, $dates, $comments);
+            $allComments        = $page->commentsCount;
+            $unapprovedComments = $allComments - $page->approvedCommentsCount;
          
-         $table->addRow($id, $cells);
+            $comments = $allComments;
+         
+            if($unapprovedComments > 0)
+            {
+               $comments .= ' <strong><a href="#/' . $name . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
+            }
+         
+         //--
+         
+            $cells = array($pageInfo, $dates, $comments);
+         
+            $table->addRow($id, $cells);
       }
       
       // displaying

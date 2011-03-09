@@ -91,7 +91,7 @@ class Blog_Controller extends Controller
       
       $table = new ACPTable;
       $table->isPagination = false;
-      $table->header = array('Tytuł', 'Data', 'Komentarzy');
+      $table->header = array('Wpis', 'Data', 'Komentarzy');
       
       // actions for selected posts
       
@@ -163,7 +163,7 @@ class Blog_Controller extends Controller
             
             if($post->status == 'published')
             {
-               $actions .= ' | <a href="$/blog/unpublish/' . $id . '" title="Przenieś opublikowany post do szkiców">Przenieś do szkiców</a>';
+               $actions .= ' | <a href="$/blog/unpublish/' . $id . '" title="Przenieś opublikowany wpis do szkiców">Przenieś do szkiców</a>';
             }
             
             // deleting and untrashing (trash scope), or moving to trash (other scopes)
@@ -192,18 +192,18 @@ class Blog_Controller extends Controller
             
             if($post->status == 'published')
             {
-               $dates .= HumanDate($post->published, true, true) . ' opublikowany';
+               $dates .= 'opublikowany ' . HumanDate($post->published, true, true);
             }
             else
             {
-               $dates .= HumanDate($post->published, true, true) . ' utworzony';
+               $dates .= 'utworzony ' . HumanDate($post->published, true, true);
             }
             
             // update date
             
             if($post->updated > $post->published)
             {
-               $dates .= ', <br>' . HumanDate($post->updated, true, true) . ' zmieniony';
+               $dates .= ', <br>zmieniony ' . HumanDate($post->updated, true, true);
             }
             
             $dates .= '</small>';
@@ -450,7 +450,7 @@ class Blog_Controller extends Controller
          },
          function($count)
          {
-            return 'Opublikowano ' . $count . ' postów';
+            return 'Opublikowano ' . $count . ' wpisów';
          });
    }
    
@@ -467,7 +467,7 @@ class Blog_Controller extends Controller
          },
          function($count)
          {
-            return 'Zmieniono ' . $count . ' postów na szkice';
+            return 'Przeniesiono ' . $count . ' wpisów do szkiców';
          });
    }
    
@@ -484,7 +484,7 @@ class Blog_Controller extends Controller
          },
          function($count)
          {
-            return 'Przeniesiono ' . $count . ' postów do kosza';
+            return 'Przeniesiono ' . $count . ' wpisów do kosza'; //TODO: undo
          });
    }
    
@@ -501,7 +501,7 @@ class Blog_Controller extends Controller
          },
          function($count)
          {
-            return 'Przywrócono ' . $count . ' postów z kosza';
+            return 'Przywrócono ' . $count . ' wpisów z kosza';
          });
    }
    

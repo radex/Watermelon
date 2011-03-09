@@ -89,7 +89,7 @@ function HumanDate($timestamp, $dateOnly = false, $html = false)
    list($day, $month, $year, $hour, $minute) = explode('.', date('j.n.Y.G.i', $timestamp)); // timestamp
    list($dayN, $monthN, $yearN) = explode('.', date('d.m.Y', time()));                      // now
    
-   $date = date('j.n.Y, G:i', $timestamp);
+   $date = date('d.m.Y, G:i', $timestamp);
    
    // function returning HTML if $html == true, and appending ', hour:minute' if $time == true and $dateOnly == false
    

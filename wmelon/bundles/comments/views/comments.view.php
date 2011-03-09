@@ -69,5 +69,5 @@
    
    <!-- "commenting has been disabled" message -->
    
-   <div tal:condition="not:open" class="comments-closed">Komentowanie zostało wyłączone</div>
+   <div tal:condition="php: !open && visibleCount > 0" class="comments-closed">Komentowanie zostało wyłączone</div>
 </section>

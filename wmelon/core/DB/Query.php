@@ -365,14 +365,23 @@ class DBQuery
       
       if(strtolower($op) == 'in') // 'in' operator - for IN(...)
       {
-         // converting to string
+         // if array, converting to string
          
-         foreach($value as &$item)
+         if(is_array($value))
          {
-            $item = DB::sqlValue($item);
+            // converting to string
+
+            foreach($value as &$item)
+            {
+               $item = DB::sqlValue($item);
+            }
+
+            $value = implode(', ', $value);
          }
-         
-         $value = implode(', ', $value);
+         else
+         {
+            $value = DB::sqlValue($value);
+         }
          
          // query
          

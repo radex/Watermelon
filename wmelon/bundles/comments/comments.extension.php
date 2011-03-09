@@ -51,6 +51,7 @@ class Comments extends Extension
       
       $approvedCount   = 0;   // counter of approved comments
       $unapprovedCount = 0;   // counter of unapproved comments
+      $visibleCount    = 0;   // counter of comments visible to user
       
       // visibilityToken
       
@@ -76,6 +77,11 @@ class Comments extends Extension
          // (comment is visible if admin or comment is approved or comment visibility token match user's visibility token)
          
          $comment->visible = (Users::isLogged() || $comment->approved || ($comment->visibilityToken == $visibilityToken && !empty($comment->visibilityToken)));
+         
+         if($comment->visible)
+         {
+            $visibleCount++;
+         }
          
          // additional information (for admin)
          
@@ -193,6 +199,8 @@ class Comments extends Extension
       $view->areComments   = $commentsObj->exists;
       $view->commentsCount = $commentsCountStr;
       
+      $view->visibleCount  = $visibleCount;
+      
       $view->visibilityToken = $visibilityToken;
       
       $view->id            = $id;
@@ -215,6 +223,12 @@ class Comments extends Extension
    public static function postComment($id, $type, $backPage)
    {
       if(empty($id) || empty($type) || empty($backPage))
+      {
+         Watermelon::displayNoPageFoundError();
+         return;
+      }
+      
+      if(!in_array($type, array('blogpost', 'page')))
       {
          Watermelon::displayNoPageFoundError();
          return;
@@ -266,7 +280,7 @@ class Comments extends Extension
             case -1:
                $model->postComment($id, $type, $form->name, $form->email, $form->website, $form->content, false, $visibilityToken);
             
-               Watermelon::displaySuccessNotice('Twój komentarz zostanie sprawdzony zanim zostanie publicznie pokazany');
+               Watermelon::displayNotice('Twój komentarz zostanie sprawdzony zanim zostanie publicznie pokazany');
             break;
          
             case -2:

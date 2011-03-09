@@ -23,7 +23,7 @@
 <!-- if no posts in this scope -->
 
 <p tal:condition="not:exists:posts">
-   Brak wpisów. <a href="$/blog/new">Napisz pierwszy</a>
+   Brak wpisów. <a href="$/blog/new">Napisz pierwszy.</a>
 </p>
 
 <!-- posts table -->

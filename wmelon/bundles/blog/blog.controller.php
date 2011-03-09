@@ -56,7 +56,7 @@ class Blog_Controller extends Controller
          // edit/delete links
          
          $post->editHref   = '%/blog/edit/' .   $post->id . '/backTo:site';
-         $post->deleteHref = '%/blog/delete/' . $post->id . '/' . base64_encode('#/');
+         $post->deleteHref = '%/blog/trash/' . $post->id . '/' . base64_encode('#/');
          
          // URL to post
          
@@ -185,7 +185,7 @@ class Blog_Controller extends Controller
       $view->commentsView = Comments::commentsView($id, 'blogpost', $post->url, (bool) $post->allowComments);
 
       $view->editHref     = '%/blog/edit/' . $id . '/backTo:post';
-      $view->deleteHref   = '%/blog/delete/' . $id . '/' . base64_encode('#/blog');
+      $view->deleteHref   = '%/blog/trash/' . $id . '/' . base64_encode('#/');
       
       $view->published_human = HumanDate($post->published, true, true);
       

@@ -361,9 +361,9 @@ class Watermelon
       
       // creating messages array in session
       
-      if(!is_array($_SESSION['WM_Messages']))
+      if(!is_array($_SESSION['wmelon.messages']))
       {
-         $_SESSION['WM_Messages'] = array();
+         $_SESSION['wmelon.messages'] = array();
       }
       
       // URL-s

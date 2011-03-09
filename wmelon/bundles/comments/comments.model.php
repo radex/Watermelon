@@ -110,7 +110,7 @@ class Comments_Model extends Model
       
       DB::query('UPDATE __? SET commentsCount = commentsCount + 1 WHERE id = ?', $type . 's', $id);
       
-      if(!$approved)
+      if($approved)
       {
          DB::query('UPDATE __? SET approvedCommentsCount = approvedCommentsCount + 1 WHERE id = ?', $type . 's', $id);
       }
@@ -132,7 +132,14 @@ class Comments_Model extends Model
    {
       $id = (int) $id;
       
-      //--
+      // verifying if commenting is allowed
+      
+      if(!DB::select($type . 's', $id)->allowComments)
+      {
+         return;
+      }
+      
+      // posting comment
       
       $commentID = DB::insert('comments', array
          (
@@ -252,7 +259,7 @@ class Comments_Model extends Model
          
          if($comment->approved)
          {
-            DB::query('UPDATE __%1 SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = %2', $tableName, $recordID);
+            DB::query('UPDATE __? SET approvedCommentsCount = approvedCommentsCount - 1 WHERE id = ?', $tableName, $recordID);
          }
          
          // rejecting
