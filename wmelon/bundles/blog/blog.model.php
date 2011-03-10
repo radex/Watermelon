@@ -72,7 +72,7 @@ class Blog_Model extends Model
     * 
     * Returns posts counts:
     * ->all       - for published/drafts
-    * ->trash     - for deleted posts
+    * ->trash     - for posts moved to trash
     * ->drafts    - for drafts
     * ->published - for published posts
     */
@@ -329,6 +329,12 @@ class Blog_Model extends Model
       
       file_put_contents(WM_Cache . 'feed.atom', $feed->asXML());
    }
+   
+   /**************************************************************************/
+   
+   /*
+    * Auxiliary methods
+    */
    
    /*
     * private string generateName(string $title)

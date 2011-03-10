@@ -72,8 +72,6 @@ class Blog_Controller extends Controller
       
       $posts = $this->model->allPosts($scope);
       
-      $commentsModel = new Comments_Model;
-      
       // if no blog posts
       
       if($posts->empty)
@@ -115,7 +113,7 @@ class Blog_Controller extends Controller
             
             $title = '<strong>' . $post->title . '</strong>';
             
-            // title as link to edit (not for trash)
+            // title as link to edit (not in trash)
             
             if($scope != 'trash')
             {

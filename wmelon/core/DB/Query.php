@@ -343,7 +343,7 @@ class DBQuery
    }
    
    /*
-    * auxillary method for generating SQL comparison expression from array(field[, operator], value)
+    * Auxiliary method for generating SQL comparison expression from array(field[, operator], value)
     */
    
    protected function _where($args)

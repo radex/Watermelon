@@ -44,17 +44,34 @@ class Pages_Controller extends Controller
    
    function index_action()
    {
-      $this->pageTitle = 'Lista stron';
+      // determining posts scope (published/trash)
       
-      $pages = $this->model->pages();
+      switch($this->parameters->scope)
+      {
+         case 'trash':
+            $scopeLabel = ' (kosz)';
+            $scope = 'trash';
+         break;
+         
+         default:
+            $scope = 'published';
+         break;
+      }
       
-      $commentsModel = new Comments_Model;
+      // fetching pages
+      
+      $pages = $this->model->pages($scope);
       
       // if no pages
       
       if($pages->empty)
       {
-         echo '<p>Brak stron. <a href="$/pages/new">Utwórz pierwszą.</a></p>';
+         $view = View('admin/list');
+         $view->counts = $this->model->counts();
+         $view->table  = null;
+         
+         $view->display();
+         
          return;
       }
       
@@ -63,7 +80,18 @@ class Pages_Controller extends Controller
       $table = new ACPTable;
       $table->isPagination = false;
       $table->header = array('Strona', 'Data', 'Komentarzy');
-      $table->selectedActions[] = array('Usuń', 'pages/delete/');
+      
+      // actions for selected posts
+      
+      if($scope == 'trash')
+      {
+         $table->selectedActions[] = array('Usuń na zawsze', 'pages/delete/', 'Nieodwracalnie usuń zaznaczone strony');
+         $table->selectedActions[] = array('Przywróć',       'pages/untrash/', 'Przywróć zaznaczone strony z kosza');
+      }
+      else
+      {
+         $table->selectedActions[] = array('Usuń', 'pages/trash/', 'Przenieś zaznaczone strony do kosza');
+      }
       
       // adding pages
       
@@ -72,10 +100,16 @@ class Pages_Controller extends Controller
          $id = $page->id;
          
          //--
-         
-            $name  = $page->name;
-            $title = '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę"><strong>' . $page->title . '</strong></a>';
-         
+            
+            $title = '<strong>' . $page->title . '</strong>';
+            
+            // title as link to edit (not in trash)
+            
+            if($scope != 'trash')
+            {
+               $title = '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">' . $title . '</a>';
+            }
+            
          //--
          
             $content = nl2br(strip_tags($page->content));
@@ -88,9 +122,19 @@ class Pages_Controller extends Controller
          //--
          
             $actions = '';
-            $actions .= '<a href="#/' . $name . '" title="Obejrzyj na stronie">Zobacz</a> | ';
-            $actions .= '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">Edytuj</a> | ';
-            $actions .= '<a href="$/pages/delete/' . $id . '" title="Usuń stronę">Usuń</a>';
+            
+            if($scope == 'published')
+            {
+               $actions .= '<a href="#/' . $page->name . '" title="Obejrzyj na stronie">Zobacz</a> | ';
+               $actions .= '<a href="$/pages/edit/' . $id . '" title="Edytuj stronę">Edytuj</a> | ';
+               $actions .= '<a href="$/pages/trash/' . $id . '" title="Przenieś stronę do kosza">Usuń</a>';
+            }
+            else
+            {
+               $actions .= '<a href="$/pages/delete/' . $id . '" title="Nieodwracalnie usuń stronę">Usuń na zawsze</a>';
+               $actions .= ' | <a href="$/pages/untrash/' . $id . '" title="Przywróć stronę z kosza">Przywróć</a>';
+            }
+            
          
          //--
          
@@ -135,7 +179,14 @@ class Pages_Controller extends Controller
       
       // displaying
       
-      echo $table->generate();
+      $this->pageTitle = 'Lista stron' . $scopeLabel;
+      
+      $view = View('admin/list');
+      $view->counts = $this->model->counts();
+      $view->pages  = $pages;
+      $view->table  = $table->generate();
+      
+      $view->display();
    }
    
    /*
@@ -266,6 +317,42 @@ class Pages_Controller extends Controller
       $this->displaySuccessNotice('Zaktualizowano stronę');
       
       SiteRedirect('pages/edit/' . $id . $backTo);
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * move posts to trash
+    */
+
+   function trash_action($ids, $backPage)
+   {
+      AdminQuick::bulkActionSubmit('pages', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->changeStatus($ids, 'trash');
+         },
+         function($count)
+         {
+            return 'Przeniesiono ' . $count . ' stron do kosza'; //TODO: undo
+         });
+   }
+   
+   /*
+    * move posts back from the trash
+    */
+
+   function untrash_action($ids, $backPage)
+   {
+      AdminQuick::bulkActionSubmit('pages', $ids, $backPage,
+         function($ids, $model)
+         {
+            $model->changeStatus($ids, 'published');
+         },
+         function($count)
+         {
+            return 'Przywrócono ' . $count . ' stron z kosza';
+         });
    }
    
    /*

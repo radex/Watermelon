@@ -25,14 +25,40 @@
 class Pages_Model extends Model
 {
    /*
-    * public DBResult pages()
-    * 
-    * List of pages
+    * getting
     */
    
-   public function pages()
+   /*
+    * public DBResult pages([$scope])
+    * 
+    * List of pages
+    * 
+    * $scope:
+    *    null (default) - all pages
+    *    'published'    - published pages
+    *    'trash'        - pages moved to trash
+    */
+   
+   public function pages($scope)
    {
-      return Query::select('pages')->order('id DESC')->act();
+      $q = Query::select('pages')->order('id DESC');
+      
+      // scope
+      
+      switch($scope)
+      {
+         case 'published':
+            $q = $q->where('status', 'published');
+         break;
+         
+         case 'trash':
+            $q = $q->where('status', 'trash');
+         break;
+      }
+      
+      //--
+      
+      return $q->act();
    }
    
    /*
@@ -56,6 +82,24 @@ class Pages_Model extends Model
    {
       return Query::select('pages')->where('name', (string) $name)->act()->fetch();
    }
+   
+   /*
+    * public object counts()
+    * 
+    * Returns pages counts:
+    * ->published - for published pages
+    * ->trash     - for pages moved to trash
+    */
+   
+   public function counts()
+   {
+      $counts->published = Query::select('pages')->where('status', 'published')->act()->rows;
+      $counts->trash     = Query::select('pages')->where('status', 'trash')->act()->rows;
+      
+      return $counts;
+   }
+   
+   /**************************************************************************/
    
    /*
     * public int postPage(string $title, string $name, string $content)
@@ -125,6 +169,25 @@ class Pages_Model extends Model
          Comments_Model::deleteCommentsFor($id, 'page');
       }
    }
+   
+   /*
+    * public void changeStatus(int[] $ids, enum $status)
+    * 
+    * Changes status of pages to $status
+    * 
+    * enum $status = {'published','trash'}
+    */
+   
+   public function changeStatus($ids, $status)
+   {
+      Query::update('pages')->set('status', $status, 'updated', time())->where('id', 'in', $ids)->act();
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * Auxiliary methods
+    */
    
    /*
     * private string generateName(string $title)

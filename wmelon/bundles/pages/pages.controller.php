@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -45,6 +45,12 @@ class Pages_Controller extends Controller
          return;
       }
       
+      if($pageData->status == 'trash')
+      {
+         Watermelon::displayNoPageFoundError();
+         return;
+      }
+      
       // displaying (if exists)
       
       $id = $pageData->id;
@@ -59,7 +65,7 @@ class Pages_Controller extends Controller
       $view->commentsView = Comments::commentsView($pageData->id, 'page', '#/' . $pageName, (bool) $pageData->allowComments);
       
       $view->editHref = '%/pages/edit/' . $id . '/backTo:site';
-      $view->deleteHref = '%/pages/delete/' . $id;
+      $view->deleteHref = '%/pages/trash/' . $id;
       
       $view->display();
    }
