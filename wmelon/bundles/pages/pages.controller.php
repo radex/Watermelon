@@ -35,23 +35,17 @@ class Pages_Controller extends Controller
    
    function _controllerHandler($pageName)
    {
-      // getting post data
+      // getting post data and validating
       
       $pageData = $this->model->pageData_name($pageName);
       
-      if(!$pageData)
+      if(!$pageData || $pageData->status !== 'published')
       {
          Watermelon::displayNoPageFoundError();
          return;
       }
       
-      if($pageData->status == 'trash')
-      {
-         Watermelon::displayNoPageFoundError();
-         return;
-      }
-      
-      // displaying (if exists)
+      // displaying
       
       $id = $pageData->id;
       

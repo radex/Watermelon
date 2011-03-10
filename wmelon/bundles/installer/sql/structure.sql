@@ -1,5 +1,5 @@
 -- 
--- Structure for table `wm_benchmark`
+-- Structure for table `benchmark`
 -- 
 
 CREATE TABLE `wm_benchmark` (
@@ -9,7 +9,7 @@ CREATE TABLE `wm_benchmark` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_blogposts`
+-- Structure for table `blogposts`
 -- 
 
 CREATE TABLE `wm_blogposts` (
@@ -31,7 +31,7 @@ CREATE TABLE `wm_blogposts` (
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_categories`
+-- Structure for table `categories`
 -- 
 
 CREATE TABLE `wm_categories` (
@@ -44,7 +44,7 @@ CREATE TABLE `wm_categories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_comments`
+-- Structure for table `comments`
 -- 
 
 CREATE TABLE `wm_comments` (
@@ -66,7 +66,7 @@ CREATE TABLE `wm_comments` (
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_config`
+-- Structure for table `config`
 -- 
 
 CREATE TABLE `wm_config` (
@@ -76,7 +76,7 @@ CREATE TABLE `wm_config` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_pages`
+-- Structure for table `pages`
 -- 
 
 CREATE TABLE `wm_pages` (
@@ -90,12 +90,13 @@ CREATE TABLE `wm_pages` (
   `allowComments` tinyint(1) NOT NULL DEFAULT '1',
   `commentsCount` int(11) NOT NULL DEFAULT '0',
   `approvedCommentsCount` int(11) NOT NULL DEFAULT '0',
+  `status` enum('published','trash') NOT NULL DEFAULT 'published',
   PRIMARY KEY (`id`),
   UNIQUE KEY `page_name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_privileges`
+-- Structure for table `privileges`
 -- 
 
 CREATE TABLE `wm_privileges` (
@@ -105,7 +106,7 @@ CREATE TABLE `wm_privileges` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
--- Structure for table `wm_users`
+-- Structure for table `users`
 -- 
 
 CREATE TABLE `wm_users` (

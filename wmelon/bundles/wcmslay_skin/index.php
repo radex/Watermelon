@@ -29,8 +29,8 @@ ${php:skin.drawHeadTags()}
 </div>
 
 <footer>
-   ${structure footer}<br/>
-   powered by <strong><a href="https://github.com/radex/Watermelon">Watermelon</a></strong>
+   ${structure footer}
    ${structure php: Watermelon_Blockset::debugInfo()}
 </footer>
 ${php:skin.drawTailTags()}
+<?='<!-- powered by Watermelon: <https://github.com/radex/Watermelon> -->'?>

@@ -165,7 +165,7 @@ class Blog_Model extends Model
       
       $id = DB::insert('blogposts', array
          (
-            'name'          =>          $this->generateName($title),
+            'name'          =>          self::generateName($title),
             'title'         => (string) $title,
             
             'content'       => (string) $content,
@@ -182,7 +182,7 @@ class Blog_Model extends Model
       
       // updating feed
       
-      $this->updateFeed();
+      self::updateFeed();
       
       // returning post ID
       
@@ -217,7 +217,7 @@ class Blog_Model extends Model
             'allowComments' => (bool)   $allowComments,
          ));
       
-      $this->updateFeed();
+      self::updateFeed();
    }
    
    /*
@@ -230,7 +230,7 @@ class Blog_Model extends Model
    {
       Query::update('blogposts')->set('published', time())->where('id', 'in', $ids)->act();
       
-      $this->changeStatus($ids, 'published');
+      self::changeStatus($ids, 'published');
    }
    
    /*
@@ -245,7 +245,7 @@ class Blog_Model extends Model
    {
       Query::update('blogposts')->set('status', $status, 'updated', time())->where('id', 'in', $ids)->act();
       
-      $this->updateFeed();
+      self::updateFeed();
    }
    
    /*
@@ -263,7 +263,7 @@ class Blog_Model extends Model
          Comments_Model::deleteCommentsFor($id, 'blogpost');
       }
       
-      $this->updateFeed();
+      self::updateFeed();
    }
    
    /*
@@ -348,7 +348,7 @@ class Blog_Model extends Model
       
       // deletes all necessary characters
       
-      $name = str_replace(array('?', '/', '#', '&'), '', $name);
+      $name = str_replace(array('?', '/', '#', '&', "'", '"'), '', $name);
       $name = str_replace(':', ' -', $name);
       $name = str_replace(' ', '_', $name);
       

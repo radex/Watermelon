@@ -113,12 +113,13 @@ label > span > small
 textarea
 {
    height: 8em;
-   width: 76%;
+   width: 75%;
 }
 
 input[type=text],
 input[type=email],
-input[type=url]
+input[type=url],
+input[type=password]
 {
    width: 500px;
 }

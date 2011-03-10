@@ -11,9 +11,9 @@ INSERT INTO `wm_blogposts` (`name`, `title`, `summary`, `content`, `author`, `pu
 
 -- sample page
 
-INSERT INTO `wm_pages` (`name`, `title`, `content`, `author`, `created`, `updated`) VALUES
+INSERT INTO `wm_pages` (`name`, `title`, `content`, `author`, `created`, `updated`, `commentsCount`, `approvedCommentsCount`) VALUES
 (
-   'wmelonHelp', 'Pomoc Watermelona', '{page-content}', 1, {time}, {time}
+   'wmelonHelp', 'Pomoc Watermelona', '{page-content}', 1, {time}, {time}, 2, 2
 );
 
 -- sample comment for these

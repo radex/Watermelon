@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -117,11 +117,11 @@ class Pages_Model extends Model
       
       if(empty($name))
       {
-         $name = $this->generateName($title);
+         $name = self::generateName($title);
       }
       else
       {
-         $name = $this->filterName($name);
+         $name = self::filterName($name);
       }
       
       // inserting
@@ -148,7 +148,7 @@ class Pages_Model extends Model
       DB::update('pages', (int) $id, array
          (
             'title'   => (string) $title,
-            'name'    => $this->filterName($name),
+            'name'    => self::filterName($name),
             'content' => (string) $content,
             'updated' => time(),
          ));
@@ -199,7 +199,7 @@ class Pages_Model extends Model
    {
       $name = (string) $title;
       
-      $name = $this->filterName($name);
+      $name = self::filterName($name);
       $name = str_replace('/', '', $name);
       
       // if already exists, generating unique
@@ -234,7 +234,7 @@ class Pages_Model extends Model
    {
       $name = (string) $name;
       
-      $name = str_replace(array('?', '#', '&'), '', $name);
+      $name = str_replace(array('?', '#', '&', "'", '"'), '', $name);
       $name = str_replace(':', ' -', $name);
       $name = str_replace(' ', '_', $name);
       
