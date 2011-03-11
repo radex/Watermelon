@@ -240,7 +240,6 @@ abstract class Controller
       $skin->messages          = &$messages;
       $skin->headTags          = &$headTags;
       $skin->tailTags          = &$tailTags;
-      $skin->blockMenus        = &$config->blockMenus;
       $skin->textMenus         = &$config->textMenus;
       $skin->additionalData    = $this->additionalData;
 

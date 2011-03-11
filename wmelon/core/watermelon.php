@@ -126,7 +126,6 @@ class Watermelon
     * siteName          - website name
     * siteSlogan        - website slogan (some text, usually placed below site name; shown in some skins)
     * footer            - additional text (HTML) to put in footer
-    * blockMenus        - array of block-based menus (structure described in Skin class)
     * textMenus         - array of text-based menus ( -||- )
     * headTags          - tags to be added (string) at the beginning of the page
     * tailTags          - tags to be added (string) at the end of the page

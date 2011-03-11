@@ -11,8 +11,6 @@
    lighterGreen: #b5ce4c
    blue: #93b2d0
    lightBlue: #EEF7F6
-   sidebar: #f2ede1
-   darkerSidebar: #fefcf2
    
    containerWidth: 800px
    contentWidth: 770px
@@ -184,9 +182,6 @@ h2
    border-radius: 3px
 
 #content
-   float: right
-   overflow: hidden
-   width: $contentWidth
    padding: 15px
    line-height: 1.7em
 
@@ -245,31 +240,6 @@ body > header
    text-align: right
    font-size: 12px
    color: $blue
-
-//
-// Sidebar
-//
-
-#sidebar
-   float: right
-   width: 230px
-   padding: 15px 10px
-   line-height: 1.5em
-   background-color: $sidebar
-   border-radius: 0 5px 5px 0
-   hr
-      border: 0
-      height: 3px
-      width: 60%
-      background: $darkerSidebar
-   a
-      border: 0
-
-#sidebar:hover
-   a
-      border-bottom: 1px solid #ccc
-   a:hover
-      border: 0
 
 //
 // Footer

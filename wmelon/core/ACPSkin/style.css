@@ -372,14 +372,6 @@ body > header > div
  * Sidebar and footer styles
  */
 
-#sidebar hr
-{
-   border: 0;
-   height: 3px;
-   width: 60%;
-   background: #fefcf2;
-}
-
 body > footer a, #footer a:visited
 {
    color: #d5ee6c;
@@ -391,21 +383,6 @@ body > footer a:hover, #footer a:visited:hover
 {
    color: #fff;
    background: #859e1c;
-}
-
-#sidebar a
-{
-   border: 0;
-}
-
-#sidebar:hover a
-{
-   border-bottom: 1px solid #ccc;
-}
-
-#sidebar:hover a:hover
-{
-   border: 0;
 }
 
 

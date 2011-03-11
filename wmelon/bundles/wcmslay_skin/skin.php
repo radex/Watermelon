@@ -38,26 +38,4 @@ class WCMSLay_Skin extends Skin
          echo '<a href="' . $URL . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a>';
       }
    }
-   
-   /*
-    * block menus
-    */
-   
-   protected function drawBlockMenu($id)
-   {/*
-      foreach($this->blockMenus[$id] as $menu)
-      {
-         echo '<section>';
-         
-         list($title, $blockSet, $block, $parameters) = $menu;
-         
-         echo '<h2>' . $title . '</h2>';
-         
-         $blockObj = BlockSet($blockSet);
-         
-         call_user_func_array(array($blockObj, $block), $parameters);
-         
-         echo '</section>';
-      }*/
-   }
 }

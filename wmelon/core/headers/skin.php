@@ -55,21 +55,6 @@ abstract class Skin
    public $tailTags = array();
    
    /*
-    * public array $blockMenus
-    * 
-    * Array of block-based menus
-    * 
-    * $blockMenus = array($menu, $menu, ...)
-    *    $menu = array(array($title, $blockset, $block, array $parameters), ...)
-    *       $title      - header above block
-    *       $blockset   - name of Blockset containing requested block
-    *       $block      - name of block to be called
-    *       $parameters - arguments to be passed to block
-    */
-   
-   public $blockMenus = array();
-   
-   /*
     * public array $textMenus
     * 
     * Array of text-based menus

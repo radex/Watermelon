@@ -620,7 +620,6 @@ class Installer_Controller extends Controller
          $w->siteSlogan = null;
          $w->footer     = '<small><a href="$/users/login">Logowanie</a></small><br>' .
             'powered by <strong><a href="https://github.com/radex/Watermelon">Watermelon</a></strong>';
-         $w->blockMenus = array(array());
          $w->textMenus  = $textMenus;
          
          $w->headTags   = '';
