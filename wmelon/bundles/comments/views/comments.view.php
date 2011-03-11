@@ -14,9 +14,9 @@
          
          <header tal:condition="not: comment/authorID">
             <img src="${comment/gravatarURL}" alt="" />
-            <strong tal:attributes="title comment/additionalInfo | nothing">
+            <span tal:attributes="title comment/additionalInfo | nothing">
                <a href="${comment/authorWebsite}" rel="nofollow" tal:omit-tag="not: comment/authorWebsite">${comment/authorName}</a>
-            </strong>
+            </span>
          </header>
          
          <!-- header (for logged user's post) -->

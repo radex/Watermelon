@@ -5,7 +5,7 @@
    imgPath:../../bundles/wcmslay_skin/img
    
    standardFont: Helvetica, Verdana, Sans, sans-serif
-   extraFont: Palatino
+   extraFont: Palatino, serif
    
    green: #859e1c
    lighterGreen: #b5ce4c
@@ -86,6 +86,7 @@ input[type=password],
 input[type=email],
 input[type=url]
    width: 300px
+   padding: 1px 0
 
 textarea
    height: 10em
@@ -361,6 +362,11 @@ body > footer
       padding: 5px
       padding-left: 7px
    .adminTools
+      display: none
+
+.comments > article:hover .adminTools,
+.comments > article.awaitingModerationComment .adminTools
+      display: block
       padding: 3px 7px
       float: right
       margin: -6px -6px 5px 5px
@@ -373,14 +379,7 @@ body > footer
    border: 1px solid #ddd
 
 .comments > article.adminComment
-   background: $lightBlue
-   header
-      border-right: 1px solid #bbb
-   .adminTools
-      border: 1px solid #bbb
-
-.comments > article.adminComment:nth-of-type(odd)
-   border: 1px solid #bbb
+   box-shadow: 0 0 5px #ccc
 
 .comments-closed
    font-style: italic

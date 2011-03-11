@@ -107,7 +107,7 @@ label
 input[type=text],
 input[type=password]
    width: 200px
-   height: 13px
+   height: 15px
    padding: 3px
    vertical-align: top
    font-size: 0.9em

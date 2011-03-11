@@ -112,6 +112,13 @@ class Comments extends Extension
             $comment->cssClass = 'adminComment';
          }
          
+         // "awaiting moderation" CSS class
+         
+         if(!$comment->approved)
+         {
+            $comment->cssClass .= ' awaitingModerationComment';
+         }
+         
          // gravatar url
          
          $gravatarEnding = '?s=64&d=' . urlencode(WM_BundlesURL) . 'watermelon/public/img/blank.png';
