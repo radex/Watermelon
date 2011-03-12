@@ -605,13 +605,17 @@ class Watermelon
       // determining URL without possible directory in the beginning
       // e.g. index.php/foo/bar or foo/bar
       
-      $url = substr($url, strlen($indexDir));
+      $url = (string) substr($url, strlen($indexDir));
       
       // deleting 'index.php/' from the beginning (if present)
       
       if(strpos($url, 'index.php/') === 0)
       {
-         $url = substr($uri, 10);
+         $url = (string) substr($url, 10);
+      }
+      elseif($url == 'index.php')
+      {
+         $url = '';
       }
       
       return $url;

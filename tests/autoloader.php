@@ -28,6 +28,7 @@ function tests_autoloader($className)
 
    $libPaths = array
       (
+         'watermelon'  => 'core/Watermelon.php',
          'wmexception' => 'core/testing/Exception.php',
          'db'          => 'core/DB/DB.php',
          'dbquery'     => 'core/DB/DB.php',
