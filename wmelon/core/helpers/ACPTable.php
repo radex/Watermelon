@@ -95,7 +95,7 @@ class ACPTable
    /*
     * public string $pageLink
     * 
-    * Base page for given table page, e.g. 'pages/index/page:'
+    * Base page for given table page, e.g. 'pages/index?page='
     */
    
    public $pageLink;

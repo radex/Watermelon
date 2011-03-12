@@ -46,7 +46,7 @@ class Pages_Controller extends Controller
    {
       // determining posts scope (published/trash)
       
-      switch($this->parameters->scope)
+      switch($this->params->scope)
       {
          case 'trash':
             $scopeLabel = ' (kosz)';
@@ -248,9 +248,9 @@ class Pages_Controller extends Controller
       
       // back to link
       
-      if($this->parameters->backto == 'site')
+      if($this->params->backTo == 'site')
       {
-         $backTo = '/backTo:site';
+         $backTo = '?backTo=site';
          
          $backToLabel = ' lub <a href="#/' . $data->name . '">powróć do strony</a>';
       }
@@ -296,7 +296,7 @@ class Pages_Controller extends Controller
    {
       $id = (int) $id;
       
-      $backTo = ($this->parameters->backto == 'site') ? '/backTo:site' : '';
+      $backTo = ($this->params->backTo == 'site') ? '?backTo=site' : '';
       
       // checking if exists
       

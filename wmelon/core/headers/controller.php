@@ -57,22 +57,6 @@ abstract class Controller
    public $additionalData;
    
    /*
-    * public string[] $segments
-    * 
-    * Array of resource name segments, stripped from controller and action name
-    */
-   
-   public $segments;
-   
-   /*
-    * public object $parameters
-    * 
-    * Object with parameters passed through URI, e.g. 'foo:bar' is ->foo = 'bar'
-    */
-   
-   public $parameters;
-   
-   /*
     * public bool $plainOutput = false
     * 
     * If true, only echoed contents will be output (without skin and everything else)
@@ -111,11 +95,23 @@ abstract class Controller
    
    public $acpSubNav;
    
+   /**************************************************************************/
+   
    /*
+    * public static string $requestURL
+    * public static string[] $segments
+    * public static string $format
+    * public static array $params
+    * 
     * public void displayError/displayNotice/displaySuccessNotice(string $message)
     * 
-    * Shortcut for Watermelon::displayX
+    * Shortcuts for corresponding attributes/methods of Watermelon class
     */
+   
+   public $requestURL;
+   public $segments;
+   public $format;
+   public $params;
    
    public function displayError($message)
    {
@@ -131,6 +127,8 @@ abstract class Controller
    {
       Watermelon::displaySuccessNotice($message);
    }
+   
+   /**************************************************************************/
    
    /*
     * constructor
@@ -148,10 +146,12 @@ abstract class Controller
       }
       catch(WMException $e){}
       
-      // binding ->segments/parameters to Watermelon::*
+      // binding attributes to corresponding attributes of Watermelon class
       
+      $this->requestURL = &Watermelon::$requestURL;
       $this->segments   = &Watermelon::$segments;
-      $this->parameters = &Watermelon::$parameters;
+      $this->format     = &Watermelon::$format;
+      $this->params     = &Watermelon::$params;
    }
    
    /*

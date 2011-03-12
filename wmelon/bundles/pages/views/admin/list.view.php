@@ -6,7 +6,7 @@
    <a href="$/pages/" title="Pokaż opublikowane strony">Opublikowane (${counts/published})</a>
    
    <tal:block tal:condition="php: counts.trash > 0">
-   | <a href="$/pages/scope:trash" title="Pokaż strony przeniesione do kosza">Kosz (${counts/trash})</a>
+   | <a href="$/pages/?scope=trash" title="Pokaż strony przeniesione do kosza">Kosz (${counts/trash})</a>
    </tal:block>
    
    <br/><br/>

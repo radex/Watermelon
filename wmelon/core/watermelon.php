@@ -18,12 +18,44 @@
  //  along with Watermelon. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-Watermelon::run();
-
 //TODO: refactor!
 
 class Watermelon
-{   
+{
+   /*
+    * public static string $requestURL
+    * 
+    * Original request URL string, e.g. 'foo/bar.xml?key=value'
+    */
+   
+   public static $requestURL;
+   
+   /*
+    * public static string[] $segments
+    * 
+    * Array of resource name segments, stripped from possible 'admin/' as well as controller and action names
+    */
+   
+   public static $segments = array();
+   
+   /*
+    * public static string $format
+    * 
+    * Requested output format sent in request URL like file extension (e.g. like in 'foo/bar.xml') or NULL if none specified
+    */
+   
+   public static $format;
+   
+   /*
+    * public static array $params
+    * 
+    * Object with parameters passed through URI, e.g. 'url?foo=bar' produces ->foo = 'bar'
+    */
+   
+   public static $params;
+   
+   /**************************************************************************/
+   
    /*
     * public static string[] $headTags
     * 
@@ -54,30 +86,6 @@ class Watermelon
    const Site      = 1;
    const Admin     = 2;
    const Installer = 3;
-   
-   /*
-    * public static string[] $segments
-    * 
-    * Array of resource name segments, stripped from controller and action name
-    */
-   
-   public static $segments = array();
-   
-   /*
-    * public static object $parameters
-    * 
-    * Object with parameters passed through URI, e.g. 'foo:bar' is ->foo = 'bar'
-    */
-   
-   public static $parameters;
-   
-   /*
-    * public static string $resName
-    * 
-    * Original resource name from URI (e.g. 'admin/blog/new')
-    */
-   
-   public static $resName = '';
    
    /*
     * public static string $controllerName
@@ -241,7 +249,7 @@ class Watermelon
       {
          if(!Users::adminPrivileges())
          {
-            SiteRedirect('users/login/' . base64_encode(self::$resName), 'site');
+            SiteRedirect('users/login/' . base64_encode(self::$requestURL), 'site');
             exit;
          }
       }
@@ -367,7 +375,28 @@ class Watermelon
       
       // URL-s
       
-      self::divide();
+      $requestURL = self::getRequestURL();
+      
+      list($segments, $format, $params) = self::parseRequestURL($requestURL);
+      
+      if(self::$appType != self::Installer)
+      {
+         if($segments[0] == 'admin')
+         {
+            self::$appType = self::Admin;
+            
+            array_shift($segments);
+         }
+         else
+         {
+            self::$appType = self::Site;
+         }
+      }
+      
+      self::$requestURL = $requestURL;
+      self::$segments   = $segments;
+      self::$format     = $format;
+      self::$params     = $params;
       
       // including libraries
       
@@ -547,65 +576,116 @@ class Watermelon
       }
    }
    
+   /**************************************************************************/
+   
    /*
-    * private static void divide()
+    * private static string getRequestURL()
     * 
-    * Divides resource name (part of URI after index.php containing information about module and action to call, and parameters to be sent to that action) to segments; fills ::$appType, ::$resName, ::$segments and ::$parameters
+    * Returns request URL
+    * 
+    * For instance, both
+    *    http://some.website.com/website/foo/bar
+    * and
+    *    http://some.website.com/website/index.php/foo/bar/
+    * 
+    * will produce:
+    *    foo/bar
     */
    
-   private static function divide()
+   private static function getRequestURL()
    {
-      $resName = $_SERVER['PATH_INFO'] ? $_SERVER['PATH_INFO'] : $_SERVER['QUERY_STRING'];
-      $resName = substr($resName, 1);
+      $url = $_SERVER['REQUEST_URI'];        // e.g. /website/index.php/bar or /website/bar
       
-      self::$resName = $resName;
+      $scriptName = $_SERVER['SCRIPT_NAME']; // e.g. /website/index.php or /index.php
       
-      // dividing
+      // determining directory of index.php
       
-      $segments   = &self::$segments;
-      $parameters = &self::$parameters;
+      $indexDir = substr($scriptName, 0, -9);
       
-      foreach(explode('/', $resName) as $segment)
+      // determining URL without possible directory in the beginning
+      // e.g. index.php/foo/bar or foo/bar
+      
+      $url = substr($url, strlen($indexDir));
+      
+      // deleting 'index.php/' from the beginning (if present)
+      
+      if(strpos($url, 'index.php/') === 0)
       {
-         // ignoring empty segments
+         $url = substr($uri, 10);
+      }
+      
+      return $url;
+   }
+   
+   /*
+    * private static array parseRequestURL(string $url)
+    * 
+    * Parses given request URL into segments, extension and params
+    * 
+    * Returned:
+    *    array(string[] $segments, string $format, array $params)
+    *       string[] $segments - path, e.g. array('blog', 'post', '123')
+    *       string   $format   - requested data format, e.g. 'xml' or 'json', or NULL
+    *       object   $params   - parameters, e.g. (object) array('id' => '123', 'category' => 'sth')
+    * 
+    * For example
+    *    foo/bar.json?id=123&category=sth
+    * will produce
+    *    array(array('foo', 'bar'), 'json', (object) array('id' => '123', 'category' => 'sth'))
+    * 
+    * and
+    *    foo/bar/
+    * will produce
+    *    array(array('foo', 'bar'), null, (object) array())
+    */
+   
+   private static function parseRequestURL($url)
+   {
+      // query string (url?query_string)
+      
+      $params = array();
+      
+      if(preg_match('/^(.*)\?(.+)$/', $url, $matches))
+      {
+         list(,$url, $queryString) = $matches;
          
-         if($segment === '')
+         $queryString = explode('&', $queryString);
+         
+         foreach($queryString as $param)
          {
-            continue;
-         }
-         
-         // checking whether it's key:value parameter
-         
-         if(preg_match('/^[[:alpha:]]+:/', $segment, $matches))
-         {
-            $key = strtolower(substr($matches[0], 0, -1));
+            list($key, $val) = explode('=', $param);
             
-            $rest = substr($segment, strlen($key) + 1);
-            
-            $parameters->$key = (string) $rest;
+            $params[$key] = $val;
          }
-         else
+      }
+      
+      // format (url.x)
+      
+      $format = null;
+      
+      if(preg_match('/^(.+)\.(.+)$/', $url, $matches))
+      {
+         list(, $url, $format) = $matches;
+      }
+      
+      // splitting to segments
+      
+      $segments = array();
+      
+      foreach(explode('/', $url) as $segment)
+      {
+         if($segment !== '')
          {
             $segments[] = $segment;
          }
       }
       
-      // setting app type (but only if not already set to installer)
+      // returning
       
-      if(self::$appType != self::Installer)
-      {
-         if($segments[0] == 'admin')
-         {
-            self::$appType = self::Admin;
-            
-            array_shift($segments);
-         }
-         else
-         {
-            self::$appType = self::Site;
-         }
-      }
+      return array($segments, $format, (object) $params);
    }
+   
+   /**************************************************************************/
    
    /*
     * private static array controllerDetails(string $controllerName, enum $type)

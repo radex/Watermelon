@@ -46,7 +46,7 @@ class Blog_Controller extends Controller
    {
       // determining posts scope (all/trash/drafts/published)
       
-      switch($this->parameters->scope)
+      switch($this->params->scope)
       {
          case 'trash':
             $scopeLabel = ' (kosz)';
@@ -330,11 +330,11 @@ class Blog_Controller extends Controller
       
       // back to link
       
-      $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
+      $backTo = isset($this->params->backTo) ? '?backTo=' . $this->params->backTo : '';
       
       $postURL = '#/' . date('Y/m', $data->published) . '/' . $data->name;
       
-      switch($this->parameters->backto)
+      switch($this->params->backTo)
       {
          case 'post':
             $backToLabel = ' lub <a href="' . $postURL . '">powróć do wpisu</a>';
@@ -401,7 +401,7 @@ class Blog_Controller extends Controller
    {
       $id = (int) $id;
       
-      $backTo = isset($this->parameters->backto) ? '/backTo:' . $this->parameters->backto : '';
+      $backTo = isset($this->params->backTo) ? '?backTo=' . $this->params->backTo : '';
       
       // checking if exists
       

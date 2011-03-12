@@ -30,7 +30,7 @@ class Blog_Controller extends Controller
    
    public function index_action()
    {
-      $page     = (int) $this->parameters->page; // page number
+      $page     = (int) $this->params->page; // page number
       $page     = ($page < 1 ? 1 : $page);       // page=1, if specified page<1
       $postsObj = $this->model->posts($page);
       $posts    = array();
@@ -55,7 +55,7 @@ class Blog_Controller extends Controller
          
          // edit/delete links
          
-         $post->editHref   = '%/blog/edit/' .   $post->id . '/backTo:site';
+         $post->editHref   = '%/blog/edit/' .   $post->id . '?backTo=site';
          $post->deleteHref = '%/blog/trash/' . $post->id . '/' . base64_encode('#/');
          
          // URL to post
@@ -129,8 +129,8 @@ class Blog_Controller extends Controller
       $view->page  = $page;
       
       $view->anotherPage  = ($postsObj->rows == 11);                                // whether there is another page
-      $view->previousPage = ($page == 2 ? '$/blog' : '$/blog/page:' . ($page - 1)); // URL for previous page
-      $view->nextPage     = '$/blog/page:' . ($page + 1);                           // URL for next page
+      $view->previousPage = ($page == 2 ? '$/blog' : '$/blog?page=' . ($page - 1)); // URL for previous page
+      $view->nextPage     = '$/blog?page=' . ($page + 1);                           // URL for next page
       
       $view->display();
    }
@@ -184,7 +184,7 @@ class Blog_Controller extends Controller
       $view->post         = $post;
       $view->commentsView = Comments::commentsView($id, 'blogpost', $post->url, (bool) $post->allowComments);
 
-      $view->editHref     = '%/blog/edit/' . $id . '/backTo:post';
+      $view->editHref     = '%/blog/edit/' . $id . '?backTo=post';
       $view->deleteHref   = '%/blog/trash/' . $id . '/' . base64_encode('#/');
       
       $view->published_human = HumanDate($post->published, true, true);
