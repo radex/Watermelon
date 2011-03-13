@@ -108,11 +108,6 @@ abstract class Controller
     * Shortcuts for corresponding attributes/methods of Watermelon class
     */
    
-   public $requestURL;
-   public $segments;
-   public $format;
-   public $params;
-   
    public function displayError($message)
    {
       Watermelon::displayError($message);
@@ -126,6 +121,34 @@ abstract class Controller
    public function displaySuccessNotice($message)
    {
       Watermelon::displaySuccessNotice($message);
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * public void outputJSON(array/object $data)
+    * 
+    * Generates output from $data structure
+    */
+   
+   public function outputJSON($data)
+   {
+      header('Content-Type: application/json');
+      $this->plainOutput = true;
+      echo json_encode($data);
+   }
+   
+   /*
+    * public void outputView(string $viewName, array/object $data)
+    * 
+    * Displays view ($viewName as in Loader::view()) using $data structure
+    */
+   
+   public function outputView($viewName, &$data)
+   {
+      $view = View($viewName);
+      $view->_params = &$data;
+      $view->display();
    }
    
    /**************************************************************************/

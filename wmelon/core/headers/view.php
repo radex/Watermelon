@@ -32,22 +32,22 @@ include WM_Core . 'ViewPreFilter.php';
 class View
 {
    /*
-    * public array $params
+    * public array $_params
     * 
     * Parameters to be passed to the actual view
     */
    
-   public $params = array();
+   public $_params = array();
    
    /*
-    * private string $viewPath
+    * private string $_viewPath
     * 
     * Path to the view
     * 
     * It is set by Loader::view(), and then used by ->display()
     */
    
-   private $viewPath;
+   private $_viewPath;
    
    
    /**************************************************************************/
@@ -77,16 +77,16 @@ class View
    {
       // getting view file contents, and stripping from <?php die?\>
       
-      $viewContent = file_get_contents($this->viewPath);
+      $viewContent = file_get_contents($this->_viewPath);
       $viewContent = str_replace('<?php die?>', '', $viewContent);
       $viewContent = '<tal:block>' . $viewContent . '</tal:block>';
       
       // PHPTAL configuration
       
       $view = new PHPTAL;
-      $view->setSource($viewContent, $this->viewPath);
+      $view->setSource($viewContent, $this->_viewPath);
       
-      foreach($this->params as $key => $value)
+      foreach($this->_params as $key => $value)
       {
          $view->set($key, $value);
       }
@@ -116,13 +116,15 @@ class View
       return $view->execute();
    }
    
+   /**************************************************************************/
+   
    /*
     * constructor
     */
    
    public function __construct($viewPath)
    {
-      $this->viewPath = $viewPath;
+      $this->_viewPath = $viewPath;
    }
    
    /*
@@ -131,7 +133,7 @@ class View
    
    public function __get($name)
    {
-      return $this->params[$name];
+      return $this->_params[$name];
    }
    
    /*
@@ -142,7 +144,7 @@ class View
    {
       if(!in_array($name, array('isAdmin'))) // can't set predefined param
       {
-         $this->params[$name] = $value;
+         $this->_params[$name] = $value;
       }
       else
       {

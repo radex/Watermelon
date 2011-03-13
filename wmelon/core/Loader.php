@@ -97,7 +97,7 @@ class Loader
     * 
     * Loads view, and returns object representing it
     * 
-    * If you want load local view (view from the same bundle as class you're requesting from), just pass its name in $name
+    * If you want load local view (view from the same bundle as class you're requesting from), just pass its name
     * 
     * If you want load global view (view from other other bundle than class you're requesting from), pass '/bundleName/viewName' (unix filesystems analogy)
     */
@@ -180,12 +180,12 @@ class Loader
 }
 
 /*
- * View View(string $name[, bool $isGlobal = false])
+ * View View(string $name)
  * 
  * Handy shortcut for Loader::view()
  */
 
-function View($name, $isGlobal = false)
+function View($name)
 {
-   return Loader::view($name, $isGlobal);
+   return Loader::view($name);
 }
