@@ -6,6 +6,63 @@
    <property name="buildDir" value="build/watermelon/"/>
    <property name="codeDir" value="build/watermelon/code/"/>
    
+   <!-- installs betterzip to ../wcms -->
+   
+   <target name="betterinstall" depends="betterzip">
+      
+      <unzip src="build/Watermelon.zip" dest="build/watermelon/"/>
+      
+      <!-- clearing install dir -->
+      
+      <delete dir="../wcms/"/>
+      
+      <mkdir dir="../wcms/"/>
+      
+      <!-- copying files -->
+      
+      <copy todir="../wcms/">
+         <fileset dir="build/watermelon/"/>
+      </copy>
+      
+      <delete dir="build/watermelon/"/>
+      <delete file="build/Watermelon.zip"/>
+      
+   </target>
+   
+   <!-- building better .zipped package -->
+   
+   <target name="betterzip" depends="build">
+      
+      <!-- copying installer files -->
+      
+      <mkdir dir="build/wm"/>
+      
+      <copy todir="build/wm/">
+         <fileset dir="installer"/>
+      </copy>
+      
+      <!-- producing .tar file split to parts -->
+      
+      <tar basedir="${codeDir}" destfile="build/watermelon.tar"/>
+      
+      <delete dir="${buildDir}"/>
+      
+      <exec dir="build/" executable="split">
+         <arg value="-b100k"/>
+         <arg value="watermelon.tar"/>
+         <arg value="wm/wmelon/installer/watermelon-"/>
+      </exec>
+      
+      <delete file="build/watermelon.tar"/>
+      
+      <!-- building .zip package -->
+      
+      <zip basedir="build/wm" destFile="build/Watermelon.zip"/>
+      
+      <delete dir="build/wm"/>
+      
+   </target>
+   
    <!-- building .zipped package -->
    
    <target name="zip" depends="build">

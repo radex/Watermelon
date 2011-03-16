@@ -39,6 +39,29 @@ class Installer_Controller extends Controller
          rename(WM_System . '../dot.htaccess', WM_System . '../.htaccess');
       }
       
+      // installer/
+      
+      if(file_exists(WM_System . 'installer/'))
+      {
+         // http://php.net/manual/en/function.rmdir.php#98622
+         // (too lazy to write my own)
+         
+         function rrmdir($dir) { 
+            if (is_dir($dir)) { 
+               $objects = scandir($dir); 
+               foreach ($objects as $object) { 
+                  if ($object != "." && $object != "..") { 
+                     if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object); 
+                  } 
+               } 
+               reset($objects); 
+               rmdir($dir); 
+            } 
+         }
+         
+         rrmdir(WM_System . 'installer/');
+      }
+      
       // storing current URL in session and retrieving one already stored
       // that's used in below algorithm for determining base url - if current URL is the same as previous one,
       // base url is determined again (because it means page was reloaded in browser,
