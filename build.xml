@@ -8,9 +8,31 @@
    
    <!-- installs betterzip to ../wcms -->
    
-   <target name="betterinstall" depends="betterzip">
+   <target name="betterinstall" depends="build"> <!-- depends="betterzip" -->
       
-      <unzip src="build/Watermelon.zip" dest="build/watermelon/"/>
+      <!-- <unzip src="build/Watermelon.zip" dest="build/watermelon/"/> -->
+      
+         <mkdir dir="build/wm"/>
+
+         <copy todir="build/wm/">
+            <fileset dir="installer"/>
+         </copy>
+         <copy file="build/watermelon/code/index.php" todir="build/wm/"/>
+         <copy file="build/watermelon/code/dot.htaccess" todir="build/wm/"/>
+
+         <!-- producing .tar file split to parts -->
+
+         <tar basedir="${codeDir}" destfile="build/watermelon.tar"/>
+
+         <delete dir="${buildDir}"/>
+
+         <exec dir="build/" executable="split">
+            <arg value="-b100k"/>
+            <arg value="watermelon.tar"/>
+            <arg value="wm/wmelon/installer/watermelon-"/>
+         </exec>
+
+         <delete file="build/watermelon.tar"/>
       
       <!-- clearing install dir -->
       
@@ -21,11 +43,11 @@
       <!-- copying files -->
       
       <copy todir="../wcms/">
-         <fileset dir="build/watermelon/"/>
+         <fileset dir="build/wm/"/>
       </copy>
       
-      <delete dir="build/watermelon/"/>
-      <delete file="build/Watermelon.zip"/>
+      <delete dir="build/wm/"/>
+      <!-- <delete file="build/Watermelon.zip"/> -->
       
    </target>
    
@@ -40,6 +62,8 @@
       <copy todir="build/wm/">
          <fileset dir="installer"/>
       </copy>
+      <copy file="build/watermelon/code/index.php" todir="build/wm/"/>
+      <copy file="build/watermelon/code/dot.htaccess" todir="build/wm/"/>
       
       <!-- producing .tar file split to parts -->
       

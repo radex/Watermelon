@@ -24,7 +24,7 @@ $resultFile = fopen('wmelon.tar', 'ab');
 
 foreach(new DirectoryIterator(dirname(__FILE__)) as $file)
 {
-   if($file->isFile() && substr($file->getFilename(), -4) != '.php')
+   if($file->isFile() && substr($file->getFilename(), 0, 11) == 'watermelon-')
    {
       $part = file_get_contents($file->getFilename());
       
@@ -51,11 +51,6 @@ foreach(new DirectoryIterator('wm/wmelon/') as $file)
       rename($file->getPathname(), '../' . $file->getFilename());
    }
 }
-
-// moving index.php and dot.htaccess
-
-copy('wm/dot.htaccess', '../../dot.htaccess');
-copy('wm/index.php', '../../index.php');
 
 // ok
 
