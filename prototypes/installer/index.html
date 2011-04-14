@@ -8,56 +8,72 @@
 
 <style>#container, header { display: none; }</style>
 
-<header id="header"><div></div></header>
+<header><div></div></header>
 
 <div id="container">
    <div id="wrapper">
-      <div id="content">
-         <div id="content-inner">
-            <div class="content-box">
-               <h1>Baza danych</h1>
-               <p>Podaj dane dostępu do bazy danych. Na ogół można je znaleźć w panelu administracyjnym serwera. W razie wątpliwości, zapytaj swojego administratora o pomoc.</p> 
-               <input type="hidden" name="formID" value="wmelon.installer.dbInfo"> 
-               <label> 
-               <span>Nazwa bazy danych: <small>Jeśli nie istnieje, instalator spróbuje ją utworzyć</small></span> 
-               <input type="text" name="name" required value="watermelon" autofocus></label> 
+      <div id="wrapper-inner">
+         <div id="content">
+            <div id="content-inner">
+               <div class="content-box">
+                  <h1>Baza danych</h1>
+                  <p>Podaj dane dostępu do bazy danych. Na ogół można je znaleźć w panelu administracyjnym serwera. W razie wątpliwości, zapytaj swojego administratora o pomoc.</p> 
+                  <input type="hidden" name="formID" value="wmelon.installer.dbInfo"> 
+                  <label> 
+                  <span>Nazwa bazy danych: <small>Jeśli nie istnieje, instalator spróbuje ją utworzyć</small></span> 
+                  <input type="text" name="name" required value="watermelon" autofocus></label> 
 
-               <label> 
-               <span>Użytkownik: <small>Użytkownik z dostępem do podanej bazy danych</small></span> 
-               <input type="text" name="user" required value=""></label> 
+                  <label> 
+                  <span>Użytkownik: <small>Użytkownik z dostępem do podanej bazy danych</small></span> 
+                  <input type="text" name="user" required value=""></label> 
 
-               <label> 
-               <span>Hasło:</span> 
-               <input type="password" name="pass" value=""></label> 
+                  <label> 
+                  <span>Hasło:</span> 
+                  <input type="password" name="pass" value=""></label> 
 
-               <div class="advanced-hr">Zaawansowane<hr /></div> 
-               <label> 
-               <span>Prefiks tabel: <small>Niezbędny jeśli chcesz mieć dwie kopie Watermelona na jednej bazie danych</small></span> 
-               <input type="text" name="prefix" value="wm_"></label> 
+                  <div class="advanced-hr">Zaawansowane<hr /></div> 
+                  <label> 
+                  <span>Prefiks tabel: <small>Niezbędny jeśli chcesz mieć dwie kopie Watermelona na jednej bazie danych</small></span> 
+                  <input type="text" name="prefix" value="wm_"></label> 
 
-               <label> 
-               <span>Serwer: <small>Prawie zawsze jest to <em>localhost</em></small></span> 
-               <input type="text" name="host" required value="localhost"></label>
-            </div>
-            <div class="content-box">
-               <h1>Coś innego</h1>
-               <p>Lorem ipsum has dolor...</p>
+                  <label> 
+                  <span>Serwer: <small>Prawie zawsze jest to <em>localhost</em></small></span> 
+                  <input type="text" name="host" required value="localhost"></label>
+               </div>
+               <div class="content-box">
+                  <h1>Coś innego</h1>
+                  <p>Lorem ipsum has dolor...</p>
+               </div>
             </div>
          </div>
-      </div>
-      <div id="status-bar">
-         <input type=button value="Dalej">
-         <input type=button value="Wróć">
-         <div id="progress-bar-container">
-            <div id="progress-bar">
-               <div id="progress-bar-progress" style="width:40%"></div>
+         <div id="status-bar">
+            <input type=button value="Dalej">
+            <input type=button value="Wróć">
+            <div id="progress-bar-container">
+               <div id="progress-bar">
+                  <div id="progress-bar-progress" style="width:40%"></div>
+               </div>
+               Postęp instalacji
             </div>
-            Postęp instalacji
          </div>
+         
+      </div> <!-- wrapper > div -->
+      <div class="shadow-top">
+         <div class="left"></div>
+         <div class="center"></div>
+         <div class="right"></div>
       </div>
-   </div>
-</div>
+      <div class="shadow-middle">
+         <div class="left"></div>
+         <div class="right"></div>
+      </div>
+      <div class="shadow-bottom">
+         <div class="left"></div>
+         <div class="center"></div>
+         <div class="right"></div>
+      </div>
+   </div> <!-- wrapper -->
+</div> <!-- container -->
 
-<script src="js/prototype.js"></script>
-<script src="js/scriptaculous.js?load=effects"></script>
+<script src="js/jquery.js"></script>
 <script src="installer.js"></script>
