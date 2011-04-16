@@ -24,18 +24,22 @@
  * Skins base class
  */
 
+   //TODO: cleanup
+
 abstract class Skin
 {
    /*
     * Variables available in skin through simple ${name}:
     * 
-    * string $content           - page content
-    * string $pageTitle         - title of currently loaded page (page header)
-    * string $siteName          - name of whole website
-    * string $siteSlogan        - short description of website
-    * string $footer            - text (HTML) to be placed in footer
-    * bool   $noHeader - whether page title header should not be displayed in skin.
-    *                             Allows to display header in other place to preserve coherence (e.g. when using <article>)
+    * string $content    - page content
+    * string $pageTitle  - title of currently loaded page (page header)
+    * string $siteName   - name of whole website
+    * string $siteSlogan - short description of website
+    * string $footer     - text (HTML) to be placed in footer
+    * bool   $noHeader   - whether page title header should not be displayed in skin.
+    *                      Allows to display header in other place to preserve coherence (e.g. when using <article>)
+    * 
+    * Data passed in controller, e.g. $this->data->foo is accessible directly as ${foo}
     */
    
    /*
@@ -80,16 +84,6 @@ abstract class Skin
     */
    
    public $messages = array();
-   
-   /*
-    * public object $data
-    * 
-    * Other data to be passed to skin
-    * 
-    * Useful in making custom apps
-    */
-   
-   public $data;
    
    /*
     * public void drawTextMenu(int $id)
@@ -161,6 +155,14 @@ abstract class Skin
       $skin = new View($skinPath);
       
       foreach($variables as $key => &$value)
+      {
+         if($key == 'data') continue;
+         
+         $skin->$key = $value;
+         $this->$key = $value;
+      }
+      
+      foreach($variables->data as $key => &$value)
       {
          $skin->$key = $value;
          $this->$key = $value;
