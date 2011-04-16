@@ -1,9 +1,9 @@
 <?php die?>
 <!DOCTYPE html>
 <meta charset="UTF-8"/>
-<link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/basic.css"/>
-<link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/watermelon.css"/>
-<link rel="stylesheet" href="${WM_SkinURL}style.css"/>
+<link rel="stylesheet" href="${BundlesURL}watermelon/public/basic.css"/>
+<link rel="stylesheet" href="${BundlesURL}watermelon/public/watermelon.css"/>
+<link rel="stylesheet" href="${SkinURL}style.css"/>
 ${php:skin.drawHeadTags()}
 
 <style>#container, header { display: none }</style>
@@ -53,5 +53,5 @@ ${php:skin.drawHeadTags()}
 
 <!-- *** -->
 
-<script src="${WM_SystemURL}core/FrontendLibraries/jquery.js"></script>
-<script src="${WM_SkinURL}installer.js"></script>
+<script src="${SystemURL}core/FrontendLibraries/jquery.js"></script>
+<script src="${SkinURL}installer.js"></script>

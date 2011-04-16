@@ -23,7 +23,7 @@
          
          <header tal:condition="exists: comment/author">
             <img src="${comment/gravatarURL}" alt="" />
-            <strong><a href="${WM_SiteURL}">${comment/author/nick}</a></strong>
+            <strong><a href="${SiteURL}">${comment/author/nick}</a></strong>
          </header>
          
          <!-- content -->

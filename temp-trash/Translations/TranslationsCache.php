@@ -129,6 +129,6 @@ class TranslationsCache extends FileCache
    
    protected static function itemPath($id)
    {
-      return WM_Cache . static::directory() . '/' . $id[0] . '.' . $id[1] . '.php';
+      return CachePath . static::directory() . '/' . $id[0] . '.' . $id[1] . '.php';
    }
 }

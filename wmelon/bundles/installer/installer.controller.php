@@ -34,14 +34,14 @@ class Installer_Controller extends Controller
    {
       // .htaccess
       
-      if(file_exists(WM_System . '../dot.htaccess'))
+      if(file_exists(SystemPath . '../dot.htaccess'))
       {
-         rename(WM_System . '../dot.htaccess', WM_System . '../.htaccess');
+         rename(SystemPath . '../dot.htaccess', SystemPath . '../.htaccess');
       }
       
       // installer/
       
-      if(file_exists(WM_System . 'installer/'))
+      if(file_exists(SystemPath . 'installer/'))
       {
          // http://php.net/manual/en/function.rmdir.php#98622
          // (too lazy to write my own)
@@ -59,7 +59,7 @@ class Installer_Controller extends Controller
             } 
          }
          
-         rrmdir(WM_System . 'installer/');
+         rrmdir(SystemPath . 'installer/');
       }
       
       // storing current URL in session and retrieving one already stored
@@ -126,15 +126,15 @@ class Installer_Controller extends Controller
       // constants
       
       define('WM_BaseURL',   $baseURL);
-      define('WM_SiteURL',   $siteURL);
-      define('WM_SystemURL', $systemURL);
-      define('WM_CurrURL',   $siteURL);
+      define('SiteURL',   $siteURL);
+      define('SystemURL', $systemURL);
+      define('CurrURL',   $siteURL);
       
-      define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
-      define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
+      define('BundlesURL',  SystemURL . 'bundles/');
+      define('UploadedURL', SystemURL . 'uploaded/');
       
-      define('WM_SkinPath', WM_Bundles    . 'installer/');
-      define('WM_SkinURL',  WM_BundlesURL . 'installer/');
+      define('SkinPath', BundlesPath    . 'installer/');
+      define('SkinURL',  BundlesURL . 'installer/');
       
       Watermelon::$config->skin = 'installer';
       
@@ -544,7 +544,7 @@ class Installer_Controller extends Controller
       
       // generating Atom ID for website
       
-      $atomID = WM_SiteURL . time() . mt_rand();
+      $atomID = SiteURL . time() . mt_rand();
       $atomID = sha1($atomID);
       
       // connecting with database
@@ -571,7 +571,7 @@ class Installer_Controller extends Controller
       
       // installing SQL
       
-         $path = WM_Bundles . 'installer/';
+         $path = BundlesPath . 'installer/';
          
          // SQL files
          
@@ -625,8 +625,8 @@ class Installer_Controller extends Controller
          
          // other
          
-         $w->siteURL           = WM_SiteURL;
-         $w->systemURL         = WM_SystemURL;
+         $w->siteURL           = SiteURL;
+         $w->systemURL         = SystemURL;
          
          $w->skin              = 'wcmslay';
          $w->atomID            = $atomID;
@@ -675,7 +675,7 @@ class Installer_Controller extends Controller
       
       // saving config.php
       
-      $configFile = file_get_contents(WM_Bundles . 'installer/config.php');
+      $configFile = file_get_contents(BundlesPath . 'installer/config.php');
       
       $configFile = str_replace('{host}',   addslashes($db->host), $configFile);
       $configFile = str_replace('{user}',   addslashes($db->user), $configFile);
@@ -683,7 +683,7 @@ class Installer_Controller extends Controller
       $configFile = str_replace('{name}',   addslashes($db->name), $configFile);
       $configFile = str_replace('{prefix}', addslashes($db->prefix), $configFile);
       
-      file_put_contents(WM_System . 'config.php', $configFile);
+      file_put_contents(SystemPath . 'config.php', $configFile);
       
       // removing session and redirecting to home page
       

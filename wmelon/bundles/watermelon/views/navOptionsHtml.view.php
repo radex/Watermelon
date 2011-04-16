@@ -9,7 +9,7 @@
 
 function navOptions_redirect(id, action)
 {
-   $('#navOptionsForm').attr('action', '<?=WM_AdminURL?>options/nav_save/' + id + '/' + action);
+   $('#navOptionsForm').attr('action', '<?=AdminURL?>options/nav_save/' + id + '/' + action);
    $('#navOptionsForm').submit();
 }
 

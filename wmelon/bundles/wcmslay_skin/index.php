@@ -1,12 +1,12 @@
 <?php die?>
 <!doctype html>
 <meta charset="UTF-8"/>
-<link rel="stylesheet" href="${WM_SystemURL}core/Turbine/css.php?files=wcmslay_skin/style.cssp" />
+<link rel="stylesheet" href="${SystemURL}core/Turbine/css.php?files=wcmslay_skin/style.cssp" />
 ${php:skin.drawHeadTags()}
 
 <header>
    <div>
-      <div id="siteName"><a href="${WM_SiteURL}">${siteName}</a></div>
+      <div id="siteName"><a href="${SiteURL}">${siteName}</a></div>
       <div id="siteSlogan" tal:condition="php: !empty(siteSlogan)">${siteSlogan}</div>
    </div>
    

@@ -235,7 +235,7 @@ class Options_Controller extends Controller
       $view = View('navOptions');
       $view->menu = $menu;
       
-      $iconsPath = WM_BundlesURL . 'watermelon/public/';
+      $iconsPath = BundlesURL . 'watermelon/public/';
       
       $view->topIcon    = $iconsPath . 'options-img/top.png';
       $view->upIcon     = $iconsPath . 'options-img/up.png';

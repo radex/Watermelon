@@ -26,8 +26,8 @@
  * Notice that you don't create any View objects directly. You get them using View() function.
  */
 
-include WM_Core . 'PHPTAL/PHPTAL.php';
-include WM_Core . 'ViewPreFilter.php';
+include CorePath . 'PHPTAL/PHPTAL.php';
+include CorePath . 'ViewPreFilter.php';
 
 class View
 {

@@ -100,6 +100,6 @@ class Sblam extends Extension
    
    public static function JS()
    {
-      return '<script src="' . WM_BundlesURL . 'sblam/sblam.js.php"></script>';
+      return '<script src="' . BundlesURL . 'sblam/sblam.js.php"></script>';
    }
 }

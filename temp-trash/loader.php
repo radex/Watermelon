@@ -10,6 +10,6 @@ public static function translation($moduleName)
 {
    $moduleName = strtolower($moduleName);
    
-   Translations::parseTranslationFile(WM_Bundles . $moduleName . '/languages/' . $moduleName . '.' . WM_Lang . '.php', $moduleName);
+   Translations::parseTranslationFile(BundlesPath . $moduleName . '/languages/' . $moduleName . '.' . WM_Lang . '.php', $moduleName);
 }
 */

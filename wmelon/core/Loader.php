@@ -86,7 +86,7 @@ class Loader
       
       if(isset($coreExtensions[$className]))
       {
-         include WM_Core . $coreExtensions[$className];
+         include CorePath . $coreExtensions[$className];
          $className::init();
          return;
       }
@@ -127,8 +127,8 @@ class Loader
       
       // checking whether "skin view" exists, and returning proper view object
       
-      $path      = WM_Bundles . $module . '/views/' . $name . '.view.php';
-      $path_skin = WM_SkinPath . 'views/' . $module . '/' . $name . '.view.php';
+      $path      = BundlesPath . $module . '/views/' . $name . '.view.php';
+      $path_skin = SkinPath . 'views/' . $module . '/' . $name . '.view.php';
       
       if(file_exists($path_skin))
       {
@@ -173,7 +173,7 @@ class Loader
       
       $bundleName = Watermelon::$config->modulesList->{$typeName . 's'}[$name];
       
-      include WM_Bundles . $bundleName . '/' . $name . '.' . $typeName . '.php';
+      include BundlesPath . $bundleName . '/' . $name . '.' . $typeName . '.php';
       
       return new $className;
    }

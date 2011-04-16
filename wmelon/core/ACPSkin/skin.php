@@ -173,7 +173,7 @@ class ACPSkin extends Skin
       
       foreach($acpInfoFiles as $bundle)
       {
-         include WM_Bundles . $bundle . '/' . $bundle . '.acpinfo.php';
+         include BundlesPath . $bundle . '/' . $bundle . '.acpinfo.php';
          
          $className  = $bundle . '_ACPInfo';
          $bundleInfo = new $className;

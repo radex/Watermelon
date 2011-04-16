@@ -68,7 +68,7 @@ class Textile_Extension extends Extension
    {
       // path
       
-      $path = WM_Cache . 'textile';
+      $path = CachePath . 'textile';
       
       if($restricted)
       {
@@ -152,8 +152,8 @@ class Textile_Extension extends Extension
       
       if(mt_rand(0, 1000) == 0)
       {
-         $items1 = FilesForDirectory(WM_Cache . 'textile/');
-         $items2 = FilesForDirectory(WM_Cache . 'textile_restricted/');
+         $items1 = FilesForDirectory(CachePath . 'textile/');
+         $items2 = FilesForDirectory(CachePath . 'textile_restricted/');
          
          foreach(array_merge($items1, $items2) as $path)
          {
@@ -212,7 +212,7 @@ class Textile_Extension extends Extension
       }
       else
       {
-         return 'href="' . WM_SiteURL . $url . '"';
+         return 'href="' . SiteURL . $url . '"';
       }
    }
 }

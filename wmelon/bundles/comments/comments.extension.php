@@ -121,7 +121,7 @@ class Comments extends Extension
          
          // gravatar url
          
-         $gravatarEnding = '?s=64&d=' . urlencode(WM_BundlesURL) . 'watermelon/public/img/blank.png';
+         $gravatarEnding = '?s=64&d=' . urlencode(BundlesURL) . 'watermelon/public/img/blank.png';
          
          if($authorID === null)
          {

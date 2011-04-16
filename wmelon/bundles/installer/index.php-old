@@ -1,9 +1,9 @@
 <?php die?>
 <!doctype html>
 <meta charset="UTF-8"/>
-<link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/basic.css"/>
-<link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/watermelon.css"/>
-<link rel="stylesheet" href="${WM_SystemURL}core/Turbine/css.php?files=installer/installer.cssp"/>
+<link rel="stylesheet" href="${BundlesURL}watermelon/public/basic.css"/>
+<link rel="stylesheet" href="${BundlesURL}watermelon/public/watermelon.css"/>
+<link rel="stylesheet" href="${SystemURL}core/Turbine/css.php?files=installer/installer.cssp"/>
 ${php:skin.drawHeadTags()}
 
 <header></header>
@@ -28,7 +28,7 @@ ${php:skin.drawHeadTags()}
       
          <input type="submit" value="Dalej" tal:attributes="autofocus data/nextButtonAutofocus | nothing" />
       
-         <input tal:condition="true: data/previous" type="button" onclick="window.location='${WM_SiteURL}${data/previous}'" value="Wróć"/>
+         <input tal:condition="true: data/previous" type="button" onclick="window.location='${SiteURL}${data/previous}'" value="Wróć"/>
       
          <input tal:condition="not: data/previous" type="button" value="Wróć" disabled="true"/>
       

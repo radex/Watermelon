@@ -210,15 +210,15 @@ function SiteURL($page = '', $type = null)
    switch($type)
    {
       case 'admin':
-         return WM_AdminURL . $page;
+         return AdminURL . $page;
       break;
       
       case 'site':
-         return WM_SiteURL . $page;
+         return SiteURL . $page;
       break;
       
       default:
-         return WM_CurrURL . $page;
+         return CurrURL . $page;
       break;
    }
 }
@@ -359,25 +359,25 @@ function SiteLinks($html)
 {
    // href/action="x"
    
-   $html = str_replace('href="#/',   'href="'   . WM_SiteURL, $html);
-   $html = str_replace('action="#/', 'action="' . WM_SiteURL, $html);
+   $html = str_replace('href="#/',   'href="'   . SiteURL, $html);
+   $html = str_replace('action="#/', 'action="' . SiteURL, $html);
    
-   $html = str_replace('href="$/',   'href="'   . WM_CurrURL, $html);
-   $html = str_replace('action="$/', 'action="' . WM_CurrURL, $html);
+   $html = str_replace('href="$/',   'href="'   . CurrURL, $html);
+   $html = str_replace('action="$/', 'action="' . CurrURL, $html);
    
-   $html = str_replace('href="%/',   'href="'   . WM_AdminURL, $html);
-   $html = str_replace('action="%/', 'action="' . WM_AdminURL, $html);
+   $html = str_replace('href="%/',   'href="'   . AdminURL, $html);
+   $html = str_replace('action="%/', 'action="' . AdminURL, $html);
    
    // href/action=x (it's better not to, but PHPTAL sometimes doesn't generate "" in attributes)
    
-   $html = str_replace('href=#/',   'href='   . WM_SiteURL, $html);
-   $html = str_replace('action=#/', 'action=' . WM_SiteURL, $html);
+   $html = str_replace('href=#/',   'href='   . SiteURL, $html);
+   $html = str_replace('action=#/', 'action=' . SiteURL, $html);
    
-   $html = str_replace('href=$/',   'href='   . WM_CurrURL, $html);
-   $html = str_replace('action=$/', 'action=' . WM_CurrURL, $html);
+   $html = str_replace('href=$/',   'href='   . CurrURL, $html);
+   $html = str_replace('action=$/', 'action=' . CurrURL, $html);
    
-   $html = str_replace('href=%/',   'href='   . WM_AdminURL, $html);
-   $html = str_replace('action=%/', 'action=' . WM_AdminURL, $html);
+   $html = str_replace('href=%/',   'href='   . AdminURL, $html);
+   $html = str_replace('action=%/', 'action=' . AdminURL, $html);
    
    return $html;
 }

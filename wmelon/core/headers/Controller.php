@@ -227,12 +227,12 @@ abstract class Controller
       }
       
       $headTags[] = '<title>' . $title . '</title>';
-      $headTags[] = '<script>WM_SystemURL = \'' . WM_SystemURL . '\'</script>';
-      $headTags[] = '<link rel="top" href="' . WM_SiteURL . '">';
+      $headTags[] = '<script>WM_SystemURL = \'' . SystemURL . '\'</script>';
+      $headTags[] = '<link rel="top" href="' . SiteURL . '">';
       
       if(Watermelon::$appType == Watermelon::Site)
       {
-         $headTags[] = '<link rel="alternate" type="application/atom+xml" href="' . WM_SiteURL . 'feed.atom"/>';
+         $headTags[] = '<link rel="alternate" type="application/atom+xml" href="' . SiteURL . 'feed.atom"/>';
       }
       
       $headTags[] = $config->headTags;
@@ -244,7 +244,7 @@ abstract class Controller
       
       // loading skin
       
-      include WM_SkinPath . 'skin.php';
+      include SkinPath . 'skin.php';
       
       if(Watermelon::$appType == Watermelon::Admin)
       {
@@ -272,6 +272,6 @@ abstract class Controller
       $skin->textMenus         = &$config->textMenus;
       $skin->data    = $this->data;
 
-      new $className($skin, WM_SkinPath . 'index.php');
+      new $className($skin, SkinPath . 'index.php');
    }
 }

@@ -1,13 +1,13 @@
 <?php die?>
 <!doctype html>
 <meta charset="UTF-8"/>
-<link rel="stylesheet" href="${WM_SkinURL}style.css"/>
+<link rel="stylesheet" href="${SkinURL}style.css"/>
 ${php:skin.drawHeadTags()}
 
 <header>
    <div>
-      <div id="siteName"><a href="${WM_AdminURL}">${siteName}</a></div>
-      <div id="siteSlogan">Panel admina (<a href="${WM_SiteURL}">przejdź do strony →</a>)</div>
+      <div id="siteName"><a href="${AdminURL}">${siteName}</a></div>
+      <div id="siteSlogan">Panel admina (<a href="${SiteURL}">przejdź do strony →</a>)</div>
    </div>
 </header>
 
@@ -58,4 +58,4 @@ ${php:skin.drawHeadTags()}
 </footer>
 
 ${php:skin.drawTailTags()}
-<script src="${WM_SkinURL}ACPSkin.js"/>
+<script src="${SkinURL}ACPSkin.js"/>

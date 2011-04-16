@@ -290,10 +290,10 @@ class Blog_Model extends Model
       }
       
       $feed->author->name = Users::userData()->nick;
-      $feed->author->uri  = WM_SiteURL;
+      $feed->author->uri  = SiteURL;
       
       $feed->link['rel'] = 'self';
-      $feed->link['href'] = WM_SiteURL . 'feed.atom';
+      $feed->link['href'] = SiteURL . 'feed.atom';
       
       // $feed->rights
       
@@ -313,7 +313,7 @@ class Blog_Model extends Model
          $postElement->updated   = date(DATE_ATOM, $post->updated);
          
          $postElement->link['rel']  = 'alternate';
-         $postElement->link['href'] = WM_SiteURL . date('Y/m', $post->published) . '/' . $post->name;
+         $postElement->link['href'] = SiteURL . date('Y/m', $post->published) . '/' . $post->name;
          
          $postElement->content['type'] = 'html';
          $postElement->content = Textile::textile($post->content);
@@ -327,7 +327,7 @@ class Blog_Model extends Model
       
       // save to file
       
-      file_put_contents(WM_Cache . 'feed.atom', $feed->asXML());
+      file_put_contents(CachePath . 'feed.atom', $feed->asXML());
    }
    
    /**************************************************************************/

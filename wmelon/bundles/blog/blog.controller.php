@@ -202,6 +202,6 @@ class Blog_Controller extends Controller
       
       $this->plainOutput = true;
       
-      echo file_get_contents(WM_Cache . 'feed.atom');
+      echo file_get_contents(CachePath . 'feed.atom');
    }
 }

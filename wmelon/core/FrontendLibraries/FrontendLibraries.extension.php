@@ -31,7 +31,7 @@ class FrontendLibraries extends Extension
       
       // adding
       
-      $baseURL = WM_SystemURL . 'core/FrontendLibraries/';
+      $baseURL = SystemURL . 'core/FrontendLibraries/';
       
       Watermelon::$headTags[] = '<link rel="stylesheet" href="' . $baseURL . 'sh.css.php?v=3.0.83">';
       

@@ -189,7 +189,7 @@ class Watermelon
    
    public static function displayNoPageFoundError()
    {
-      include WM_Bundles . 'watermelon/e404.controller.php';
+      include BundlesPath . 'watermelon/e404.controller.php';
       
       self::$controllerName = 'e404';
       
@@ -214,7 +214,7 @@ class Watermelon
       
       if(self::$appType == self::Installer)
       {
-         include WM_Bundles . 'installer/installer.controller.php';
+         include BundlesPath . 'installer/installer.controller.php';
          
          self::$controllerName   = 'installer';
          
@@ -322,11 +322,11 @@ class Watermelon
       
       $basePath = str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')) . '/';
       
-      define('WM_System',   $basePath);
-      define('WM_Core',     WM_System . 'core/');
-      define('WM_Bundles',  WM_System . 'bundles/');
-      define('WM_Uploaded', WM_System . 'uploaded/');
-      define('WM_Cache',    WM_System . 'cache/');
+      define('SystemPath',   $basePath);
+      define('CorePath',     SystemPath . 'core/');
+      define('BundlesPath',  SystemPath . 'bundles/');
+      define('UploadedPath', SystemPath . 'uploaded/');
+      define('CachePath',    SystemPath . 'cache/');
       
       // loading config file
       
@@ -420,7 +420,7 @@ class Watermelon
 
       foreach($libs as $file)
       {
-         include WM_Core . $file;
+         include CorePath . $file;
       }
       
       // and that's it for the installer
@@ -442,24 +442,24 @@ class Watermelon
       
       // setting constants
       
-      define('WM_SiteURL',     $w->siteURL);
-      define('WM_AdminURL',    $w->siteURL . 'admin/');
-      define('WM_SystemURL',   $w->systemURL);
-      define('WM_BundlesURL',  WM_SystemURL . 'bundles/');
-      define('WM_UploadedURL', WM_SystemURL . 'uploaded/');
-      define('WM_CacheURL',    WM_SystemURL . 'cache/');
+      define('SiteURL',     $w->siteURL);
+      define('AdminURL',    $w->siteURL . 'admin/');
+      define('SystemURL',   $w->systemURL);
+      define('BundlesURL',  SystemURL . 'bundles/');
+      define('UploadedURL', SystemURL . 'uploaded/');
+      define('CacheURL',    SystemURL . 'cache/');
       
       if(self::$appType == self::Admin)
       {
-         define('WM_SkinPath', WM_System    . 'core/ACPSkin/');
-         define('WM_SkinURL',  WM_SystemURL . 'core/ACPSkin/');
-         define('WM_CurrURL',  WM_AdminURL);
+         define('SkinPath', SystemPath    . 'core/ACPSkin/');
+         define('SkinURL',  SystemURL . 'core/ACPSkin/');
+         define('CurrURL',  AdminURL);
       }
       else
       {
-         define('WM_SkinPath', WM_Bundles    . $w->skin . '_skin/');
-         define('WM_SkinURL',  WM_BundlesURL . $w->skin . '_skin/');
-         define('WM_CurrURL',  WM_SiteURL);
+         define('SkinPath', BundlesPath    . $w->skin . '_skin/');
+         define('SkinURL',  BundlesURL . $w->skin . '_skin/');
+         define('CurrURL',  SiteURL);
       }
    }
    
@@ -487,7 +487,7 @@ class Watermelon
       
       // searching
       
-      foreach(new DirectoryIterator(WM_Bundles) as $dir)
+      foreach(new DirectoryIterator(BundlesPath) as $dir)
       {
          // if not a bundle, or Installer bundle
          
@@ -500,14 +500,14 @@ class Watermelon
          
          // skins
          
-         if(substr($bundleName, -5) == '_skin' && file_exists(WM_Bundles . $bundleName . '/skin.php'))
+         if(substr($bundleName, -5) == '_skin' && file_exists(BundlesPath . $bundleName . '/skin.php'))
          {
             $modulesList->skins[] = $bundleName;
          }
          
          // acp info files
          
-         if(file_exists(WM_Bundles . $bundleName . '/' . $bundleName . '.acpinfo.php'))
+         if(file_exists(BundlesPath . $bundleName . '/' . $bundleName . '.acpinfo.php'))
          {
             $modulesList->acpinfofiles[] = $bundleName;
          }
@@ -516,7 +516,7 @@ class Watermelon
          
          $moduleTypes = array('controller', 'model', 'blockset', 'extension');
          
-         $files = FilesForDirectory(WM_Bundles . $bundleName, false, true);
+         $files = FilesForDirectory(BundlesPath . $bundleName, false, true);
 
          foreach($files as $file)
          {
@@ -729,7 +729,7 @@ class Watermelon
       
       $bundleName = self::$config->modulesList->{$key}[$controllerName];
       
-      $path = WM_Bundles . $bundleName . '/' . $controllerName . $extension;
+      $path = BundlesPath . $bundleName . '/' . $controllerName . $extension;
       
       return array($path, $bundleName);
    }

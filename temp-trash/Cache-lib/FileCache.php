@@ -104,7 +104,7 @@ abstract class FileCache
    
    public static function clear()
    {
-      $files = FilesForDirectory(WM_Cache . static::directory() . '/');
+      $files = FilesForDirectory(CachePath . static::directory() . '/');
       
       foreach($files as $file)
       {
@@ -138,6 +138,6 @@ abstract class FileCache
    
    protected static function itemPath($id)
    {
-      return WM_Cache . static::directory() . '/' . $id . '.php';
+      return CachePath . static::directory() . '/' . $id . '.php';
    }
 }
