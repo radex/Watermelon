@@ -47,15 +47,14 @@ header
    position: absolute;
    z-index: 50;
    width: 100%;
-   
-   background: #ddd;
+   top: 0;
 }
 
 header div
 {
    height: 100px;
 
-   background: #ddd url('img/logo.png') no-repeat center;
+   background: url('img/logo.png') no-repeat center;
 }
 
 /**************************************************************************/
@@ -63,23 +62,14 @@ header div
 
 #container
 {
-   position: absolute;
-   width: 100%;
-   top: 100px;
-   
-   background: #ddd;
-}
-
-#wrapper
-{
    width: 752px;
    position: relative;
    padding: 25px;
    margin: 0 auto;
-   margin-top: -25px;
+   margin-top: 75px;
 }
 
-#wrapper-inner
+#container-inner
 {
    width: 750px;
    position: relative;
@@ -93,17 +83,17 @@ header div
 /**************************************************************************/
 /* shadow (thanks to Riddle: http://riddle.jogger.pl/2007/07/28/przezroczysty-cien-warstwy-okna/)*/
 
-#wrapper .left,
-#wrapper .right,
-#wrapper .center
+.left,
+.right,
+.center
 {
    position: absolute;   
 }
 
-#wrapper .shadow-top .left,
-#wrapper .shadow-top .right,
-#wrapper .shadow-bottom .left,
-#wrapper .shadow-bottom .right
+.shadow-top .left,
+.shadow-top .right,
+.shadow-bottom .left,
+.shadow-bottom .right
 {
    width: 50px;
    height: 50px;
@@ -111,8 +101,8 @@ header div
    background-position: 0 0;
 }
 
-#wrapper .shadow-top .center,
-#wrapper .shadow-bottom .center
+.shadow-top .center,
+.shadow-bottom .center
 {
    height: 50px;
    right: 50px;
@@ -120,7 +110,7 @@ header div
    background-repeat: repeat-x;
 }
 
-#wrapper .shadow-middle div
+.shadow-middle div
 {
    width: 50px;
    bottom: 50px;
@@ -128,20 +118,20 @@ header div
    background-repeat: repeat-y;
 }
 
-#wrapper .shadow-top div { top: 0; }
-#wrapper .shadow-bottom div { bottom: 0; }
+.shadow-top div { top: 0; }
+.shadow-bottom div { bottom: 0; }
 
-#wrapper .left { left: 0; }
-#wrapper .right{ right: 0; }
+.left { left: 0; }
+.right{ right: 0; }
 
-#wrapper .shadow-top .left { background-image: url(img/tl.png); }
-#wrapper .shadow-top .right { background-image: url(img/tr.png); }
-#wrapper .shadow-bottom .left { background-image: url(img/bl.png); }
-#wrapper .shadow-bottom .right { background-image: url(img/br.png); }
-#wrapper .shadow-top .center { background-image: url(img/t.png); }
-#wrapper .shadow-bottom .center { background-image: url(img/b.png); }
-#wrapper .shadow-middle .left { background-image: url(img/l.png); }
-#wrapper .shadow-middle .right { background-image: url(img/r.png); }
+.shadow-top .left { background-image: url(img/tl.png); }
+.shadow-top .right { background-image: url(img/tr.png); }
+.shadow-bottom .left { background-image: url(img/bl.png); }
+.shadow-bottom .right { background-image: url(img/br.png); }
+.shadow-top .center { background-image: url(img/t.png); }
+.shadow-bottom .center { background-image: url(img/b.png); }
+.shadow-middle .left { background-image: url(img/l.png); }
+.shadow-middle .right { background-image: url(img/r.png); }
 
 /**************************************************************************/
 /* content */
@@ -155,6 +145,8 @@ header div
    
    background: #fff;
    background: #fff -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f8f8f8));
+   background: #fff -moz-linear-gradient(top, #fff, #f8f8f8);
+   background: #fff -o-linear-gradient(top, #fff, #f8f8f8);
    border-radius: 7px 7px 0 0;
 }
 
@@ -173,6 +165,10 @@ header div
 
 
 
+#installer-steps
+{
+   display: none;
+}
 
 
 
