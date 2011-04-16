@@ -74,9 +74,9 @@ class InstallerForm extends Form
       
       $generated = preg_replace_callback('/<form([^>]+)>/', function($formOpen)
          {
-            // passing <form> declaration to $additionalData (where it will be used by skin)
+            // passing <form> declaration to $data (where it will be used by skin)
             
-            Watermelon::$controller->additionalData->formOpen = $formOpen[0];
+            Watermelon::$controller->data->formOpen = $formOpen[0];
             
             return '';
          },
@@ -86,7 +86,7 @@ class InstallerForm extends Form
       
       $generated = str_replace('</form>', '', $generated);
       
-      Watermelon::$controller->additionalData->formClose = '</form>';
+      Watermelon::$controller->data->formClose = '</form>';
       
       // returning
       

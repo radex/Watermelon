@@ -149,22 +149,22 @@ class Installer_Controller extends Controller
       
       // progress percent
       
-      $this->additionalData->progress = (int) (($step - 1) / 5 * 100);
+      $this->data->progress = (int) (($step - 1) / 5 * 100);
       
       // previous step (but you can't go back after you unblock the blockade)
       
       if($step >= 3)
       {
-         $this->additionalData->previous = $step - 1;
+         $this->data->previous = $step - 1;
       }
       else
       {
-         $this->additionalData->previous = null;
+         $this->data->previous = null;
       }
       
       // next step
       
-      $this->additionalData->next = $step + 1;
+      $this->data->next = $step + 1;
       
       // previous step number
       
@@ -269,7 +269,7 @@ class Installer_Controller extends Controller
       // displaying
       
       $this->pageTitle = 'Witaj';
-      $this->additionalData->nextButtonAutofocus = true; // no real form, so autofocus on "Next" needed
+      $this->data->nextButtonAutofocus = true; // no real form, so autofocus on "Next" needed
       
       View('greeting')->display();
    }
@@ -524,7 +524,7 @@ class Installer_Controller extends Controller
       // rendering
       
       $this->pageTitle = 'Dzięki!';
-      $this->additionalData->nextButtonAutofocus = true;
+      $this->data->nextButtonAutofocus = true;
       
       $view = View('thank');
       $view->display();

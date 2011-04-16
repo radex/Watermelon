@@ -47,14 +47,14 @@ abstract class Controller
    public $pageTitle;
    
    /*
-    * public object $additionalData
+    * public object $data
     * 
-    * Non-standard data to be passed to skin
+    * Data (not content) to be passed to the skin
     * 
-    * Useful in making custom apps
+    * Useful when making custom apps
     */
    
-   public $additionalData;
+   public $data;
    
    /*
     * public bool $plainOutput = false
@@ -73,6 +73,8 @@ abstract class Controller
     */
    
    public $noHeader = false;
+   
+   /**************************************************************************/
    
    /*
     * public array $acpSubNav
@@ -169,6 +171,10 @@ abstract class Controller
       }
       catch(WMException $e){}
       
+      //--
+      
+      $this->data = (object) array();
+      
       // binding attributes to corresponding attributes of Watermelon class
       
       $this->requestURL = &Watermelon::$requestURL;
@@ -233,8 +239,8 @@ abstract class Controller
       
       // tail tags
       
-      $tailTags[] = $config->tailTags;
       $tailTags   = &Watermelon::$tailTags;
+      $tailTags[] = $config->tailTags;
       
       // loading skin
       
@@ -264,7 +270,7 @@ abstract class Controller
       $skin->headTags          = &$headTags;
       $skin->tailTags          = &$tailTags;
       $skin->textMenus         = &$config->textMenus;
-      $skin->additionalData    = $this->additionalData;
+      $skin->data    = $this->data;
 
       new $className($skin, WM_SkinPath . 'index.php');
    }
