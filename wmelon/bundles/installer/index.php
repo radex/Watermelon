@@ -1,56 +1,57 @@
 <?php die?>
-<!doctype html>
+<!DOCTYPE html>
 <meta charset="UTF-8"/>
 <link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/basic.css"/>
 <link rel="stylesheet" href="${WM_BundlesURL}watermelon/public/watermelon.css"/>
-<link rel="stylesheet" href="${WM_SystemURL}core/Turbine/css.php?files=installer/installer.cssp"/>
+<link rel="stylesheet" href="${WM_SkinURL}style.css"/>
 ${php:skin.drawHeadTags()}
 
-<header></header>
+<style>#container, header { display: none }</style>
 
-<!-- Container layout -->
+<header><div/></header>
 
-<tal:block tal:condition="not: exists: additionalData/noContainer">
-   
-   ${structure additionalData/formOpen}
-   
-   <div id="container">
+<!-- container -->
+
+<div id="container">
+   <div id="container-inner">
       <div id="content">
-         <h1>${pageTitle}</h1>
-      
-         ${php:skin.drawMessages()}
-      
-         ${structure content}
+         <div id="content-inner">
+         </div>
       </div>
       <div id="status-bar">
-      
-         <!-- buttons -->
-      
-         <input type="submit" value="Dalej" tal:attributes="autofocus additionalData/nextButtonAutofocus | nothing" />
-      
-         <input tal:condition="true: additionalData/previous" type="button" onclick="window.location='${WM_SiteURL}${additionalData/previous}'" value="Wróć"/>
-      
-         <input tal:condition="not: additionalData/previous" type="button" value="Wróć" disabled="true"/>
-      
-         <!-- progress bar -->
-      
+         <input id="next-button" type="button" value="Dalej"/>
+         <input id="previous-button" type="button" value="Wróć"/>
          <div id="progress-bar-container">
             <div id="progress-bar">
-               <div tal:condition="php: additionalData.progress > 0" id="progress-bar-progress" style="width:${additionalData/progress}%"/>
+               <div id="progress-bar-progress" style="width:40%"></div>
             </div>
             Postęp instalacji
          </div>
       </div>
+      
    </div>
-   
-   ${structure additionalData/formClose}
-   
-</tal:block>
+   <div class="shadow-top">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+   </div>
+   <div class="shadow-middle">
+      <div class="left"></div>
+      <div class="right"></div>
+   </div>
+   <div class="shadow-bottom">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+   </div>
+</div>
 
-<!-- Container-less layout -->
+<!-- installer steps -->
 
-<tal:block tal:condition="exists: additionalData/noContainer">
-   
-   ${structure content}
+<div id="installer-steps">
+</div>
 
-</tal:block>
+<!-- *** -->
+
+<script src="${WM_SystemURL}core/FrontendLibraries/jquery.js"></script>
+<script src="${WM_SkinURL}installer.js"></script>

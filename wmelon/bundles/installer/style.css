@@ -1,0 +1,317 @@
+/* basic */
+
+html
+{
+   overflow: auto;
+   height: 100%;
+   
+   user-select: none;
+   -moz-user-select: none;
+   -webkit-user-select: none;
+}
+
+body
+{
+   background-color: #ddd;
+   font-family: Verdana, Sans, sans-serif;
+   font-size: 14px;
+   line-height: 1.5em;
+   color: #666;
+}
+
+hr
+{
+   border: 0;
+   height: 1px;
+   background: #aaa;
+}
+
+h1
+{
+   margin-bottom: 5px;
+   font-size: 1.6em;
+   font-weight: normal;
+   color: #000;
+}
+
+p
+{
+   margin-bottom: 10px;
+}
+
+/**************************************************************************/
+/* header */
+
+header
+{
+   position: absolute;
+   z-index: 50;
+   width: 100%;
+   top: 0;
+}
+
+header div
+{
+   height: 100px;
+
+   background: url('img/logo.png') no-repeat center;
+}
+
+/**************************************************************************/
+/* container */
+
+#container
+{
+   width: 752px;
+   position: relative;
+   padding: 25px;
+   margin: 0 auto;
+   margin-top: 75px;
+}
+
+#container-inner
+{
+   width: 750px;
+   position: relative;
+   z-index: 10;
+   
+   border-radius: 7px;
+   -moz-border-radius: 7px;
+   border: 1px solid #aaa;
+}
+
+
+/**************************************************************************/
+/* shadow (thanks to Riddle: http://riddle.jogger.pl/2007/07/28/przezroczysty-cien-warstwy-okna/)*/
+
+.left,
+.right,
+.center
+{
+   position: absolute;   
+}
+
+.shadow-top .left,
+.shadow-top .right,
+.shadow-bottom .left,
+.shadow-bottom .right
+{
+   width: 50px;
+   height: 50px;
+   background-repeat: no-repeat;
+   background-position: 0 0;
+}
+
+.shadow-top .center,
+.shadow-bottom .center
+{
+   height: 50px;
+   right: 50px;
+   left: 50px;
+   background-repeat: repeat-x;
+}
+
+.shadow-middle div
+{
+   width: 50px;
+   bottom: 50px;
+   top: 50px;
+   background-repeat: repeat-y;
+}
+
+.shadow-top div { top: 0; }
+.shadow-bottom div { bottom: 0; }
+
+.left { left: 0; }
+.right{ right: 0; }
+
+.shadow-top .left { background-image: url(img/tl.png); }
+.shadow-top .right { background-image: url(img/tr.png); }
+.shadow-bottom .left { background-image: url(img/bl.png); }
+.shadow-bottom .right { background-image: url(img/br.png); }
+.shadow-top .center { background-image: url(img/t.png); }
+.shadow-bottom .center { background-image: url(img/b.png); }
+.shadow-middle .left { background-image: url(img/l.png); }
+.shadow-middle .right { background-image: url(img/r.png); }
+
+/**************************************************************************/
+/* content */
+
+
+#content
+{
+   overflow: hidden;
+   position: relative;
+   width: 750px;
+   
+   background: #fff;
+   background: #fff -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f8f8f8));
+   background: #fff -moz-linear-gradient(top, #fff, #f8f8f8);
+   background: #fff -o-linear-gradient(top, #fff, #f8f8f8);
+   border-radius: 7px 7px 0 0;
+   -moz-border-radius: 7px 7px 0 0;
+}
+
+#content-inner
+{
+   overflow: hidden;
+   width: 1500px;
+}
+
+.content-box
+{
+   float: left;
+   width: 720px;
+   padding: 15px;
+}
+
+
+
+#installer-steps
+{
+   display: none;
+}
+
+
+
+/**************************************************************************/
+
+
+
+
+#content a
+{
+   color: #3E7FA1;
+   border-bottom: 1px solid #B1CCE9;
+}
+
+#status-bar
+{
+   padding: 10px;
+   background: -webkit-gradient(linear,left top,left bottom,from(#ddd),to(#bbb));
+   background: #fff -moz-linear-gradient(top, #ddd, #bbb);
+   background: #fff -o-linear-gradient(top, #ddd, #bbb);
+   box-shadow: inset 0 3px 4px #ccc;
+   -moz-box-shadow: inset 0 3px 4px #ccc;
+   -webkit-box-shadow: inset 0 3px 4px #ccc;
+   border-radius: 0 0 5px 5px;
+   -moz-border-radius: 0 0 5px 5px;
+}
+
+#status-bar button, #status-bar input
+{
+   float: right;
+   line-height: 1.2em;
+   margin-left: 5px;
+   margin-right: 5px;
+}
+
+#progress-bar-container
+{
+   width: 300px;
+   margin-bottom: -4px;
+   font-size: 0.8em;
+   color: #555;
+   text-align: center;
+   line-height: 1.4em;
+}
+
+#progress-bar
+{
+   height: 10px;
+   width: 100%;
+   border: 1px solid #888;
+   border-radius: 10px;
+   -moz-border-radius: 10px;
+   background: #fff;
+   box-shadow: inset 0 -2px 2px #eee;
+   -moz-box-shadow: inset 0 -2px 2px #eee;
+   -webkit-box-shadow: inset 0 -2px 2px #eee;
+}
+
+
+#progress-bar-progress
+{
+   margin: -1px;
+   height: 10px;
+   width: 100px;
+   border: inherit;
+   border-radius: 10px;
+   -moz-border-radius: 10px;
+   background: -webkit-gradient(linear,left top,left bottom,from(#9ce),to(#7ac));
+   background: #fff -moz-linear-gradient(top, #9ce, #7ac);
+   background: #fff -o-linear-gradient(top, #9ce, #7ac);
+}
+
+label
+{
+   display: block;
+   padding: 5px;
+}
+
+label > span
+{
+   display: inline-block;
+   width: 350px;
+   margin-right: 10px;
+   font-weight: bold;
+   text-align: right;
+   color: #444;
+}
+
+label > span > small
+{
+   display: block;
+   font-size: 0.8em;
+   font-weight: normal;
+   color: #777;
+   line-height: 1.3em;
+}
+
+input[type=text], input[type=password]
+{
+   width: 200px;
+   height: 15px;
+   padding: 3px;
+   vertical-align: top;
+   font-size: 0.9em;
+}
+
+input[type=radio]
+{
+   padding: 3px 15px;
+   vertical-align: middle;
+}
+
+table
+{
+   width: 100%;
+}
+
+td, th
+{
+   border: 1px solid #ddd;
+   padding: 5px 10px;
+}
+
+th
+{
+   width: 250px;
+   text-align: right;
+   color: #000;
+}
+
+table tr:nth-child(odd)
+{
+   background-color: #f8f8f8;
+}
+
+.advanced-hr
+{
+   margin-top: 25px;
+}
+
+.advanced-hr hr
+{
+   margin-top: 0;
+}
