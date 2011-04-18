@@ -155,7 +155,7 @@ header div
 #content-inner
 {
    overflow: hidden;
-   width: 1500px;
+   width: 4500px;
 }
 
 .content-box
@@ -163,13 +163,6 @@ header div
    float: left;
    width: 720px;
    padding: 15px;
-}
-
-
-
-#installer-steps
-{
-   display: none;
 }
 
 
@@ -281,6 +274,11 @@ input[type=radio]
 {
    padding: 3px 15px;
    vertical-align: middle;
+}
+
+input[type=submit]
+{
+   display: none;
 }
 
 table

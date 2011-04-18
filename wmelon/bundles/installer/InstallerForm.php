@@ -29,68 +29,11 @@ class InstallerForm extends Form
    
    /*
     * constructor
-    * 
-    * Only form ID is needed - the rest is determined automatically
     */
    
-   public function __construct($formID)
+   public function __construct($formID, $actionPage)
    {
-      // getting currentStep
-      
-      $currentStep = $_SESSION['currentStep'];
-      $nextStep    = $currentStep + 1;
-      
-      // parent constructor
-      
-      parent::__construct($formID, (string) $nextStep, (string) $currentStep);
-   }
-   
-   /*
-    * adding input
-    * 
-    * Sets "autofocus" on first input
-    */
-   
-   public function addInput($type, $name, $label, $required = true, array $args = array())
-   {
-      if(!$this->firstInputAdded)
-      {
-         $args['autofocus'] = true;
-         $this->firstInputAdded = true;
-      }
-      
-      parent::addInput($type, $name, $label, $required, $args);
-   }
-   
-   /*
-    * generating
-    */
-   
-   public function generate()
-   {
-      $generated = parent::generate();
-      
-      // getting <form ...> declaration
-      
-      $generated = preg_replace_callback('/<form([^>]+)>/', function($formOpen)
-         {
-            // passing <form> declaration to $data (where it will be used by skin)
-            
-            Watermelon::$controller->data->formOpen = $formOpen[0];
-            
-            return '';
-         },
-         $generated);
-      
-      // deleting </form>
-      
-      $generated = str_replace('</form>', '', $generated);
-      
-      Watermelon::$controller->data->formClose = '</form>';
-      
-      // returning
-      
-      return $generated;
+      parent::__construct($formID, $actionPage);
    }
    
    /*
@@ -99,6 +42,18 @@ class InstallerForm extends Form
    
    public static function validate($formID)
    {
-      return parent::validate($formID, $_SESSION['previousStep']);
+      return parent::validate($formID, '');
+   }
+   
+   /*
+    * adding inputs
+    */
+   
+   public function addInput($type, $name, $label, $required = true, array $args = array())
+   {
+      // add '.firstInput' class to the first input
+      // (needed because of some strange jQuery bug)
+      
+      return parent::addInput($type, $name, $label, $required, $args);
    }
 }

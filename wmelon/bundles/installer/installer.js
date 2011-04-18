@@ -1,31 +1,38 @@
-var Installer_Intro = true;
+var Installer_Intro = false;
 var Installer_Step = 1;
 
 window.onload = function()
 {
-   // load first installer step
-   
-   $('#content-inner').append('<div class="content-box">' + $('#installer-steps > div:nth-of-type(1)').html() + '</div>')
-   
-      // it seems that there's a bug, because $('.installer-step:nth-of-type()') didn't work.
-      // I had to use $('#installer-steps > div:nth-of-type()')
-   
    // launch intro
    
    intro()
    
-   // hook page moving
+   //--
+   
+   $('#content-inner').css({height: $('.content-box:first-of-type').innerHeight()})
+   
+   // trigger submit
+   
+   $('input[type!=button]').keyup(function(e)
+   {
+      if(e.keyCode == 13)
+      {
+         next()
+      }
+   })
+   
+   // page moving
+   
+   $('#next-button').focus()
    
    $('#next-button').click(function()
    {
-      Installer_Step++
-      next(Installer_Step)
+      next()
    })
    
    $('#previous-button').click(function()
    {
-      Installer_Step--
-      previous(Installer_Step)
+      previous()
    })
 }
 
@@ -64,48 +71,53 @@ function intro()
 }
 
 /**************************************************************************/
-/* moves to step with "next step" animation */
+/* moves to the next step */
 
-function next(step)
+function next()
 {
-   // load requested step as next
+   // change .current class
    
-   $('#content-inner').append('<div class="content-box">' + $('#installer-steps > div:nth-of-type(' + step + ')').html() + '</div>')
+   $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current')
+   
+   Installer_Step++
+   
+   $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current')
    
    // resize height of container and move
    
-   nextStepHeight = $('.content-box:nth-of-type(2)').innerHeight()
+   nextStepHeight = $('.content-box:nth-of-type(' + Installer_Step + ')').innerHeight()
    
-   $('#content-inner').animate({marginLeft: '-750px', height: nextStepHeight}, 400, function()
+   $('#content-inner').animate({marginLeft: '-=750px', height: nextStepHeight}, 400, function()
    {
-      // remove previously current step and change margin
+      // focus first input (or next button if no inputs)
       
-      $('.content-box:nth-of-type(1)').remove()
-      $('#content-inner').css({marginLeft: 0})
+      $('#next-button').focus()
+      $('.content-box.current input:eq(1)').focus()
    })
 }
 
 /**************************************************************************/
-/* moves to step with "previous step" animation */
+/* moves to the previous step */
 
 function previous(step)
 {
-   // load requested step as previous (and change CSS so that it stays in place)
+   // change .current class
+
+   $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current')
    
-   $('#content-inner').prepend('<div class="content-box">' + $('#installer-steps > div:nth-of-type(' + step + ')').html() + '</div>')
-   $('#content-inner').css({marginLeft: '-750px'})
+   Installer_Step--
    
-               //FIXME: Webkit bug
-   
-   
+   $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current')
+
    // resize height of container and move
-   
-   prevStepHeight = $('.content-box:nth-of-type(1)').innerHeight()
-   
-   $('#content-inner').animate({marginLeft: '0', height: prevStepHeight}, 400, function()
+
+   prevStepHeight = $('.content-box:nth-of-type(' + Installer_Step + ')').innerHeight()
+
+   $('#content-inner').animate({marginLeft: '+=750px', height: prevStepHeight}, 400, function()
    {
-      // remove previously current step
+      // focus first input (or next button if no inputs)
       
-      $('.content-box:nth-of-type(2)').remove()
+      $('#next-button').focus()
+      $('.content-box.current input:eq(1)').focus()
    })
 }

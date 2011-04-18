@@ -8,7 +8,15 @@ ${php:skin.drawHeadTags()}
 
 <style>#container, header { display: none }</style>
 
+<!-- header -->
+
 <header><div/></header>
+
+<!-- no js -->
+
+<noscript>
+   <p>Instalator Watermelona wymaga do działania Javascriptu.</p>
+</noscript>
 
 <!-- container -->
 
@@ -16,10 +24,13 @@ ${php:skin.drawHeadTags()}
    <div id="container-inner">
       <div id="content">
          <div id="content-inner">
+            <div class="content-box" tal:repeat="step steps">
+               ${structure step}
+            </div>
          </div>
       </div>
       <div id="status-bar">
-         <input id="next-button" type="button" value="Dalej"/>
+         <input id="next-button" type="button" value="Dalej" />
          <input id="previous-button" type="button" value="Wróć"/>
          <div id="progress-bar-container">
             <div id="progress-bar">
@@ -44,11 +55,6 @@ ${php:skin.drawHeadTags()}
       <div class="center"></div>
       <div class="right"></div>
    </div>
-</div>
-
-<!-- installer steps -->
-
-<div id="installer-steps">
 </div>
 
 <!-- *** -->

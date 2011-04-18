@@ -3,13 +3,6 @@ var Installer_Step = 1;
 
 window.onload = function()
 {
-   // load first installer step
-   
-   $('#content-inner').append('<div class="content-box">' + $('#installer-steps > div:nth-of-type(1)').html() + '</div>')
-   
-      // it seems that there's a bug, because $('.installer-step:nth-of-type()') didn't work.
-      // I had to use $('#installer-steps > div:nth-of-type()')
-   
    // launch intro
    
    intro()
@@ -18,14 +11,12 @@ window.onload = function()
    
    $('#next-button').click(function()
    {
-      Installer_Step++
-      next(Installer_Step)
+      next()
    })
    
    $('#previous-button').click(function()
    {
-      Installer_Step--
-      previous(Installer_Step)
+      previous()
    })
 }
 
@@ -64,48 +55,29 @@ function intro()
 }
 
 /**************************************************************************/
-/* moves to step with "next step" animation */
+/* moves to the next step */
 
-function next(step)
+function next()
 {
-   // load requested step as next
-   
-   $('#content-inner').append('<div class="content-box">' + $('#installer-steps > div:nth-of-type(' + step + ')').html() + '</div>')
+   Installer_Step++
    
    // resize height of container and move
    
-   nextStepHeight = $('.content-box:nth-of-type(2)').innerHeight()
+   nextStepHeight = $('.content-box:nth-of-type(' + Installer_Step + ')').innerHeight()
    
-   $('#content-inner').animate({marginLeft: '-750px', height: nextStepHeight}, 400, function()
-   {
-      // remove previously current step and change margin
-      
-      $('.content-box:nth-of-type(1)').remove()
-      $('#content-inner').css({marginLeft: 0})
-   })
+   $('#content-inner').animate({marginLeft: '-=750px', height: nextStepHeight}, 400)
 }
 
 /**************************************************************************/
-/* moves to step with "previous step" animation */
+/* moves to the previous step */
 
 function previous(step)
 {
-   // load requested step as previous (and change CSS so that it stays in place)
-   
-   $('#content-inner').prepend('<div class="content-box">' + $('#installer-steps > div:nth-of-type(' + step + ')').html() + '</div>')
-   $('#content-inner').css({marginLeft: '-750px'})
-   
-               //FIXME: Webkit bug
-   
-   
+   Installer_Step--
+
    // resize height of container and move
-   
-   prevStepHeight = $('.content-box:nth-of-type(1)').innerHeight()
-   
-   $('#content-inner').animate({marginLeft: '0', height: prevStepHeight}, 400, function()
-   {
-      // remove previously current step
-      
-      $('.content-box:nth-of-type(2)').remove()
-   })
+
+   prevStepHeight = $('.content-box:nth-of-type(' + Installer_Step + ')').innerHeight()
+
+   $('#content-inner').animate({marginLeft: '+=750px', height: prevStepHeight}, 400)
 }

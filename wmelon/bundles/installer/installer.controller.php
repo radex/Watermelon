@@ -27,10 +27,179 @@ include 'InstallerForm.php';
 class Installer_Controller extends Controller
 {
    /*
-    * Main method - setting some constants, and running proper method
+    * Main method - setup and running
     */
    
    public function installer()
+   {
+      // URL-s
+      
+      $baseURL = 'http://localhost/w/';
+      $siteURL = 'http://localhost/w/';
+      $systemURL = 'http://localhost/w/wmelon/';
+      
+      // constants
+      
+      define('WM_BaseURL',  $baseURL);
+      define('SiteURL',     $siteURL);
+      define('SystemURL',   $systemURL);
+      define('CurrURL',     $siteURL);
+      
+      define('BundlesURL',  SystemURL . 'bundles/');
+      define('UploadedURL', SystemURL . 'uploaded/');
+      
+      define('SkinPath',    BundlesPath . 'installer/');
+      define('SkinURL',     BundlesURL  . 'installer/');
+      
+      // skin
+      
+      Watermelon::$config->skin = 'installer';
+      
+      /**************************************************************************/
+      
+      // loading views representing installer steps
+      
+      $views = array();
+      
+      $views[] = $this->greetingView();
+      $views[] = $this->dbInfoView();
+      $views[] = $this->userDataView();
+      $views[] = $this->websiteNameView();
+      $views[] = $this->thanksView();
+      
+      $this->data->steps = $views;
+   }
+   
+   
+   /**************************************************************************/
+   
+   /*
+    * Greeting view
+    */
+   
+   public function greetingView()
+   {
+      return View('greeting')->generate();
+   }
+   
+   /*
+    * Database info form view
+    */
+   
+   public function dbInfoView()
+   {
+      // defalult values
+      
+      $data = (object) array
+         (
+            'name'   => 'watermelon',
+            'user'   => '',
+            'pass'   => '',
+            'host'   => 'localhost',
+            'prefix' => ''
+         );
+      
+      // form
+      
+      $form = new InstallerForm('wmelon.installer.dbInfo');
+      
+      // label note
+      
+      $nameNote   = 'Jeśli nie istnieje, instalator spróbuje ją utworzyć';
+      $userNote   = 'Użytkownik z dostępem do podanej bazy danych';
+      
+      $prefixNote = 'Niezbędny jeśli chcesz mieć dwie kopie Watermelona na jednej bazie danych';
+      $hostNote   = 'Prawie zawsze jest to <em>localhost</em>';
+      
+      // input args
+      
+      $nameArgs   = array('value' => $data->name,   'labelNote' => $nameNote);
+      $userArgs   = array('value' => $data->user,   'labelNote' => $userNote);
+      $passArgs   = array('value' => $data->pass);
+      $prefixArgs = array('value' => $data->prefix, 'labelNote' => $prefixNote);
+      $hostArgs   = array('value' => $data->host,   'labelNote' => $hostNote);
+      
+      // adding inputs
+      
+      $form->addInput('text',     'name',    'Nazwa bazy danych',  true,  $nameArgs);
+      $form->addInput('text',     'user',    'Użytkownik',         true,  $userArgs);
+      $form->addInput('password', 'pass',    'Hasło',              false, $passArgs);
+      
+      $form->addHTML('<div class="advanced-hr">Zaawansowane<hr /></div>');
+      
+      $form->addInput('text',     'prefix',  'Prefiks tabel',      false, $prefixArgs);
+      $form->addInput('text',     'host',    'Serwer',             true,  $hostArgs);
+      
+      // displaying
+      
+      $view = View('dbInfo');
+      $view->form = $form->generate();
+      
+      return $view->generate();
+   }
+   
+   /*
+    * User data form view
+    */
+   
+   public function userDataView()
+   {
+      // form
+      
+      $form = new InstallerForm('wmelon.installer.userData');
+      
+      // adding args
+      
+      $form->addInput('text',     'user',  'Nazwa użytkownika',   true, array());
+      $form->addInput('password', 'pass',  'Hasło',               true, array());
+      $form->addInput('password', 'pass2', 'Hasło (powtórz)',     true, array());
+      
+      // rendering
+      
+      $view = View('userData');
+      $view->form = $form->generate();
+      
+      return $view->generate();
+   }
+   
+   /*
+    * Website name form view
+    */
+   
+   public function websiteNameView()
+   {
+      // form
+      
+      $form = new InstallerForm('wmelon.installer.siteName');
+      
+      // adding inputs
+      
+      $form->addInput('text', 'siteName', 'Nazwa strony', true, array());
+      
+      // rendering
+      
+      $view = View('siteName');
+      $view->form = $form->generate();
+      
+      return $view->generate();
+   }
+   
+   /*
+    * Thanks for using Watermelon view
+    */
+   
+   public function thanksView()
+   {
+      return View('thanks')->generate();
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * Main method - setting some constants, and running proper method
+    */
+   
+   public function _installer()
    {
       // .htaccess
       
@@ -255,30 +424,13 @@ class Installer_Controller extends Controller
       return $url;
    }
    
-   /*
-    * Second step - greeting
-    */
-   
-   public function greeting()
-   {
-      // mock form
-      
-      $form = new InstallerForm('wmelon.installer.greeting');
-      echo $form->generate();
-      
-      // displaying
-      
-      $this->pageTitle = 'Witaj';
-      $this->data->nextButtonAutofocus = true; // no real form, so autofocus on "Next" needed
-      
-      View('greeting')->display();
-   }
+   /**************************************************************************/
    
    /*
     * Third step - DB info
     */
    
-   public function dbInfo()
+   public function _dbInfo()
    {
       // default values
       
@@ -346,7 +498,7 @@ class Installer_Controller extends Controller
     * Validating DB info, but not yet importing tables to database (it will be done in last step)
     */
    
-   public function userdata()
+   public function _userdata()
    {
       // validating DB info
       
@@ -450,7 +602,7 @@ class Installer_Controller extends Controller
     * And validating user data form
     */
    
-   public function websiteName()
+   public function _websiteName()
    {
       // validating userdata form
       
@@ -504,7 +656,7 @@ class Installer_Controller extends Controller
     * Sixth step - thank
     */
    
-   public function thank()
+   public function _thank()
    {
       // checking whether all required fields are filled
       
@@ -534,7 +686,7 @@ class Installer_Controller extends Controller
     * Seventh step - saving configuration
     */
    
-   public function save()
+   public function _save()
    {
       // configuration
       
