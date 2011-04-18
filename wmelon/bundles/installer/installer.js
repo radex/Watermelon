@@ -7,33 +7,28 @@ window.onload = function()
    
    intro()
    
-   //--
+   // resizing first step's .content-box
    
    $('#content-inner').css({height: $('.content-box:first-of-type').innerHeight()})
    
-   // trigger submit
+   // buttons
+   
+   $('#next-button').focus()
+   $('#previous-button').attr('disabled', 'disabled')
+   
+   // trigger page change
    
    $('input[type!=button]').keyup(function(e)
    {
       if(e.keyCode == 13)
       {
-         next()
+         nextClick()
       }
    })
    
-   // page moving
+   $('#next-button').click(nextClick)
    
-   $('#next-button').focus()
-   
-   $('#next-button').click(function()
-   {
-      next()
-   })
-   
-   $('#previous-button').click(function()
-   {
-      previous()
-   })
+   $('#previous-button').click(previous)
 }
 
 /**************************************************************************/
@@ -71,10 +66,31 @@ function intro()
 }
 
 /**************************************************************************/
+/* "Next" button clicked */
+
+function nextClick()
+{
+   // if there is a form, first validate it
+   
+   if($('.current form').length == 1)
+   {
+            //TODO: make ajax request here
+   }
+   else
+   {
+      next()
+   }
+}
+
+/**************************************************************************/
 /* moves to the next step */
 
 function next()
 {
+   // enable "previous" button
+   
+   $('#previous-button').removeAttr('disabled')
+   
    // change .current class
    
    $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current')
@@ -108,7 +124,14 @@ function previous(step)
    Installer_Step--
    
    $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current')
-
+   
+   // disable "previous" button (if moved back to the first step)
+   
+   if(Installer_Step == 1)
+   {
+      $('#previous-button').attr('disabled', 'disabled')
+   }
+   
    // resize height of container and move
 
    prevStepHeight = $('.content-box:nth-of-type(' + Installer_Step + ')').innerHeight()
