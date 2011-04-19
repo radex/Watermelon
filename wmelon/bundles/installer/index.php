@@ -24,9 +24,7 @@ ${php:skin.drawHeadTags()}
    <div id="container-inner">
       <div id="content">
          <div id="content-inner">
-            <div class="content-box" tal:repeat="step steps">
-               ${structure step}
-            </div>
+            ${structure views}
          </div>
       </div>
       <div id="status-bar">
@@ -34,7 +32,7 @@ ${php:skin.drawHeadTags()}
          <input id="previous-button" type="button" value="Wróć"/>
          <div id="progress-bar-container">
             <div id="progress-bar">
-               <div id="progress-bar-progress" style="width:40%"></div>
+               <div id="progress-bar-progress"></div>
             </div>
             Postęp instalacji
          </div>

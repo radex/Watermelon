@@ -1,5 +1,7 @@
 var Installer_Intro = false;
 var Installer_Step = 1;
+var Installer_Steps;
+var Installer_ButtonsDisabled = false;
 
 window.onload = function()
 {
@@ -10,6 +12,14 @@ window.onload = function()
    // resizing first step's .content-box
    
    $('#content-inner').css({height: $('.content-box:first-of-type').innerHeight()})
+   
+   // resizing progress bar
+   
+   Installer_Steps = $('.content-box').length
+   
+   progressWidth = (1 / (Installer_Steps + 1) * 100) + '%'
+   
+   $('#progress-bar-progress').css({width: progressWidth})
    
    // buttons
    
@@ -29,6 +39,10 @@ window.onload = function()
    $('#next-button').click(nextClick)
    
    $('#previous-button').click(previous)
+   
+   // hooking up validators
+   
+   $('#userdata form').submit(userdataValidator)
 }
 
 /**************************************************************************/
@@ -70,11 +84,18 @@ function intro()
 
 function nextClick()
 {
-   // if there is a form, first validate it
+   // ignoring if disabled (it's disabled during animations)
+   
+   if(Installer_ButtonsDisabled)
+   {
+      return
+   }
+   
+   // validating (if there's a form) or just moving to the next step
    
    if($('.current form').length == 1)
    {
-            //TODO: make ajax request here
+      $('.current form').submit()
    }
    else
    {
@@ -87,6 +108,10 @@ function nextClick()
 
 function next()
 {
+   // disable buttons (so that it can't be clicked during animating)
+   
+   Installer_ButtonsDisabled = true;
+   
    // enable "previous" button
    
    $('#previous-button').removeAttr('disabled')
@@ -108,8 +133,18 @@ function next()
       // focus first input (or next button if no inputs)
       
       $('#next-button').focus()
-      $('.content-box.current input:eq(1)').focus()
+      $('.content-box.current input')[0].focus()
+      
+      // enable buttons
+      
+      Installer_ButtonsDisabled = false;
    })
+   
+   // resize progress bar
+   
+   progressWidth = (Installer_Step / (Installer_Steps + 1) * 100) + '%'
+   
+   $('#progress-bar-progress').animate({width: progressWidth}, 400)
 }
 
 /**************************************************************************/
@@ -141,6 +176,16 @@ function previous(step)
       // focus first input (or next button if no inputs)
       
       $('#next-button').focus()
-      $('.content-box.current input:eq(1)').focus()
+      $('.content-box.current input')[0].focus()
    })
+}
+
+/**************************************************************************/
+/* validates userdata form */
+
+function userdataValidator()
+{
+   
+   
+   return false;
 }

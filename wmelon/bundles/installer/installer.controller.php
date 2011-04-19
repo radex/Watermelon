@@ -66,29 +66,18 @@ class Installer_Controller extends Controller
       
       // loading views representing installer steps
       
-      $views = array();
-      
-      $views[] = $this->greetingView();
+      $views .= View('greeting')->generate();
                                              // TODO: checking permissions, .htacceses and stuff
-      $views[] = $this->dbInfoView();
-      $views[] = $this->userDataView();
-      $views[] = $this->websiteNameView();
-      $views[] = $this->thanksView();
+      //$views .= $this->dbInfoView();
+      $views .= View('userData')->generate();
+      $views .= View('siteName')->generate();
+      $views .= View('thanks')->generate();
       
-      $this->data->steps = $views;
+      $this->data->views = $views;
    }
    
    
    /**************************************************************************/
-   
-   /*
-    * Greeting view
-    */
-   
-   public function greetingView()
-   {
-      return View('greeting')->generate();
-   }
    
    /*
     * Database info form view
@@ -144,61 +133,6 @@ class Installer_Controller extends Controller
       $view->form = $form->generate();
       
       return $view->generate();
-   }
-   
-   /*
-    * User data form view
-    */
-   
-   public function userDataView()
-   {
-      // form
-      
-      $form = new InstallerForm('wmelon.installer.userData');
-      
-      // adding args
-      
-      $form->addInput('text',     'user',  'Nazwa użytkownika',   true, array());
-      $form->addInput('password', 'pass',  'Hasło',               true, array());
-      $form->addInput('password', 'pass2', 'Hasło (powtórz)',     true, array());
-      
-      // rendering
-      
-      $view = View('userData');
-      $view->form = $form->generate();
-      
-      return $view->generate();
-   }
-   
-   /*
-    * Website name form view
-    */
-   
-   public function websiteNameView()
-   {
-      // form
-      
-      $form = new InstallerForm('wmelon.installer.siteName');
-      
-      // adding inputs
-      
-      $form->addInput('text', 'siteName', 'Nazwa strony', true, array());
-      
-      // rendering
-      
-      $view = View('siteName');
-      $view->form = $form->generate();
-      
-      return $view->generate();
-   }
-   
-   /*
-    * Thanks for using Watermelon view
-    */
-   
-   public function thanksView()
-   {
-      return View('thanks')->generate();
    }
    
    /**************************************************************************/
