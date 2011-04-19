@@ -3,7 +3,7 @@
 <div class="content-box" id="userdata">
    <h1>Twoje dane</h1>
    
-   <div class="error">Błąd</div>
+   
    
    <p>Podaj login i hasło dla swojego konta na Twojej stronie.</p>
    

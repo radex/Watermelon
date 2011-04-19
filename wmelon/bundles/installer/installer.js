@@ -93,11 +93,11 @@ function nextClick()
    
    // validating (if there's a form) or just moving to the next step
    
-   if($('.current form').length == 1)
+   /*if($('.current form').length == 1)
    {
       $('.current form').submit()
    }
-   else
+   else*/
    {
       next()
    }
@@ -116,9 +116,18 @@ function next()
    
    $('#previous-button').removeAttr('disabled')
    
+   // unhide other boxes, restore fixed height of #content-boxes, delete .current's margin
+   
+   $('.content-box').show()
+   
+   currentHeight = $('.content-box.current').innerHeight()
+   
+   $('#content-inner').css({height: currentHeight})
+   $('.content-box.current').css({marginLeft: 0})
+   
    // change .current class
    
-   $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current')
+   $('.content-box.current').removeClass('current')
    
    Installer_Step++
    
@@ -126,7 +135,7 @@ function next()
    
    // resize height of container and move
    
-   nextStepHeight = $('.content-box:nth-of-type(' + Installer_Step + ')').innerHeight()
+   nextStepHeight = $('.content-box.current').innerHeight()
    
    $('#content-inner').animate({marginLeft: '-=750px', height: nextStepHeight}, 400, function()
    {
@@ -134,6 +143,15 @@ function next()
       
       $('#next-button').focus()
       $('.content-box.current input')[0].focus()
+      
+      // hide other .content-boxes and flex height
+      
+      $('.content-box').hide()
+      $('.content-box.current')
+         .show()                                        // unhide current one
+         .css({marginLeft: (Installer_Step - 1) * 750}) // and change margin so that content stays in place
+      
+      $('#content-inner').css({height: 'auto'})
       
       // enable buttons
       
@@ -152,6 +170,15 @@ function next()
 
 function previous(step)
 {
+   // unhide other boxes, restore fixed height of #content-boxes, delete .current's margin
+
+   $('.content-box').show()
+
+   currentHeight = $('.content-box.current').innerHeight()
+
+   $('#content-inner').css({height: currentHeight})
+   $('.content-box.current').css({marginLeft: 0})
+   
    // change .current class
 
    $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current')
@@ -177,7 +204,42 @@ function previous(step)
       
       $('#next-button').focus()
       $('.content-box.current input')[0].focus()
+      
+      // hide other .content-boxes and flex height
+      
+      $('.content-box').hide()
+      $('.content-box.current')
+         .show()                                        // unhide current one
+         .css({marginLeft: (Installer_Step - 1) * 750}) // and change margin so that content stays in place
+      
+      $('#content-inner').css({height: 'auto'})
    })
+}
+
+/**************************************************************************/
+/* shows error(s) */
+
+function displayErrors(messagesArray)
+{
+   // joining into HTML
+   
+   messages = '<div class="messages">'
+   
+   $.each(messagesArray, function(index, value)
+   {
+      messages += '<div class="error">' + value + '</div>'
+   })
+   
+   messages += '</div>'
+   
+   // displaying and animating
+   
+   $('.current h1').after(messages)
+   
+   height = $('.current .messages').height();
+   
+   $('.current .messages').css({height: 0})
+   $('.current .messages').animate({height: height}, 200)
 }
 
 /**************************************************************************/
@@ -185,7 +247,7 @@ function previous(step)
 
 function userdataValidator()
 {
-   
+   displayErrors(['Błąd', 'Błąd 2   '])
    
    return false;
 }
