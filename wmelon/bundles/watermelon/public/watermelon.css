@@ -20,40 +20,40 @@
  * Boxes
  */
 
-.errorBox
+.error
 {
    border: 1px solid #DEA781;
    background: #FFCD8A url('img/error.png') no-repeat 10px center;
 }
 
-.noticeBox
+.notice
 {
    border: 1px solid #80B2D2;
    background: #B8D8EA url('img/notice.png') no-repeat 10px center;
 }
 
-.successNoticeBox
+.successNotice
 {
    border: 1px solid #97c32d;
    background: #deeba8 url('img/successNotice.png') no-repeat 10px center;
 }
-
+/*
 .questionBox
 {
    border: 1px solid #bbd;
    background: #f0f0ff url('img/question.png') no-repeat 10px center;
-}
+}*/
 
-.errorBox,
-.noticeBox,
-.successNoticeBox,
-.questionBox
+.error,
+.notice,
+.successNotice
+/*.questionBox*/
 {
    padding: 10px;
    margin: 10px;
    padding-left: 40px;
 }
-
+/*
 .questionBox menu
 {
    text-align: right;
@@ -72,4 +72,4 @@
 .questionBox form input
 {
    height: 16px;
-}
+}*/

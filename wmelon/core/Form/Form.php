@@ -239,7 +239,7 @@ class Form
          }
          else
          {
-            $r .= '<div class="errorBox">' . $error . '</div>';
+            $r .= '<div class="error">' . $error . '</div>';
          }
       }
       

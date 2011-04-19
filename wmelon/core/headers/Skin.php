@@ -146,7 +146,7 @@ abstract class Skin
       {
          list($type, $messageString) = $message;
          
-         echo '<div class="' . $type . 'Box">' . SiteLinks($messageString) . '</div>';
+         echo '<div class="' . $type . '">' . SiteLinks($messageString) . '</div>';
       }
    }
    
