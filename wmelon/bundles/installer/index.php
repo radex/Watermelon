@@ -1,8 +1,6 @@
 <?php die?>
 <!DOCTYPE html>
 <meta charset="UTF-8"/>
-<link rel="stylesheet" href="${BundlesURL}watermelon/public/basic.css"/>
-<link rel="stylesheet" href="${BundlesURL}watermelon/public/watermelon.css"/>
 <link rel="stylesheet" href="${SkinURL}style.css"/>
 ${php:skin.drawHeadTags()}
 

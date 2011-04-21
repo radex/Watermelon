@@ -9,9 +9,11 @@ window.onload = function()
    
    intro()
    
-   // resizing first step's .content-box
+   // give .current to the first step and hide other boxes
    
-   $('#content-inner').css({height: $('.content-box:first-of-type').innerHeight()})
+   $('.content-box:first-of-type').addClass('current')
+   
+   flexHeight()
    
    // resizing progress bar
    
@@ -46,8 +48,9 @@ window.onload = function()
    $('#userdata form').submit(userdataValidator)
 }
 
-/**************************************************************************/
-/* "Next" button clicked */
+/*
+ * action after "Next" button is clicked
+ */
 
 function nextClick()
 {
@@ -60,48 +63,132 @@ function nextClick()
    
    // validating (if there's a form) or just moving to the next step
    
-   /*if($('.current form').length == 1)
+   if($('.current form').length == 1)
    {
       $('.current form').submit()
    }
-   else*/
+   else
    {
       next()
    }
 }
 
 /**************************************************************************/
-/* shows error(s) */
+
+/*
+ * Displays error(s) from array
+ */
 
 function displayErrors(messagesArray)
 {
    // joining into HTML
    
-   messages = '<div class="messages">'
+   messages = ''
    
    $.each(messagesArray, function(index, value)
    {
       messages += '<div class="error">' + value + '</div>'
    })
    
-   messages += '</div>'
+   // displaying
    
-   // displaying and animating
+   $('.current .messages').css({height: 'auto'})
    
-   $('.current h1').after(messages)
+   height_before = $('.current .messages').height()
    
-   height = $('.current .messages').height();
+   $('.current .messages').html(messages)
    
-   $('.current .messages').css({height: 0})
-   $('.current .messages').animate({height: height}, 200)
+   height_after = $('.current .messages').height()
+   
+   // flash if height didn't change (contents are the same or other message but still the same height)
+   // or animate height change
+   
+   if(height_before == height_after)
+   {
+      $('.current .messages').css({opacity: .5})
+      $('.current .messages').animate({opacity: 1}, 150)
+   }
+   else
+   {
+      $('.current .messages').css({height: height_before})
+      $('.current .messages').animate({height: height_after, marginBottom: 10}, 400) // paddingBottom: 0 to fix WebKit bug
+   }
 }
 
 /**************************************************************************/
-/* validates userdata form */
+
+/*
+ * Validates user data form
+ */
 
 function userdataValidator()
 {
-   displayErrors(['Błąd', 'Błąd 2   '])
+   errors = []
+   
+   // trim all
+   
+   login = $.trim($('#userdata-login').val())
+   pass  = $.trim($('#userdata-pass').val())
+   pass2 = $.trim($('#userdata-pass2').val())
+   
+   $('#userdata-login').val(login)
+   $('#userdata-pass').val(pass)
+   $('#userdata-pass2').val(pass2)
+   
+   // check if all inputs are filled
+   
+   if(login.length == 0 || pass.length == 0 || pass2.length == 0)
+   {
+      errors.push('Wszystkie pola muszą być wypełnione')
+   }
+   
+   // check if passwords are the same
+   
+   if(pass.length > 0 && pass2.length > 0 && pass != pass2)
+   {
+      errors.push('Podane hasła nie pasują do siebie')
+   }
+   
+   // display errors or go forward
+   
+   displayErrors(errors)
+   
+   if(errors.length == 0)
+   {
+      next()
+   }
    
    return false;
+}
+
+/**************************************************************************/
+
+/*
+ * Sets fixed height to the #content-inner based on current height of .content-box.current
+ * (needed for animations)
+ */
+
+function fixHeight()
+{
+   $('.content-box').show()
+
+   currentHeight = $('.content-box.current').innerHeight()
+
+   $('#content-inner').css({height: currentHeight})
+   $('.content-box.current').css({marginLeft: 0})
+}
+
+/*
+ * Sets flexible height to the #container-inner while hiding .content-boxes other than .current.
+ * (so that e.g. errors can appear)
+ */
+
+function flexHeight()
+{
+   $('.content-box').hide()
+   $('.content-box.current')
+      .show()                                        // unhide current one
+      .css({marginLeft: (Installer_Step - 1) * 750}) // and change margin so that content stays in place
+   
+   $('#content-inner').css({height: 'auto'})
 }

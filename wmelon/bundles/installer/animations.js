@@ -39,18 +39,7 @@ function intro()
 
 function next()
 {
-   // disable buttons (so that it can't be clicked during animating)
-   
-   Installer_ButtonsDisabled = true;
-   
-   // unhide other boxes, restore fixed height of #content-boxes, delete .current's margin
-   
-   $('.content-box').show()
-   
-   currentHeight = $('.content-box.current').innerHeight()
-   
-   $('#content-inner').css({height: currentHeight})
-   $('.content-box.current').css({marginLeft: 0})
+   fixHeight()
    
    // change .current class
    
@@ -60,7 +49,9 @@ function next()
    
    $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current')
    
-   // disable "next" button (if moved to the last step), enable "previous" button
+   // buttons
+   
+   Installer_ButtonsDisabled = true;
    
    if(Installer_Step == Installer_Steps)
    {
@@ -95,14 +86,7 @@ function next()
 
 function previous(step)
 {
-   // unhide other boxes, restore fixed height of #content-boxes, delete .current's margin
-
-   $('.content-box').show()
-
-   currentHeight = $('.content-box.current').innerHeight()
-
-   $('#content-inner').css({height: currentHeight})
-   $('.content-box.current').css({marginLeft: 0})
+   fixHeight()
    
    // change .current class
 
@@ -112,7 +96,9 @@ function previous(step)
    
    $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current')
    
-   // disable "previous" button (if moved back to the first step), enable "next" button
+   // buttons
+   
+   Installer_ButtonsDisabled = true;
    
    if(Installer_Step == 1)
    {
@@ -152,12 +138,7 @@ function afterMove()
    
    // hide other .content-boxes and flex height
    
-   $('.content-box').hide()
-   $('.content-box.current')
-      .show()                                        // unhide current one
-      .css({marginLeft: (Installer_Step - 1) * 750}) // and change margin so that content stays in place
-   
-   $('#content-inner').css({height: 'auto'})
+   flexHeight()
    
    // enable buttons
    
