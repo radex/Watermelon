@@ -58,4 +58,5 @@ ${php:skin.drawHeadTags()}
 <!-- *** -->
 
 <script src="${SystemURL}core/FrontendLibraries/jquery.js"></script>
+<script src="${SkinURL}animations.js"></script>
 <script src="${SkinURL}installer.js"></script>
