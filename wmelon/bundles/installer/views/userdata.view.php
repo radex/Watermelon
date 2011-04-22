@@ -7,20 +7,20 @@
    
    <p>Podaj login i hasło dla swojego konta na Twojej stronie.</p>
    
-   <form action="" method="post"> 
+   <form action="#" method="post"> 
       <label>
          <span>Nazwa użytkownika:</span>
-         <input type="text" id="userdata-login" />
+         <input type="text" id="user-login" />
       </label>
       
       <label>
          <span>Hasło:</span>
-         <input type="password" id="userdata-pass" />
+         <input type="password" id="user-pass" />
       </label>
       
       <label>
          <span>Hasło (powtórz):</span>
-         <input type="password" id="userdata-pass2" />
+         <input type="password" id="user-pass2" />
       </label>
    </form>
 </div>

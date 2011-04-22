@@ -18,8 +18,6 @@
  //  along with Watermelon. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-include 'InstallerForm.php';
-
 /*
  * Watermelon Installer
  */
@@ -59,89 +57,77 @@ class Installer_Controller extends Controller
       
       // validators
       
-      if($this->requestURL == 'test.json')
+      if($this->requestURL == 'db.json')
       {
-         return $this->testValidate();
+         return $this->dbValidate();
       }
       
       // loading views representing installer steps
       
       $views .= View('greeting')->generate();
                                              // TODO: checking permissions, .htacceses and stuff
-      //$views .= $this->dbInfoView();
+      $views .= View('dbInfo')->generate();
       $views .= View('userData')->generate();
       $views .= View('siteName')->generate();
-      $views .= View('thanks')->generate();
       
       $this->data->views = $views;
    }
    
-   
    /**************************************************************************/
    
-   /*
-    * Database info form view
-    */
-   
-   public function dbInfoView()
+   public function dbValidate()
    {
-      // defalult values
+      $name   = $_POST['name'];
+      $user   = $_POST['user'];
+      $pass   = $_POST['pass'];
+      $prefix = $_POST['prefix'];
+      $host   = $_POST['host'];
       
-      $data = (object) array
-         (
-            'name'   => 'watermelon',
-            'user'   => '',
-            'pass'   => '',
-            'host'   => 'localhost',
-            'prefix' => ''
-         );
+      $errors = array();
       
-      // form
+      // checking whether it's possible to connect using given data
       
-      $form = new InstallerForm('wmelon.installer.dbInfo');
+      try
+      {
+         DB::connect($host, $name, $user, $pass, $prefix);
+      }
+      catch(WMException $e)
+      {
+         if($e->getCode() == 'DB:connectError')
+         {
+            $error = 'Nie mogę się połączyć z bazą danych przy użyciu podanych informacji.<br>Sprawdź ich poprawność i spróbuj ponownie.';
+            
+            $this->outputJSON(array('error', array($error)));
+            return;
+         }
+         elseif($e->getCode() == 'DB:selectError')
+         {
+            // can't select database - try to create one first
+            
+            try
+            {
+               $testDatabase = substr(md5(mt_rand()), 0, 16);
+               
+               DB::query('CREATE DATABASE ' . $testDatabase);
+               DB::query('DROP DATABASE ' . $testDatabase);
+            }
+            catch(WMException $e)
+            {
+               // don't have privileges to create database
+               
+               $error = 'Zdaje się, że baza danych "' . $name . '" nie istnieje, a użytkownik "' . $user . '" nie ma uprawnień do jej utworzenia.<br><br>Sprawdź, czy podane dane nie zawierają błędu lub spróbuj utworzyć bazę danych ręcznie w panelu administracyjnym serwera i spróbuj ponownie.';
+            
+               $this->outputJSON(array('error', array($error)));
+               return;
+            }
+         }
+      }
       
-      // label note
+      // everything is fine
       
-      $nameNote   = 'Jeśli nie istnieje, instalator spróbuje ją utworzyć';
-      $userNote   = 'Użytkownik z dostępem do podanej bazy danych';
+      $output = array('ok');
       
-      $prefixNote = 'Niezbędny jeśli chcesz mieć dwie kopie Watermelona na jednej bazie danych';
-      $hostNote   = 'Prawie zawsze jest to <em>localhost</em>';
-      
-      // input args
-      
-      $nameArgs   = array('value' => $data->name,   'labelNote' => $nameNote);
-      $userArgs   = array('value' => $data->user,   'labelNote' => $userNote);
-      $passArgs   = array('value' => $data->pass);
-      $prefixArgs = array('value' => $data->prefix, 'labelNote' => $prefixNote);
-      $hostArgs   = array('value' => $data->host,   'labelNote' => $hostNote);
-      
-      // adding inputs
-      
-      $form->addInput('text',     'name',    'Nazwa bazy danych',  true,  $nameArgs);
-      $form->addInput('text',     'user',    'Użytkownik',         true,  $userArgs);
-      $form->addInput('password', 'pass',    'Hasło',              false, $passArgs);
-      
-      $form->addHTML('<div class="advanced-hr">Zaawansowane<hr /></div>');
-      
-      $form->addInput('text',     'prefix',  'Prefiks tabel',      false, $prefixArgs);
-      $form->addInput('text',     'host',    'Serwer',             true,  $hostArgs);
-      
-      // displaying
-      
-      $view = View('dbInfo');
-      $view->form = $form->generate();
-      
-      return $view->generate();
-   }
-   
-   /**************************************************************************/
-   
-   public function testValidate()
-   {
-      $data = 'ok';
-      
-      $this->outputJSON($data);
+      $this->outputJSON($output);
    }
    
    /**************************************************************************/
@@ -377,80 +363,7 @@ class Installer_Controller extends Controller
    
    /**************************************************************************/
    
-   public function validateDb()
-   {
-      $form = InstallerForm::validate('wmelon.installer.dbInfo');
-      $data = $form->get();
-      
-      $_SESSION['dbForm'] = $data;
-      
-      // check if database name and prefix are valid
-      
-      if(!preg_match('/^[a-zA-Z0-9_]+$/', $data->name))
-      {
-         $form->addError('Nazwa bazy danych jest niepoprawna - dozwolone są jedynie litery, cyfry oraz znak "_"');
-      }
-      
-      if(!preg_match('/^[a-zA-Z0-9_]*$/', $data->prefix))
-      {
-         $form->addError('Prefiks nazw tabel jest niepoprawny - dozwolone są jedynie litery, cyfry oraz znak "_"');
-      }
-      
-      // checking whether it's possible to connect using given data
-
-      try
-      {
-         DB::connect($data->host, $data->name, $data->user, $data->pass, $data->prefix);
-      }
-      catch(WMException $e)
-      {
-         if($e->getCode() == 'DB:connectError')
-         {
-            $form->addError('Nie mogę się połączyć z bazą danych przy użyciu podanych informacji.<br>Sprawdź ich poprawność i spróbuj ponownie.');
-            $form->fallback();
-         }
-         elseif($e->getCode() == 'DB:selectError')
-         {
-            // can't select database - try to create one first
-            
-            try
-            {
-               $testDatabase = substr(md5(mt_rand()), 0, 16);
-               
-               DB::query('CREATE DATABASE ' . $testDatabase);
-               DB::query('DROP DATABASE ' . $testDatabase);
-            }
-            catch(WMException $e)
-            {
-               // don't have privileges to create database
-               
-               $form->addError('Zdaje się, że baza danych "' . $data->name . '" nie istnieje, a użytkownik "' . $data->user . '" nie ma uprawnień do jej utworzenia.<br><br>Sprawdź, czy podane dane nie zawierają błędu lub spróbuj utworzyć bazę danych ręcznie w panelu administracyjnym serwera i spróbuj ponownie.');
-               $form->fallback();
-            }
-         }
-      }
-      
-      // if any errors, fall back
    
-      $form->fallBack();
-   }
-   
-   
-   public function validateUserData()
-   {
-      $form = InstallerForm::validate('wmelon.installer.userData');
-      $data = $form->get();
-      
-      $_SESSION['userDataForm'] = $data;
-      
-      // checking whether password match
-      
-      if($data->pass != $data->pass2)
-      {
-         $form->addError('Podane hasła nie są takie same. Popraw i spróbuj ponownie.');
-         $form->fallback();
-      }
-   }
    
    /*
     * Seventh step - saving configuration

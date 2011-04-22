@@ -1,7 +1,7 @@
-var Installer_Intro = false;
-var Installer_Step = 1;
-var Installer_Steps;
-var Installer_ButtonsDisabled = false;
+var Installer_Intro = false
+var Installer_Step = 1
+var Installer_Steps
+var Installer_ButtonsDisabled = false
 
 window.onload = function()
 {
@@ -43,9 +43,9 @@ window.onload = function()
    
    $('#previous-button').click(previous)
    
-   // hooking up validators
+   // form.submit() don't do anything
    
-   $('#userdata form').submit(userdataValidator)
+   $('form').submit(function(){ return false })
 }
 
 /*
@@ -65,7 +65,12 @@ function nextClick()
    
    if($('.current form').length == 1)
    {
-      $('.current form').submit()
+      switch($('.current').attr('id'))
+      {
+         case 'dbinfo':   dbInfoValidator(); break;
+         case 'userdata': userDataValidator(); break;
+         case 'sitename': siteNameValidator(); break;
+      }
    }
    else
    {
@@ -118,22 +123,109 @@ function displayErrors(messagesArray)
 /**************************************************************************/
 
 /*
- * Validates user data form
+ * Validates database info form
  */
 
-function userdataValidator()
+function dbInfoValidator()
 {
    errors = []
    
    // trim all
    
-   login = $.trim($('#userdata-login').val())
-   pass  = $.trim($('#userdata-pass').val())
-   pass2 = $.trim($('#userdata-pass2').val())
+   name   = trim('#db-name')
+   user   = trim('#db-user')
+   pass   = trim('#db-pass')
+   prefix = trim('#db-prefix')
+   host   = trim('#db-host')
    
-   $('#userdata-login').val(login)
-   $('#userdata-pass').val(pass)
-   $('#userdata-pass2').val(pass2)
+   // check if all required inputs are filled
+   
+   if(name.length == 0 || user.length == 0 || host.length == 0)
+   {
+      errors.push('Wszystkie pola muszą być wypełnione')
+   }
+   
+   // check if database name and prefix are valid
+   
+   if(!name.match(/^[a-z0-9_]*$/i))
+   {
+      errors.push('Nazwa bazy danych jest niepoprawna — dozwolone są jedynie litery, cyfry oraz znak "_"')
+   }
+   
+   if(!prefix.match(/^[a-z0-9_]*$/i))
+   {
+      errors.push('Prefiks nazw tabel jest niepoprawny — dozwolone są jedynie litery, cyfry oraz znak "_"')
+   }
+   
+   // stop here if there are errors
+   
+   if(errors.length > 0)
+   {
+      displayErrors(errors)
+      return
+   }
+   
+   // container dim (so that user can see something happens) -- in .5s delay to avoid blink if network connection is fast
+   
+   dim = setTimeout("$('.content-box.current').css({opacity: 0.7})", 500)
+   
+   // do some server-side validation
+   
+   $.ajax(
+   {
+      url: 'db.json',
+      dataType: 'json',
+      type: 'POST',
+      data: {name: name, user: user, pass: pass, prefix: prefix, host: host}
+   })
+   .success(function(data)
+   {
+      // add errors from response
+      
+      if(data[0] == 'error')
+      {
+         $.each(data[1], function(i, value)
+         {
+            errors.push(value)
+         })
+      }
+      
+      // css
+      
+      clearTimeout(dim)
+      $('.content-box.current').css({opacity: 1})
+
+      // display errors or go forward
+
+      displayErrors(errors)
+
+      if(errors.length == 0)
+      {
+         next()
+      }
+   })
+   .error(function()
+   {
+      clearTimeout(dim)
+      $('.content-box.current').css({opacity: 1})
+      
+      displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.'])
+   })
+}
+
+/*
+ * Validates user data form
+ */
+
+function userDataValidator()
+{
+   errors = []
+   
+   // trim all
+   
+   login = trim('#user-login')
+   pass  = trim('#user-pass')
+   pass2 = trim('#user-pass2')
    
    // check if all inputs are filled
    
@@ -157,8 +249,35 @@ function userdataValidator()
    {
       next()
    }
+}
+
+/*
+ * Validates site name form
+ */
+
+function siteNameValidator()
+{
+   errors = []
    
-   return false;
+   // trim
+   
+   siteName = trim('#sitename-input')
+   
+   // check if filled
+   
+   if(siteName.length == 0)
+   {
+      errors.push('Podaj nazwę dla swojej strony')
+   }
+   
+   // display errors or go forward
+   
+   displayErrors(errors)
+   
+   if(errors.length == 0)
+   {
+      next()
+   }
 }
 
 /**************************************************************************/
@@ -191,4 +310,21 @@ function flexHeight()
       .css({marginLeft: (Installer_Step - 1) * 750}) // and change margin so that content stays in place
    
    $('#content-inner').css({height: 'auto'})
+}
+
+/**************************************************************************/
+
+/*
+ * string trim(string selector)
+ * 
+ * Trims value of $(selector) and returns it
+ */
+
+function trim(selector)
+{
+   val = $.trim($(selector).val())
+   
+   $(selector).val(val)
+   
+   return val
 }
