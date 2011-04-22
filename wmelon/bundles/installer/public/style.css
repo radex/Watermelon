@@ -81,30 +81,13 @@ input[type="checkbox"] { vertical-align: bottom; }
 
 .error
 {
-   border: 1px solid #DEA781;
-   background: #FFCD8A url('../watermelon/public/img/error.png') no-repeat 10px center;
-}
-
-.notice
-{
-   border: 1px solid #80B2D2;
-   background: #B8D8EA url('../watermelon/public/img/notice.png') no-repeat 10px center;
-}
-
-.successNotice
-{
-   border: 1px solid #97c32d;
-   background: #deeba8 url('../watermelon/public/img/successNotice.png') no-repeat 10px center;
-}
-
-.error,
-.notice,
-.successNotice
-{
    padding: 10px;
    margin: 10px;
    padding-left: 40px;
    margin-top: 0;
+   
+   border: 1px solid #DEA781;
+   background: #FFCD8A url('../../watermelon/public/img/error.png') no-repeat 10px center;
 }
 
 /**************************************************************************/

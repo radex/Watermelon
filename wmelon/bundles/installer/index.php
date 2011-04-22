@@ -1,7 +1,7 @@
 <?php die?>
 <!DOCTYPE html>
 <meta charset="UTF-8"/>
-<link rel="stylesheet" href="${SkinURL}style.css"/>
+<link rel="stylesheet" href="${SkinURL}public/style.css"/>
 ${php:skin.drawHeadTags()}
 
 <style>#container, header { display: none }</style>
@@ -56,5 +56,5 @@ ${php:skin.drawHeadTags()}
 <!-- *** -->
 
 <script src="${SystemURL}core/FrontendLibraries/jquery.js"></script>
-<script src="${SkinURL}animations.js"></script>
-<script src="${SkinURL}installer.js"></script>
+<script src="${SkinURL}public/animations.js"></script>
+<script src="${SkinURL}public/installer.js"></script>

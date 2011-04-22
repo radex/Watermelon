@@ -24,6 +24,8 @@
 
 class Installer_Controller extends Controller
 {
+   private $tableNames = array('benchmark', 'blogposts', 'categories', 'comments', 'config', 'pages', 'privileges', 'users');
+   
    /*
     * Main method - setup and running
     */
@@ -83,6 +85,8 @@ class Installer_Controller extends Controller
       $prefix = $_POST['prefix'];
       $host   = $_POST['host'];
       
+      $databaseExists = true;
+      
       $errors = array();
       
       // checking whether it's possible to connect using given data
@@ -110,6 +114,8 @@ class Installer_Controller extends Controller
                
                DB::query('CREATE DATABASE ' . $testDatabase);
                DB::query('DROP DATABASE ' . $testDatabase);
+               
+               $databaseExixts = false;
             }
             catch(WMException $e)
             {
@@ -122,6 +128,10 @@ class Installer_Controller extends Controller
             }
          }
       }
+      
+      // if database exists, check if tables already exist
+      
+            //TODO: check
       
       // everything is fine
       
