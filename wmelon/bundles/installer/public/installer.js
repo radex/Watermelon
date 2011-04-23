@@ -189,6 +189,10 @@ function dbInfoValidator()
             errors.push(value)
          })
       }
+      else
+      {
+         $('#db-prefix').val(data[1])
+      }
       
       // css
       
@@ -204,8 +208,10 @@ function dbInfoValidator()
          next()
       }
    })
-   .error(function()
+   .error(function(jqXHR)
    {
+      console.log(jqXHR.responseText)
+      
       clearTimeout(dim)
       $('.content-box.current').css({opacity: 1})
       

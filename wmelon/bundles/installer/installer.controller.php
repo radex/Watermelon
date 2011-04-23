@@ -34,9 +34,9 @@ class Installer_Controller extends Controller
    {
       // URL-s
       
-      $baseURL = 'http://localhost/w/';
-      $siteURL = 'http://localhost/w/';
-      $systemURL = 'http://localhost/w/wmelon/';
+      $baseURL = $this->baseURL();
+      $siteURL = $baseURL . 'index.php';
+      $systemURL = $baseURL . 'wmelon/';
       
       // constants
       
@@ -54,8 +54,6 @@ class Installer_Controller extends Controller
       // skin
       
       Watermelon::$config->skin = 'installer';
-      
-      /**************************************************************************/
       
       // validators
       
@@ -76,6 +74,15 @@ class Installer_Controller extends Controller
    }
    
    /**************************************************************************/
+   
+   /*
+    * Validates database info (sent via $_POST using AJAX)
+    * 
+    * If there are some errors, returns JSON: ['error', ['(msg)', ...]]
+    * 
+    * If everything is fine, returns JSON: ['ok', prefix], where prefix is proposed table prefix
+    * (if there are already Watermelon's tables in this database, appropriate prefix is proposed)
+    */
    
    public function dbValidate()
    {
@@ -101,8 +108,7 @@ class Installer_Controller extends Controller
          {
             $error = 'Nie mogę się połączyć z bazą danych przy użyciu podanych informacji.<br>Sprawdź ich poprawność i spróbuj ponownie.';
             
-            $this->outputJSON(array('error', array($error)));
-            return;
+            return $this->outputJSON(array('error', array($error)));
          }
          elseif($e->getCode() == 'DB:selectError')
          {
@@ -115,204 +121,62 @@ class Installer_Controller extends Controller
                DB::query('CREATE DATABASE ' . $testDatabase);
                DB::query('DROP DATABASE ' . $testDatabase);
                
-               $databaseExixts = false;
+               $databaseExists = false;
             }
             catch(WMException $e)
             {
                // don't have privileges to create database
                
-               $error = 'Zdaje się, że baza danych "' . $name . '" nie istnieje, a użytkownik "' . $user . '" nie ma uprawnień do jej utworzenia.<br><br>Sprawdź, czy podane dane nie zawierają błędu lub spróbuj utworzyć bazę danych ręcznie w panelu administracyjnym serwera i spróbuj ponownie.';
+               $error = 'Zdaje się, że baza danych "' . $name . '" nie istnieje, a użytkownik "' . $user . '" nie ma uprawnień do jej utworzenia (albo istnieje, ale użytkownik nie ma uprawnień do dostępu do niej).<br><br>Sprawdź, czy podane dane nie zawierają błędu lub spróbuj utworzyć bazę danych ręcznie w panelu administracyjnym serwera i spróbuj ponownie.';
             
-               $this->outputJSON(array('error', array($error)));
-               return;
+               return $this->outputJSON(array('error', array($error)));
             }
          }
       }
       
       // if database exists, check if tables already exist
+      // (and if they do -- generate appropriate table prefix)
       
-            //TODO: check
+      if($databaseExists)
+      {
+         $i = 0;
+      
+         do
+         {
+            $i++;
+         
+            // prefix
+         
+            if($i > 1)
+            {
+               $prefix = 'wm' . $i . '_';
+            }
+         
+            // test every table name
+         
+            foreach($this->tableNames as $tableName)
+            {
+               $result = DB::pureQuery('SHOW TABLES LIKE "' . $prefix . $tableName . '"');
+            
+               if($result->exists)
+               {
+                  continue 2;
+               }
+            }
+         
+            break;
+         }
+         while(true);
+      }
       
       // everything is fine
       
-      $output = array('ok');
+      $output = array('ok', $prefix);
       
       $this->outputJSON($output);
    }
    
    /**************************************************************************/
-   
-   /*
-    * Main method - setting some constants, and running proper method
-    */
-   
-   public function _installer()
-   {
-      // .htaccess
-      
-      if(file_exists(SystemPath . '../dot.htaccess'))
-      {
-         rename(SystemPath . '../dot.htaccess', SystemPath . '../.htaccess');
-      }
-      
-      // installer/
-      
-      if(file_exists(SystemPath . 'installer/'))
-      {
-         // http://php.net/manual/en/function.rmdir.php#98622
-         // (too lazy to write my own)
-         
-         function rrmdir($dir) { 
-            if (is_dir($dir)) { 
-               $objects = scandir($dir); 
-               foreach ($objects as $object) { 
-                  if ($object != "." && $object != "..") { 
-                     if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object); 
-                  } 
-               } 
-               reset($objects); 
-               rmdir($dir); 
-            } 
-         }
-         
-         rrmdir(SystemPath . 'installer/');
-      }
-      
-      // storing current URL in session and retrieving one already stored
-      // that's used in below algorithm for determining base url - if current URL is the same as previous one,
-      // base url is determined again (because it means page was reloaded in browser,
-      // perhaps because .htaccess config was changed)
-      /*
-      if(isset($_SESSION['wmelon.installer.previousURL']))
-      {
-         $previousURL = $_SESSION['wmelon.installer.previousURL'];
-      }
-      
-      $currentURL = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-      
-      $_SESSION['wmelon.installer.previousURL'] = $currentURL;
-      
-      $pageReloaded = ($previousURL == $currentURL);
-      
-            //FIXME!
-      
-      */
-      // URL-s
-      
-      $baseURL = $this->baseURL();
-      
-      if(isset($_SESSION['wmelon.installer.siteURL']) && isset($_SESSION['wmelon.installer.systemURL'])/* && !$pageReloaded*/)
-         // already set and page is not reloaded (reasons explained above)
-      {
-         $siteURL   = $_SESSION['wmelon.installer.siteURL'];
-         $systemURL = $_SESSION['wmelon.installer.systemURL'];
-      }
-      elseif(isset($_GET['urltested']))
-      {
-         // got back from url test
-         
-         $systemURL = $baseURL . 'wmelon/';
-         
-         if(isset($_GET['works']))
-         {
-            $siteURL = $baseURL;
-         }
-         else
-         {
-            $siteURL = $baseURL . 'index.php/';
-         }
-         
-         $_SESSION['wmelon.installer.siteURL'] = $siteURL;
-         $_SESSION['wmelon.installer.systemURL'] = $systemURL;
-         
-         Redirect($siteURL);
-      }
-      else
-      {
-         // base URL not yet determined
-         // description of how it works is in wmelon/core/urltest.php
-         
-         $installerURL = $baseURL . 'index.php?urltested';
-         
-         $testfileURL = $baseURL . 'wmelon/core/urltest.php?backto=' . base64_encode($installerURL);
-         
-         Redirect($testfileURL);
-      }
-      
-      // constants
-      
-      define('WM_BaseURL',   $baseURL);
-      define('SiteURL',   $siteURL);
-      define('SystemURL', $systemURL);
-      define('CurrURL',   $siteURL);
-      
-      define('BundlesURL',  SystemURL . 'bundles/');
-      define('UploadedURL', SystemURL . 'uploaded/');
-      
-      define('SkinPath', BundlesPath    . 'installer/');
-      define('SkinURL',  BundlesURL . 'installer/');
-      
-      Watermelon::$config->skin = 'installer';
-      
-      // determining step number
-      
-      $step = (int) $this->segments[0];
-      
-      if($step < 2 || $step > 7)
-      {
-         $step = 2;
-      }
-      
-      // progress percent
-      
-      $this->data->progress = (int) (($step - 1) / 5 * 100);
-      
-      // previous step (but you can't go back after you unblock the blockade)
-      
-      if($step >= 3)
-      {
-         $this->data->previous = $step - 1;
-      }
-      else
-      {
-         $this->data->previous = null;
-      }
-      
-      // next step
-      
-      $this->data->next = $step + 1;
-      
-      // previous step number
-      
-      if(isset($_SESSION['currentStep']))
-      {
-         $_SESSION['previousStep'] = $_SESSION['currentStep'];
-      }
-      else
-      {
-         $_SESSION['previousStep'] = 1;
-      }
-      
-      $_SESSION['currentStep'] = $step;
-      
-      // running proper step action
-      
-      switch(Watermelon::$segments[0])
-      {
-         case '2':
-         default:  $this->greeting(); break;
-         case '3': $this->dbInfo(); break;
-         case '4': $this->userdata(); break;
-         case '5': $this->websiteName(); break;
-         case '6': $this->thank(); break;
-         case '7': $this->save(); break;
-         
-         case 'clear':
-            session_destroy();
-            SiteRedirect('1');
-         break;
-      }
-   }
    
    /*
     * private string baseURL()
@@ -369,6 +233,87 @@ class Installer_Controller extends Controller
       // returns
       
       return $url;
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * Main method - setting some constants, and running proper method
+    */
+   
+   public function _installer()
+   {
+      // .htaccess
+      
+      if(file_exists(SystemPath . '../dot.htaccess'))
+      {
+         rename(SystemPath . '../dot.htaccess', SystemPath . '../.htaccess');
+      }
+      
+      // installer/
+      
+      if(file_exists(SystemPath . 'installer/'))
+      {
+         // http://php.net/manual/en/function.rmdir.php#98622
+         // (too lazy to write my own)
+         
+         function rrmdir($dir) { 
+            if (is_dir($dir)) { 
+               $objects = scandir($dir); 
+               foreach ($objects as $object) { 
+                  if ($object != "." && $object != "..") { 
+                     if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object); 
+                  } 
+               } 
+               reset($objects); 
+               rmdir($dir); 
+            } 
+         }
+         
+         rrmdir(SystemPath . 'installer/');
+      }
+      
+      // URL-s
+      
+      $baseURL = $this->baseURL();
+      
+      if(isset($_SESSION['wmelon.installer.siteURL']) && isset($_SESSION['wmelon.installer.systemURL'])/* && !$pageReloaded*/)
+         // already set and page is not reloaded (reasons explained above)
+      {
+         $siteURL   = $_SESSION['wmelon.installer.siteURL'];
+         $systemURL = $_SESSION['wmelon.installer.systemURL'];
+      }
+      elseif(isset($_GET['urltested']))
+      {
+         // got back from url test
+         
+         $systemURL = $baseURL . 'wmelon/';
+         
+         if(isset($_GET['works']))
+         {
+            $siteURL = $baseURL;
+         }
+         else
+         {
+            $siteURL = $baseURL . 'index.php/';
+         }
+         
+         $_SESSION['wmelon.installer.siteURL'] = $siteURL;
+         $_SESSION['wmelon.installer.systemURL'] = $systemURL;
+         
+         Redirect($siteURL);
+      }
+      else
+      {
+         // base URL not yet determined
+         // description of how it works is in wmelon/core/urltest.php
+         
+         $installerURL = $baseURL . 'index.php?urltested';
+         
+         $testfileURL = $baseURL . 'wmelon/core/urltest.php?backto=' . base64_encode($installerURL);
+         
+         Redirect($testfileURL);
+      }
    }
    
    /**************************************************************************/
