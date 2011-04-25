@@ -6,16 +6,16 @@ function intro()
 {
    // moving header to the center
    
-   height = window.innerHeight
-   headerPaddingTop = (height - 100) / 2
+   height = window.innerHeight;
+   headerPaddingTop = (height - 100) / 2;
    
-   $('header').css({display: 'block', paddingTop: headerPaddingTop + 'px', backgroundColor: '#ddd'})
-   $('header div').css({opacity: 0})
+   $('header').css({display: 'block', paddingTop: headerPaddingTop + 'px', backgroundColor: '#ddd'});
+   $('header div').css({opacity: 0});
    
    // moving container
    
-   containerHeight = $('#container').height()
-   $('#container').css({display: 'block', marginTop: (headerPaddingTop - containerHeight) + 'px'})
+   containerHeight = $('#container').height();
+   $('#container').css({display: 'block', marginTop: (headerPaddingTop - containerHeight) + 'px'});
    
    // animating header
    
@@ -23,14 +23,14 @@ function intro()
    {
       // moving header and container on the proper positions
       
-      $('header').animate({paddingTop: 0}, Installer_Intro ? 500 : 0)
+      $('header').animate({paddingTop: 0}, Installer_Intro ? 500 : 0);
       $('#container').animate({marginTop: '75px'}, Installer_Intro ? 500 : 0, function()
       {
          // making header transparent (so that box-shadow of container looks good)
          
-         $('header').css('background', 'transparent')
-      })
-   })
+         $('header').css('background', 'transparent');
+      });
+   });
 }
 
 /*
@@ -39,15 +39,15 @@ function intro()
 
 function next()
 {
-   fixHeight()
+   fixHeight();
    
    // change .current class
    
-   $('.content-box.current').removeClass('current')
+   $('.content-box.current').removeClass('current');
    
-   Installer_Step++
+   Installer_Step++;
    
-   $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current')
+   $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current');
    
    // buttons
    
@@ -55,28 +55,28 @@ function next()
    
    if(Installer_Step == Installer_Steps)
    {
-      $('#next-button').attr('disabled', 'disabled')
+      $('#next-button').attr('disabled', 'disabled');
    }
    
-   $('#previous-button').removeAttr('disabled')
+   $('#previous-button').removeAttr('disabled');
    
    // resize height of container and move
    
-   nextStepHeight = $('.content-box.current').innerHeight()
+   nextStepHeight = $('.content-box.current').innerHeight();
    
    $('#content-inner').animate({marginLeft: '-=750px', height: nextStepHeight}, 400, function()
    {
-      afterMove()
-   })
+      afterMove();
+   });
    
    // resize progress bar
    
-   progressWidth = (Installer_Step / (Installer_Steps + 1) * 100)
+   progressWidth = (Installer_Step / (Installer_Steps + 1) * 100);
    
    if($('#progress-bar-progress').attr('data-width') < progressWidth)
    {
-      $('#progress-bar-progress').animate({width: progressWidth + '%'}, 400)
-      $('#progress-bar-progress').attr('data-width', progressWidth)
+      $('#progress-bar-progress').animate({width: progressWidth + '%'}, 400);
+      $('#progress-bar-progress').attr('data-width', progressWidth);
    }
 }
 
@@ -86,15 +86,15 @@ function next()
 
 function previous(step)
 {
-   fixHeight()
+   fixHeight();
    
    // change .current class
 
-   $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current')
+   $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current');
    
-   Installer_Step--
+   Installer_Step--;
    
-   $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current')
+   $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current');
    
    // buttons
    
@@ -102,18 +102,18 @@ function previous(step)
    
    if(Installer_Step == 1)
    {
-      $('#previous-button').attr('disabled', 'disabled')
+      $('#previous-button').attr('disabled', 'disabled');
    }
    
-   $('#next-button').removeAttr('disabled')
+   $('#next-button').removeAttr('disabled');
    
    // resize height of container and move
 
-   prevStepHeight = $('.content-box.current').innerHeight()
+   prevStepHeight = $('.content-box.current').innerHeight();
 
    $('#content-inner').animate({marginLeft: '+=750px', height: prevStepHeight}, 400, function()
    {
-      afterMove()
+      afterMove();
    })
 }
 
@@ -129,16 +129,16 @@ function afterMove()
    
    if($('.content-box.current input')[0])
    {
-      $('.content-box.current input')[0].focus()
+      $('.content-box.current input')[0].focus();
    }
    else
    {
-      $('#next-button').focus()
+      $('#next-button').focus();
    }
    
    // hide other .content-boxes and flex height
    
-   flexHeight()
+   flexHeight();
    
    // enable buttons
    

@@ -56,5 +56,4 @@ ${php:skin.drawHeadTags()}
 <!-- *** -->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
-<script src="${SkinURL}public/animations.js"></script>
-<script src="${SkinURL}public/installer.js"></script>
+<script src="${SkinURL}public/js.php"></script>

@@ -1,33 +1,33 @@
-var Installer_Intro = false
-var Installer_Step = 1
-var Installer_Steps
-var Installer_ButtonsDisabled = false
+var Installer_Intro = false;
+var Installer_Step = 1;
+var Installer_Steps;
+var Installer_ButtonsDisabled = false;
 
 window.onload = function()
 {
    // launch intro
    
-   intro()
+   intro();
    
    // give .current to the first step and hide other boxes
    
-   $('.content-box:first-of-type').addClass('current')
+   $('.content-box:first-of-type').addClass('current');
    
-   flexHeight()
+   flexHeight();
    
    // resizing progress bar
    
-   Installer_Steps = $('.content-box').length
+   Installer_Steps = $('.content-box').length;
    
-   progressWidth = (1 / (Installer_Steps + 1) * 100)
+   progressWidth = (1 / (Installer_Steps + 1) * 100);
    
-   $('#progress-bar-progress').css({width: progressWidth + '%'})
-   $('#progress-bar-progress').attr('data-width', progressWidth) // just to make things easier
+   $('#progress-bar-progress').css({width: progressWidth + '%'});
+   $('#progress-bar-progress').attr('data-width', progressWidth); // just to make things easier
    
    // buttons
    
-   $('#next-button').focus()
-   $('#previous-button').attr('disabled', 'disabled')
+   $('#next-button').focus();
+   $('#previous-button').attr('disabled', 'disabled');
    
    // trigger page change
    
@@ -35,17 +35,17 @@ window.onload = function()
    {
       if(e.keyCode == 13 && Installer_Step < Installer_Steps)
       {
-         nextClick()
+         nextClick();
       }
-   })
+   });
    
-   $('#next-button').click(nextClick)
+   $('#next-button').click(nextClick);
    
-   $('#previous-button').click(previous)
+   $('#previous-button').click(previous);
    
    // form.submit() don't do anything
    
-   $('form').submit(function(){ return false })
+   $('form').submit(function(){ return false; });
 }
 
 /*
@@ -58,7 +58,7 @@ function nextClick()
    
    if(Installer_ButtonsDisabled)
    {
-      return
+      return;
    }
    
    // validating (if there's a form) or just moving to the next step
@@ -74,7 +74,7 @@ function nextClick()
    }
    else
    {
-      next()
+      next();
    }
 }
 
@@ -88,35 +88,35 @@ function displayErrors(messagesArray)
 {
    // joining into HTML
    
-   messages = ''
+   messages = '';
    
    $.each(messagesArray, function(index, value)
    {
-      messages += '<div class="error">' + value + '</div>'
-   })
+      messages += '<div class="error">' + value + '</div>';
+   });
    
    // displaying
    
-   $('.current .messages').css({height: 'auto'})
+   $('.current .messages').css({height: 'auto'});
    
-   height_before = $('.current .messages').height()
+   height_before = $('.current .messages').height();
    
-   $('.current .messages').html(messages)
+   $('.current .messages').html(messages);
    
-   height_after = $('.current .messages').height()
+   height_after = $('.current .messages').height();
    
    // flash if height didn't change (contents are the same or other message but still the same height)
    // or animate height change
    
    if(height_before == height_after)
    {
-      $('.current .messages').css({opacity: .5})
-      $('.current .messages').animate({opacity: 1}, 150)
+      $('.current .messages').css({opacity: .5});
+      $('.current .messages').animate({opacity: 1}, 150);
    }
    else
    {
-      $('.current .messages').css({height: height_before})
-      $('.current .messages').animate({height: height_after, marginBottom: 10}, 400) // paddingBottom: 0 to fix WebKit bug
+      $('.current .messages').css({height: height_before});
+      $('.current .messages').animate({height: height_after, marginBottom: 10}, 400); // paddingBottom: 0 to fix WebKit bug
    }
 }
 
@@ -128,46 +128,46 @@ function displayErrors(messagesArray)
 
 function dbInfoValidator()
 {
-   errors = []
+   errors = [];
    
    // trim all
    
-   name   = trim('#db-name')
-   user   = trim('#db-user')
-   pass   = trim('#db-pass')
-   prefix = trim('#db-prefix')
-   host   = trim('#db-host')
+   name   = trim('#db-name');
+   user   = trim('#db-user');
+   pass   = trim('#db-pass');
+   prefix = trim('#db-prefix');
+   host   = trim('#db-host');
    
    // check if all required inputs are filled
    
    if(name.length == 0 || user.length == 0 || host.length == 0)
    {
-      errors.push('Wszystkie pola muszą być wypełnione')
+      errors.push('Wszystkie pola muszą być wypełnione');
    }
    
    // check if database name and prefix are valid
    
    if(!name.match(/^[a-z0-9_]*$/i))
    {
-      errors.push('Nazwa bazy danych jest niepoprawna — dozwolone są jedynie litery, cyfry oraz znak "_"')
+      errors.push('Nazwa bazy danych jest niepoprawna — dozwolone są jedynie litery, cyfry oraz znak "_"');
    }
    
    if(!prefix.match(/^[a-z0-9_]*$/i))
    {
-      errors.push('Prefiks nazw tabel jest niepoprawny — dozwolone są jedynie litery, cyfry oraz znak "_"')
+      errors.push('Prefiks nazw tabel jest niepoprawny — dozwolone są jedynie litery, cyfry oraz znak "_"');
    }
    
    // stop here if there are errors
    
    if(errors.length > 0)
    {
-      displayErrors(errors)
-      return
+      displayErrors(errors);
+      return;
    }
    
    // container dim (so that user can see something happens) -- in .5s delay to avoid blink if network connection is fast
    
-   dim = setTimeout("$('.content-box.current').css({opacity: 0.7})", 500)
+   dim = setTimeout("$('.content-box.current').css({opacity: 0.7})", 500);
    
    // do some server-side validation
    
@@ -186,37 +186,37 @@ function dbInfoValidator()
       {
          $.each(data[1], function(i, value)
          {
-            errors.push(value)
+            errors.push(value);
          })
       }
       else
       {
-         $('#db-prefix').val(data[1])
+         $('#db-prefix').val(data[1]);
       }
       
       // css
       
-      clearTimeout(dim)
-      $('.content-box.current').css({opacity: 1})
+      clearTimeout(dim);
+      $('.content-box.current').css({opacity: 1});
 
       // display errors or go forward
 
-      displayErrors(errors)
+      displayErrors(errors);
 
       if(errors.length == 0)
       {
-         next()
+         next();
       }
    })
    .error(function(jqXHR)
    {
-      console.log(jqXHR.responseText)
+      console.log(jqXHR.responseText);
       
-      clearTimeout(dim)
-      $('.content-box.current').css({opacity: 1})
+      clearTimeout(dim);
+      $('.content-box.current').css({opacity: 1});
       
-      displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.'])
-   })
+      displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.']);
+   });
 }
 
 /*
@@ -225,35 +225,35 @@ function dbInfoValidator()
 
 function userDataValidator()
 {
-   errors = []
+   errors = [];
    
    // trim all
    
-   login = trim('#user-login')
-   pass  = trim('#user-pass')
-   pass2 = trim('#user-pass2')
+   login = trim('#user-login');
+   pass  = trim('#user-pass');
+   pass2 = trim('#user-pass2');
    
    // check if all inputs are filled
    
    if(login.length == 0 || pass.length == 0 || pass2.length == 0)
    {
-      errors.push('Wszystkie pola muszą być wypełnione')
+      errors.push('Wszystkie pola muszą być wypełnione');
    }
    
    // check if passwords are the same
    
    if(pass.length > 0 && pass2.length > 0 && pass != pass2)
    {
-      errors.push('Podane hasła nie pasują do siebie')
+      errors.push('Podane hasła nie pasują do siebie');
    }
    
    // display errors or go forward
    
-   displayErrors(errors)
+   displayErrors(errors);
    
    if(errors.length == 0)
    {
-      next()
+      next();
    }
 }
 
@@ -263,26 +263,26 @@ function userDataValidator()
 
 function siteNameValidator()
 {
-   errors = []
+   errors = [];
    
    // trim
    
-   siteName = trim('#sitename-input')
+   siteName = trim('#sitename-input');
    
    // check if filled
    
    if(siteName.length == 0)
    {
-      errors.push('Podaj nazwę dla swojej strony')
+      errors.push('Podaj nazwę dla swojej strony');
    }
    
    // display errors or go forward
    
-   displayErrors(errors)
+   displayErrors(errors);
    
    if(errors.length == 0)
    {
-      next()
+      next();
    }
 }
 
@@ -295,12 +295,12 @@ function siteNameValidator()
 
 function fixHeight()
 {
-   $('.content-box').show()
+   $('.content-box').show();
 
-   currentHeight = $('.content-box.current').innerHeight()
+   currentHeight = $('.content-box.current').innerHeight();
 
-   $('#content-inner').css({height: currentHeight})
-   $('.content-box.current').css({marginLeft: 0})
+   $('#content-inner').css({height: currentHeight});
+   $('.content-box.current').css({marginLeft: 0});
 }
 
 /*
@@ -310,12 +310,12 @@ function fixHeight()
 
 function flexHeight()
 {
-   $('.content-box').hide()
+   $('.content-box').hide();
    $('.content-box.current')
       .show()                                        // unhide current one
-      .css({marginLeft: (Installer_Step - 1) * 750}) // and change margin so that content stays in place
+      .css({marginLeft: (Installer_Step - 1) * 750}); // and change margin so that content stays in place
    
-   $('#content-inner').css({height: 'auto'})
+   $('#content-inner').css({height: 'auto'});
 }
 
 /**************************************************************************/
@@ -328,9 +328,9 @@ function flexHeight()
 
 function trim(selector)
 {
-   val = $.trim($(selector).val())
+   val = $.trim($(selector).val());
    
-   $(selector).val(val)
+   $(selector).val(val);
    
-   return val
+   return val;
 }
