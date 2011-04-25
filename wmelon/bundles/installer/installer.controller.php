@@ -35,7 +35,7 @@ class Installer_Controller extends Controller
       // URL-s
       
       $baseURL = $this->baseURL();
-      $siteURL = $baseURL . 'index.php';
+      $siteURL = $baseURL . 'index.php/';
       $systemURL = $baseURL . 'wmelon/';
       
       // constants
@@ -55,22 +55,21 @@ class Installer_Controller extends Controller
       
       // validators etc.
       
-      if($this->requestURL == 'db.json')
+      switch($this->requestURL)
       {
-         return $this->dbValidate();
-      }
-      elseif($this->requestURL == 'permissions.json')
-      {
-         return $this->outputJSON($this->permissions());
+         case 'db.json':          return $this->dbValidate();
+         case 'permissions.json': return $this->outputJSON($this->permissions());
+         case 'install-1.json':  return $this->install1();
+         case 'install-2.json':  return $this->install2();
       }
       
       // displaying views representing installer steps
       
       View('greeting')->display();
       $this->permissionsView();
-      View('dbInfo')->display();
-      View('userData')->display();
-      View('siteName')->display();
+      //View('dbInfo')->display();
+      //View('userData')->display();
+      //View('siteName')->display();
    }
    
    /**************************************************************************/
@@ -246,6 +245,20 @@ class Installer_Controller extends Controller
       $output = array('ok', $prefix);
       
       $this->outputJSON($output);
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * Moves watermelon.htaccess to .htaccess (or prepends .htaccess with the contents of watermelon.htaccess)
+    * 
+    * It's required to split it into two parts, because we need to know whether mod_rewrite in .htaccess works
+    * for installation and to check that we need to make separate request (via redirection or AJAX in this case)
+    */
+   
+   public function install1()
+   {
+      
    }
    
    /**************************************************************************/

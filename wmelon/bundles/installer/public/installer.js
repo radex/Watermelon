@@ -63,15 +63,22 @@ function nextClick()
    
    // validating or just moving to the next step
    
-   switch($('.current').attr('id'))
+   if(Installer_Step == Installer_Steps)
    {
-      case 'permissions': permissionsValidator(); break;
-      case 'dbinfo':      dbInfoValidator(); break;
-      case 'userdata':    userDataValidator(); break;
-      case 'sitename':    siteNameValidator(); break;
-      default:
-         next();
-      break;
+      install();
+   }
+   else
+   {
+      switch($('.current').attr('id'))
+      {
+         case 'permissions': permissionsValidator(); break;
+         case 'dbinfo':      dbInfoValidator(); break;
+         case 'userdata':    userDataValidator(); break;
+         case 'sitename':    siteNameValidator(); break;
+         default:
+            next();
+         break;
+      }
    }
 }
 

@@ -24,12 +24,11 @@
  * Used to test whether mod_rewrite works, by requesting this file (and passing URL to redirect back to). Rewrite directive appends '&works' to query string, which allows to determine whether it works correctly.
  */
 
-$backTo = base64_decode($_GET['backto']);
-$works = isset($_GET['works']);
-
-if($works)
+if(isset($_GET['works']))
 {
-   $backTo .= '&works';
+   echo 'on';
 }
-
-header('Location:' . $backTo);
+else
+{
+   echo 'off';
+}

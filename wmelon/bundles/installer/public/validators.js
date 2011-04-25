@@ -12,7 +12,7 @@ function permissionsValidator()
    
    $.ajax(
    {
-      url: 'permissions.json',
+      url: WM_SiteURL + 'permissions.json',
       dataType: 'json'
    })
    .success(function(files)
@@ -129,7 +129,7 @@ function dbInfoValidator()
    
    $.ajax(
    {
-      url: 'db.json',
+      url: WM_SiteURL + 'db.json',
       dataType: 'json',
       type: 'POST',
       data: {name: name, user: user, pass: pass, prefix: prefix, host: host}
@@ -240,4 +240,73 @@ function siteNameValidator()
    {
       next();
    }
+}
+
+/*
+ * Requests installer action
+ */
+
+function install()
+{
+   // data
+   
+   dbname   = trim('#db-name');
+   dbuser   = trim('#db-user');
+   dbpass   = trim('#db-pass');
+   dbprefix = trim('#db-prefix');
+   dbhost   = trim('#db-host');
+
+   login    = trim('#user-login');
+   pass     = trim('#user-pass');
+   pass2    = trim('#user-pass2');
+
+   sitename = trim('#sitename-input');
+   
+   // checking if mod_rewrite works
+   /*
+   $.ajax(
+   {
+      url: WM_SystemURL + 'core/urltest.php',
+      dataType: 'text'
+   })
+   .error(function(jqXHR)
+   {
+      console.log(jqXHR.responseText);
+      
+      clearTimeout(dim);
+      $('.content-box.current').css({opacity: 1});
+      
+      displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.']);
+   })
+   .success(function(data)
+   {
+      // response
+      
+      mod_rewrite = (data == 'on');
+      
+      // calling installer (yeah)
+      
+      $.ajax(
+      {
+         url: WM_SiteURL + 'install.json',
+         dataType: 'json',
+         type: 'POST',
+         data:
+            {
+               dbname: dbname,
+               dbuser: dbuser,
+               dbpass: dbpass,
+               dbprefix: dbprefix,
+               dbhost: dbhost,
+
+               login: login,
+               pass: pass,
+               pass2: pass2,
+
+               sitename: sitename,
+               
+               mod_rewrite: mod_rewrite
+            }
+      })
+   });*/
 }
