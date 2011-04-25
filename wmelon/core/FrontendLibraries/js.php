@@ -22,7 +22,6 @@ header('Content-Type: text/javascript');
 
 $files = array
    (
-      'jquery.js',
       'SyntaxHighlighter/shCore.js',
       'SyntaxHighlighter/shAutoloader.js',
       'sh.js',

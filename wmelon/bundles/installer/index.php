@@ -22,7 +22,7 @@ ${php:skin.drawHeadTags()}
    <div id="container-inner">
       <div id="content">
          <div id="content-inner">
-            ${structure views}
+            ${structure content}
          </div>
       </div>
       <div id="status-bar">
@@ -55,6 +55,6 @@ ${php:skin.drawHeadTags()}
 
 <!-- *** -->
 
-<script src="${SystemURL}core/FrontendLibraries/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 <script src="${SkinURL}public/animations.js"></script>
 <script src="${SkinURL}public/installer.js"></script>

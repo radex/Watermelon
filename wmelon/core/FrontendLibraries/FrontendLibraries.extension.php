@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -18,16 +18,17 @@
  //  along with Watermelon. If not, see <http://www.gnu.org/licenses/>.
  //  
 
+// TODO: redesign it
+
 class FrontendLibraries extends Extension
 {
    public static function init()
    {
       // libraries versions
       
-      $jquery_version = '1.4.4';
       $sh_version     = '3.0.83';
       
-      $versions = $jquery_version . '/' . $sh_version;
+      $versions = $sh_version;
       
       // adding
       
@@ -36,5 +37,6 @@ class FrontendLibraries extends Extension
       Watermelon::$headTags[] = '<link rel="stylesheet" href="' . $baseURL . 'sh.css.php?v=3.0.83">';
       
       Watermelon::$tailTags[] = '<script src="' . $baseURL . 'js.php?v=' . $versions . '"></script>';
+      Watermelon::$tailTags[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>';
    }
 }

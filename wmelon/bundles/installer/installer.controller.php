@@ -40,13 +40,11 @@ class Installer_Controller extends Controller
       
       // constants
       
-      define('WM_BaseURL',  $baseURL);
       define('SiteURL',     $siteURL);
       define('SystemURL',   $systemURL);
       define('CurrURL',     $siteURL);
       
       define('BundlesURL',  SystemURL . 'bundles/');
-      define('UploadedURL', SystemURL . 'uploaded/');
       
       define('SkinPath',    BundlesPath . 'installer/');
       define('SkinURL',     BundlesURL  . 'installer/');
@@ -55,25 +53,63 @@ class Installer_Controller extends Controller
       
       Watermelon::$config->skin = 'installer';
       
-      // validators
+      // validators etc.
       
       if($this->requestURL == 'db.json')
       {
          return $this->dbValidate();
       }
+      elseif($this->requestURL == 'permissions.json')
+      {
+         return $this->outputJSON($this->permissions());
+      }
       
-      // loading views representing installer steps
+      // displaying views representing installer steps
       
-      $views .= View('greeting')->generate();
-                                             // TODO: checking permissions, .htacceses and stuff
-      $views .= View('dbInfo')->generate();
-      $views .= View('userData')->generate();
-      $views .= View('siteName')->generate();
-      
-      $this->data->views = $views;
+      View('greeting')->display();
+      $this->permissionsView();
+      View('dbInfo')->display();
+      View('userData')->display();
+      View('siteName')->display();
    }
    
    /**************************************************************************/
+   
+   /*
+    * Displays view of step regarding files/directories permissions
+    */
+   
+   public function permissionsView()
+   {
+      //TODO
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * Checks permissions to write for specific files and directories
+    * 
+    * Returns as an array
+    */
+   
+   public function permissions()
+   {
+      if(file_exists(SystemPath . '../watermelon.htaccess'))
+      {
+         if(file_exists(SystemPath . '../.htaccess'))
+         {
+            $perms[] = array('.htaccess', is_writable(SystemPath . '../.htaccess'));
+         }
+         
+         $perms[] = array('watermelon.htaccess', is_writable(SystemPath . '../watermelon.htaccess'));
+      }
+      
+      $perms[] = array('wm-uploaded/',      is_writable(SystemPath . '../wm-uploaded/'));
+      $perms[] = array('wmelon/cache/',     is_writable(CachePath));
+      $perms[] = array('wmelon/config.php', is_writable(SystemPath . 'config.php'));
+      
+      return $perms;
+   }
    
    /*
     * Validates database info (sent via $_POST using AJAX)

@@ -325,7 +325,6 @@ class Watermelon
       define('SystemPath',   $basePath);
       define('CorePath',     SystemPath . 'core/');
       define('BundlesPath',  SystemPath . 'bundles/');
-      define('UploadedPath', SystemPath . 'uploaded/');
       define('CachePath',    SystemPath . 'cache/');
       
       // loading config file
@@ -446,7 +445,6 @@ class Watermelon
       define('AdminURL',    $w->siteURL . 'admin/');
       define('SystemURL',   $w->systemURL);
       define('BundlesURL',  SystemURL . 'bundles/');
-      define('UploadedURL', SystemURL . 'uploaded/');
       define('CacheURL',    SystemURL . 'cache/');
       
       if(self::$appType == self::Admin)
