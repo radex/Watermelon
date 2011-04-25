@@ -81,7 +81,20 @@ class Installer_Controller extends Controller
    
    public function permissionsView()
    {
-      //TODO
+      // if everything is fine, go ahead
+      
+      $files = $this->permissions();
+      
+      if(empty($files))
+      {
+         return;
+      }
+      
+      // display view
+      
+      $v = View('permissions');
+      $v->files = $files;
+      $v->display();
    }
    
    /**************************************************************************/
@@ -89,26 +102,49 @@ class Installer_Controller extends Controller
    /*
     * Checks permissions to write for specific files and directories
     * 
-    * Returns as an array
+    * Returns array of file/dir names that does not have required write permissions
     */
    
    public function permissions()
    {
+      $files = array();
+      
+      // .htaccess / watermelon.htaccess
+      
       if(file_exists(SystemPath . '../watermelon.htaccess'))
       {
          if(file_exists(SystemPath . '../.htaccess'))
          {
-            $perms[] = array('.htaccess', is_writable(SystemPath . '../.htaccess'));
+            if(!is_writable(SystemPath . '../.htaccess'))
+            {
+               $files[] = '.htaccess';
+            }
          }
          
-         $perms[] = array('watermelon.htaccess', is_writable(SystemPath . '../watermelon.htaccess'));
+         if(!is_writable(SystemPath . '../watermelon.htaccess'))
+         {
+            $files[] = 'watermelon.htaccess';
+         }
       }
       
-      $perms[] = array('wm-uploaded/',      is_writable(SystemPath . '../wm-uploaded/'));
-      $perms[] = array('wmelon/cache/',     is_writable(CachePath));
-      $perms[] = array('wmelon/config.php', is_writable(SystemPath . 'config.php'));
+      // others
       
-      return $perms;
+      $filesToCheck = array
+         (
+            'wm-uploaded/'      => SystemPath . '../wm-uploaded/',
+            'wmelon/cache/'     => CachePath,
+            'wmelon/config.php' => SystemPath . 'config.php',
+         );
+      
+      foreach($filesToCheck as $name => $path)
+      {
+         if(!is_writable($path))
+         {
+            $files[] = $name;
+         }
+      }
+      
+      return $files;
    }
    
    /*

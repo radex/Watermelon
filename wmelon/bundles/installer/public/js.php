@@ -20,6 +20,10 @@
 
 header('Content-Type: text/javascript');
 
-include 'installer.js';
-echo "\n\n\n";
-include 'animations.js';
+$files = array('installer.js', 'validators.js', 'animations.js', 'jqueryColor.js');
+
+foreach($files as $file)
+{
+   include($file);
+   echo "\n\n\n";
+}

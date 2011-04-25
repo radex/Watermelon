@@ -125,7 +125,7 @@ hr
 h1
 {
    margin-bottom: 5px;
-   font-size: 1.6em;
+   font-size: 22px;
    font-weight: normal;
    color: #000;
 }
@@ -133,6 +133,11 @@ h1
 p
 {
    margin-bottom: 10px;
+}
+
+li
+{
+   list-style-type: square;
 }
 
 /**************************************************************************/

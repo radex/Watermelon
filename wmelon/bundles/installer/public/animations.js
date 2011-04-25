@@ -41,11 +41,20 @@ function next()
 {
    fixHeight();
    
+   // if next step is .skip-box (permissions step after setting proper permissions), skip it
+   
+   skip = false;
+   
+   if($('.content-box:nth-of-type(' + (Installer_Step + 1) + ')').hasClass('skip-box'))
+   {
+      skip = true;
+   }
+   
    // change .current class
    
    $('.content-box.current').removeClass('current');
    
-   Installer_Step++;
+   skip ? Installer_Step += 2 : Installer_Step++;
    
    $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current');
    
@@ -53,18 +62,16 @@ function next()
    
    Installer_ButtonsDisabled = true;
    
-   if(Installer_Step == Installer_Steps)
-   {
-      $('#next-button').attr('disabled', 'disabled');
-   }
-   
    $('#previous-button').removeAttr('disabled');
    
    // resize height of container and move
    
    nextStepHeight = $('.content-box.current').innerHeight();
    
-   $('#content-inner').animate({marginLeft: '-=750px', height: nextStepHeight}, 400, function()
+   marginChange = (skip ? '-=1500px' : '-=750px');
+   animationDuration = (skip ? 600 : 400);
+   
+   $('#content-inner').animate({marginLeft: marginChange, height: nextStepHeight}, animationDuration, function()
    {
       afterMove();
    });
@@ -88,11 +95,20 @@ function previous(step)
 {
    fixHeight();
    
+   // if previous step is .skip-box (permissions step after setting proper permissions), skip it
+   
+   skip = false;
+   
+   if($('.content-box:nth-of-type(' + (Installer_Step - 1) + ')').hasClass('skip-box'))
+   {
+      skip = true;
+   }
+   
    // change .current class
 
    $('.content-box:nth-of-type(' + Installer_Step + ')').removeClass('current');
    
-   Installer_Step--;
+   skip ? Installer_Step -= 2 : Installer_Step--;
    
    $('.content-box:nth-of-type(' + Installer_Step + ')').addClass('current');
    
@@ -105,16 +121,17 @@ function previous(step)
       $('#previous-button').attr('disabled', 'disabled');
    }
    
-   $('#next-button').removeAttr('disabled');
-   
    // resize height of container and move
 
    prevStepHeight = $('.content-box.current').innerHeight();
-
-   $('#content-inner').animate({marginLeft: '+=750px', height: prevStepHeight}, 400, function()
+   
+   marginChange = (skip ? '+=1500px' : '+=750px');
+   animationDuration = (skip ? 600 : 400);
+   
+   $('#content-inner').animate({marginLeft: marginChange, height: prevStepHeight}, animationDuration, function()
    {
       afterMove();
-   })
+   });
 }
 
 /**************************************************************************/
