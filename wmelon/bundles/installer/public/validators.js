@@ -15,6 +15,7 @@ function permissionsValidator()
       url: WM_SiteURL + 'permissions.json',
       dataType: 'json'
    })
+   .error(ajaxErrorHandler)
    .success(function(files)
    {
       // css
@@ -66,15 +67,6 @@ function permissionsValidator()
          $('.content-box.current').addClass('skip-box');
          next();
       }
-   })
-   .error(function(jqXHR)
-   {
-      console.log(jqXHR.responseText);
-      
-      clearTimeout(dim);
-      $('.content-box.current').css({opacity: 1});
-      
-      displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.']);
    });
 }
 
@@ -121,11 +113,9 @@ function dbInfoValidator()
       return;
    }
    
-   // container dim (so that user can see something happens) -- in .5s delay to avoid blink if network connection is fast
-   
-   dim = setTimeout("$('.content-box.current').css({opacity: 0.7})", 500);
-   
    // do some server-side validation
+   
+   dim();
    
    $.ajax(
    {
@@ -134,8 +124,11 @@ function dbInfoValidator()
       type: 'POST',
       data: {name: name, user: user, pass: pass, prefix: prefix, host: host}
    })
+   .error(ajaxErrorHandler)
    .success(function(data)
    {
+      undim();
+      
       // add errors from response
       
       if(data[0] == 'error')
@@ -149,11 +142,6 @@ function dbInfoValidator()
       {
          $('#db-prefix').val(data[1]);
       }
-      
-      // css
-      
-      clearTimeout(dim);
-      $('.content-box.current').css({opacity: 1});
 
       // display errors or go forward
 
@@ -163,15 +151,6 @@ function dbInfoValidator()
       {
          next();
       }
-   })
-   .error(function(jqXHR)
-   {
-      console.log(jqXHR.responseText);
-      
-      clearTimeout(dim);
-      $('.content-box.current').css({opacity: 1});
-      
-      displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.']);
    });
 }
 
@@ -248,65 +227,128 @@ function siteNameValidator()
 
 function install()
 {
-   // data
+   // installation, part 1
    
-   dbname   = trim('#db-name');
-   dbuser   = trim('#db-user');
-   dbpass   = trim('#db-pass');
-   dbprefix = trim('#db-prefix');
-   dbhost   = trim('#db-host');
-
-   login    = trim('#user-login');
-   pass     = trim('#user-pass');
-   pass2    = trim('#user-pass2');
-
-   sitename = trim('#sitename-input');
+   dim();
    
-   // checking if mod_rewrite works
-   /*
    $.ajax(
    {
-      url: WM_SystemURL + 'core/urltest.php',
-      dataType: 'text'
+      url: WM_SiteURL + 'install-1.json',
+      dataType: 'json'
    })
    .error(function(jqXHR)
    {
+      undim();
+      
       console.log(jqXHR.responseText);
       
-      clearTimeout(dim);
-      $('.content-box.current').css({opacity: 1});
+      Installer_PopupMessage = jqXHR.responseText;
       
-      displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.']);
+      displayErrors(['Wystąpił jakiś dziwny błąd. <a href="#" onclick="popupError(); return false;">Zobacz błąd</a>']);
+      
+      // disable buttons (at this stage files are changed, so we can't just redo it)
+      
+      $('#previous-button').attr('disabled', 'disabled');
+      $('#next-button').attr('disabled', 'disabled');
    })
-   .success(function(data)
+   .success(function()
    {
-      // response
-      
-      mod_rewrite = (data == 'on');
-      
-      // calling installer (yeah)
+      // check if mod_rewrite works
       
       $.ajax(
       {
-         url: WM_SiteURL + 'install.json',
-         dataType: 'json',
-         type: 'POST',
-         data:
-            {
-               dbname: dbname,
-               dbuser: dbuser,
-               dbpass: dbpass,
-               dbprefix: dbprefix,
-               dbhost: dbhost,
-
-               login: login,
-               pass: pass,
-               pass2: pass2,
-
-               sitename: sitename,
-               
-               mod_rewrite: mod_rewrite
-            }
+         url: WM_SystemURL + 'core/urltest.php',
+         dataType: 'text'
       })
-   });*/
+      .error(ajaxErrorHandler)
+      .success(function(mod_rewrite)
+      {
+         // installation, part 2
+         
+         $.ajax(
+         {
+            url: WM_SiteURL + 'install-2.json',
+            dataType: 'json',
+            type: 'POST',
+            data:
+               {
+                  dbname      : trim('#db-name'),
+                  dbuser      : trim('#db-user'),
+                  dbpass      : trim('#db-pass'),
+                  dbprefix    : trim('#db-prefix'),
+                  dbhost      : trim('#db-host'),
+
+                  login       : trim('#user-login'),
+                  pass        : trim('#user-pass'),
+                  pass2       : trim('#user-pass2'),
+
+                  sitename    : trim('#sitename-input'),
+
+                  mod_rewrite : mod_rewrite
+               }
+         })
+         .error(function(jqXHR)
+         {
+            undim();
+
+            console.log(jqXHR.responseText);
+
+            Installer_PopupMessage = jqXHR.responseText;
+
+            displayErrors(['Wystąpił jakiś dziwny błąd. <a href="#" onclick="popupError(); return false;">Zobacz błąd</a>']);
+
+            // disable buttons (at this stage files are changed, so we can't just redo it)
+
+            $('#previous-button').attr('disabled', 'disabled');
+            $('#next-button').attr('disabled', 'disabled');
+         })
+         .success(function()
+         {
+            undim();
+            
+            alert('success');
+         });
+      });
+   });
+}
+
+/**************************************************************************/
+
+/*
+ * Callback for $.ajax(...).error()
+ * 
+ * Displays notice and logs error
+ */
+
+function ajaxErrorHandler(jqXHR)
+{
+   undim();
+
+   console.log(jqXHR.responseText);
+
+   displayErrors(['Wystąpił jakiś dziwny błąd. Spróbuj jeszcze raz.']);
+}
+
+var Installer_PopupMessage = '';
+
+/*
+ * Displays message (HTML) from Installer_PopupMessage in a pop-up
+ */
+
+function popupError()
+{
+   popup = window.open('','','width=600,height=400').document;
+   
+   html = 
+   '<!DOCTYPE html>' +
+   '<meta charset="UTF-8"/>' + 
+   '<link rel="stylesheet" href="' + WM_SystemURL + 'bundles/installer/public/style.css"/>' +
+   '<div id="popup-header">' + 
+   'Wystąpił błąd, który przerwał instalację.<br>Oto komunikat (dla ekspertów), który się wyświetlił:' +
+   '</div>' +
+   '<div id="popup-message">' +
+   Installer_PopupMessage + 
+   '</div>';
+   
+   popup.write(html);
 }

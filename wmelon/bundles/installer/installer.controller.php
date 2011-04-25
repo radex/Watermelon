@@ -40,6 +40,7 @@ class Installer_Controller extends Controller
       
       // constants
       
+      define('BaseURL',     $baseURL);
       define('SiteURL',     $siteURL);
       define('SystemURL',   $systemURL);
       define('CurrURL',     $siteURL);
@@ -59,8 +60,8 @@ class Installer_Controller extends Controller
       {
          case 'db.json':          return $this->dbValidate();
          case 'permissions.json': return $this->outputJSON($this->permissions());
-         case 'install-1.json':  return $this->install1();
-         case 'install-2.json':  return $this->install2();
+         case 'install-1.json':   return $this->install1();
+         case 'install-2.json':   return $this->install2();
       }
       
       // displaying views representing installer steps
@@ -254,11 +255,74 @@ class Installer_Controller extends Controller
     * 
     * It's required to split it into two parts, because we need to know whether mod_rewrite in .htaccess works
     * for installation and to check that we need to make separate request (via redirection or AJAX in this case)
+    * 
+    * Prints just '"ok"' (JSON)
     */
    
    public function install1()
    {
+      // stop if no watermelon.htaccess
       
+      if(!file_exists(SystemPath . '../watermelon.htaccess'))
+      {
+         return $this->outputJSON('ok');
+      }
+      
+      // move htaccess or prepend existing one
+      
+      if(file_exists(SystemPath . '../.htaccess'))
+      {
+         $wmelonHtaccess = file_get_contents(SystemPath . '../watermelon.htaccess');
+         $existingHtaccess = file_get_contents(SystemPath . '../.htaccess');
+         
+         $htaccess = $wmelonHtaccess . "\n\n\n" . $existingHtaccess;
+         
+         file_put_contents(SystemPath . '../.htaccess', $htaccess);
+         
+         // delete watermelon.htaccess
+         
+         unlink(SystemPath . '../watermelon.htaccess');
+      }
+      else
+      {
+         rename(SystemPath . '../watermelon.htaccess', SystemPath . '../.htaccess');
+      }
+      
+      return $this->outputJSON('ok');
+   }
+   
+   /*
+    * Installation, part 2
+    * 
+    * All the other stuff -- saving config.php, installing SQL, setting initial config, creating user, etc.
+    */
+   
+   public function install2()
+   {
+      // data
+      
+      $fields = array('dbname', 'dbuser', 'dbpass', 'dbprefix', 'dbhost', 'login', 'pass', 'pass2', 'sitename');
+      
+      foreach($fields as $key)
+      {
+         $$key = $_POST[$key];
+      }
+      
+      $mod_rewrite = ($_POST['mod_rewrite'] == 'on');
+      
+      // URL-s
+      
+      if($mod_rewrite)
+      {
+         $siteURL = BaseURL;
+      }
+      else
+      {
+         $siteURL = BaseURL . 'index.php/';
+      }
+      
+      
+      // TODO: to be continued
    }
    
    /**************************************************************************/
@@ -318,87 +382,6 @@ class Installer_Controller extends Controller
       // returns
       
       return $url;
-   }
-   
-   /**************************************************************************/
-   
-   /*
-    * Main method - setting some constants, and running proper method
-    */
-   
-   public function _installer()
-   {
-      // .htaccess
-      
-      if(file_exists(SystemPath . '../dot.htaccess'))
-      {
-         rename(SystemPath . '../dot.htaccess', SystemPath . '../.htaccess');
-      }
-      
-      // installer/
-      
-      if(file_exists(SystemPath . 'installer/'))
-      {
-         // http://php.net/manual/en/function.rmdir.php#98622
-         // (too lazy to write my own)
-         
-         function rrmdir($dir) { 
-            if (is_dir($dir)) { 
-               $objects = scandir($dir); 
-               foreach ($objects as $object) { 
-                  if ($object != "." && $object != "..") { 
-                     if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object); 
-                  } 
-               } 
-               reset($objects); 
-               rmdir($dir); 
-            } 
-         }
-         
-         rrmdir(SystemPath . 'installer/');
-      }
-      
-      // URL-s
-      
-      $baseURL = $this->baseURL();
-      
-      if(isset($_SESSION['wmelon.installer.siteURL']) && isset($_SESSION['wmelon.installer.systemURL'])/* && !$pageReloaded*/)
-         // already set and page is not reloaded (reasons explained above)
-      {
-         $siteURL   = $_SESSION['wmelon.installer.siteURL'];
-         $systemURL = $_SESSION['wmelon.installer.systemURL'];
-      }
-      elseif(isset($_GET['urltested']))
-      {
-         // got back from url test
-         
-         $systemURL = $baseURL . 'wmelon/';
-         
-         if(isset($_GET['works']))
-         {
-            $siteURL = $baseURL;
-         }
-         else
-         {
-            $siteURL = $baseURL . 'index.php/';
-         }
-         
-         $_SESSION['wmelon.installer.siteURL'] = $siteURL;
-         $_SESSION['wmelon.installer.systemURL'] = $systemURL;
-         
-         Redirect($siteURL);
-      }
-      else
-      {
-         // base URL not yet determined
-         // description of how it works is in wmelon/core/urltest.php
-         
-         $installerURL = $baseURL . 'index.php?urltested';
-         
-         $testfileURL = $baseURL . 'wmelon/core/urltest.php?backto=' . base64_encode($installerURL);
-         
-         Redirect($testfileURL);
-      }
    }
    
    /**************************************************************************/

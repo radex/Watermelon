@@ -20,7 +20,7 @@
 
 header('Content-Type: text/javascript');
 
-$files = array('installer.js', 'validators.js', 'animations.js', 'jqueryColor.js');
+$files = array('installer.js', 'validators.js', 'animations.js', 'effects.js', 'jqueryColor.js');
 
 foreach($files as $file)
 {
