@@ -4,9 +4,7 @@
 
 function permissionsValidator()
 {
-   // container dim (so that user can see something happens) -- in .5s delay to avoid blink if network connection is fast
-   
-   dim = setTimeout("$('.content-box.current').css({opacity: 0.7})", 500);
+   dim();
    
    // ask server
    
@@ -16,58 +14,7 @@ function permissionsValidator()
       dataType: 'json'
    })
    .error(ajaxErrorHandler)
-   .success(function(files)
-   {
-      // css
-      
-      clearTimeout(dim);
-      $('.content-box.current').css({opacity: 1});
-
-      // clear errors
-
-      displayErrors([]);
-      
-      // converting list of files that require write permissions to html
-      
-      files_html = '';
-
-      $.each(files, function(index, value)
-      {
-         files_html += '<li>' + value + '</li>';
-      });
-      
-      // displaying
-
-      $('#permissions-files').css({height: 'auto'});
-
-      height_before = $('#permissions-files').height();
-
-      $('#permissions-files').html(files_html);
-
-      height_after = $('#permissions-files').height();
-
-      // flash if height didn't change (contents are the same or other contents but still the same height)
-      // or animate height change
-
-      if(height_before == height_after)
-      {
-         $('#permissions-files').css({color: '#BBB'});
-         $('#permissions-files').animate({color: '#666'}, 200);
-      }
-      else
-      {
-         $('#permissions-files').css({height: height_before});
-         $('#permissions-files').animate({height: height_after}, 200);
-      }
-      
-      // if everything's fine now
-      
-      if(files.length == 0)
-      {
-         $('.content-box.current').addClass('skip-box');
-         next();
-      }
-   });
+   .success(permissionsValidatorSuccess);
 }
 
 /*
@@ -90,19 +37,19 @@ function dbInfoValidator()
    
    if(name.length == 0 || user.length == 0 || host.length == 0)
    {
-      errors.push('Wszystkie pola muszą być wypełnione');
+      errors.push('Wypełnij wszystkie pola');
    }
    
    // check if database name and prefix are valid
    
    if(!name.match(/^[a-z0-9_]*$/i))
    {
-      errors.push('Nazwa bazy danych jest niepoprawna — dozwolone są jedynie litery, cyfry oraz znak "_"');
+      errors.push('Podana nazwa bazy danych jest niepoprawna — dozwolone są jedynie litery, cyfry oraz znak "_"');
    }
    
    if(!prefix.match(/^[a-z0-9_]*$/i))
    {
-      errors.push('Prefiks nazw tabel jest niepoprawny — dozwolone są jedynie litery, cyfry oraz znak "_"');
+      errors.push('Podany prefiks nazw tabel jest niepoprawny — dozwolone są jedynie litery, cyfry oraz znak "_"');
    }
    
    // stop here if there are errors
@@ -172,43 +119,14 @@ function userDataValidator()
    
    if(login.length == 0 || pass.length == 0 || pass2.length == 0)
    {
-      errors.push('Wszystkie pola muszą być wypełnione');
+      errors.push('Wypełnij wszystkie pola');
    }
    
    // check if passwords are the same
    
    if(pass.length > 0 && pass2.length > 0 && pass != pass2)
    {
-      errors.push('Podane hasła nie pasują do siebie');
-   }
-   
-   // display errors or go forward
-   
-   displayErrors(errors);
-   
-   if(errors.length == 0)
-   {
-      next();
-   }
-}
-
-/*
- * Validates site name form
- */
-
-function siteNameValidator()
-{
-   errors = [];
-   
-   // trim
-   
-   siteName = trim('#sitename-input');
-   
-   // check if filled
-   
-   if(siteName.length == 0)
-   {
-      errors.push('Podaj nazwę dla swojej strony');
+      errors.push('Podane hasła się różnią');
    }
    
    // display errors or go forward
@@ -227,6 +145,10 @@ function siteNameValidator()
 
 function install()
 {
+   // disabling "back" button (so that you can't go back after it's installed)
+   
+   $('#previous-button').attr('disabled', 'disabled');
+   
    // installation, part 1
    
    dim();
@@ -248,7 +170,7 @@ function install()
       
       // disable buttons (at this stage files are changed, so we can't just redo it)
       
-      $('#previous-button').attr('disabled', 'disabled');
+      Installer_ButtonsDisabled = true;
       $('#next-button').attr('disabled', 'disabled');
    })
    .success(function()
@@ -298,18 +220,98 @@ function install()
             displayErrors(['Wystąpił jakiś dziwny błąd. <a href="#" onclick="popupError(); return false;">Zobacz błąd</a>']);
 
             // disable buttons (at this stage files are changed, so we can't just redo it)
-
-            $('#previous-button').attr('disabled', 'disabled');
+            
+            Installer_ButtonsDisabled = true;
             $('#next-button').attr('disabled', 'disabled');
          })
          .success(function()
          {
             undim();
             
-            alert('success');
+            next();
          });
       });
    });
+}
+
+/*
+ * Validates files/folders permissions once again, after installation
+ * (reverting config.php and .htaccess permissions to 644)
+ */
+
+function permissions_afterValidator()
+{
+   dim();
+   
+   // ask server
+   
+   $.ajax(
+   {
+      url: WM_SiteURL + 'permissions_after.json',
+      dataType: 'json'
+   })
+   .error(ajaxErrorHandler)
+   .success(permissionsValidatorSuccess);
+}
+
+/**************************************************************************/
+
+/*
+ * used by permissionsValidator() and permissions_afterValidator()
+ */
+
+function permissionsValidatorSuccess(files)
+{
+   undim();
+   
+   // clear errors
+
+   displayErrors([]);
+   
+   // converting list of files that require write permissions to html
+   
+   files_html = '';
+
+   $.each(files, function(index, value)
+   {
+      files_html += '<li>' + value + '</li>';
+   });
+   
+   // displaying
+   
+   filesListSel = '.content-box.current .fileslist';
+   
+   $(filesListSel).css({height: 'auto'});
+
+   height_before = $(filesListSel).height();
+
+   $(filesListSel).html(files_html);
+
+   height_after = $(filesListSel).height();
+
+   // flash if height didn't change (contents are the same or other contents but still the same height)
+   // or animate height change
+
+   if(height_before == height_after)
+   {
+      $(filesListSel)
+         .css({color: '#BBB'})
+         .animate({color: '#666'}, 200);
+   }
+   else
+   {
+      $(filesListSel)
+         .css({height: height_before})
+         .animate({height: height_after}, 200);
+   }
+   
+   // if everything's fine now
+   
+   if(files.length == 0)
+   {
+      $('.content-box.current').addClass('skip-box');
+      next();
+   }
 }
 
 /**************************************************************************/
@@ -337,7 +339,7 @@ var Installer_PopupMessage = '';
 
 function popupError()
 {
-   popup = window.open('','','width=600,height=400').document;
+   popup = window.open('','',/*'width=600,height=400'*/'').document;
    
    html = 
    '<!DOCTYPE html>' +

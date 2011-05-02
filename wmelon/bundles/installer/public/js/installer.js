@@ -19,7 +19,7 @@ window.onload = function()
    
    Installer_Steps = $('.content-box').length;
    
-   progressWidth = (1 / (Installer_Steps + 1) * 100);
+   progressWidth = (1 / Installer_Steps * 100);
    
    $('#progress-bar-progress').css({width: progressWidth + '%'});
    $('#progress-bar-progress').attr('data-width', progressWidth); // just to make things easier
@@ -33,7 +33,7 @@ window.onload = function()
    
    $('input[type!=button]').keyup(function(e)
    {
-      if(e.keyCode == 13 && Installer_Step < Installer_Steps)
+      if(e.keyCode == 13)
       {
          nextClick();
       }
@@ -46,6 +46,10 @@ window.onload = function()
    // form.submit() don't do anything
    
    $('form').submit(function(){ return false; });
+   
+   // "Show advanced" in db info form
+   
+   $('#dbinfo-advanced-hr a').click(showAdvanced);
 }
 
 /*
@@ -63,22 +67,16 @@ function nextClick()
    
    // validating or just moving to the next step
    
-   if(Installer_Step == Installer_Steps)
+   switch($('.current').attr('id'))
    {
-      install();
-   }
-   else
-   {
-      switch($('.current').attr('id'))
-      {
-         case 'permissions': permissionsValidator(); break;
-         case 'dbinfo':      dbInfoValidator(); break;
-         case 'userdata':    userDataValidator(); break;
-         case 'sitename':    siteNameValidator(); break;
-         default:
-            next();
-         break;
-      }
+      case 'permissions':        permissionsValidator(); break;
+      case 'dbinfo':             dbInfoValidator(); break;
+      case 'userdata':           userDataValidator(); break;
+      case 'sitename':           install(); break;
+      case 'permissions_after':  permissions_afterValidator(); break;
+      default:
+         next();
+      break;
    }
 }
 

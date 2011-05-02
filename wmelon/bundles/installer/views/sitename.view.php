@@ -5,12 +5,14 @@
    
    <div class="messages" />
    
-   <p>Już blisko! Jeszcze tylko podaj nazwę dla Twojej nowej strony.</p>
+   <p>Już blisko! Jeszcze tylko wybierz nazwę dla swojego bloga.</p>
    
    <form action="#" method="post">
       <label>
-         <span>Nazwa strony:</span>
+         <span>Nazwa:</span>
          <input type="text" id="sitename-input" />
       </label>
    </form>
+   
+   <p>Jeśli jeszcze nie masz pomysłu na nazwę, możesz ją zawsze zmienić w panelu admina.</p>
 </div>

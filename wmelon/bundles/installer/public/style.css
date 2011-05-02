@@ -146,6 +146,12 @@ li
    list-style-type: square;
 }
 
+ul
+{
+   margin-top: -5px;
+   margin-bottom: 10px;
+}
+
 /**************************************************************************/
 /* header */
 
@@ -398,37 +404,35 @@ input[type=submit]
    display: none;
 }
 
-table
+#dbinfo-advanced-hr
 {
-   width: 100%;
-}
-
-td, th
-{
-   border: 1px solid #ddd;
-   padding: 5px 10px;
-}
-
-th
-{
-   width: 250px;
-   text-align: right;
-   color: #000;
-}
-
-table tr:nth-child(odd)
-{
-   background-color: #f8f8f8;
-}
-
-.advanced-hr
-{
+   display: block;
    margin-top: 25px;
+   
+   border-bottom: 1px solid transparent;
+   /* border-bottom: 1px solid #bbb;               <-- border when clicked (changed via JS animation) */
 }
 
-.advanced-hr hr
+#dbinfo-advanced-hr a
 {
-   margin-top: 0;
+   color: #666;
+   border-bottom: 1px solid #ccc;
+}
+
+#dbinfo-advanced-hr a:hover
+{
+   border-bottom: 1px solid #999;
+}
+
+#dbinfo-advanced-hr a span /* down triangle */
+{
+   font-size: 12px;
+}
+
+#dbinfo-advanced /* inputs hidden by default */
+{
+   display: none;
+   padding-top: 10px;
 }
 
 /**************************************************************************/

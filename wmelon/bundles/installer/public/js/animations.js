@@ -39,6 +39,16 @@ function intro()
 
 function next()
 {
+   // if that was last step, redirect to homepage
+   
+   if(Installer_Step == Installer_Steps)
+   {
+      window.location = WM_SiteURL.substr(0, -10); // -index.php/
+      return;
+   }
+   
+   //---
+   
    fixHeight();
    
    // if next step is .skip-box (permissions step after setting proper permissions), skip it
@@ -78,7 +88,7 @@ function next()
    
    // resize progress bar
    
-   progressWidth = (Installer_Step / (Installer_Steps + 1) * 100);
+   progressWidth = (Installer_Step / Installer_Steps * 100);
    
    if($('#progress-bar-progress').attr('data-width') < progressWidth)
    {
@@ -132,6 +142,28 @@ function previous(step)
    {
       afterMove();
    });
+}
+
+/**************************************************************************/
+/*
+ * Shows hidden inputs in database info step
+ */
+
+function showAdvanced()
+{
+   // showing contents
+   
+   $('#dbinfo-advanced').css({display: 'block'});
+   
+   height = $('#dbinfo-advanced').innerHeight();
+   
+   $('#dbinfo-advanced').css({height: 0});
+   $('#dbinfo-advanced').animate({height: height}, 300);
+   
+   // changing "Show advanced" link to hr
+   
+   $('#dbinfo-advanced-hr').html('Zaawansowane');
+   $('#dbinfo-advanced-hr').animate({borderBottomColor: '#bbb'}, 300)
 }
 
 /**************************************************************************/

@@ -5,22 +5,19 @@
    
    <div class="messages" />
 
-   <p>Podaj dane dostępu do bazy danych. Na ogół można je znaleźć w panelu administracyjnym serwera. W razie wątpliwości, zapytaj swojego administratora o pomoc.</p>
+   <p>Podaj dane dostępu do bazy danych. Dane te powinny znajdować się w panelu administracyjnym Twojego serwera. Jeśli nie możesz ich znaleźć, sprawdź dział pomocy na stronie dostawcy Twojego serwera lub skontaktuj się ze swoim administratorem.</p>
    
    <form action="#" method="post">
       <label>
          <span>
             Nazwa bazy danych:
-            <small>Jeśli nie istnieje, instalator spróbuje ją utworzyć</small>
+            <small>Jeśli nie istnieje, Watermelon spróbuje utworzyć ją za Ciebie</small>
          </span>
          <input type="text" id="db-name" value="watermelon" />
       </label>
 
       <label>
-         <span>
-            Użytkownik:
-            <small>Użytkownik z dostępem do podanej bazy danych</small>
-         </span>
+         <span>Użytkownik:</span>
          <input type="text" id="db-user" />
       </label>
 
@@ -29,22 +26,26 @@
          <input type="password" id="db-pass" />
       </label>
 
-      <div class="advanced-hr">Zaawansowane<hr /></div>
+      <div id="dbinfo-advanced-hr">
+         <a href="#">Pokaż zaawansowane <span>&#x25BC;</span></a>
+      </div>
       
-      <label>
-         <span>
-            Prefiks tabel:
-            <small>Niezbędny jeśli chcesz mieć dwie kopie Watermelona na jednej bazie danych</small>
-         </span>
-         <input type="text" id="db-prefix" />
-      </label>
-
-      <label> 
-         <span>
-            Serwer:
-            <small>Prawie zawsze jest to <em>localhost</em></small>
-         </span>
-         <input type="text" id="db-host" value="localhost" />
-      </label>
+      <div id="dbinfo-advanced">
+         <label>
+            <span>
+               Prefiks nazw tabel:
+               <small>W razie potrzeby, Watermelon wybierze prefiks, który nie powoduje konfliktów</small>
+            </span>
+            <input type="text" id="db-prefix" />
+         </label>
+         
+         <label> 
+            <span>
+               Serwer:
+               <small>Adres serwera bazy danych</small>
+            </span>
+            <input type="text" id="db-host" value="localhost" />
+         </label>
+      </div>
    </form>
 </div>
