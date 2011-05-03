@@ -45,7 +45,7 @@ function next()
    
    if(Installer_Step == Installer_Steps)
    {
-      window.location = WM_SiteURL.substr(0, -10); // -index.php/
+      window.location.reload(true);
       return;
    }
    

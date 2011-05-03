@@ -60,7 +60,6 @@ class Installer_Controller extends Controller
       {
          case 'db.json':                  return $this->dbValidate();
          case 'permissions.json':         return $this->outputJSON($this->permissions());
-         case 'permissions_after.json':   return $this->outputJSON($this->permissions_after());
          case 'install-1.json':           return $this->install1();
          case 'install-2.json':           return $this->install2();
       }
@@ -161,29 +160,6 @@ class Installer_Controller extends Controller
          {
             $files[] = $name;
          }
-      }
-      
-      return $files;
-   }
-   
-   /*
-    * Checks write permissions for .htaccess and config.php (it's used after installation)
-    * 
-    * Returns array of file names that still have (and should not) write permissions
-    */
-   
-   public function permissions_after()
-   {
-      $files = array();
-      
-      if(file_exists(SystemPath . '../.htaccess') && is_writable(SystemPath . '../.htaccess'))
-      {
-         $files[] = '.htaccess';
-      }
-      
-      if(is_writable(SystemPath . 'config.php'))
-      {
-         $files[] = 'wmelon/config.php';
       }
       
       return $files;

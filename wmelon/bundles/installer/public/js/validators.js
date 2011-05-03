@@ -234,26 +234,6 @@ function install()
    });
 }
 
-/*
- * Validates files/folders permissions once again, after installation
- * (reverting config.php and .htaccess permissions to 644)
- */
-
-function permissions_afterValidator()
-{
-   dim();
-   
-   // ask server
-   
-   $.ajax(
-   {
-      url: WM_SiteURL + 'permissions_after.json',
-      dataType: 'json'
-   })
-   .error(ajaxErrorHandler)
-   .success(permissionsValidatorSuccess);
-}
-
 /**************************************************************************/
 
 /*

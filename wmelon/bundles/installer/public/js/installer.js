@@ -72,7 +72,7 @@ function nextClick()
       case 'dbinfo':             dbInfoValidator(); break;
       case 'userdata':           userDataValidator(); break;
       case 'sitename':           install(); break;
-      case 'permissions_after':  permissions_afterValidator(); break;
+      case 'permissions_after':
       default:
          next();
       break;
