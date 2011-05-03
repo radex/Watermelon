@@ -1,3 +1,5 @@
+var Installer_Intro = true;
+
 /*
  * shows nice intro
  */
@@ -14,7 +16,7 @@ function intro()
    
    // moving container
    
-   containerHeight = $('#container').height();
+   containerHeight = $('#container').outerHeight();
    $('#container').css({display: 'block', marginTop: (headerPaddingTop - containerHeight) + 'px'});
    
    // animating header

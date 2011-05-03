@@ -430,7 +430,7 @@ class Installer_Controller extends Controller
       
       // saving config.php
       
-      $configFile = file_get_contents(BundlesPath . 'installer/config.php');
+      $configFile = file_get_contents(BundlesPath . 'installer/data/config.php');
       
       $configFile = str_replace('{host}',   addslashes($this->dbhost), $configFile);
       $configFile = str_replace('{user}',   addslashes($this->dbuser), $configFile);

@@ -1,4 +1,3 @@
-var Installer_Intro = false;
 var Installer_Step = 1;
 var Installer_Steps;
 var Installer_ButtonsDisabled = false;
