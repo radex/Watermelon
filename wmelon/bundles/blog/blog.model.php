@@ -127,14 +127,14 @@ class Blog_Model extends Model
    }
    
    /*
-    * public int postPost(bool $publish, string $title, string $content, string $summary, bool $allowComments)
+    * public int postPost(bool $publish, string $title, string $content[, string $summary[, bool $allowComments = true]])
     * 
     * Posts a post with given data, as currently logged user and with current time and returns its ID
     * 
     * bool $publish - if true, post is published, otherwise it's saved as draft
     */
    
-   public function postPost($publish, $title, $content, $summary, $allowComments)
+   public function postPost($publish, $title, $content, $summary = null, $allowComments = true)
    {
       // status
       

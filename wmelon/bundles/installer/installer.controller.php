@@ -69,53 +69,27 @@ class Installer_Controller extends Controller
       $files = $this->permissions();
       
       View('greeting')->display();
-      $this->permissionsView($files);
+      
+      // if some files require permission to be changed
+      
+      if(!empty($files))
+      {
+         $v = View('permissions');
+         $v->files = $files;
+         $v->display();
+      }
+      
       View('dbInfo')->display();
       View('userData')->display();
       View('siteName')->display();
-      $this->permissions_afterView($files);
-   }
-   
-   /**************************************************************************/
-   
-   /*
-    * Displays view of step regarding files/directories permissions (before installation)
-    */
-   
-   public function permissionsView($files)
-   {
-      // if everything is fine, go ahead
       
-      if(empty($files))
-      {
-         return;
-      }
-      
-      // display view
-      
-      $v = View('permissions');
-      $v->files = $files;
-      $v->display();
-   }
-   
-   /*
-    * Displays view of step regarding reverting config.php and .htaccess permissions (after installation)
-    */
-   
-   public function permissions_afterView($files)
-   {
-      // if everything is fine, go ahead:
       // if required files/dirs are already writable before installation, it means that someone is either
       // testing Watermelon on localhost (and has no intention to block write perms) or know what he's doing
       
-      if(empty($files))
+      if(!empty($files))
       {
-         return;
+         View('permissions_after')->display();
       }
-      
-      // display view
-      
-      View('permissions_after')->display();
    }
    
    /**************************************************************************/
@@ -329,12 +303,12 @@ class Installer_Controller extends Controller
       
       foreach($fields as $key)
       {
-         $this->$key = $_POST[$key];
+         $$key = $_POST[$key];
       }
       
-      if(empty($this->sitename))
+      if(empty($sitename))
       {
-         $this->sitename = 'Mój blog';
+         $sitename = 'Mój blog';
       }
       
       // URL-s
@@ -343,23 +317,18 @@ class Installer_Controller extends Controller
       
       if($mod_rewrite)
       {
-         $this->siteURL = BaseURL;
+         $siteURL = BaseURL;
       }
       else
       {
-         $this->siteURL = BaseURL . 'index.php/';
+         $siteURL = BaseURL . 'index.php/';
       }
-      
-      // generating Atom ID for website
-      
-      $atomID = SiteURL . time() . mt_rand();
-      $this->atomID = sha1($atomID);
       
       // connecting with database
       
          try
          {
-            DB::connect($this->dbhost, $this->dbname, $this->dbuser, $this->dbpass, $this->dbprefix);
+            DB::connect($dbhost, $dbname, $dbuser, $dbpass, $dbprefix);
          }
          catch(WMException $e)
          {
@@ -367,9 +336,9 @@ class Installer_Controller extends Controller
          
             if($e->getCode() == 'DB:selectError')
             {
-               DB::query('CREATE DATABASE ' . $this->dbname);
+               DB::query('CREATE DATABASE ' . $dbname);
             
-               DB::connect($this->dbhost, $this->dbname, $this->dbuser, $this->dbpass, $this->dbprefix);
+               DB::connect($dbhost, $dbname, $dbuser, $dbpass, $dbprefix);
             }
             else
             {
@@ -377,148 +346,110 @@ class Installer_Controller extends Controller
             }
          }
       
-      // installing SQL
+      // installing tables in database
       
-      $this->install_sql();
+      $tablesSql = file_get_contents(BundlesPath . 'installer/data/structure.sql');
       
-      // installing Watermelon's configuration
-      
-      $this->install_config();
-      
-      // generating Atom feed
-      
-      Blog_Model::updateFeed();
-      
-      // adding superuser
-         
-      $salt = substr(HashString(mt_rand()), 0, 16);
-      $pass = HashString($this->pass . $salt);
-      
-      DB::insert('users', array
-         (
-            'login'    => strtolower($this->login),
-            'password' => $pass,
-            'salt'     => $salt,
-            'nick'     => $this->login,
-            'email'    => '',
-            'lastseen' => time(),
-         ));
-      
-      // saving config.php
-      
-      $configFile = file_get_contents(BundlesPath . 'installer/data/config.php');
-      
-      $configFile = str_replace('{host}',   addslashes($this->dbhost), $configFile);
-      $configFile = str_replace('{user}',   addslashes($this->dbuser), $configFile);
-      $configFile = str_replace('{pass}',   addslashes($this->dbpass), $configFile);
-      $configFile = str_replace('{name}',   addslashes($this->dbname), $configFile);
-      $configFile = str_replace('{prefix}', addslashes($this->dbprefix), $configFile);
-      
-      file_put_contents(SystemPath . 'config.php', $configFile);
-      
-      // setting admin session
-      
-      session_unset();
-      
-      $_SESSION['wmelon.user.login'] = $this->login;
-      $_SESSION['wmelon.user.pass']  = $this->pass;
-   }
-   
-   /**************************************************************************/
-   
-   /*
-    * Installs SQL
-    */
-   
-   private function install_sql()
-   {
-      $path = BundlesPath . 'installer/sql/';
-      
-      // SQL files
-      
-      $structure = file_get_contents($path . 'structure.sql');
-      $data      = file_get_contents($path . 'data.sql');
-      
-      // sample content files
-      
-      $samplePostSummary = file_get_contents($path . 'samplePostSummary.txt');
-      $samplePost        = file_get_contents($path . 'samplePost.txt');
-      $samplePage        = file_get_contents($path . 'samplePage.txt');
-      
-      // generating Atom feed ID for sample post
-      
-      $postAtomID = $this->atomID . 'Witaj w Watermelonie!' . time() . mt_rand();
-      $postAtomID = sha1($postAtomID);
-      
-      // making queries
-      
-      $sql = $structure . "\n\n" . $data;
-      $sql = explode(';', $sql);
-      
-      foreach($sql as $query)
+      foreach(explode(';', $tablesSql) as $query)
       {
          $query = trim($query);
-      
+         
          if(empty($query))
          {
             continue;
          }
          
-         // substituting placeholders
+         // substituting tables prefix
          
-         $query = str_replace('`wm_', '`' . $this->dbprefix, $query);
-         $query = str_replace('{time}', time(), $query);
-         $query = str_replace('{atom-id}', $postAtomID, $query);
-
-         $query = str_replace('{post-summary}', mysql_real_escape_string($samplePostSummary), $query);
-         $query = str_replace('{post-content}', mysql_real_escape_string($samplePost), $query);
-         $query = str_replace('{page-content}', mysql_real_escape_string($samplePage), $query);
+         $query = str_replace('`wm_', '`' . $dbprefix, $query);
          
          DB::pureQuery($query);
       }
-   }
-   
-   /*
-    * Installs Watermelon config (config table in db)
-    */
-   
-   private function install_config()
-   {
-      // modules
       
-      $w->modulesList       = Watermelon::indexModules(false);
-      $w->defaultController = 'blog';
+      // installing Watermelon's configuration
+         
+         // generating Atom ID for website
+
+         $atomID = SiteURL . time() . mt_rand();
+         $atomID = sha1($atomID);
+         
+         // modules
+
+         $w->modulesList       = Watermelon::indexModules(false);
+         $w->defaultController = 'blog';
+
+         // other
+
+         $w->siteURL           = $siteURL;
+         $w->systemURL         = SystemURL;
+
+         $w->skin              = 'wcmslay';
+         $w->atomID            = $atomID;
+
+         // frontend
+
+         $textMenus = array(array
+            (
+               array('Blog', '', true, null),
+            ));
+
+         $w->siteName   = $sitename;
+         $w->siteSlogan = null;
+         $w->footer     = '<small><a href="$/users/login">Logowanie</a></small><br>' .
+            'powered by <strong><a href="https://github.com/radex/Watermelon">Watermelon</a></strong>';
+         $w->textMenus  = $textMenus;
+
+         $w->headTags   = '';
+         $w->tailTags   = '';
+
+         // setting config
+
+         Config::set('wmelon.wmelon', $w);
+
+         Watermelon::$config = $w;
       
-      // other
+      // adding admin's account
+         
+      $salt = substr(sha1(mt_rand()), 0, 16);
       
-      $w->siteURL           = $this->siteURL;
-      $w->systemURL         = SystemURL;
-      
-      $w->skin              = 'wcmslay';
-      $w->atomID            = $this->atomID;
-      
-      // frontend
-      
-      $textMenus = array(array
+      DB::insert('users', array
          (
-            array('Blog', '', true, null),
-            array('Pomoc Watermelona', 'wmelonHelp', true, 'Opis zaawansowanych funkcji Watermelona'),
+            'login'    => strtolower($login),
+            'password' => sha1($pass . $salt),
+            'salt'     => $salt,
+            'nick'     => $login,
+            'email'    => '',
+            'lastseen' => time(),
          ));
       
-      $w->siteName   = $this->sitename;
-      $w->siteSlogan = null;
-      $w->footer     = '<small><a href="$/users/login">Logowanie</a></small><br>' .
-         'powered by <strong><a href="https://github.com/radex/Watermelon">Watermelon</a></strong>';
-      $w->textMenus  = $textMenus;
+      DB::insert('privileges', array
+         (
+            'user'      => 1,
+            'privilege' => 'admin',
+         ));
       
-      $w->headTags   = '';
-      $w->tailTags   = '';
+      // logging in
       
-      // setting config
+      $_SESSION['wmelon.user.login'] = $login;
+      $_SESSION['wmelon.user.pass']  = $pass;
       
-      Config::set('wmelon.wmelon', $w);
+      // adding sample blog post
       
-      Watermelon::$config = $w;
+      $postContent = file_get_contents(BundlesPath . 'installer/data/samplePost.txt');
+      
+      Blog_Model::postPost(true, 'Dzięki za wybranie Watermelona!', $postContent);
+      
+      // saving config.php
+      
+      $configFile = file_get_contents(BundlesPath . 'installer/data/config.php');
+      
+      $configFile = str_replace('{host}',   addslashes($dbhost), $configFile);
+      $configFile = str_replace('{user}',   addslashes($dbuser), $configFile);
+      $configFile = str_replace('{pass}',   addslashes($dbpass), $configFile);
+      $configFile = str_replace('{name}',   addslashes($dbname), $configFile);
+      $configFile = str_replace('{prefix}', addslashes($dbprefix), $configFile);
+      
+      file_put_contents(SystemPath . 'config.php', $configFile);
    }
    
    /**************************************************************************/

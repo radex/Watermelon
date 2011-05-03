@@ -339,8 +339,8 @@ class Watermelon
          
          $installer = true;
          
-         error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);define('WM_Debug', ''); //TODO: swap comments
-         //error_reporting(0);
+         error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
+         define('WM_Debug', '');
       }
       else
       {
@@ -616,7 +616,7 @@ class Watermelon
          $url = '';
       }
       
-      return $url;
+      return rawurldecode($url);             // TODO: unit test, just to be sure ;)
    }
    
    /*
