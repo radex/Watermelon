@@ -1,15 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Watermelon" default="zip">
    
+   <!--
+   
+   Watermelon's build script:
+   
+   zip      - produces .zip copy of Watermelon in build/ directory
+   build    - produces "clean" copy of Watermelon in build/ directory
+   install  - copyies Watermelon to ../wcms/ (usuful for development)
+   
+   The following do the same, except that with some development settings turned off:
+   
+   zip_release, build_release, install_release
+   
+   -->
+   
    <!-- shortcuts -->
    
    <property name="buildDir" value="build/watermelon/"/>
    <property name="codeDir" value="build/watermelon/code/"/>
    
+   <!--
+      
+      Produces "clean" copy of Watermelon, for development
+      
+   -->
    
-   <!-- building .zipped package -->
+   <target name="build">
+      
+      <!-- copying code -->
+      
+      <copy todir="${codeDir}wmelon/">
+         <fileset dir="wmelon/"/>
+      </copy>
+      <copy todir="${codeDir}wm-uploaded/">
+         <fileset dir="wm-uploaded/"/>
+      </copy>
+      <copy file="index.php" todir="${codeDir}"/>
+      <copy file=".htaccess" tofile="${codeDir}/watermelon.htaccess"/>
+      
+      <!-- copying docs -->
+      
+      <copy todir="${buildDir}/docs/">
+         <fileset dir="docs/"/>
+      </copy>
+      <copy file="docs/Instalacja.txt" todir="${buildDir}"/>
+      
+      <!-- clearing cache and config -->
+      
+      <delete file="${codeDir}wmelon/cache/*"/>
+      
+      <delete file="${codeDir}wmelon/config.php"/>
+      <touch  file="${codeDir}wmelon/config.php"/>
+      
+      <!-- deleting test stuf -->
+      
+      <delete dir="${codeDir}wmelon/bundles/test/"/>
+      
+   </target>
    
-   <target name="zip" depends="build">
+   <!--
+      
+      Produces "clean" copy of Watermelon, for release
+      
+   -->
+   
+   <target name="build_release" depends="build">
+      
+      <!-- swapping Turbine config -->
+      
+      <delete file="${codeDir}wmelon/core/Turbine/config.php"/>
+      <move   file="${codeDir}wmelon/core/Turbine/config_production.php"
+            tofile="${codeDir}wmelon/core/Turbine/config.php"/>
+      
+      <!-- swapping Watermelon config -->
+      
+      <delete file="${codeDir}wmelon/bundles/installer/data/config.php"/>
+      <move   file="${codeDir}wmelon/bundles/installer/data/config_production.php"
+            tofile="${codeDir}wmelon/bundles/installer/data/config.php"/>
+      
+   </target>
+   
+   <!--
+      
+      Produces .zip copy of Watermelon, for development
+      
+   -->
+   
+   <target name="zip" depends="build, _zip" />
+   
+   <!--
+      
+      Produces .zip copy of Watermelon, for release
+      
+   -->
+   
+   <target name="zip_release" depends="build_release, _zip" />
+   
+   <!--
+      
+      Copyies development Watermelon to ../wcms/
+      
+   -->
+   
+   <target name="install" depends="build, _install" />
+   
+   <!--
+      
+      Copyies release Watermelon to ../wcms/
+      
+   -->
+   
+   <target name="install_release" depends="build_release, _install" />
+   
+   <!-- ************************************************************************** -->
+   <!-- internal stuff -->
+   
+   <!--
+      
+      Produces .zip from build/watermelon/
+      
+   -->
+   
+   <target name="_zip">
       
       <delete file="build/Watermelon.zip"/>
       
@@ -19,65 +132,13 @@
       
    </target>
    
-   <!-- making package of "clear" Watermelon, without development code -->
+   <!--
+      
+      Copyies Watermelon to ../wcms/
+      
+   -->
    
-   <target name="build">
-      
-      <!-- making directories -->
-      
-      <mkdir dir="build/watermelon/code"/>
-      
-      <!-- copying code -->
-      
-      <copy todir="${codeDir}wmelon/">
-         <fileset dir="wmelon"/>
-      </copy>
-      <copy file="index.php" todir="${codeDir}"/>
-      <copy file=".htaccess" tofile="${codeDir}/dot.htaccess"/>
-      
-      <!-- copying other files -->
-      
-      <copy todir="${buildDir}/docs/">
-         <fileset dir="docs"/>
-      </copy>
-      <copy file="docs/Instalacja.txt" todir="${buildDir}"/>
-      
-      <!-- clearing cache -->
-      
-      <delete file="${codeDir}wmelon/cache/feed.atom"/>
-      <touch  file="${codeDir}wmelon/cache/feed.atom"/>
-      
-      <delete>
-         <fileset file="${codeDir}wmelon/cache/textile/*.php"/>
-         <fileset file="${codeDir}wmelon/cache/textile_restricted/*.php"/>
-      </delete>
-      
-      <!-- clearing other files -->
-      
-      <delete file="${codeDir}wmelon/config.php"/>
-      <touch  file="${codeDir}wmelon/config.php"/>
-      
-      <!-- swapping Turbine config -->
-      <!--
-      <delete file="${codeDir}wmelon/core/Turbine/config.php"/>
-      <move   file="${codeDir}wmelon/core/Turbine/config_production.php"
-            tofile="${codeDir}wmelon/core/Turbine/config.php"/>
-      -->
-      <!-- deleting test controllers -->
-      
-      <delete dir="${codeDir}wmelon/bundles/test/"/>
-      
-   </target>
-   
-   <!-- cleaning build directory -->
-   
-   <target name="clean">
-      <delete dir="build"/>
-   </target>
-   
-   <!-- installs to ../wcms -->
-   
-   <target name="install" depends="build">
+   <target name="_install">
       
       <!-- clearing install dir -->
       
