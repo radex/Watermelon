@@ -44,7 +44,9 @@
       <copy todir="${buildDir}/docs/">
          <fileset dir="docs/"/>
       </copy>
-      <copy file="docs/Instalacja.txt" todir="${buildDir}"/>
+      <move todir="${buildDir}">
+         <fileset dir="${buildDir}/docs/readme/"/>
+      </move>
       
       <!-- clearing cache and config -->
       

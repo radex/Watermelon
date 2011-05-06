@@ -47,12 +47,11 @@ function displayErrors(messagesArray)
 
 function fixHeight()
 {
-   $('.content-box').show();
+   $('.content-box').css({height: 'auto'})
 
    currentHeight = $('.content-box.current').innerHeight();
 
    $('#content-inner').css({height: currentHeight});
-   $('.content-box.current').css({marginLeft: 0});
 }
 
 /*
@@ -62,10 +61,8 @@ function fixHeight()
 
 function flexHeight()
 {
-   $('.content-box').hide();
-   $('.content-box.current')
-      .show()                                        // unhide current one
-      .css({marginLeft: (Installer_Step - 1) * 750}); // and change margin so that content stays in place
+   $('.content-box').css({height: 0});
+   $('.content-box.current').css({height: 'auto'});
    
    $('#content-inner').css({height: 'auto'});
 }

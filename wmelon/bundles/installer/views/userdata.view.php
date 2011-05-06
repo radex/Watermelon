@@ -1,7 +1,7 @@
 <?php die?>
 
 <div class="content-box" id="userdata">
-   <h1>Ty</h1>
+   <h1>Twoje konto</h1>
    
    <div class="messages" />
    

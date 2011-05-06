@@ -319,7 +319,7 @@ var Installer_PopupMessage = '';
 
 function popupError()
 {
-   popup = window.open('','',/*'width=600,height=400'*/'').document;
+   popup = window.open('','','width=600,height=400').document;
    
    html = 
    '<!DOCTYPE html>' +
