@@ -41,8 +41,6 @@ body { font:13px/1.231 sans-serif; *font-size:small; }
 select, input, textarea, button { font:99% sans-serif; }
 pre, code, kbd, samp { font-family: monospace, sans-serif; }
 
-html { overflow-y: scroll; }
-
 ul, ol { margin-left: 1.8em; }
 ol { list-style-type: decimal; }
 
@@ -66,9 +64,6 @@ pre
 }
 
 textarea { overflow: auto; }
-.ie7 legend { margin-left: -7px; }
-.ie7 img { -ms-interpolation-mode: bicubic; }
-.ie7 input[type="checkbox"] { vertical-align: baseline; }
 button, input, select, textarea { margin: 0; }
 button {  width: auto; overflow: visible; }
 
@@ -93,13 +88,3 @@ input[type="checkbox"] { vertical-align: bottom; }
    p, h2, h3 { orphans: 3; widows: 3; }
    h2, h3{ page-break-after: avoid; }
 }
-
-/*
- * Media queries for responsive design
- */
-
-/*
-@media all and (orientation:portrait){}
-@media all and (orientation:landscape){}
-@media screen and (max-device-width: 480px){}
-*/
