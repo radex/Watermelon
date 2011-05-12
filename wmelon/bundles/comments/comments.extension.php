@@ -119,19 +119,6 @@ class Comments extends Extension
             $comment->cssClass .= ' awaitingModerationComment';
          }
          
-         // gravatar url
-         
-         $gravatarEnding = '?s=64&d=' . urlencode(BundlesURL) . 'watermelon/public/img/blank.png';
-         
-         if($authorID === null)
-         {
-            $comment->gravatarURL = 'http://gravatar.com/avatar/' . md5($comment->authorEmail) . $gravatarEnding;
-         }
-         else
-         {
-            $comment->gravatarURL = 'http://gravatar.com/avatar/' . md5($users[$authorID]->email) . $gravatarEnding;
-         }
-         
          // comments counter
          
          if($comment->approved)

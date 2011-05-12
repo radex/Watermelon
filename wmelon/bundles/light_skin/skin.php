@@ -18,4 +18,42 @@
  //  along with Watermelon. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-class Light_Skin extends Skin{}
+class Light_Skin extends Skin
+{
+   /*
+    * text menus
+    */
+   
+   public function drawTextMenu($id)
+   {
+      foreach($this->textMenus[$id] as $menuItem)
+      {
+         list($name, $URL, $relative, $title) = $menuItem;
+         
+         if($relative)
+         {
+            $URL = SiteURL($URL);
+         }
+         
+         echo '<a href="' . $URL . '"' . (is_string($title) ? ' title="' . $title . '"' : '') . '>'. $name. '</a>';
+      }
+   }
+   
+   /*
+    * Displays content, changing <hx/> to <h(x+1)/>
+    */
+   
+   public function drawContent()
+   {
+      $content = $this->content;
+      
+      $content = str_replace('<h3', '<h4', $content);
+      $content = str_replace('<h2', '<h3', $content);
+      $content = str_replace('<h1', '<h2', $content);
+      $content = str_replace('</h3', '</h4', $content);
+      $content = str_replace('</h2', '</h3', $content);
+      $content = str_replace('</h1', '</h2', $content);
+      
+      echo $content;
+   }
+}

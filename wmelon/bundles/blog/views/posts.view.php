@@ -19,15 +19,14 @@
    <!-- header -->
    
    <header>
-      <h1>
-         <a href="${post/url}">${post/title}</a>
-         <span class="h1-comment">
-            ${structure post/published_human}${structure post/comments | nothing}
-         </span>
+      <h1><a href="${post/url}">${post/title}</a></h1>
+      
+      <span class="blog-postInfo">
+         ${structure post/published_human}${structure post/comments | nothing}
          <span class="adminTools" tal:condition="isAdmin">
             <a href="${post/editHref}">[Edytuj]</a> | <a href="${post/deleteHref}">[Usuń]</a>
          </span>
-      </h1>
+      </span>
    </header>
    
    <!-- post content -->

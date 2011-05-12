@@ -12,16 +12,14 @@ ${php:skin.drawHeadTags()}
          <h1>Some stupid name noone cares about</h1>
       </div>
       <nav>
-         <a href="#">Blog</a>
-         <a href="#">Articles</a>
-         <a href="#">Archive</a>
-         <a href="#">RSS</a>
+         ${php:skin.drawTextMenu(0)}
+         <a href="${AdminURL}" tal:condition="isAdmin" style="float: right">Panel Admina</a>
       </nav>
    </header>
    <section id="content">
       ${php:skin.drawMessages()}
-      <h1 tal:condition="php: !empty(pageTitle) AND !noHeader">${pageTitle}</h1>
-      ${structure content}
+      <h2 tal:condition="php: !empty(pageTitle) AND !noHeader">${pageTitle}</h2>
+      ${php:skin.drawContent()}
    </section>
 </div>
 

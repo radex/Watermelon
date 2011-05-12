@@ -1,8 +1,7 @@
 <?php die?>
-<section class="comments">
-   <h1 id="comments-link" tal:condition="php: areComments">
-      Komentarze
-      <span class="h1-comment">${structure commentsCount}</span>
+<section id="comments">
+   <h1 tal:condition="php: areComments">
+      Komentarze <span class="headerComment">${structure commentsCount}</span>
    </h1>
    
    <!-- Comment -->
@@ -13,7 +12,6 @@
          <!-- header (for anonymous user's comment) -->
          
          <header tal:condition="not: comment/authorID">
-            <img src="${comment/gravatarURL}" alt="" />
             <span tal:attributes="title comment/additionalInfo | nothing">
                <a href="${comment/authorWebsite}" rel="nofollow" tal:omit-tag="not: comment/authorWebsite">${comment/authorName}</a>
             </span>
@@ -22,7 +20,6 @@
          <!-- header (for logged user's post) -->
          
          <header tal:condition="exists: comment/author">
-            <img src="${comment/gravatarURL}" alt="" />
             <strong><a href="${SiteURL}">${comment/author/nick}</a></strong>
          </header>
          
