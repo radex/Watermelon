@@ -2,7 +2,7 @@
 
 <!-- Pages -->
 
-<div class="blog-pages-top" tal:condition="php: page > 1">
+<div class="blog-pages" tal:condition="php: page > 1">
    <a href="${previousPage}" class="blog-previousPage" tal:condition="php: page > 1">« Nowsze wpisy</a>
    <div class="blog-previousPage" tal:condition="php: page == 1" />
    
@@ -40,12 +40,12 @@
    
    <!-- read more -->
    
-   <a class="blog-readMore" href="${post/url}">Czytaj dalej »</a>
+   <p><a class="blog-readMore" href="${post/url}">Czytaj dalej »</a></p>
 </article>
 
 <!-- Pages -->
 
-<div class="blog-pages-bottom" tal:condition="php: page > 1 || anotherPage">
+<div class="blog-pages" tal:condition="php: page > 1 || anotherPage">
    <a href="${previousPage}" class="blog-previousPage" tal:condition="php: page > 1">« Nowsze wpisy</a>
    <div class="blog-previousPage" tal:condition="php: page == 1" />
    

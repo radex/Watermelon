@@ -109,10 +109,10 @@ abstract class FormInput
    {
       if(!empty($this->labelNote))
       {
-         $labelNote = ' <small>' . $this->labelNote . '</small>';
+         $labelNote = ' <span>' . $this->labelNote . '</span>';
       }
       
-      return "<label>\n<span>" . $this->label . ':' . $labelNote . "</span>\n" . $inside . "</label>\n";
+      return "<label>\n<strong>" . $this->label . ":</strong>\n" . $inside . $labelNote . "</label>\n";
    }
    
    /*

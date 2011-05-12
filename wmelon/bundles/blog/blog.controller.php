@@ -102,7 +102,7 @@ class Blog_Controller extends Controller
             
             if($unapprovedComments > 0)
             {
-               $post->comments .= ' <a href="' . $post->url . '#comments-link" class="important">(' . $unapprovedComments . ' do sprawdzenia!)</a>';
+               $post->comments .= ' <a href="' . $post->url . '#comments" class="important">(' . $unapprovedComments . ' do sprawdzenia!)</a>';
             }
          }
          

@@ -69,7 +69,7 @@ class Comments extends Extension
          $linkEnding = $comment->id . '/' . base64_encode($backPage . '#comment-' . $comment->id);
          
          $comment->editHref    = '%/comments/edit/'    . $linkEnding;
-         $comment->deleteHref  = '%/comments/delete/'  . $comment->id . '/' . base64_encode($backPage . '#comments-link');
+         $comment->deleteHref  = '%/comments/delete/'  . $comment->id . '/' . base64_encode($backPage . '#comments');
          $comment->approveHref = '%/comments/approve/' . $linkEnding;
          $comment->rejectHref  = '%/comments/reject/'  . $linkEnding;
          
@@ -169,7 +169,7 @@ class Comments extends Extension
       
       // content input
       
-      $form->addInput('textarea', 'content', 'Treść komentarza');
+      $form->addInput('textarea', 'content', 'Komentarz');
       
       // comments counter
       

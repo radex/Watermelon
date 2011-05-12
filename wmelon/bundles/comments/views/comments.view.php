@@ -51,7 +51,7 @@
             
             <!-- content itself -->
             
-            <?= Textile::textileRestricted($ctx->comment->content) ?>
+            ${structure php:Textile::textileRestricted(comment.content)}
          </section>
          
       </article>

@@ -215,7 +215,7 @@ class Blog_Controller extends Controller
          
             if($unapprovedComments > 0)
             {
-               $comments .= ' <strong><a href="' . $linkTo . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
+               $comments .= ' <strong><a href="' . $linkTo . '#comments">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
             }
          
          //--

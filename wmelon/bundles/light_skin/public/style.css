@@ -51,69 +51,30 @@ h3
 
 /**************************************************************************/
 
-#container
-{
-   width: 850px;
-   margin: 0 auto;
-   padding: 15px;
-   
-   background-color: #fff;
-}
-
-/**************************************************************************/
-
-#container > header
-{
-   padding: 5px;
-   padding-bottom: 0;
-   
-   background-color: #000;
-}
-
-#container > header div
-{
-   height: 150px;
-   
-   background-color: #888;
-}
-
-#container > header nav
-{
-   
-}
-
-#container > header nav a
-{
-   display: inline-block;
-   padding: 7px 15px;
-   
-   color: #fff;
-   border: 0;
-}
-
-#container > header nav a:hover
-{
-   color: #aaa;
-}
-
-/**************************************************************************/
-
-#content
-{
-   margin-top: 15px;
-}
-
-/**************************************************************************/
-
-h2 + .blog-postInfo
+label
 {
    display: block;
-   margin-top: -5px;
-   margin-bottom: 10px;
-   
-   color: #888;
-   font-size: 12px;
+   margin: 5px;
+}
+
+label strong
+{
+   display: inline-block;
+   width: 100px;
+   font-weight: normal;
+}
+
+label span
+{
+   font-size: 13px;
    font-style: italic;
+}
+
+textarea
+{
+   display: block;
+   width: 500px;
+   height: 8em;
 }
 
 /**************************************************************************/
@@ -140,6 +101,20 @@ h2 + .blog-postInfo
 
 /**************************************************************************/
 
+#container
+{
+   width: 850px;
+   margin: 0 auto;
+   padding: 15px;
+   
+   background-color: #fff;
+}
+
+#content
+{
+   margin-top: 15px;
+}
+
 footer
 {
    margin-top: 25px;
@@ -147,4 +122,103 @@ footer
    text-align: center;
    font-size: 12px;
    color: #444;
+}
+
+/**************************************************************************/
+
+h1
+{
+   font-size: 32px;
+   font-weight: normal;
+}
+
+h1 a
+{
+   color: #000;
+   border: 0;
+}
+
+#container > header nav
+{
+   margin-top: 10px;
+   
+   background-color: #000;
+}
+
+#container > header nav a
+{
+   display: inline-block;
+   padding: 7px 15px;
+   
+   color: #fff;
+   border: 0;
+}
+
+#container > header nav a:hover
+{
+   color: #4582C4;
+}
+
+/**************************************************************************/
+
+h2 + .blog-postInfo
+{
+   display: block;
+   margin-top: -5px;
+   margin-bottom: 10px;
+   
+   color: #888;
+   font-size: 12px;
+   font-style: italic;
+}
+
+.blog-pages
+{
+   padding: 10px;
+   overflow: hidden;
+   
+   background: #eee;
+   margin: 10px 0;
+}
+
+.blog-previousPage,
+.blog-nextPage
+{
+   float: left;
+   width: 200px;
+   height: 14px;
+   
+   border: 0;
+}
+
+.blog-nextPage
+{
+   text-align: right;
+}
+
+.blog-page
+{
+   float: left;
+   width: 430px;
+   text-align: center;
+}
+
+/**************************************************************************/
+
+#comments article header
+{
+   padding-left: 10px;
+   font-size: 12px;
+   font-style: italic;
+}
+
+#comments article .adminTools
+{
+   visibility: hidden;
+}
+
+#comments article:hover .adminTools,
+#comments article.awaitingModerationComment .adminTools
+{
+   visibility: visible;
 }

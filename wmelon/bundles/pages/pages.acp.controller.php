@@ -167,7 +167,7 @@ class Pages_Controller extends Controller
          
             if($unapprovedComments > 0)
             {
-               $comments .= ' <strong><a href="#/' . $name . '#comments-link">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
+               $comments .= ' <strong><a href="#/' . $name . '#comments">(' . $unapprovedComments . ' do sprawdzenia!)</a></strong>';
             }
          
          //--

@@ -3,14 +3,13 @@
 <meta charset="UTF-8"/>
 ${php:skin.drawHeadTags()}
 <link rel="stylesheet" href="${BundlesURL}watermelon/public/basic.css"/>
+<link rel="stylesheet" href="${BundlesURL}watermelon/public/watermelon.css"/>
 <link rel="stylesheet" href="${SkinURL}public/style.css"/>
 
 
 <div id="container">
    <header>
-      <div>
-         <h1>Some stupid name noone cares about</h1>
-      </div>
+      <h1><a href="${SiteURL}">${siteName}</a></h1>
       <nav>
          ${php:skin.drawTextMenu(0)}
          <a href="${AdminURL}" tal:condition="isAdmin" style="float: right">Panel Admina</a>
