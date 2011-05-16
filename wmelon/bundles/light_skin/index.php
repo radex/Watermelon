@@ -2,9 +2,7 @@
 <!DOCTYPE html>
 <meta charset="UTF-8"/>
 ${php:skin.drawHeadTags()}
-<link rel="stylesheet" href="${BundlesURL}watermelon/public/basic.css"/>
-<link rel="stylesheet" href="${BundlesURL}watermelon/public/watermelon.css"/>
-<link rel="stylesheet" href="${SkinURL}public/style.css"/>
+<link rel="stylesheet" href="${SkinURL}public/style.css.php?1"/>
 
 
 <div id="container">

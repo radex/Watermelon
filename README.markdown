@@ -1,3 +1,3 @@
 #Watermelon
 
-**Watermelon** is a project of fast, convenient, flexible and good quality _content management system_/framework. For now, it's simple blogging system (and Polish-only), but the project is more ambitious than this. It's just the beginning.
+**Watermelon** is a project of mine aiming to create awesome blogging system (that kicks Wordpress's ass) as well as have fun and learn a lot in the process. Most of it is shit, currently, but I'm working on that ;) 

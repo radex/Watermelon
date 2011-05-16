@@ -9,51 +9,43 @@
 }
 
 /*
- * Unsemantic Image Aligners
- */
-
-.imgRight  { float: right; }
-.imgLeft   { float: left; }
-.imgCenter { margin: 0 auto; }
-
-/*
  * Boxes
  */
 
 .error
 {
    border: 1px solid #DEA781;
-   background: #FFCD8A url('img/error.png') no-repeat 10px center;
+   background: #FFCD8A url(img/error.png) no-repeat 10px center;
 }
 
 .notice
 {
    border: 1px solid #80B2D2;
-   background: #B8D8EA url('img/notice.png') no-repeat 10px center;
+   background: #B8D8EA url(img/notice.png) no-repeat 10px center;
 }
 
 .successNotice
 {
    border: 1px solid #97c32d;
-   background: #deeba8 url('img/successNotice.png') no-repeat 10px center;
+   background: #deeba8 url(img/successNotice.png) no-repeat 10px center;
 }
-/*
+
 .questionBox
 {
    border: 1px solid #bbd;
-   background: #f0f0ff url('img/question.png') no-repeat 10px center;
-}*/
+   background: #f0f0ff url(img/question.png) no-repeat 10px center;
+}
 
 .error,
 .notice,
-.successNotice
-/*.questionBox*/
+.successNotice,
+.questionBox
 {
    padding: 10px;
    margin: 10px;
    padding-left: 40px;
 }
-/*
+
 .questionBox menu
 {
    text-align: right;
@@ -72,4 +64,4 @@
 .questionBox form input
 {
    height: 16px;
-}*/
+}
