@@ -34,6 +34,16 @@ function tests_autoloader($className)
          'dbquery'     => 'core/DB/DB.php',
          'dbresult'    => 'core/DB/DB.php',
          'config'      => 'core/Config.php',
+         
+         /* headers */
+         
+         'model'       => 'core/headers/Model.php',
+         'extension'   => 'core/headers/Extension.php',
+         
+         /* extensions, models, etc. */
+         
+         'users_model' => 'bundles/watermelon/users.model.php',
+         'users'       => 'bundles/watermelon/users.extension.php',
       );
 
    if(isset($libPaths[$className]))
