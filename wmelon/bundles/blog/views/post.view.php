@@ -1,6 +1,6 @@
 <?php die?>
 <tal:block>
-   <article>
+   <article class="blogpost">
       <header>
          <h1><a href="${post/url}">${post/title}</a></h1>   
          <span class="blog-postInfo">

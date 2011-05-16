@@ -14,7 +14,7 @@
 
 <!-- Posts -->
 
-<article tal:repeat="post posts" id="blogpost-${post/id}">
+<article tal:repeat="post posts" id="blogpost-${post/id}" class="blogpost">
    
    <!-- header -->
    
@@ -31,12 +31,12 @@
    
    <!-- post content -->
    
-   <article tal:condition="not: post/summary">
+   <tal:block tal:condition="not: post/summary">
       ${structure post/content}
-   </article>
-   <article tal:condition="post/summary">
+   </tal:block>
+   <tal:block tal:condition="post/summary">
       ${structure post/summary}
-   </article>
+   </tal:block>
    
    <!-- read more -->
    

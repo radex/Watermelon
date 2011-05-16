@@ -33,7 +33,7 @@ p
 
 h2
 {
-   font-size: 22px;
+   font-size: 24px;
    margin-bottom: 5px;
 }
 
@@ -45,7 +45,7 @@ h2 a
 
 h3
 {
-   font-size: 18px;
+   font-size: 20px;
    font-weight: normal;
 }
 
@@ -161,6 +161,12 @@ h1 a
 
 /**************************************************************************/
 
+.blogpost
+{
+   margin-bottom: 10px;
+   overflow: hidden;       /* no idea why needed */
+}
+
 h2 + .blog-postInfo
 {
    display: block;
@@ -204,6 +210,12 @@ h2 + .blog-postInfo
 }
 
 /**************************************************************************/
+
+#comments article
+{
+   margin-bottom: 10px;
+   overflow: hidden;
+}
 
 #comments article header
 {
