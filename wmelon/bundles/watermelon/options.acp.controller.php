@@ -122,7 +122,6 @@ class Options_Controller extends Controller
       $form->addHTML('<fieldset id="adminOptions"><legend>Ty</legend>');
       $form->addInput('text',     'login',          'Twój login',                     true,  $login);
       $form->addInput('text',     'nick',           'Twój nick',                      false, $nick);
-      $form->addInput('email',    'email',          'Twój email',                     false, $email);
       $form->addInput('password', 'pass',           'Twoje hasło',                    false);
       $form->addInput('password', 'pass2',          'Twoje hasło (powtórz)',          false);
       $form->addHTML('</fieldset>');
@@ -160,7 +159,7 @@ class Options_Controller extends Controller
       
       // verifying data - passwords
       
-      if(!empty($data->pass) && $data->pass !=  $data->pass2)
+      if(!empty($data->pass) && $data->pass != $data->pass2)
       {
          $form->addError('Podane hasła nie są identyczne');
          $form->fallBack();
@@ -168,22 +167,19 @@ class Options_Controller extends Controller
       
       // saving data - userdata
       
-      $fields = array
-         (
-            'login' => $data->login,
-            'nick'  => $data->nick,
-            'email' => $data->email,
-         );
+      $userData = Users::userData();
+      
+      $userData->login = $data->login;
+      $userData->nick  = $data->nick;
+      
+      $_SESSION['wmelon.users.login'] = $data->login;
       
       if(!empty($data->pass))
       {
-         $fields['password'] = sha1($data->pass . Users::userData()->salt);
-         $_SESSION['wmelon.user.pass'] = $data->pass;
+         $_SESSION['wmelon.users.pass'] = $userData->pass = sha1($data->pass . $userData->salt);
       }
       
-      DB::update('users', 1, $fields);
-      
-      $_SESSION['wmelon.user.login'] = $data->login;
+      Config::set('wmelon.admin', $userData);
       
       // saving data - sblam!
       

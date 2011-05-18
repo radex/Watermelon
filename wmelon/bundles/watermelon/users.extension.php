@@ -76,9 +76,12 @@ class Users extends Extension
    }
    
    /*
-    * public static object userData()
+    * public static object userData([int $uid])
     * 
-    * Returns data of currently logged in user
+    * If called with no arguments, returns data of currently logged in user (or null if no user logged in)
+    * 
+    * If called with $uid, returns user data od $uid user
+    * (currently it's hardcoded to always return admin data, since there are no other users)
     * 
     * Object it returns currently consists of:
     *    ->login - name used for logging in
@@ -87,11 +90,18 @@ class Users extends Extension
     *    ->nick  - name displayed (in comments etc.)
     */
    
-   public static function userData()
+   public static function userData($uid = null)
    {
-      self::isLogged(); // making sure that auto-logged before returning user data
+      if(is_int($uid))
+      {
+         return Config::get('wmelon.admin');
+      }
+      else
+      {
+         self::isLogged(); // making sure that auto-logged before returning user data
       
-      return self::$userData;
+         return self::$userData;
+      }
    }
    
    /**************************************************************************/

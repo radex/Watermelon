@@ -92,22 +92,25 @@ legend
 label
 {
    display: block;
+   margin: 2px;
 }
 
-label > span
+label strong
 {
    display: inline-block;
    width: 200px;
    text-align: right;
    padding-right: 5px;
    vertical-align: top;
+   
+   font-size: 1.1em;
+   font-weight: normal;
 }
 
-label > span > small
+label span
 {
-   display: block;
    color: #888;
-   line-height: 1.1em;
+   font-size: .9em;
 }
 
 textarea

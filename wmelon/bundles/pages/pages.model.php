@@ -131,7 +131,7 @@ class Pages_Model extends Model
             'name'    => (string) $name,
             'title'   => (string) $title,
             'content' => (string) $content,
-            'author'  => Users::userData()->id,
+            'author'  => 1,                  // admin account
             'created' => time(),
             'updated' => time(),
          ));

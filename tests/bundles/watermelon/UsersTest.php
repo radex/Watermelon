@@ -275,4 +275,18 @@ class UsersTest extends PHPUnit_Framework_TestCase
       $this->assertEquals(self::userData(), Users::userData());
       $this->assertTrue(Users::isLogged());
    }
+   
+   /**
+    * Tests fetching user's data by calling ::userData with UID argument
+    * 
+    * (currently it's hardcoded to always return admin's data, since there are no other users)
+    */
+
+   public function testUserDataMethodWithUID()
+   {
+      Users::logout();
+      $this->assertEquals(self::userData(), Users::userData(0));
+      Users::login('radex', 'qwerty');
+      $this->assertEquals(self::userData(), Users::userData(1));
+   }
 }
