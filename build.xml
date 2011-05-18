@@ -69,12 +69,6 @@
    
    <target name="build_release" depends="build">
       
-      <!-- swapping Turbine config -->
-      
-      <delete file="${codeDir}wmelon/core/Turbine/config.php"/>
-      <move   file="${codeDir}wmelon/core/Turbine/config_production.php"
-            tofile="${codeDir}wmelon/core/Turbine/config.php"/>
-      
       <!-- swapping Watermelon config -->
       
       <delete file="${codeDir}wmelon/bundles/installer/data/config.php"/>
