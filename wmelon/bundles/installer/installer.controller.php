@@ -383,7 +383,7 @@ class Installer_Controller extends Controller
          $w->siteURL           = $siteURL;
          $w->systemURL         = SystemURL;
 
-         $w->skin              = 'wcmslay';
+         $w->skin              = 'light';
          $w->atomID            = $atomID;
 
          // frontend
@@ -412,26 +412,20 @@ class Installer_Controller extends Controller
          
       $salt = substr(sha1(mt_rand()), 0, 16);
       
-      DB::insert('users', array
+      $adminData = (object) array
          (
-            'login'    => strtolower($login),
-            'password' => sha1($pass . $salt),
-            'salt'     => $salt,
-            'nick'     => $login,
-            'email'    => '',
-            'lastseen' => time(),
-         ));
+            'login' => strtolower($login),
+            'salt'  => $salt,
+            'pass'  => sha1($pass . $salt),
+            'nick'  => $login,
+         );
       
-      DB::insert('privileges', array
-         (
-            'user'      => 1,
-            'privilege' => 'admin',
-         ));
+      Config::set('wmelon.admin', $adminData);
       
       // logging in
       
-      $_SESSION['wmelon.user.login'] = $login;
-      $_SESSION['wmelon.user.pass']  = $pass;
+      $_SESSION['wmelon.users.login'] = strtolower($login);
+      $_SESSION['wmelon.users.pass']  = $adminData->pass;
       
       // adding sample blog post
       

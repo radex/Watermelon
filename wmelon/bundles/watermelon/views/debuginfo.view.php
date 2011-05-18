@@ -2,9 +2,11 @@
 
 <br/><br/>
 
-<p>Generated in: ${generationTime} ms</p>
-<p>Peak memory usage: ${peakMemory} KB</p>
-<p>Current memory usage: ${currentMemory} KB</p>
+<p>
+   Generated in: ${generationTime} ms<br />
+   Peak memory usage: ${peakMemory} KB<br />
+   Current memory usage: ${currentMemory} KB
+</p>
 
 <br />
 

@@ -53,8 +53,7 @@ class Comments_Controller extends Controller
       
       // users, posts, pages
       
-      $users = array();
-      $posts = array();   // in all three arrays data about certain uesr/blog post/page is stored, in [id] key
+      $posts = array();   // in all two arrays data about certain post/page is stored, with [id] key
       $pages = array();
       
       // adding comments
@@ -148,14 +147,7 @@ class Comments_Controller extends Controller
          
             if($comment->authorID !== null)
             {
-               // fetching data
-            
-               if(!isset($users[$comment->authorID]))
-               {
-                  $users[$comment->authorID] = Users_Model::userData_id($comment->authorID);
-               }
-            
-               $user = &$users[$comment->authorID];
+               $user = Users::userData(1);
             
                //--
             

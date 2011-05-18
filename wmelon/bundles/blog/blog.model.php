@@ -171,7 +171,7 @@ class Blog_Model extends Model
             'content'       => (string) $content,
             'summary'       =>          $summary,
             
-            'author'        =>          Users::userData()->id,
+            'author'        =>          1,         // only admin user currently, so...
             'published'     =>          time(),
             'updated'       =>          time(),
             

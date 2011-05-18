@@ -41,9 +41,6 @@ class Comments extends Extension
       $backPage = (string) $backPage;
       
       $model    = new Comments_Model;
-      $auth     = new Users_Model;
-      
-      $users = array();
       
       // comments
       
@@ -96,16 +93,9 @@ class Comments extends Extension
          
          if($authorID !== null)
          {
-            // if no user information in array, selecting from database
+            // author's user data
             
-            if(empty($users[$authorID]))
-            {
-               $users[$authorID] = $auth->userData_id($authorID);
-            }
-            
-            // reference to author's data object
-            
-            $comment->author = &$users[$authorID];
+            $comment->author = Users::userData(1);
             
             // CSS class (for admin comments distinction)
             

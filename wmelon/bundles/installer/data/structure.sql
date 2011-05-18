@@ -1,14 +1,4 @@
 -- 
--- Structure for table `benchmark`
--- 
-
-CREATE TABLE `wm_benchmark` (
-  `name` varchar(256) NOT NULL,
-  `value` int(11) NOT NULL,
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- 
 -- Structure for table `blogposts`
 -- 
 
@@ -29,19 +19,6 @@ CREATE TABLE `wm_blogposts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-
--- 
--- Structure for table `categories`
--- 
-
-CREATE TABLE `wm_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(25) NOT NULL,
-  `title` varchar(60) NOT NULL,
-  `count` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
 -- Structure for table `comments`
@@ -94,31 +71,3 @@ CREATE TABLE `wm_pages` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `page_name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-
--- 
--- Structure for table `privileges`
--- 
-
-CREATE TABLE `wm_privileges` (
-  `user` int(11) NOT NULL,
-  `privilege` varchar(64) NOT NULL,
-  KEY `privileges_user` (`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- 
--- Structure for table `users`
--- 
-
-CREATE TABLE `wm_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `login` varchar(40) NOT NULL COMMENT 'name used when logging in',
-  `password` varchar(40) NOT NULL,
-  `salt` varchar(16) NOT NULL,
-  `nick` varchar(40) NOT NULL COMMENT 'displayed user name',
-  `email` varchar(64) NOT NULL,
-  `lastseen` int(10) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_login` (`login`),
-  UNIQUE KEY `user_email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-

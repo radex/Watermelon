@@ -227,15 +227,6 @@ class Watermelon
          return;
       }
       
-      // auto-loading extensions
-      
-      new FrontendLibraries;
-      
-      if(self::$appType == self::Admin)
-      {
-         new Sblam;
-      }
-      
       // indexing modules (if debug or admin logged)
       
       if(defined('WM_Debug') || Users::isLogged())
@@ -245,13 +236,19 @@ class Watermelon
       
       // if ACP - checking if logged in
       
+      if(self::$appType == self::Admin && !Users::isLogged())
+      {
+         SiteRedirect('users/login/' . base64_encode(self::$requestURL), 'site');
+         exit;
+      }
+      
+      // auto-loading extensions
+      
+      new FrontendLibraries;
+      
       if(self::$appType == self::Admin)
       {
-         if(!Users::adminPrivileges())
-         {
-            SiteRedirect('users/login/' . base64_encode(self::$requestURL), 'site');
-            exit;
-         }
+         new Sblam;
       }
       
       // Atom feed shortut

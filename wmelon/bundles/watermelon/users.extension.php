@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2010-2011 Radosław Pietruszewski.
+ //  Copyright 2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -19,163 +19,146 @@
  //  
 
 /*
- * class Users
- * 
- * Authorization, users....
+ * Users: authorization and admin's data
  */
 
 class Users extends Extension
 {
-   private static $isLogged = false; // whether user session exists
-   private static $userData;         // information about logged user
-   private static $privileges;       // privileges logged user has
+   private static $isLogged = null; // (bool) cached after calling ::isLogged()
+   private static $userData = null; // (object) cached after successful login
+   
+   /**************************************************************************/
    
    /*
-    * public static void init()
+    * public static bool isLogged()
     * 
-    * Sets $isLogged to proper value and if user is logged in, updates 'lastseen' field in database
+    * Returns whether user is logged in
+    * 
+    * (makes auto-logging using data from session)
     */
    
-   public static function init()
+   public static function isLogged()
    {
-      // checking whether user is logged in
+      // return cached if present
       
-      if(isset($_SESSION['wmelon.user.login']) && isset($_SESSION['wmelon.user.pass']))
+      if(self::$isLogged !== null)
       {
-         try
-         {
-            self::_isLogged();
-            self::$isLogged = true;
-         }
-         catch(WMException $e)
-         {
-            self::$isLogged = false;
-         }
+         return self::$isLogged;
+      }
+      
+      // check for session
+      
+      $login = $_SESSION['wmelon.users.login'];
+      $pass  = $_SESSION['wmelon.users.pass'];
+      
+      if(empty($login) || empty($pass))
+      {
+         self::$isLogged = false;
+         return false;
+      }
+      
+      // test if data's correct
+      
+      $userData = Config::get('wmelon.admin');
+      
+      if($login == $userData->login && $pass == $userData->pass)
+      {
+         self::$isLogged = true;
+         self::$userData = $userData;
+         
+         return true;
+      }
+      else
+      {
+         self::$isLogged = false;
+         return false;
       }
    }
    
    /*
-    * public static void login(string $login, string $pass)
+    * public static object userData([int $uid])
     * 
-    * Logs in $login user
+    * If called with no arguments, returns data of currently logged in user (or null if no user logged in)
     * 
-    * Throws [auth:userNotExist] if passed login doesn't exist in database and [auth:wrongPass] if passed password is not correct
+    * If called with $uid, returns user data od $uid user
+    * (currently it's hardcoded to always return admin data, since there are no other users)
     * 
-    * Doesn't return anything if login is successful
+    * Object it returns currently consists of:
+    *    ->login - name used for logging in
+    *    ->salt  - salt used for hashing password
+    *    ->pass  - password hashed using sha1(actual_pass . salt)
+    *    ->nick  - name displayed (in comments etc.)
+    */
+   
+   public static function userData($uid = null)
+   {
+      if(is_int($uid))
+      {
+         return Config::get('wmelon.admin');
+      }
+      else
+      {
+         self::isLogged(); // making sure that auto-logged before returning user data
+      
+         return self::$userData;
+      }
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * public static bool login(string $login, string $pass)
+    * 
+    * Tries to log in using given data (and if successful, saves login data in session)
+    * 
+    * When successful, returns true
+    * When user with $login does not exist, raises WMException with code 'users:doesNotExist'
+    * When given password is not correct, raises WMException[users:wrongPassword]
     */
    
    public static function login($login, $pass)
    {
-      $login = trim(strtolower($login));
+      $login = strtolower(trim($login));
       $pass  = trim($pass);
       
-      $_SESSION['wmelon.user.login'] = $login;
-      $_SESSION['wmelon.user.pass']  = $pass;
+      // fetching user data
       
-      if(self::_isLogged())
+      $userData = Config::get('wmelon.admin');
+      
+      // checking if given data is correct
+      
+      if($login != strtolower($userData->login))
       {
-         self::$isLogged = true;
+         throw new WMException('User does not exist', 'users:doesNotExist');
       }
+      
+      if(sha1($pass . $userData->salt) != $userData->pass)
+      {
+         throw new WMException('Wrong password', 'users:wrongPassword');
+      }
+      
+      // everything seems fine
+      
+      self::$isLogged = true;
+      self::$userData = $userData;
+      
+      $_SESSION['wmelon.users.login'] = $userData->login;
+      $_SESSION['wmelon.users.pass']  = $userData->pass;
+      
+      return true;
    }
    
    /*
     * public static void logout()
     * 
-    * Logs logged user out
+    * Logs out and destroys user session
     */
    
    public static function logout()
    {
-      unset($_SESSION['wmelon.user.login']);
-      unset($_SESSION['wmelon.user.pass']);
-      
       self::$isLogged = false;
-   }
-   
-   /*
-    * public static bool isLogged()
-    * 
-    * Whether user session exists
-    */
-   
-   public static function isLogged()
-   {
-      return self::$isLogged;
-   }
-   
-   /*
-    * public static object userData()
-    * 
-    * Information about logged user
-    * 
-    * NULL if not logged in
-    */
+      self::$userData = null;
       
-   public static function userData()
-   {
-      return self::$userData;
-   }
-   
-   /*
-    * public static string[] privileges()
-    * 
-    * Privileges logged user has
-    * 
-    * NULL if not logged in
-    */
-   
-   public static function privileges()
-   {
-      return self::$privileges;
-   }
-   
-   /*
-    * public static bool adminPrivileges()
-    * 
-    * Whether user is logged and has admin privileges
-    */
-   
-   public static function adminPrivileges()
-   {
-      return (self::$isLogged && in_array('admin', self::$privileges));
-   }
-   
-   /*
-    * checks whether user is logged in, updates `lastseen` if so, etc.
-    */
-   
-   private static function _isLogged()
-   {
-      // getting user data, checking existence
-      
-      $login = $_SESSION['wmelon.user.login'];
-      $pass  = $_SESSION['wmelon.user.pass'];
-      
-      $model = new Users_Model;
-      
-      $userData = $model->userData_login($login);
-      
-      if(!$userData)
-      {
-         throw new WMException('userNotExists', 'auth:userNotExists');
-      }
-      
-      // checking password
-      
-      $pass = sha1($pass . $userData->salt);
-      
-      if($pass !== $userData->password)
-      {
-         throw new WMException('wrongPass', 'auth:wrongPass');
-      }
-      
-      // updating `lastseen` etc.
-      
-      $model->updateLastSeen($userData->id);
-      
-      self::$userData   = $userData;
-      self::$privileges = $model->privilegesFor($userData->id);
-      
-      return true;
+      unset($_SESSION['wmelon.users.login'], $_SESSION['wmelon.users.pass']);
    }
 }

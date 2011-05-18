@@ -108,7 +108,7 @@ class View
       
       if(class_exists('Users'))      // there's no Users in Installer
       {
-         $view->set('isAdmin', Users::adminPrivileges());
+         $view->set('isAdmin', Users::isLogged());
       }
       
       // executing
