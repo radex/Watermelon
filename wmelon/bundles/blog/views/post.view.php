@@ -2,8 +2,8 @@
 <tal:block>
    <article class="blogpost">
       <header>
-         <h1><a href="${post/url}">${post/title}</a></h1>   
-         <span class="blog-postInfo">
+         <h1><a href="${post/url}">${post/title}</a></h1>
+         <span class="postInfo">
             ${structure published_human}
             
             <span class="adminTools" tal:condition="isAdmin">

@@ -21,37 +21,6 @@
 include 'language.php';
 
 /*
- * mixed CallMethodQuietly(object &$object, string $methodName[, array $args])
- * 
- * Calls method $methodName on $object object with arguments from $args array without triggering warnings about insufficient number of arguments, and returns result returned by called method
- * 
- * object $object     - object to call method on
- * string $methodName - name of method to call
- * array  $args       - list of parameters to be passed to specified method
- * 
- * Note that this function passes NULL for all required, but not given in $args parameters
- */
-
-function CallMethodQuietly($object, $methodName, $args = array())
-{
-   $reflection       = new ReflectionMethod($object, $methodName);
-   $methodArgsNumber = $reflection->getNumberOfRequiredParameters();
-   $args             = (is_array($args)) ? $args : array();
-   
-   // assigning NULL for missing parameters
-   
-   if(count($args) < $methodArgsNumber)
-   {
-      for($i = 0, $j = $methodArgsNumber - count($args); $i < $j; $i++)
-      {
-         $args[] = null;
-      }
-   }
-   
-   return call_user_func_array(array(&$object, $methodName), $args);
-}
-
-/*
  * string[] FilesForDirectory(string $dirPath)
  * 
  * Returns array with paths for every file in specified directory (if $recursive == true, also including files in subdirectories)
@@ -95,131 +64,31 @@ function FilesForDirectory($dirPath, $recursive = true, $returnObject = false)
 }
 
 /*
- * array ToObject(object/array $structure)
+ * string SiteURL(string $page)
  * 
- * Converts $structure to object (recursively)
- */
-
-function ToObject($structure)
-{
-   return TranslateStructure($structure, 'object');
-}
-
-/*
- * array ToArray(object/array $structure)
+ * Returns URL for given page of the website
  * 
- * Converts $structure to array (recursively)
- */
-
-function ToArray($structure)
-{
-   return TranslateStructure($structure, 'array');
-}
-
-/*
- * mixed TranslateStructure(object/array $structure, string $toType)
+ * Normally, URL is produced for website itself when called in website itself and for ACP when called in ACP
  * 
- * Converts $structure to array or object (recursively)
- * 
- * string $toType - type of structure to convert $structure to; either 'array' or 'object'
- */
-
-function TranslateStructure($structure, $toType)
-{
-   if(!is_array($structure) && !is_object($structure))
-   {
-      throw new WMException('$structure is neither array nor object', 'wrongType');
-   }
-   
-   if($totype !== 'array' && $toType !== 'object')
-   {
-      throw new WMException('$toType is neither "array" nor "object"', 'badArgument');
-   }
-   
-   if($toType == 'object')
-   {
-      $result = new stdClass;
-   }
-   else
-   {
-      $result = array();
-   }
-   
-   foreach($structure as $key => $value)
-   {
-      if($toType == 'object')
-      {
-         $dest = &$result->$key;
-      }
-      else
-      {
-         $dest = &$result[$key];
-      }
-      
-      if(is_array($value) || is_object($value))
-      {
-         $dest = TranslateStructure($value, $toType);
-      }
-      else
-      {
-         $dest = $value;
-      }
-   }
-   
-   return $result;
-}
-
-/*
- * string SiteURL(string $page[, enum $type])
- * 
- * Makes URI to given page of a website
- * 
- * Note that for admin control panel it's URI for ACP, not website itself
- * 
- * Specify $type if you specifically want URI for ACP/website itself
- * 
- * Alternative way of specifying type is to precede $page with '#/' (for website) or '%/' (for ACP)
- * 
- * string $urn  - page, e.g: 'blog/foo/bar', or '' (for main page)
- * enum   $type = {'site', 'admin'}
- *    For 'site', function will return URI for website itself
- *    For 'admin', URI for admin control panel is returned
- *    For anything else, URI for current app type is used
+ * When you precede $page with '#/', URL for website is always produced
+ * When you precede $page with '%/', URL for ACP is always produced
  */
 
 function SiteURL($page = '', $type = null)
 {
-   // site
+   $prefix = substr($page, 0, 2);
    
-   if(substr($page, 0, 2) == '#/')
+   if($prefix == '#/')
    {
-      $type = 'site';
-      $page = substr($page, 2);
+      return SiteURL . substr($page, 2);
    }
-   
-   // admin
-   
-   if(substr($page, 0, 2) == '%/')
+   elseif($prefix == '%/')
    {
-      $type = 'admin';
-      $page = substr($page, 2);
+      return AdminURL . substr($page, 2);
    }
-   
-   // generating
-   
-   switch($type)
+   else
    {
-      case 'admin':
-         return AdminURL . $page;
-      break;
-      
-      case 'site':
-         return SiteURL . $page;
-      break;
-      
-      default:
-         return CurrURL . $page;
-      break;
+      return CurrURL . $page;
    }
 }
 
@@ -272,34 +141,6 @@ function ClientIP()
    }
    
    return $ip;
-}
-
-/*
- * string HashString(string $string[, string $algo])
- * 
- * Makes hash of $string
- * 
- * Hash is calculated using $algo algorithm.
- * If $algo is not given (which is usually true), sha1 will be used
- * 
- * HashString uses $algo() if exists, or hash() otherwise.
- */
-
-function HashString($string, $algo = null)
-{
-   if($algo === null)
-   {
-      $algo = 'sha1';
-   }
-   
-   if(function_exists($algo))
-   {
-      return $algo($string);
-   }
-   else
-   {
-      return hash($algo, $string);
-   }
 }
 
 /*

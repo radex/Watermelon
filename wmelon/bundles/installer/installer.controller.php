@@ -456,51 +456,11 @@ class Installer_Controller extends Controller
    
    private function baseURL()
    {
-      // determining URL to index.php
+      $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
       
-      $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; // full URL
+      // deleting 'index.php' from the end
       
-      $pathInfo  = $_SERVER['PATH_INFO'];                                 // everything what is after index.php
-      $queryInfo = $_SERVER['QUERY_STRING'];                              // everything what is after ?
-      
-      // stripping PATH_INFO
-      
-      if(!empty($pathInfo))
-      {
-         $url = substr($url, 0, -strlen($pathInfo));
-      }
-      
-      // stripping QUERY_STRING
-      
-      if(!empty($queryInfo))
-      {
-         $queryInfo = '?' . $queryInfo;
-         
-         $url = substr($url, 0, -strlen($queryInfo));
-      }
-      
-      // deleting '/' from URL if present
-      
-      if(substr($url, -1) == '/')
-      {
-         $url = substr($url, 0, -1);
-      }
-      
-      // deleting 'index.php' from URL if present
-      
-      if(substr($url, -9) == 'index.php')
-      {
-         $url = substr($url, 0, -9);
-      }
-      
-      // appending '/' to URL if absent
-      
-      if(substr($url, -1) != '/')
-      {
-         $url .= '/';
-      }
-      
-      // returns
+      $url = substr($url, 0, -9);
       
       return $url;
    }

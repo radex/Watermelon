@@ -285,6 +285,7 @@ class Watermelon
    {
       define('WM', '');
       
+      session_set_cookie_params(0);
       session_name('Watermelon');
       session_start();
       session_regenerate_id();
@@ -613,7 +614,7 @@ class Watermelon
          $url = '';
       }
       
-      return rawurldecode($url);             // TODO: unit test, just to be sure ;)
+      return rawurldecode($url);
    }
    
    /*
@@ -835,7 +836,7 @@ class Watermelon
          // note that currently controller handler is hardcoded - pages controller
          // in future probably it will be somehow changed
          
-         CallMethodQuietly($controllerObj, '_controllerHandler', array(implode('/', $segments)));
+         self::callMethodQuietly($controllerObj, '_controllerHandler', array(implode('/', $segments)));
          return;
       }
       
@@ -844,7 +845,7 @@ class Watermelon
       if(count($segments) == 0)
       {
          $action = 'index';
-         CallMethodQuietly($controllerObj, 'index_action');
+         self::callMethodQuietly($controllerObj, 'index_action');
          return;
       }
       
@@ -856,7 +857,7 @@ class Watermelon
       {
          array_shift($segments); // shifting action name out of beginning of segments array
          
-         CallMethodQuietly($controllerObj, $actionName, $segments);
+         self::callMethodQuietly($controllerObj, $actionName, $segments);
          return;
       }
       
@@ -864,12 +865,45 @@ class Watermelon
       
       if(method_exists($controllerObj, '_actionHandler'))
       {
-         CallMethodQuietly($controllerObj, '_actionHandler', $segments);
+         self::callMethodQuietly($controllerObj, '_actionHandler', $segments);
          return;
       }
       
       // if neither action specified in URI, nor action handler exists
       
       self::displayNoPageFoundError();
+   }
+   
+   /**************************************************************************/
+   
+   /*
+    * private static mixed callMethodQuietly(object &$object, string $methodName[, array $args])
+    * 
+    * Calls method $methodName on $object object with arguments from $args array without triggering warnings about insufficient number of arguments, and returns result returned by called method
+    * 
+    * object $object     - object to call method on
+    * string $methodName - name of method to call
+    * array  $args       - list of parameters to be passed to specified method
+    * 
+    * Note that this function passes NULL for all required, but not passed in $args parameters
+    */
+
+   private static function callMethodQuietly($object, $methodName, $args = array())
+   {
+      $reflection       = new ReflectionMethod($object, $methodName);
+      $methodArgsNumber = $reflection->getNumberOfRequiredParameters();
+      $args             = (is_array($args)) ? $args : array();
+
+      // assigning NULL for missing parameters
+
+      if(count($args) < $methodArgsNumber)
+      {
+         for($i = 0, $j = $methodArgsNumber - count($args); $i < $j; $i++)
+         {
+            $args[] = null;
+         }
+      }
+
+      return call_user_func_array(array(&$object, $methodName), $args);
    }
 }

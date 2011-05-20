@@ -31,6 +31,18 @@ p
    margin-bottom: 1em;
 }
 
+h1
+{
+   font-size: 32px;
+   font-weight: normal;
+}
+
+h1 a
+{
+   color: #000;
+   border: 0;
+}
+
 h2
 {
    font-size: 24px;
@@ -126,18 +138,6 @@ footer
 
 /**************************************************************************/
 
-h1
-{
-   font-size: 32px;
-   font-weight: normal;
-}
-
-h1 a
-{
-   color: #000;
-   border: 0;
-}
-
 #container > header nav
 {
    margin-top: 10px;
@@ -167,7 +167,7 @@ h1 a
    overflow: hidden;       /* no idea why needed */
 }
 
-h2 + .blog-postInfo
+h2 + .postInfo
 {
    display: block;
    margin-top: -5px;

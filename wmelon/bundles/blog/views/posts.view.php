@@ -21,7 +21,7 @@
    <header>
       <h1><a href="${post/url}">${post/title}</a></h1>
       
-      <span class="blog-postInfo">
+      <span class="postInfo">
          ${structure post/published_human}${structure post/comments | nothing}
          <span class="adminTools" tal:condition="isAdmin">
             <a href="${post/editHref}">[Edytuj]</a> | <a href="${post/deleteHref}">[Usuń]</a>

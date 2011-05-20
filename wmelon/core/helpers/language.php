@@ -71,16 +71,7 @@ function pl_inflect($numeral, $inflection0, $inflection1, $inflection2)
  * bool $html      - Jeśli TRUE, zwraca w formie HTML-u, gdzie w title="" jest pełna data
  */
  
-/*
- 
-TODO here:
-
-- multilingual
-- future dates
-- sentences like "this monday", "last monday" or "next monday"
-- DMY/MDY/YMD to chose (in ACP)
-
-*/
+//TODO: it's a bit of a mess; clean it up
 
 function HumanDate($timestamp, $dateOnly = false, $html = false)
 {

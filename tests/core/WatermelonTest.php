@@ -46,6 +46,7 @@ class WatermelonTest extends PHPUnit_Framework_TestCase
             '/index.php/', '/index.php', '',
             '/path/foo/bar', '/path/index.php', 'foo/bar',
             '/path/index.php/foo/bar', '/path/index.php', 'foo/bar',
+            '/%C4%85%C5%9B%C4%87/foo+bar', '/index.php', 'ąść/foo+bar',
          );
       
       // testing
