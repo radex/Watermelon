@@ -18,25 +18,18 @@
  //  along with Watermelon. If not, see <http://www.gnu.org/licenses/>.
  //  
 
-// TODO: redesign it
+// TODO: redesign FrontendLibraries
 
 class FrontendLibraries extends Extension
 {
    public static function init()
    {
-      // libraries versions
-      
-      $sh_version     = '3.0.83';
-      
-      $versions = $sh_version;
-      
-      // adding
-      
       $baseURL = SystemURL . 'core/FrontendLibraries/';
       
-      Watermelon::$headTags[] = '<link rel="stylesheet" href="' . $baseURL . 'sh.css.php?v=3.0.83">';
+      Watermelon::$tailTags[] = '<style>@import url("' . $baseURL . 'sh.css.php?v=3.0.83");</style>';
+      Watermelon::$tailTags[] = '<script src="' . $baseURL . 'sh.js.php?v=3.0.83"></script>';
+      Watermelon::$tailTags[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>';
       
-      Watermelon::$tailTags[] = '<script src="' . $baseURL . 'js.php?v=' . $versions . '"></script>';
-      Watermelon::$tailTags[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>';
+      //TODO: jQuery fallback URL
    }
 }

@@ -208,14 +208,13 @@ abstract class Controller
       
       // head tags
       
-      $headTags = &Watermelon::$headTags;
+      $headTags = array();
       
       $siteName  = Watermelon::$config->siteName;
-      $pageTitle = $this->pageTitle;
       
       if(Watermelon::$appType == Watermelon::Admin)
       {
-         $title = empty($pageTitle) ? 'Panel Admina - ' . $siteName : $pageTitle . ' - Panel Admina - ' . $siteName;
+         $title = empty($this->pageTitle) ? 'Panel Admina - ' . $siteName : $this->pageTitle . ' - Panel Admina - ' . $siteName;
       }
       elseif(Watermelon::$appType == Watermelon::Installer)
       {
@@ -223,24 +222,36 @@ abstract class Controller
       }
       else
       {
-         $title = empty($pageTitle) ? $siteName : $pageTitle . ' - ' . $siteName;
+         $title = empty($pageTitle) ? $siteName : $this->pageTitle . ' - ' . $siteName;
       }
       
       $headTags[] = '<title>' . $title . '</title>';
       $headTags[] = "<script>WM_SystemURL = '" . SystemURL . "'; WM_SiteURL = '" . SiteURL . "'</script>";
-      $headTags[] = '<link rel="top" href="' . SiteURL . '">';
       
       if(Watermelon::$appType == Watermelon::Site)
       {
          $headTags[] = '<link rel="alternate" type="application/atom+xml" href="' . SiteURL . 'feed.atom"/>';
       }
       
-      $headTags[] = $config->headTags;
+      if(!empty($config->headTags))
+      {
+         $headTags[] = $config->headTags;
+      }
+      
+      foreach(Watermelon::$headTags as $tag)
+      {
+         $headTags[] = $tag;
+      }
       
       // tail tags
       
-      $tailTags   = &Watermelon::$tailTags;
+      $tailTags   = array();
       $tailTags[] = $config->tailTags;
+      
+      foreach(Watermelon::$tailTags as $tag)
+      {
+         $tailTags[] = $tag;
+      }
       
       // loading skin
       
