@@ -427,6 +427,11 @@ class Installer_Controller extends Controller
       $_SESSION['wmelon.users.login'] = strtolower($login);
       $_SESSION['wmelon.users.pass']  = $adminData->pass;
       
+      // creating cache dirs
+      
+      @mkdir(CachePath . 'textile/');              // warnings supressed so that installation don't fail if cache dirs already exist
+      @mkdir(CachePath . 'textile_restricted/');
+      
       // adding sample blog post
       
       $postContent = file_get_contents(BundlesPath . 'installer/data/samplePost.txt');

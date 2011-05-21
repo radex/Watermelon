@@ -344,13 +344,7 @@ class Blog_Model extends Model
    
    private function generateName($title)
    {
-      $name = (string) $title;
-      
-      // deletes all necessary characters
-      
-      $name = str_replace(array('?', '/', '#', '&', "'", '"'), '', $name);
-      $name = str_replace(':', ' -', $name);
-      $name = str_replace(' ', '_', $name);
+      $name = generateURLName($title);
       
       // if already exists, generating unique
       

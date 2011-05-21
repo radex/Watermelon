@@ -222,3 +222,22 @@ function SiteLinks($html)
    
    return $html;
 }
+
+/*
+ * string generateURLName(string $title)
+ * 
+ * Produces URL-friendly name from $title
+ * 
+ * Strips illegal characters (such as space or '&')
+ */
+
+function generateURLName($title)
+{
+   $name = (string) $title;
+   
+   $name = str_replace(array('?', '#', '&', "'", '"', '.'), '', $name);
+   $name = str_replace(':', ' -', $name);
+   $name = str_replace(' ', '_', $name);
+   
+   return $name;
+}

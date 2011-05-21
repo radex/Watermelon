@@ -19,24 +19,14 @@
  //  
 
 /*
- * Textile [A Humane Web Text Generator] extension
+ * Textile extension
  */
-
-/*
-future ideas:
-
-- make it extensible by other extensions (e.g. LaTeX would be cool)
-- move it to universal Cache, when it's done
-- refactor Textile library and update it
-
-*/
 
 include 'textile.php';
 
 class Textile_Extension extends Extension
 {
-   private static $textile;         // instance of Textile_Lib
-   private static $shelf = array();
+   private static $textile; // instance of Textile_Lib
    
    /*
     * public static string textile(string $textile)
@@ -96,13 +86,13 @@ class Textile_Extension extends Extension
          
          if(!defined('WM_Debug'))
          {
-            file_put_contents($path, '<?php die?>' . $textiled); // so that direct access is not possible
+            file_put_contents($path, '<?php __halt_compiler()?>' . $textiled); // so that direct access is not possible
          }
       }
       else
       {
          $textiled = file_get_contents($path);
-         $textiled = substr($textiled, 11);      // removing <?php die? >
+         $textiled = substr($textiled, 25);      // removing <?php __halt_compiler()? >
       }
       
       return $textiled;
@@ -114,14 +104,6 @@ class Textile_Extension extends Extension
    
    protected static function generateTextile($text)
    {
-      // shelving code snippets & PHP to be executed
-      
-      $text = preg_replace_callback('/<code\(([^)]+)\)>(.*?)<\/code>/ms', array(__CLASS__, 'shelveCode'), $text);
-      
-      // replacing youtube tag
-      
-      $text = preg_replace_callback('/youtube\.(.*?)v=([0-9a-zA-Z_-]+)(.*?)$/s', array(__CLASS__, 'replaceYoutube'), $text);
-      
       // textile
       
       $text = self::$textile->TextileThis($text);
@@ -129,13 +111,6 @@ class Textile_Extension extends Extension
       // fixing relative links
       
       $text = preg_replace_callback('/href="([^"]+)"/', array(__CLASS__, 'fixLinks'), $text);
-      
-      // unshelving
-      
-      foreach(self::$shelf as $i => $item)
-      {
-         $text = str_replace('<wm:shelf(' . $i . ')>', $item, $text);
-      }
       
       return $text;
    }
@@ -163,39 +138,6 @@ class Textile_Extension extends Extension
             }
          }
       }
-   }
-   
-   /*
-    * replaces <code()>..</code> syntax with placeholder (and puts HTML on "shelf"), so that entities won't be broken by Textile
-    */
-   
-   protected static function shelveCode($args)
-   {
-      list(, $brush, $code) = $args;
-      
-      $shelvedID = count(self::$shelf);
-      
-      self::$shelf[$shelvedID] = '<pre class="brush: ' . $brush . '">' . htmlspecialchars($code, ENT_NOQUOTES) . '</pre>';
-      
-      return ' <wm:shelf(' . $shelvedID . ')>';
-   }
-   
-   /*
-    * replaces 'youtube. [url]' syntax with HTML
-    */
-   
-   protected static function replaceYoutube($args)
-   {
-      $videoID = $args[2];
-      
-      // return '<iframe class="youtubeVideo" src="http://youtube.com/embed/' . $videoID . '"></iframe>';
-      
-      return '<object class="youtubeVideo">' .
-      '  <param name="movie" value="http://www.youtube-nocookie.com/v/' . $videoID . '?fs=1"></param>' .
-      '  <param name="allowFullScreen" value="true"></param>' .
-      '  <param name="allowscriptaccess" value="always"></param>' .
-      '  <embed src="http://www.youtube-nocookie.com/v/' . $videoID . '?fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" class="youtubeVideo"></embed>' .
-      '</object>';
    }
    
    /*

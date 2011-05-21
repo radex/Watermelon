@@ -121,7 +121,7 @@ class Pages_Model extends Model
       }
       else
       {
-         $name = self::filterName($name);
+         $name = generateURLName($name);
       }
       
       // inserting
@@ -148,7 +148,7 @@ class Pages_Model extends Model
       DB::update('pages', (int) $id, array
          (
             'title'   => (string) $title,
-            'name'    => self::filterName($name),
+            'name'    => generateURLName($name),
             'content' => (string) $content,
             'updated' => time(),
          ));
@@ -197,9 +197,7 @@ class Pages_Model extends Model
    
    private function generateName($title)
    {
-      $name = (string) $title;
-      
-      $name = self::filterName($name);
+      $name = generateURLName($title);
       $name = str_replace('/', '', $name);
       
       // if already exists, generating unique
@@ -220,23 +218,6 @@ class Pages_Model extends Model
       }
       
       //--
-      
-      return $name;
-   }
-   
-   /*
-    * private function filterName(string $name)
-    * 
-    * Filters page name (part of URL) - strips from illegal characters
-    */
-   
-   private function filterName($name)
-   {
-      $name = (string) $name;
-      
-      $name = str_replace(array('?', '#', '&', "'", '"'), '', $name);
-      $name = str_replace(':', ' -', $name);
-      $name = str_replace(' ', '_', $name);
       
       return $name;
    }
