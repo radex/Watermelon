@@ -26,8 +26,8 @@ class FrontendLibraries extends Extension
    {
       $baseURL = SystemURL . 'core/FrontendLibraries/';
       
-      Watermelon::$tailTags[] = '<style>@import url("' . $baseURL . 'sh.css.php?v=3.0.83");</style>';
-      Watermelon::$tailTags[] = '<script src="' . $baseURL . 'sh.js.php?v=3.0.83"></script>';
+      //Watermelon::$tailTags[] = '<style>@import url("' . $baseURL . 'sh.css.php?v=3.0.83");</style>';
+      //Watermelon::$tailTags[] = '<script src="' . $baseURL . 'sh.js.php?v=3.0.83"></script>';
       Watermelon::$tailTags[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>';
       
       //TODO: jQuery fallback URL

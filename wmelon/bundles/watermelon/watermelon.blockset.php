@@ -31,7 +31,7 @@ class Watermelon_Blockset extends Blockset
       
       // stats
       
-      $view->generationTime = round(Benchmark::executionTime(), -2) / 1000;
+      $view->generationTime = round(bcsub(BetterMicrotime(), BetterMicrotime(WM_StartTime)), -2) / 1000;
       $view->peakMemory     = round((memory_get_peak_usage() - WM_StartMemory) / 1000, 1);
       $view->currentMemory  = round((memory_get_usage() - WM_StartMemory) / 1000, 1);
       

@@ -4,19 +4,19 @@
  //  
 
 
-function path()
+function sh_path()
 {
    var args = arguments, result = [];
 
    for(var i = 0; i < args.length; i++)
    {
-      result.push(args[i].replace('@', WM_SystemURL + '/core/FrontendLibraries/SyntaxHighlighter/brushes/'));
+      result.push(args[i].replace('@', SystemURL + '/core/FrontendLibraries/SyntaxHighlighter/brushes/'));
    }
 
-   return result
-};
+   return result;
+}
 
-SyntaxHighlighter.autoloader.apply(null, path(
+SyntaxHighlighter.autoloader.apply(null, sh_path(
    'cpp c                  @shBrushCpp.js',
    'css                    @shBrushCss.js',
    'js jscript javascript  @shBrushJScript.js',

@@ -24,7 +24,7 @@
 
 class Installer_Controller extends Controller
 {
-   private $tableNames = array('benchmark', 'blogposts', 'categories', 'comments', 'config', 'pages', 'privileges', 'users');
+   private $tableNames = array('blogposts', 'comments', 'config', 'pages');
    
    /*
     * Main method - setup and running

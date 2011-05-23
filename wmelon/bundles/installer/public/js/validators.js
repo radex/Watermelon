@@ -10,7 +10,7 @@ function permissionsValidator()
    
    $.ajax(
    {
-      url: WM_SiteURL + 'permissions.json',
+      url: SiteURL + 'permissions.json',
       dataType: 'json'
    })
    .error(ajaxErrorHandler)
@@ -66,7 +66,7 @@ function dbInfoValidator()
    
    $.ajax(
    {
-      url: WM_SiteURL + 'db.json',
+      url: SiteURL + 'db.json',
       dataType: 'json',
       type: 'POST',
       data: {name: name, user: user, pass: pass, prefix: prefix, host: host}
@@ -155,7 +155,7 @@ function install()
    
    $.ajax(
    {
-      url: WM_SiteURL + 'install-1.json',
+      url: SiteURL + 'install-1.json',
       dataType: 'json'
    })
    .error(function(jqXHR)
@@ -179,7 +179,7 @@ function install()
       
       $.ajax(
       {
-         url: WM_SystemURL + 'core/urltest.php',
+         url: SystemURL + 'core/urltest.php',
          dataType: 'text'
       })
       .error(ajaxErrorHandler)
@@ -189,7 +189,7 @@ function install()
          
          $.ajax(
          {
-            url: WM_SiteURL + 'install-2.json',
+            url: SiteURL + 'install-2.json',
             dataType: 'json',
             type: 'POST',
             data:
@@ -324,7 +324,7 @@ function popupError()
    html = 
    '<!DOCTYPE html>' +
    '<meta charset="UTF-8"/>' + 
-   '<link rel="stylesheet" href="' + WM_SystemURL + 'bundles/installer/public/style.css"/>' +
+   '<link rel="stylesheet" href="' + SystemURL + 'bundles/installer/public/style.css"/>' +
    '<div id="popup-header">' + 
    'Wystąpił błąd, który przerwał instalację.<br>Oto komunikat (dla ekspertów), który się wyświetlił:' +
    '</div>' +

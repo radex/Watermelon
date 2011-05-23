@@ -344,7 +344,7 @@ class Blog_Model extends Model
    
    private function generateName($title)
    {
-      $name = generateURLName($title);
+      $name = GenerateURLName($title);
       
       // if already exists, generating unique
       

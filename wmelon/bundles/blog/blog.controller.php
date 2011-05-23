@@ -124,6 +124,8 @@ class Blog_Controller extends Controller
       
       // displaying
       
+      $this->noHeader = true;
+      
       $view = View('posts');
       $view->posts = $posts;
       $view->page  = $page;

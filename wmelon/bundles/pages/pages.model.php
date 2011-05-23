@@ -121,7 +121,7 @@ class Pages_Model extends Model
       }
       else
       {
-         $name = generateURLName($name);
+         $name = GenerateURLName($name);
       }
       
       // inserting
@@ -148,7 +148,7 @@ class Pages_Model extends Model
       DB::update('pages', (int) $id, array
          (
             'title'   => (string) $title,
-            'name'    => generateURLName($name),
+            'name'    => GenerateURLName($name),
             'content' => (string) $content,
             'updated' => time(),
          ));
@@ -197,7 +197,7 @@ class Pages_Model extends Model
    
    private function generateName($title)
    {
-      $name = generateURLName($title);
+      $name = GenerateURLName($title);
       $name = str_replace('/', '', $name);
       
       // if already exists, generating unique

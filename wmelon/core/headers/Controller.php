@@ -226,7 +226,7 @@ abstract class Controller
       }
       
       $headTags[] = '<title>' . $title . '</title>';
-      $headTags[] = "<script>WM_SystemURL = '" . SystemURL . "'; WM_SiteURL = '" . SiteURL . "'</script>";
+      $headTags[] = "<script>SystemURL = '" . SystemURL . "'; SiteURL = '" . SiteURL . "'</script>";
       
       if(Watermelon::$appType == Watermelon::Site)
       {

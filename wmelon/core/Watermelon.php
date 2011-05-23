@@ -404,9 +404,8 @@ class Watermelon
          'DB/DB.php',
          'Loader.php',
          'Config.php',
-         'EventCenter.php',
 
-         'testing/Exception.php',
+         'Exception.php',
 
          'headers/Controller.php',
          'headers/Skin.php',

@@ -224,14 +224,14 @@ function SiteLinks($html)
 }
 
 /*
- * string generateURLName(string $title)
+ * string GenerateURLName(string $title)
  * 
  * Produces URL-friendly name from $title
  * 
  * Strips illegal characters (such as space or '&')
  */
 
-function generateURLName($title)
+function GenerateURLName($title)
 {
    $name = (string) $title;
    
@@ -240,4 +240,28 @@ function generateURLName($title)
    $name = str_replace(' ', '_', $name);
    
    return $name;
+}
+
+/*
+ * string BetterMicrotime([string $php_microtime])
+ * 
+ * Returns current time (since 1 January 1970) in microseconds.
+ * 
+ * Time is presented as 16-char string (10 for Unix timestamp, 6 for microseconds),
+ * which is more usable than microtime() output
+ * (and microtime(true) doesn't seem to have actual microtime precision (or I'm stupid))
+ * 
+ * When $php_microtime is specified, output is generated from $php_microtime and not "fresh" microtime()
+ */
+
+function BetterMicrotime($php_microtime = null)
+{
+   $microtime = $php_microtime ? $php_microtime : microtime();
+   $microtime = explode(' ', $microtime); // splitting seconds and microseconds
+   $msec      = substr($microtime[0],2);  // removing "0," from beginning of microseconds string
+   $sec       = $microtime[1];
+   $time      = $sec . $msec;
+   $time      = substr($time, 0, -2);     // removing "00" from end of time string
+   
+   return $time;
 }
