@@ -275,7 +275,6 @@ abstract class Controller
       $skin->pageTitle         = $pageTitle;
       $skin->noHeader          = $this->noHeader;
       $skin->siteName          = htmlspecialchars($siteName);
-      $skin->siteSlogan        = htmlspecialchars($config->siteSlogan);
       $skin->footer            = SiteLinks($config->footer);
       $skin->messages          = &$messages;
       $skin->headTags          = &$headTags;

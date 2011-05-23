@@ -93,30 +93,30 @@ function SiteURL($page = '', $type = null)
 }
 
 /*
- * void Redirect(string $uri)
+ * void Redirect(string $URL)
  * 
- * Redirects browser to $uri
+ * Redirects browser to $URL
  */
 
-function Redirect($uri)
+function Redirect($url)
 {
-   header('Location: ' . $uri);
+   header('Location: ' . $url);
    exit;
 }
 
 /*
- * void SiteRedirect(string $urn, $type = null)
+ * void SiteRedirect(string $page)
  * 
- * Redirects to $urn page of a website
+ * Redirects to given page of the website
  * 
- * Equivalent of Redirect(SiteURL($urn))
+ * Equivalent of Redirect(SiteURL($page))
  * 
  * Glance at SiteURL() documentation for more details
  */
 
-function SiteRedirect($urn = '', $type = null)
+function SiteRedirect($page = '')
 {
-   Redirect(SiteURL($urn, $type));
+   Redirect(SiteURL($page));
 }
 
 /*

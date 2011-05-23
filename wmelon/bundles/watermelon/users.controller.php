@@ -2,7 +2,7 @@
  //  
  //  This file is part of Watermelon
  //  
- //  Copyright 2010 Radosław Pietruszewski.
+ //  Copyright 2010-2011 Radosław Pietruszewski.
  //  
  //  Watermelon is free software: you can redistribute it and/or modify
  //  it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class Users_Controller extends Controller
    {
       $this->pageTitle = 'Logowanie';
 
-      $form = new Form('wmelon.auth.login', 'users/loginSubmit', 'users/login');
+      $form = new Form('wmelon.users.login', 'users/loginSubmit', 'users/login');
       $form->submitLabel = 'Zaloguj';
       
       $form->addInput('text', 'login', 'Login');
@@ -55,7 +55,7 @@ class Users_Controller extends Controller
    
    function loginSubmit_action()
    {
-      $form = Form::validate('wmelon.auth.login', 'users/login');
+      $form = Form::validate('wmelon.users.login', 'users/login');
       $data = $form->get();
       
       // validating
@@ -91,13 +91,6 @@ class Users_Controller extends Controller
    {
       Users::logout();
       
-      if(!empty($_SERVER['HTTP_REFERER']))
-      {
-         Redirect($_SERVER['HTTP_REFERER']);
-      }
-      else
-      {
-         SiteRedirect();
-      }
+      SiteRedirect();
    }
 }

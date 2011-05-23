@@ -132,7 +132,6 @@ class Watermelon
     * skin              - website skin name
     * 
     * siteName          - website name
-    * siteSlogan        - website slogan (some text, usually placed below site name; shown in some skins)
     * footer            - additional text (HTML) to put in footer
     * textMenus         - array of text-based menus ( -||- )
     * headTags          - tags to be added (string) at the beginning of the page
@@ -238,7 +237,7 @@ class Watermelon
       
       if(self::$appType == self::Admin && !Users::isLogged())
       {
-         SiteRedirect('users/login/' . base64_encode(self::$requestURL), 'site');
+         SiteRedirect('#/users/login/' . base64_encode(self::$requestURL));
          exit;
       }
       

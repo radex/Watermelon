@@ -62,7 +62,6 @@ class Options_Controller extends Controller
       $config = Watermelon::$config;
       
       $siteName       = $config->siteName;
-      $siteSlogan     = $config->siteSlogan;
       $footer         = $config->footer;
       $head           = $config->headTags;
       $tail           = $config->tailTags;
@@ -77,7 +76,6 @@ class Options_Controller extends Controller
       
       // label notes
       
-      $siteSlogan_label     = 'W kilku słowach opisz o czym jest ta strona';
       $footer_label         = 'Możesz używać HTML<br>oraz <em>$/</em> dla linków na stronie';
       $head_label           = '"sekcja &lt;head&gt;"; skrypty, arkusze stylów itp.';
       $tail_label           = 'Skrypty, dodane na końcu strony';
@@ -98,7 +96,6 @@ class Options_Controller extends Controller
       // input args
       
       $siteName       = array('value' => $siteName);
-      $siteSlogan     = array('value' => $siteSlogan,     'labelNote' => $siteSlogan_label);
       $footer         = array('value' => $footer,         'labelNote' => $footer_label);
       $head           = array('value' => $head,           'labelNote' => $head_label);
       $tail           = array('value' => $tail,           'labelNote' => $tail_label);
@@ -113,7 +110,6 @@ class Options_Controller extends Controller
       
       $form->addHTML('<fieldset id="siteOptions"><legend>Strona</legend>');
       $form->addInput('text',     'siteName',       'Nazwa strony',                   true,  $siteName);
-      $form->addInput('text',     'siteSlogan',     'Slogan strony',                  false, $siteSlogan);
       $form->addInput('textarea', 'footer',         'Stopka',                         false, $footer);
       $form->addInput('textarea', 'head',           'Własne tagi na początek strony', false, $head);
       $form->addInput('textarea', 'tail',           'Własne tagi na koniec strony',   false, $tail);
@@ -150,7 +146,6 @@ class Options_Controller extends Controller
       $config = Watermelon::$config;
       
       $config->siteName       = $data->siteName;
-      $config->siteSlogan     = $data->siteSlogan;
       $config->footer         = $data->footer;
       $config->headTags       = $data->head;
       $config->tailTags       = $data->tail;

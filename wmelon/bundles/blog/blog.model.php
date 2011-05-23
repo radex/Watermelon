@@ -284,11 +284,6 @@ class Blog_Model extends Model
       $feed->updated = date(DATE_ATOM);
       $feed->title   = strip_tags($wmelon->siteName);
       
-      if(!empty($wmelon->siteSlogan))
-      {
-         $feed->subtitle = strip_tags($wmelon->siteSlogan);
-      }
-      
       $feed->author->name = Users::userData()->nick;
       $feed->author->uri  = SiteURL;
       
