@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <meta charset="UTF-8"/>
 ${php:skin.drawHeadTags()}
-<link rel="stylesheet" href="${SkinURL}public/style.css.php?1"/>
+<link rel="stylesheet" href="${SkinURL}public/style.css.php?2"/>
 
 
 <div id="container">

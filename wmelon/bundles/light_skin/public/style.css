@@ -234,3 +234,8 @@ h2 + .postInfo
 {
    visibility: visible;
 }
+
+#comments article > div
+{
+   overflow-x: auto;
+}

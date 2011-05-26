@@ -25,7 +25,7 @@
          
          <!-- content -->
          
-         <section>
+         <div>
             
             <!-- admin tools -->
             
@@ -52,7 +52,7 @@
             <!-- content itself -->
             
             ${structure php:Textile::textileRestricted(comment.content)}
-         </section>
+         </div>
          
       </article>
    </tal:block>

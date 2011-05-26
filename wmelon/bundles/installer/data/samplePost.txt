@@ -4,4 +4,4 @@ PS. Po wylogowaniu, link do Panelu Admina znajduje się na dole strony. Dla wygo
 
 h2. Rozwój
 
-Watermelon potrzebuje Twojej pomocy. Jeśli podoba Ci się ten projekt i chcesz wziąć udział, proszę <a href="mailto:&#114;&#097;&#100;&#101;&#120;&#112;&#108;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109">daj mi znać</a>. Każda pomoc jest na wagę złota ;)
+Watermelon potrzebuje Twojej pomocy. Jeśli podoba Ci się ten projekt i chcesz wziąć udział, proszę <a href="mailto:&#114;&#097;&#100;&#101;&#120;&#112;&#108;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">daj mi znać</a>. Każda pomoc jest na wagę złota ;)

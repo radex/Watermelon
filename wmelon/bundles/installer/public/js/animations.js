@@ -45,7 +45,7 @@ function next()
    
    if(Installer_Step == Installer_Steps)
    {
-      window.location.href = SiteURL;
+      window.location.href = SiteURL.substr(0, -9);
       return;
    }
    
