@@ -1,7 +1,7 @@
 <?php die?>
 <!doctype html>
 <meta charset="UTF-8"/>
-<link rel="stylesheet" href="${SkinURL}style.css"/>
+<link rel="stylesheet" href="${SkinURL}style.css?2"/>
 ${php:skin.drawHeadTags()}
 
 <header>

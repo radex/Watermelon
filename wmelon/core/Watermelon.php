@@ -252,7 +252,7 @@ class Watermelon
       
       // Atom feed shortut
       
-      if(self::$segments == array('feed.atom'))
+      if(self::$segments == array('feed') && self::$format == 'atom')
       {
          self::$segments = array('blog', 'feed');
       }
