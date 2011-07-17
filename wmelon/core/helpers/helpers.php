@@ -235,7 +235,8 @@ function GenerateURLName($title)
 {
    $name = (string) $title;
    
-   $name = str_replace(array('?', '#', '&', "'", '"', '.'), '', $name);
+   $name = str_replace(array('?', '#', '&', "'", '"'), '', $name);
+   $name = str_replace('.', '-', $name);
    $name = str_replace(':', ' -', $name);
    $name = str_replace(' ', '_', $name);
    
